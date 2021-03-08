@@ -1,0 +1,14 @@
+Package: gridpattern
+Type: Package
+Title: Grid Grobs with Patterns
+Version: 0.0.0
+Authors@R: c(person("Trevor L", "Davis", role=c("aut", "cre"), email="trevor.l.davis@gmail.com"),
+             person("Mike", "FC", role = "aut", comment = "Code extracted from ggpattern package"))
+Description: Grid grobs with patterns.
+URL: http://github.com/trevorld/gridpattern
+BugReports: http://github.com/trevorld/gridpattern/issues
+License: MIT + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+Imports:
+    grid

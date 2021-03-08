@@ -1,0 +1,4 @@
+^README.rst$
+tests
+^.appveyor.yml$
+^.travis.yml$
