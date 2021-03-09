@@ -1,0 +1,4 @@
+destination: "../../websites/R/gridpattern/"
+url: "https://trevorldavis.com/R/gridpattern"
+development:
+    mode: auto
