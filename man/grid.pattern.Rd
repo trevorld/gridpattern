@@ -38,19 +38,17 @@ patternGrob(
 \arguments{
 \item{pattern}{Name of pattern}
 
-\item{x}{A numeric vector or unit object specifying x-locations.}
+\item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary}
 
-\item{y}{A numeric vector or unit object specifying y-locations.}
+\item{y}{A numeric vector or unit object specifying y-locations of the pattern boundary}
 
 \item{...}{Pattern parameters}
 
-\item{id}{A numeric vector used to separate locations in \code{x} and
-    \code{y} into multiple polygons.  All locations with the same
-    \code{id} belong to the same polygon.}
+\item{id}{A numeric vector used to separate locations in x, y into multiple boundaries.
+All locations within the same \code{id} belong to the same boundary.}
 
-\item{default.units}{A string indicating the default units to use
-    if \code{x}, \code{y}, \code{width}, or \code{height}
-    are only given as numeric vectors.}
+\item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
+are only given as numeric vectors.}
 
 \item{prefix}{Prefix to prepend to the name of each of the pattern parameters in \code{...}}
 
