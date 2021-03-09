@@ -13,6 +13,7 @@ grid.pattern(
   id = 1L,
   default.units = "npc",
   prefix = "pattern_",
+  legend = FALSE,
   name = NULL,
   gp = gpar(),
   draw = TRUE,
@@ -27,6 +28,7 @@ patternGrob(
   id = 1L,
   default.units = "npc",
   prefix = "pattern_",
+  legend = FALSE,
   name = NULL,
   gp = gpar(),
   draw = TRUE,
@@ -51,6 +53,8 @@ patternGrob(
     are only given as numeric vectors.}
 
 \item{prefix}{Prefix to prepend to the name of each of the pattern parameters in \code{...}}
+
+\item{legend}{Whether this is intended to be drawn in a legend or not}
 
 \item{name}{ A character identifier. }
 

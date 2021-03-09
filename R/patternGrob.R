@@ -18,6 +18,7 @@
 #' @param pattern Name of pattern
 #' @param ... Pattern parameters
 #' @param prefix Prefix to prepend to the name of each of the pattern parameters in \code{...}
+#' @param legend Whether this is intended to be drawn in a legend or not
 #' @examples
 #'  if (require("grid")) {
 #'    grid.newpage()
@@ -38,9 +39,9 @@
 #'          for more details on the patterns and their parameters.
 #' @export
 grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), ...,
-                         id = 1L, default.units = "npc", prefix = "pattern_",
+                         id = 1L, default.units = "npc", prefix = "pattern_", legend = FALSE,
                          name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    grob <- patternGrob(pattern, x, y, ..., prefix = prefix, name = name, gp = gp, vp = vp)
+    grob <- patternGrob(pattern, x, y, ..., prefix = prefix, legend = legend, name = name, gp = gp, vp = vp)
     if (draw) {
         grid.draw(grob)
         invisible(grob)
@@ -60,25 +61,25 @@ grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1
 #' @rdname grid.pattern
 #' @export
 patternGrob <- function(pattern = "strip", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), ...,
-                        id = 1L, default.units = "npc", prefix = "pattern_",
+                        id = 1L, default.units = "npc", prefix = "pattern_", legend = FALSE,
                         name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     params <- get_params(..., prefix = prefix, gp = gp)
     if (!inherits(x, "unit")) x <- unit(x, default.units)
     if (!inherits(y, "unit")) y <- unit(y, default.units)
 
-    #### Currently alpha being doubly applied if found within gp...
-    gTree(pattern=pattern, x=x, y=y, id=id, params=params, name=name, gp=gp, vp=vp, cl="pattern")
+    gTree(pattern=pattern, x=x, y=y, id=id, params=params, legend=legend,
+          name=name, gp=gp, vp=vp, cl="pattern")
 }
 
 #' @export
 makeContext.pattern <- function(x) {
+    if (hasName(x$gp, "alpha")) x$gp$alpha <- NULL # avoid applying an alpha effect twice
     x
 }
 
 #' @export
 makeContent.pattern <- function(x) {
 
-    params <- x$params
     width <- as.numeric(convertWidth(unit(1, "npc"), "in"))
     height <- as.numeric(convertHeight(unit(1, "npc"), "in"))
     aspect_ratio <-  width / height
@@ -96,7 +97,7 @@ makeContent.pattern <- function(x) {
         boundary_df <- create_polygon_df(xp, yp, id)
 
         fn <- geometry_fns[[pattern]]
-        grob <- fn(params, boundary_df, aspect_ratio, legend=FALSE)
+        grob <- fn(x$params, boundary_df, aspect_ratio, x$legend)
     } else {
         stop("Don't know the function for pattern ", pattern)
     }
