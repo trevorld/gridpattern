@@ -81,9 +81,13 @@ makeContext.pattern <- function(x) {
 #' @export
 makeContent.pattern <- function(x) {
 
-    width <- as.numeric(convertWidth(unit(1, "npc"), "in"))
-    height <- as.numeric(convertHeight(unit(1, "npc"), "in"))
-    aspect_ratio <-  width / height
+    if (hasName(x$params, "pattern_aspect_ratio") && !is.na(x$params$pattern_aspect_ratio)) {
+        aspect_ratio <- x$params$pattern_aspect_ratio
+    } else {
+        width <- as.numeric(convertWidth(unit(1, "npc"), "in"))
+        height <- as.numeric(convertHeight(unit(1, "npc"), "in"))
+        aspect_ratio <-  width / height
+    }
 
     pattern <- x$pattern
     geometry_fns <- c(getOption("ggpattern_geometry_funcs", list()),
