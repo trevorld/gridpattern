@@ -13,6 +13,10 @@ notifications:
   email:
     on_success: change
     on_failure: change
+addons:
+    apt:
+        packages:
+            - libudunits2-dev
 r_github_packages:
     - r-lib/covr
 after_success:
