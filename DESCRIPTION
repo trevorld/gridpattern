@@ -6,7 +6,7 @@ Authors@R: c(person("Trevor L", "Davis", role=c("aut", "cre"), email="trevor.l.d
              person("Mike", "FC", role = "aut", comment = "Code extracted from ggpattern package"),
              person("Thomas Lin", "Pedersen", role = "ctb", comment = "data_frame() copied from ggplot2 package"))
 Description: Grid grobs with patterns.
-URL: http://github.com/trevorld/gridpattern
+URL: http://github.com/trevorld/gridpattern, https://trevorldavis.com/R/gridpattern
 BugReports: http://github.com/trevorld/gridpattern/issues
 License: MIT + file LICENSE
 Encoding: UTF-8

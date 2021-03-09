@@ -74,6 +74,8 @@ patternGrob(
    grid.newpage()
    grid.pattern("stripe", colour="blue", fill="yellow", density = 0.5, angle = 135)
    grid.newpage()
+   grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135)
+   grid.newpage()
    grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5)
  }
 }

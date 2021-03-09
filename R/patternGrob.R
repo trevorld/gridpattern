@@ -16,6 +16,8 @@
 #'    grid.newpage()
 #'    grid.pattern("stripe", colour="blue", fill="yellow", density = 0.5, angle = 135)
 #'    grid.newpage()
+#'    grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135)
+#'    grid.newpage()
 #'    grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5)
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
@@ -71,6 +73,7 @@ makeContent.pattern <- function(x) {
     pattern <- x$pattern
     geometry_fns <- c(getOption("ggpattern_geometry_funcs", list()),
                       list(circle = create_pattern_circles,
+                           crosshatch = create_pattern_crosshatch_via_sf,
                            stripe = create_pattern_stripes_via_sf))
 
     if (hasName(geometry_fns, pattern)) {
