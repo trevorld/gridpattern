@@ -5,14 +5,6 @@ test_that("alpha works as expected", {
     expect_equal(alpha("#FF000080", 0.25), "#FF000040")
 })
 
-test_that("get works as expected", {
-    l <- list(a = "alpha", b = "beta")
-    expect_equal(get(l, "a"), "alpha")
-    expect_equal(get(l, "a", "gamma"), "alpha")
-    expect_null(get(l, "e"))
-    expect_equal(get(l, "e", "epsilon"), "epsilon")
-})
-
 test_that("get_params works as expected", {
     params <- get_params()
     expect_equal(params$pattern_colour, "grey20")

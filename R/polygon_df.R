@@ -1,5 +1,3 @@
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Create a \code{polygon_df} object from the given coordinates
 ##
@@ -22,7 +20,6 @@ create_polygon_df <- function(x, y, id = 1L) {
     id    = id
   )
 }
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Test if object is polygon_df or NULL
@@ -149,7 +146,7 @@ convert_polygon_sf_to_polygon_df <- function(mp) {
   } else if (sf::st_is_empty(mp)) {
     return(mat)
   } else {
-    warning("convert_polygon_sf_to_polygon_df(): Not POLYGON or MULTIPOLYGON: ", deparse(class(mp)))
+    warn("convert_polygon_sf_to_polygon_df(): Not POLYGON or MULTIPOLYGON: ", deparse(class(mp)))
     return(NULL)
   }
   id  <- rep.int(seq_along(poly_lengths), times = poly_lengths)
@@ -179,8 +176,6 @@ rotate_polygon_df <- function(polygon_df, angle, aspect_ratio) {
   polygon_df
 }
 
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Convert a polygon to an alpha mask
 ##
@@ -193,33 +188,33 @@ rotate_polygon_df <- function(polygon_df, angle, aspect_ratio) {
 ## @return numeric matrix with all values with 0 or 1
 ##
 ## @import png
-## @importFrom grDevices dev.off png
+#' @importFrom grDevices dev.off png
 ## @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# convert_polygon_df_to_alpha_channel <- function(polygon_df, width, height) {
-#
-#   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   # Convert the polygon to an actual grob, coloured 'black'
-#   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   gp <- gpar(fill = 'black')
-#   boundary_grob <- convert_polygon_df_to_polygon_grob(polygon_df, gp=gp)
-#
-#   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   # Save the grob as an image of the given size
-#   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   png_file <- tempfile(fileext = ".png")
-#   png(png_file, width=width, height=height)
-#   grid.draw(boundary_grob)
-#   dev.off()
-#
-#   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   # Load the file and convert o a numeric matrix with values 0/1 depending
-#   # on whether the pixel is white or black.
-#   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#   alpha_channel <- png::readPNG(png_file)
-#   alpha_channel <- alpha_channel[,,1] < 0.5
-#   storage.mode(alpha_channel) <- 'numeric'
-#
-#   # t(alpha_channel)
-#   alpha_channel
-# }
+convert_polygon_df_to_alpha_channel <- function(polygon_df, width, height) {
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Convert the polygon to an actual grob, coloured 'black'
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  gp <- gpar(fill = 'black')
+  boundary_grob <- convert_polygon_df_to_polygon_grob(polygon_df, gp=gp)
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Save the grob as an image of the given size
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  png_file <- tempfile(fileext = ".png")
+  png(png_file, width=width, height=height)
+  grid.draw(boundary_grob)
+  dev.off()
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Load the file and convert o a numeric matrix with values 0/1 depending
+  # on whether the pixel is white or black.
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  alpha_channel <- png::readPNG(png_file)
+  alpha_channel <- alpha_channel[,,1] < 0.5
+  storage.mode(alpha_channel) <- 'numeric'
+
+  # t(alpha_channel)
+  alpha_channel
+}

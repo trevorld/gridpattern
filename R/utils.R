@@ -8,11 +8,10 @@ alpha <- function(colour, alpha = NA_real_) {
     apply(m, 2, function(x) grDevices::rgb(x[1], x[2], x[3], x[4]))
 }
 
-get <- function(x, name, default = NULL) {
-    if (utils::hasName(x, name))
-        x[[name]]
-    else
-        default
+augment_list <- function(l, name, default) {
+    name <- paste0("pattern_", name)
+    if (!hasName(l, name)) l[[name]] <- default
+    l
 }
 
 # Added to ggplot2 by Thomas Lin Pedersen
@@ -20,7 +19,7 @@ get <- function(x, name, default = NULL) {
 # No checking, recycling etc. unless asked for
 new_data_frame <- function(x = list(), n = NULL) {
   if (length(x) != 0 && is.null(names(x))) {
-    stop("Elements must be named")
+    abort("Elements must be named")
   }
   lengths <- vapply(x, length, integer(1))
   if (is.null(n)) {
@@ -29,7 +28,7 @@ new_data_frame <- function(x = list(), n = NULL) {
   for (i in seq_along(x)) {
     if (lengths[i] == n) next
     if (lengths[i] != 1) {
-      stop("Elements must equal the number of rows or 1")
+      abort("Elements must equal the number of rows or 1")
     }
     x[[i]] <- rep(x[[i]], n)
   }

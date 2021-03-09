@@ -14,9 +14,13 @@ RoxygenNote: 7.1.1
 Depends:
     R (>= 3.4.0)
 Imports:
+    glue,
     grDevices,
     grid,
     gridGeometry,
+    magick,
+    png,
+    rlang,
     sf,
     utils
 Suggests:

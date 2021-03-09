@@ -8,6 +8,7 @@
 #' \describe{
 #' \item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
 #' \item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
+#' \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
 #' \item{none}{Does nothing}
 #' \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
 #' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
@@ -41,6 +42,10 @@
 #'    grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135)
 #'    grid.newpage()
 #'    grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5)
+#'    \dontrun{
+#'      grid.newpage()
+#'      grid.pattern("magick", type="octagons", fill="blue", scale=2)
+#'    }
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
 #'          for more details on the patterns and their parameters.
@@ -56,14 +61,6 @@ grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1
         grob
     }
 }
-
-# fill2
-# orientation
-# aspect_ratio
-# key_scale_factor
-
-# array pattern: function(width, height, params, legend)
-# geometry pattern: function(params, boundary_df, aspect_ratio, legend)
 
 #' @rdname grid.pattern
 #' @export
@@ -87,7 +84,12 @@ makeContext.pattern <- function(x) {
 #' @export
 makeContent.pattern <- function(x) {
 
-    if (hasName(x$params, "pattern_aspect_ratio") && !is.na(x$params$pattern_aspect_ratio)) {
+    xp <- as.numeric(convertX(x$x, "npc"))
+    yp <- as.numeric(convertY(x$y, "npc"))
+    id <- x$id
+    boundary_df <- create_polygon_df(xp, yp, id)
+
+    if (!is.na(x$params$pattern_aspect_ratio)) {
         aspect_ratio <- x$params$pattern_aspect_ratio
     } else {
         width <- as.numeric(convertWidth(unit(1, "npc"), "in"))
@@ -95,56 +97,52 @@ makeContent.pattern <- function(x) {
         aspect_ratio <-  width / height
     }
 
-    pattern <- x$pattern
-    geometry_fns <- c(getOption("ggpattern_geometry_funcs", list()),
-                      list(circle = create_pattern_circles,
-                           crosshatch = create_pattern_crosshatch_via_sf,
-                           none = create_pattern_none,
-                           stripe = create_pattern_stripes_via_sf))
-
-    if (hasName(geometry_fns, pattern)) {
-        xp <- as.numeric(convertX(x$x, "npc"))
-        yp <- as.numeric(convertY(x$y, "npc"))
-        id <- x$id
-        boundary_df <- create_polygon_df(xp, yp, id)
-
-        fn <- geometry_fns[[pattern]]
-        grob <- fn(x$params, boundary_df, aspect_ratio, x$legend)
-    } else {
-        stop("Don't know the function for pattern ", pattern)
-    }
-
+    fn <- get_fn(x$pattern)
+    grob <- fn(x$params, boundary_df, aspect_ratio, x$legend)
     gl <- gList(grob)
     setChildren(x, gl)
 }
 
+get_fn <- function(pattern) {
+    geometry_fns <- c(getOption("ggpattern_geometry_funcs"),
+                      list(circle = create_pattern_circles,
+                           crosshatch = create_pattern_crosshatch_via_sf,
+                           none = create_pattern_none,
+                           stripe = create_pattern_stripes_via_sf))
+    array_fns <- c(getOption("ggpattern_array_funcs"),
+                   list(magick = create_magick_pattern_as_array))
+    array_fns <- lapply(array_fns, function(fn) {
+                            function(...) create_pattern_array(..., array_fn=fn)
+                   })
+    fns <- c(geometry_fns, array_fns)
+    fns[[pattern]] %||% abort("Don't know the function for pattern ", pattern)
+}
 
+# returns list of pattern parameters using defaults if necessary
 get_params <- function(..., prefix = "pattern_", gp = gpar()) {
-    params <- list(...)
-    if (length(params)) names(params) <- paste0(prefix, names(params))
-    if (!hasName(params, "pattern_colour"))
-        params$pattern_colour <- get(gp, "col", "grey20")
-    if (!hasName(params, "pattern_fill"))
-        params$pattern_fill <- get(gp, "fill", "grey80")
-    if (!hasName(params, "pattern_alpha"))
-        params$pattern_alpha <- get(gp, "alpha", 1)
-    if (!hasName(params, "pattern_linetype"))
-        params$pattern_linetype <- get(gp, "lty", 1)
-    if (!hasName(params, "pattern_size"))
-        params$pattern_size <- get(gp, "lwd", 1)
+    l <- list(...)
+    if (length(l)) names(l) <- paste0(prefix, names(l))
 
-    if (!hasName(params, "pattern_angle"))
-        params$pattern_angle <- 30
-    if (!hasName(params, "pattern_density"))
-        params$pattern_density <- 0.2
-    if (!hasName(params, "pattern_shape"))
-        params$pattern_shape <- 1
-    if (!hasName(params, "pattern_spacing"))
-        params$pattern_spacing <- 0.05
-    if (!hasName(params, "pattern_xoffset"))
-        params$pattern_xoffset <- 0
-    if (!hasName(params, "pattern_yoffset"))
-        params$pattern_yoffset <- 0
+    # possibly get from gpar()
+    l$pattern_alpha <- l$pattern_alpha %||% gp$alpha %||% 1
+    l$pattern_colour <- l$pattern_colour %||% gp$col %||% "grey20"
+    l$pattern_fill <- l$pattern_fill %||% gp$fill %||% "grey80"
+    l$pattern_linetype <- l$pattern_linetype %||% gp$lty %||% 1
+    l$pattern_size <- l$pattern_size %||% gp$lwd %||% 1
 
-    params
+    # never get from gpar()
+    l$pattern_angle <- l$pattern_angle %||% 30
+    l$pattern_aspect_ratio <- l$pattern_aspect_ratio %||% NA_real_
+    l$pattern_density <- l$pattern_density %||% 0.2
+    # fill2
+    l$pattern_filter <- l$pattern_filter %||% "box"
+    l$pattern_key_scale_factor <- l$pattern_key_scale_factor %||% 1
+    # orientation
+    l$pattern_shape <- l$pattern_shape %||% 1
+    l$pattern_spacing <- l$pattern_spacing %||% 0.05
+    l$pattern_type <- l$pattern_type %||%"fit"
+    l$pattern_xoffset <- l$pattern_xoffset %||% 0
+    l$pattern_yoffset <- l$pattern_yoffset %||% 0
+
+    l
 }

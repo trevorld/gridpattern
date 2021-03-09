@@ -1,3 +1,4 @@
+context("geometry")
 test_that("geometry patterns works as expected", {
     skip_if_not_installed("vdiffr")
     library("vdiffr")
