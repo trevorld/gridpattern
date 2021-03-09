@@ -16,6 +16,7 @@ notifications:
 addons:
     apt:
         packages:
+            - libgdal-dev
             - libudunits2-dev
 r_github_packages:
     - r-lib/covr
