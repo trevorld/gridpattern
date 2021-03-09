@@ -7,5 +7,6 @@ gridpattern v0.1
 
   1. [circle](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html) (#5)
   2. [crosshatch](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html) (#4)
-  3. [stripe](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html) (#3)
-  4. [Custom geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html) (#1)
+  3. none
+  4. [stripe](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html) (#3)
+  5. [Custom geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html) (#1)

@@ -4,6 +4,14 @@ test_that("geometry patterns works as expected", {
 
     expect_doppelganger("default", grid.pattern)
 
+    expect_doppelganger("none", function() grid.pattern("none"))
+
+    expect_doppelganger("crosshatch", function()
+        grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135))
+
+    expect_doppelganger("circle", function()
+        grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5))
+
     expect_doppelganger("stripe", function()
         grid.pattern("stripe", colour="blue", fill="yellow", density = 0.5, angle = 135))
 
@@ -12,12 +20,6 @@ test_that("geometry patterns works as expected", {
         y <- c(0.2, 0.3, 0.8, 0.5)
         grid.pattern("stripe", x, y, gp = gpar(col="blue", fill="red", lwd=2))
     })
-
-    expect_doppelganger("crosshatch", function()
-        grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135))
-
-    expect_doppelganger("circle", function()
-        grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5))
 
     centroid_dot_pattern <- function(params, boundary_df, aspect_ratio, legend) {
         boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df)

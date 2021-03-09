@@ -77,6 +77,7 @@ Here are links to more information about the various patterns:
 \describe{
 \item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
 \item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
+\item{none}{Does nothing}
 \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
 \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
 }

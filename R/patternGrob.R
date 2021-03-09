@@ -8,6 +8,7 @@
 #' \describe{
 #' \item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
 #' \item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
+#' \item{none}{Does nothing}
 #' \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
 #' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
 #' }
@@ -88,6 +89,7 @@ makeContent.pattern <- function(x) {
     geometry_fns <- c(getOption("ggpattern_geometry_funcs", list()),
                       list(circle = create_pattern_circles,
                            crosshatch = create_pattern_crosshatch_via_sf,
+                           none = create_pattern_none,
                            stripe = create_pattern_stripes_via_sf))
 
     if (hasName(geometry_fns, pattern)) {
