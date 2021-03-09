@@ -223,20 +223,3 @@ rotate_polygon_df <- function(polygon_df, angle, aspect_ratio) {
 #   # t(alpha_channel)
 #   alpha_channel
 # }
-
-# if (FALSE) {
-#   polygon_df <- create_polygon_df(x=c(0, 0.3, 0.3, 0,  0.5, 0.9, 0.9, 0.5),
-#                                     y=c(0, 0, 0.3, 0.3,  0.5, 0.5, 0.9, 0.9),
-#                                     id = c(1, 1, 1, 1, 2, 2, 2, 2))
-#
-#   sfob <- NULL
-#   sfob <- convert_polygon_df_to_polygon_sf(polygon_df)
-#   plot(sfob)
-#
-#   convert_polygon_sf_to_polygon_df(sfob)
-#
-#
-#   grob <- convert_polygon_df_to_polygon_grob(polygon_df, gp = gpar(fill = 'black'))
-#   plot.new()
-#   grid.draw(grob)
-# }

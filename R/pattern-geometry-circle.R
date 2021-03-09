@@ -1,8 +1,3 @@
-
-
-
-#
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Create a cicleGrob object for a set of points
 ##
@@ -146,7 +141,6 @@ create_circles_grob <- function(boundary_df, params, angle=0, spacing=0.1, densi
   )
 }
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## @rdname create_pattern_none
 ## @importFrom gridGeometry polyclipGrob
@@ -175,69 +169,3 @@ create_pattern_circles <- function(params, boundary_df, aspect_ratio, legend = F
 
   circle_grob
 }
-
-
-
-
-# if (FALSE) {
-#   df <- data.frame(trt = c("a", "b", "c"), outcome = c(2.3, 1.9, 3.2))
-#   df <- data.frame(trt = c("a", 'b'), outcome = c(2.3, 1.9))
-#   df <- data.frame(trt = c("a"), outcome = c(2.3))
-#
-#   ggplot(df, aes(trt, outcome)) +
-#     geom_col_pattern(
-#       aes(fill=trt),
-#       colour          = 'black',
-#       pattern         = 'circle',
-#       pattern_fill    = 'green',
-#       pattern_angle   = 30,
-#       pattern_density = 1,
-#       pattern_spacing = 0.08
-#     ) +
-#     theme_bw() +
-#     labs(title = "ggpattern::geom_col_pattern()") +
-#     theme(legend.position = 'none') +
-#     coord_fixed(ratio = 2)
-# }
-
-
-
-
-
-
-if (FALSE) {
-  library(grid)
-  library(ggplot2)
-
-  circle_grob <- create_circles_grob(density = 0.6, aspect_ratio = 1)
-  plot.new()
-  grid.draw(circle_grob)
-
-
-  d <- 0.1
-  boundary_df <- create_polygon_df(x = c(d, 1-d, 1-d, d), y = c(d, d, 1-d, 1-d))
-
-  boundary_grob <- convert_polygon_df_to_polygon_grob(boundary_df)
-
-  int_grob <- gridGeometry::polyclipGrob(boundary_grob, circle_grob, gp = gpar(fill = 'blue', colour = 'blue', size = 2))
-
-  plot.new()
-  grid.draw(boundary_grob)
-  grid.draw(circle_grob)
-  grid.draw(int_grob)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -39,7 +39,6 @@ new_data_frame <- function(x = list(), n = NULL) {
   attr(x, "row.names") <- .set_row_names(n)
   x
 }
-
 data_frame <- function(...) {
   new_data_frame(list(...))
 }
