@@ -13,8 +13,13 @@ gridpattern
     :target: https://codecov.io/github/trevorld/gridpattern?branch=master
     :alt: Coverage Status
 
-.. image:: https://www.repostatus.org/badges/latest/concept.svg
-   :alt: Project Status: Concept – Minimal or no implementation has been done yet, or the repository is only intended to be a limited example, demo, or proof-of-concept.
-   :target: https://www.repostatus.org/#concept
+.. image:: https://www.repostatus.org/badges/latest/wip.svg
+   :alt: Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.
+   :target: https://www.repostatus.org/#wip
 
-``gridpattern`` plans to provide "grob" functions for use with R's grid graphics system that display various patterns.  These patterned grobs will be extracted from the awesome `ggpattern <https://github.com/coolbutuseless/ggpattern>`_ package (which provides ggplot2 "geom" functions but `does not provide exported access to the underlying grobs <https://github.com/coolbutuseless/ggpattern/issues/11>`_ themselves).
+``gridpattern`` provides "grob" functions for use with R's grid graphics system that display various patterns.  These patterned grobs are extracted from the awesome `ggpattern <https://github.com/coolbutuseless/ggpattern>`_ package (which provides ggplot2 "geom" functions but `does not provide exported access to the underlying grobs <https://github.com/coolbutuseless/ggpattern/issues/11>`_ themselves).
+
+We currently provide support for the following ``ggpattern`` patterns:
+
+#. `circle <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html>`_
+#. `stripe <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html>`_

@@ -14,7 +14,9 @@
 #'    grid.newpage()
 #'    grid.pattern()
 #'    grid.newpage()
-#'    grid.pattern("stripe", colour="blue", fill="yellow")
+#'    grid.pattern("stripe", colour="blue", fill="yellow", density = 0.5, angle = 135)
+#'    grid.newpage()
+#'    grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5)
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
 #'          for more details on the patterns and their parameters.
@@ -68,7 +70,8 @@ makeContent.pattern <- function(x) {
 
     pattern <- x$pattern
     geometry_fns <- c(getOption("ggpattern_geometry_funcs", list()),
-                      list(stripe = create_pattern_stripes_via_sf))
+                      list(circle = create_pattern_circles,
+                           stripe = create_pattern_stripes_via_sf))
 
     if (hasName(geometry_fns, pattern)) {
         xp <- as.numeric(convertX(x$x, "npc"))

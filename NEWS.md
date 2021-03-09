@@ -1,7 +1,8 @@
 gridpattern v0.1
 ================
 
-* Initial support for ``grid.pattern()`` and ``patternGrob()``.
-* Support for the following patterns:
+* ``grid.pattern()`` / ``patternGrob()`` draw / return "pattern" grid grobs.
+* Initial support for the following patterns from ``ggpattern``:
 
-  - The "stripes" pattern (#3)
+  - The "stripe" pattern (#3)
+  - The "circle" pattern (#5)

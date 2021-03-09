@@ -45,14 +45,14 @@ is_polygon_df <- function(x) {
 ## @return 4-element numeric vector of \code{c(xmin, ymin, xmax, ymax)}
 ## @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# calculate_bbox_polygon_df <- function(polygon_df) {
-#
-#   stopifnot(is_polygon_df(polygon_df))
-#
-#   x <- range(polygon_df$x)
-#   y <- range(polygon_df$y)
-#   c(x[1], y[1], x[2], y[2])
-# }
+calculate_bbox_polygon_df <- function(polygon_df) {
+
+  stopifnot(is_polygon_df(polygon_df))
+
+  x <- range(polygon_df$x)
+  y <- range(polygon_df$y)
+  c(x[1], y[1], x[2], y[2])
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Convert a \code{polygon_df} to \code{grid::polygonGrob} object
@@ -66,22 +66,22 @@ is_polygon_df <- function(x) {
 ## @import grid
 ## @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# convert_polygon_df_to_polygon_grob <- function(polygon_df, default.units = 'npc',
-#                                                 gp = gpar()) {
-#
-#
-#   if (is.null(polygon_df) || nrow(polygon_df) < 3) {
-#     return(grid::nullGrob())
-#   }
-#
-#   grid::polygonGrob(
-#     x             = polygon_df$x,
-#     y             = polygon_df$y,
-#     id            = polygon_df$id,
-#     default.units = default.units,
-#     gp            = gp
-#   )
-# }
+convert_polygon_df_to_polygon_grob <- function(polygon_df, default.units = 'npc',
+                                                gp = gpar()) {
+
+
+  if (is.null(polygon_df) || nrow(polygon_df) < 3) {
+    return(grid::nullGrob())
+  }
+
+  grid::polygonGrob(
+    x             = polygon_df$x,
+    y             = polygon_df$y,
+    id            = polygon_df$id,
+    default.units = default.units,
+    gp            = gp
+  )
+}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Convert a \code{polygon_df} to an \code{sf} POLYGON/MULTIPOLYGON
@@ -166,18 +166,18 @@ convert_polygon_sf_to_polygon_df <- function(mp) {
 ##
 ## @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# rotate_polygon_df <- function(polygon_df, angle, aspect_ratio) {
-#
-#   angle <- angle * pi/180
-#
-#   new_x <- polygon_df$x * cos(angle) - polygon_df$y * sin(angle)
-#   new_y <- polygon_df$x * sin(angle) + polygon_df$y * cos(angle)
-#
-#   polygon_df$x <- new_x
-#   polygon_df$y <- new_y
-#
-#   polygon_df
-# }
+rotate_polygon_df <- function(polygon_df, angle, aspect_ratio) {
+
+  angle <- angle * pi/180
+
+  new_x <- polygon_df$x * cos(angle) - polygon_df$y * sin(angle)
+  new_y <- polygon_df$x * sin(angle) + polygon_df$y * cos(angle)
+
+  polygon_df$x <- new_x
+  polygon_df$y <- new_y
+
+  polygon_df
+}
 
 
 
