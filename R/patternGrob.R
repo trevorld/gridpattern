@@ -3,6 +3,15 @@
 #' \code{grid.pattern} draws patterned shapes onto the graphic device.
 #' \code{patternGrob} returns the grid grob objects.
 #'
+#' Here are links to more information about the various patterns:
+#'
+#' \describe{
+#' \item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
+#' \item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
+#' \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
+#' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
+#' }
+#'
 #' @inheritParams grid::polygonGrob
 #' @import grid
 #' @importFrom utils hasName
@@ -16,6 +25,11 @@
 #'    grid.newpage()
 #'    grid.pattern("stripe", colour="blue", fill="yellow", density = 0.5, angle = 135)
 #'    grid.newpage()
+#'    # In some cases can also alternatively use "gpar()" to specify colour and line attributes
+#'    x <- c(0.1, 0.6, 0.8, 0.3)
+#'    y <- c(0.2, 0.3, 0.8, 0.5)
+#'    grid.pattern("stripe", x, y, gp = gpar(col="blue", fill="red", lwd=2))
+#'    grid.newpage()
 #'    grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135)
 #'    grid.newpage()
 #'    grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5)
@@ -26,7 +40,7 @@
 grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), ...,
                          id = 1L, default.units = "npc", prefix = "pattern_",
                          name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    grob <- patternGrob(pattern, ..., prefix = prefix, name = name, gp = gp, vp = vp)
+    grob <- patternGrob(pattern, x, y, ..., prefix = prefix, name = name, gp = gp, vp = vp)
     if (draw) {
         grid.draw(grob)
         invisible(grob)
@@ -35,7 +49,6 @@ grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1
     }
 }
 
-# shape
 # fill2
 # orientation
 # aspect_ratio
@@ -111,6 +124,8 @@ get_params <- function(..., prefix = "pattern_", gp = gpar()) {
         params$pattern_angle <- 30
     if (!hasName(params, "pattern_density"))
         params$pattern_density <- 0.2
+    if (!hasName(params, "pattern_shape"))
+        params$pattern_shape <- 1
     if (!hasName(params, "pattern_spacing"))
         params$pattern_spacing <- 0.05
     if (!hasName(params, "pattern_xoffset"))

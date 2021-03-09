@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    line, polyline, polygon, path, rect, circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<polygon points='427.32,403.95 433.37,400.45 432.00,403.20 427.32,403.95 ' style='stroke-width: 4.27; stroke: #0000FF; stroke-linecap: square; fill: #FF0000;' />
+<polygon points='456.76,353.67 347.59,416.71 327.67,419.89 462.61,341.99 456.76,353.67 ' style='stroke-width: 4.27; stroke: #0000FF; stroke-linecap: square; fill: #FF0000;' />
+<polygon points='486.00,295.21 247.94,432.65 228.02,435.84 491.84,283.52 486.00,295.21 ' style='stroke-width: 4.27; stroke: #0000FF; stroke-linecap: square; fill: #FF0000;' />
+<polygon points='515.23,236.74 148.29,448.59 128.37,451.78 521.07,225.05 515.23,236.74 ' style='stroke-width: 4.27; stroke: #0000FF; stroke-linecap: square; fill: #FF0000;' />
+<polygon points='544.46,178.27 87.66,442.01 101.01,425.98 550.31,166.58 544.46,178.27 ' style='stroke-width: 4.27; stroke: #0000FF; stroke-linecap: square; fill: #FF0000;' />
+<polygon points='573.70,119.80 154.46,361.85 167.81,345.83 524.24,140.05 576.00,115.20 573.70,119.80 ' style='stroke-width: 4.27; stroke: #0000FF; stroke-linecap: square; fill: #FF0000;' />
+</svg>

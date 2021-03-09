@@ -5,6 +5,7 @@ gridpattern v0.1
 * ``patternGrob()`` returns a "pattern" (grid) grob.
 * Initial support for the following patterns from ``ggpattern``:
 
-  1.  [circle](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html) (#5)
-  2.  [crosshatch](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html) (#4)
-  3.  [stripe](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html) (#3)
+  1. [circle](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html) (#5)
+  2. [crosshatch](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html) (#4)
+  3. [stripe](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html) (#3)
+  4. [Custom geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html) (#1)

@@ -67,12 +67,27 @@ patternGrob(
 \code{grid.pattern} draws patterned shapes onto the graphic device.
 \code{patternGrob} returns the grid grob objects.
 }
+\details{
+Here are links to more information about the various patterns:
+
+\describe{
+\item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
+\item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
+\item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
+\item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
+}
+}
 \examples{
  if (require("grid")) {
    grid.newpage()
    grid.pattern()
    grid.newpage()
    grid.pattern("stripe", colour="blue", fill="yellow", density = 0.5, angle = 135)
+   grid.newpage()
+   # In some cases can also alternatively use "gpar()" to specify colour and line attributes
+   x <- c(0.1, 0.6, 0.8, 0.3)
+   y <- c(0.2, 0.3, 0.8, 0.5)
+   grid.pattern("stripe", x, y, gp = gpar(col="blue", fill="red", lwd=2))
    grid.newpage()
    grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135)
    grid.newpage()
