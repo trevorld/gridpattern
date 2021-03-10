@@ -27,3 +27,4 @@ We currently provide support for the following ``ggpattern`` patterns:
 #. `magick <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html>`_
 #. `stripe <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html>`_
 #. `Custom geometry-based patterns <https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html>`_
+#. `Custom array-based patterns <https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html>`_

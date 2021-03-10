@@ -17,6 +17,7 @@ addons:
     apt:
         packages:
             - libgdal-dev
+            - libmagick++-dev
             - libudunits2-dev
 r_github_packages:
     - r-lib/covr

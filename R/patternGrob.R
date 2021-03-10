@@ -12,6 +12,7 @@
 #' \item{none}{Does nothing}
 #' \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
 #' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
+#' \item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html}}
 #' }
 #'
 #' @inheritParams grid::polygonGrob
