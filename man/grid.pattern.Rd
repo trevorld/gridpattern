@@ -75,6 +75,7 @@ Here are links to more information about the various patterns:
 \describe{
 \item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
 \item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
+\item{gradient}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}}
 \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
 \item{none}{Does nothing}
 \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
@@ -100,6 +101,8 @@ Here are links to more information about the various patterns:
    \dontrun{
      grid.newpage()
      grid.pattern("magick", type="octagons", fill="blue", scale=2)
+     grid.newpage()
+     grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
    }
  }
 }

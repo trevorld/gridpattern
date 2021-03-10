@@ -1,4 +1,4 @@
-# dependency-free replacement for scales::alpha
+# replacement for scales::alpha that only depends on grDevices
 alpha <- function(colour, alpha = NA_real_) {
     n <- max(lengths(list(colour, alpha)))
     colour <- rep(colour, length.out = n)
@@ -35,5 +35,4 @@ new_data_frame <- function(x = list(), n = NULL) {
 data_frame <- function(...) {
   new_data_frame(list(...))
 }
-# ggplot2 constant
-.pt <- 2.845276
+.pt <- 2.845276 # ggplot2 constant

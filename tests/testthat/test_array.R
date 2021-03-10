@@ -1,14 +1,15 @@
-test_raster <- function(ref_png, fn, update = FALSE) {
+my_png <- function(...) grDevices::png(..., type = "cairo", width = 240, height = 240)
+test_raster <- function(ref_png, fn, update = TRUE) {
     f <- file.path("../figs/array", ref_png)
     if (update) {
-        png(f, type = "cairo")
+        my_png(f)
         fn()
         dev.off()
     }
     ref <- magick::image_read(f)
 
     tmpfile <- tempfile(fileext = ".png")
-    png(tmpfile, type = "cairo")
+    my_png(tmpfile)
     fn()
     dev.off()
     image <- magick::image_read(tmpfile)
@@ -21,8 +22,10 @@ test_that("array patterns works as expected", {
     skip_on_cran()
     skip_if_not_installed("magick")
     skip_if_not(capabilities("cairo"))
-    test_raster("magick.png", function() grid.pattern("magick", type="octagons", fill="blue", scale=2))
-
+    test_raster("magick.png",
+                function() grid.pattern("magick", type="octagons", fill="blue", scale=2))
+    test_raster("gradient.png",
+                function() grid.pattern("gradient", fill="blue", fill2="green", orientation="radial"))
     create_pattern_simple <- function(width, height, params, legend) {
       choice <- params$pattern_type
       if (is.null(choice) || is.na(choice) || !is.character(choice)) {

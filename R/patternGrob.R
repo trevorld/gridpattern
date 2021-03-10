@@ -8,6 +8,7 @@
 #' \describe{
 #' \item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
 #' \item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
+#' \item{gradient}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}}
 #' \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
 #' \item{none}{Does nothing}
 #' \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
@@ -46,6 +47,8 @@
 #'    \dontrun{
 #'      grid.newpage()
 #'      grid.pattern("magick", type="octagons", fill="blue", scale=2)
+#'      grid.newpage()
+#'      grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
 #'    }
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
@@ -111,7 +114,8 @@ get_fn <- function(pattern) {
                            none = create_pattern_none,
                            stripe = create_pattern_stripes_via_sf))
     array_fns <- c(getOption("ggpattern_array_funcs"),
-                   list(magick = create_magick_pattern_as_array))
+                   list(gradient = create_gradient_as_array,
+                        magick = create_magick_pattern_as_array))
     array_fns <- lapply(array_fns, function(fn) {
                             function(...) create_pattern_array(..., array_fn=fn)
                    })
@@ -135,10 +139,10 @@ get_params <- function(..., prefix = "pattern_", gp = gpar()) {
     l$pattern_angle <- l$pattern_angle %||% 30
     l$pattern_aspect_ratio <- l$pattern_aspect_ratio %||% NA_real_
     l$pattern_density <- l$pattern_density %||% 0.2
-    # fill2
+    l$pattern_fill2 <- l$pattern_fill2 %||% "#4169E1"
     l$pattern_filter <- l$pattern_filter %||% "box"
     l$pattern_key_scale_factor <- l$pattern_key_scale_factor %||% 1
-    # orientation
+    l$pattern_orientation <- l$pattern_orientation %||% "vertical"
     l$pattern_shape <- l$pattern_shape %||% 1
     l$pattern_spacing <- l$pattern_spacing %||% 0.05
     l$pattern_type <- l$pattern_type %||%"fit"
