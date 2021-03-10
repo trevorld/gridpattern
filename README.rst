@@ -24,6 +24,7 @@ We currently provide support for the following ``ggpattern`` patterns:
 #. `circle <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html>`_
 #. `crosshatch <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html>`_
 #. `gradient <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html>`_
+#. `image <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html>`_
 #. `magick <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html>`_
 #. none
 #. `plasma <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html>`_

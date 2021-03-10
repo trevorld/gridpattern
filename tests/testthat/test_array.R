@@ -27,6 +27,10 @@ test_that("array patterns works as expected", {
     skip_if_not(capabilities("cairo"))
     test_raster("gradient.png",
                 function() grid.pattern("gradient", fill="blue", fill2="green", orientation="radial"))
+    test_raster("image.png", function() {
+                    logo_filename   <- system.file("img", "Rlogo.png" , package="png")
+                    grid.pattern("image", filename=logo_filename, type="tile")
+                })
     test_raster("magick.png",
                 function() grid.pattern("magick", type="octagons", fill="blue", scale=2))
 

@@ -9,6 +9,7 @@
 #' \item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
 #' \item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
 #' \item{gradient}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}}
+#' \item{image}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html}}
 #' \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
 #' \item{none}{Does nothing}
 #' \item{plasma}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}}
@@ -47,10 +48,15 @@
 #'    grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5)
 #'    \dontrun{
 #'      grid.newpage()
-#'      grid.pattern("magick", type="octagons", fill="blue", scale=2)
+#'      logo_filename   <- system.file("img", "Rlogo.png" , package="png")
+#'      grid.pattern("image", filename=logo_filename, type="tile")
 #'      grid.newpage()
-#'      grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
+#'      grid.pattern("magick", type="octagons", fill="blue", scale=2)
 #'    }
+#'    grid.newpage()
+#'    grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
+#'    grid.newpage()
+#'    grid.pattern("plasma", fill="green")
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
 #'          for more details on the patterns and their parameters.
@@ -72,7 +78,7 @@ grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1
 patternGrob <- function(pattern = "strip", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), ...,
                         id = 1L, default.units = "npc", prefix = "pattern_", legend = FALSE,
                         name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    params <- get_params(..., prefix = prefix, gp = gp)
+    params <- get_params(..., pattern = pattern, prefix = prefix, gp = gp)
     if (!inherits(x, "unit")) x <- unit(x, default.units)
     if (!inherits(y, "unit")) y <- unit(y, default.units)
 
@@ -119,6 +125,7 @@ get_fn <- function(pattern) {
                            stripe = create_pattern_stripes_via_sf))
     array_fns <- c(getOption("ggpattern_array_funcs"),
                    list(gradient = create_gradient_as_array,
+                        image = img_read_as_array_wrapper,
                         magick = create_magick_pattern_as_array,
                         plasma = create_magick_plasma_as_array))
     array_fns <- lapply(array_fns, function(fn) {
@@ -129,7 +136,7 @@ get_fn <- function(pattern) {
 }
 
 # returns list of pattern parameters using defaults if necessary
-get_params <- function(..., prefix = "pattern_", gp = gpar()) {
+get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) {
     l <- list(...)
     if (length(l)) names(l) <- paste0(prefix, names(l))
 
@@ -144,8 +151,10 @@ get_params <- function(..., prefix = "pattern_", gp = gpar()) {
     l$pattern_angle <- l$pattern_angle %||% 30
     l$pattern_aspect_ratio <- l$pattern_aspect_ratio %||% NA_real_
     l$pattern_density <- l$pattern_density %||% 0.2
+    l$pattern_filename <- l$pattern_filename %||% ""
     l$pattern_fill2 <- l$pattern_fill2 %||% "#4169E1"
-    l$pattern_filter <- l$pattern_filter %||% "box"
+    l$pattern_filter <- l$pattern_filter %||% switch(pattern, magick = "box", "lanczos")
+    l$pattern_gravity <- l$pattern_gravity %||% "center"
     l$pattern_key_scale_factor <- l$pattern_key_scale_factor %||% 1
     l$pattern_orientation <- l$pattern_orientation %||% "vertical"
     l$pattern_shape <- l$pattern_shape %||% 1

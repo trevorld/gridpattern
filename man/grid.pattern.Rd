@@ -76,6 +76,7 @@ Here are links to more information about the various patterns:
 \item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
 \item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
 \item{gradient}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}}
+\item{image}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html}}
 \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
 \item{none}{Does nothing}
 \item{plasma}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}}
@@ -101,10 +102,15 @@ Here are links to more information about the various patterns:
    grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5)
    \dontrun{
      grid.newpage()
-     grid.pattern("magick", type="octagons", fill="blue", scale=2)
+     logo_filename   <- system.file("img", "Rlogo.png" , package="png")
+     grid.pattern("image", filename=logo_filename, type="tile")
      grid.newpage()
-     grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
+     grid.pattern("magick", type="octagons", fill="blue", scale=2)
    }
+   grid.newpage()
+   grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
+   grid.newpage()
+   grid.pattern("plasma", fill="green")
  }
 }
 \seealso{
