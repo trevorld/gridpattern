@@ -17,7 +17,7 @@ gridpattern
    :alt: Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.
    :target: https://www.repostatus.org/#wip
 
-``gridpattern`` provides `grid.pattern() and patternGrob() <http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html>`_ to use with R's grid graphics system which fill in a specified boundary bath with a pattern.  These patterned grobs are extracted from the awesome `ggpattern <https://github.com/coolbutuseless/ggpattern>`_ package (which provides ggplot2 "geom" functions but `does not provide exported access to the underlying grobs <https://github.com/coolbutuseless/ggpattern/issues/11>`_ themselves).
+``gridpattern`` provides `grid.pattern() and patternGrob() <http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html>`_ functions to use with R's grid graphics system.  They fill in a specified boundary bath with a pattern.  These patterned grobs are extracted from `Mike FC <https://github.com/coolbutuseless>`_'s awesome `ggpattern <https://github.com/coolbutuseless/ggpattern>`_ package (which provides patterned ggplot2 "geom" functions but `does not provide exported access to the underlying grobs <https://github.com/coolbutuseless/ggpattern/issues/11>`_ themselves).
 
 We currently provide support for the following ``ggpattern`` patterns:
 
