@@ -11,6 +11,7 @@
 #' \item{gradient}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}}
 #' \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
 #' \item{none}{Does nothing}
+#' \item{plasma}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}}
 #' \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
 #' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
 #' \item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html}}
@@ -87,6 +88,9 @@ makeContext.pattern <- function(x) {
 
 #' @export
 makeContent.pattern <- function(x) {
+    # avoid weird errors with array patterns if there is an active device open
+    current_dev <- grDevices::dev.cur()
+    on.exit(grDevices::dev.set(current_dev))
 
     xp <- as.numeric(convertX(x$x, "npc"))
     yp <- as.numeric(convertY(x$y, "npc"))
@@ -115,7 +119,8 @@ get_fn <- function(pattern) {
                            stripe = create_pattern_stripes_via_sf))
     array_fns <- c(getOption("ggpattern_array_funcs"),
                    list(gradient = create_gradient_as_array,
-                        magick = create_magick_pattern_as_array))
+                        magick = create_magick_pattern_as_array,
+                        plasma = create_magick_plasma_as_array))
     array_fns <- lapply(array_fns, function(fn) {
                             function(...) create_pattern_array(..., array_fn=fn)
                    })

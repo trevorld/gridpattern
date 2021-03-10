@@ -1,31 +1,41 @@
-my_png <- function(...) grDevices::png(..., type = "cairo", width = 240, height = 240)
-test_raster <- function(ref_png, fn, update = TRUE) {
+test_raster <- function(ref_png, fn, update = FALSE) {
     f <- file.path("../figs/array", ref_png)
-    if (update) {
-        my_png(f)
-        fn()
-        dev.off()
-    }
+    if (update) my_png(f, fn)
     ref <- magick::image_read(f)
 
     tmpfile <- tempfile(fileext = ".png")
-    my_png(tmpfile)
-    fn()
-    dev.off()
+    my_png(tmpfile, fn)
     image <- magick::image_read(tmpfile)
+    unlink(tmpfile)
 
     diff <- magick::image_compare(image, ref, "AE")
     expect_true(attr(diff, "distortion") < 0.01)
+}
+
+my_png <- function(f, fn) {
+    current_dev <- grDevices::dev.cur()
+    grDevices::png(f, type = "cairo", width = 240, height = 240)
+    val <- fn()
+    grDevices::dev.off()
+    if (current_dev > 1) grDevices::dev.set(current_dev)
+    invisible(val)
 }
 
 test_that("array patterns works as expected", {
     skip_on_cran()
     skip_if_not_installed("magick")
     skip_if_not(capabilities("cairo"))
-    test_raster("magick.png",
-                function() grid.pattern("magick", type="octagons", fill="blue", scale=2))
     test_raster("gradient.png",
                 function() grid.pattern("gradient", fill="blue", fill2="green", orientation="radial"))
+    test_raster("magick.png",
+                function() grid.pattern("magick", type="octagons", fill="blue", scale=2))
+
+    # plasma images are random and doesn't seem to be a way to set a seed
+    tmpfile <- tempfile(fileext = ".png")
+    grob <- my_png(tmpfile, function() grid.pattern("plasma", fill="green"))
+    unlink(tmpfile)
+    expect_true(inherits(grob, "pattern"))
+
     create_pattern_simple <- function(width, height, params, legend) {
       choice <- params$pattern_type
       if (is.null(choice) || is.na(choice) || !is.character(choice)) {
