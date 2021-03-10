@@ -11,7 +11,8 @@ gridpattern v0.1
   4. [image](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html) (#9)
   5. [magick](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html) (#6)
   6. none
-  7. [plasma](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html) (#7)
-  8. [stripe](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html) (#3)
-  9. [Custom geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html) (#1)
-  10. [Custom array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html) (#2)
+  7. [placeholder](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html) (#10)
+  8. [plasma](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html) (#7)
+  9. [stripe](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html) (#3)
+  10. [Custom geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html) (#1)
+  11. [Custom array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html) (#2)

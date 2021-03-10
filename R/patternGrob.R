@@ -12,6 +12,7 @@
 #' \item{image}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html}}
 #' \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
 #' \item{none}{Does nothing}
+#' \item{placeholder}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html}}
 #' \item{plasma}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}}
 #' \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
 #' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
@@ -52,6 +53,8 @@
 #'      grid.pattern("image", filename=logo_filename, type="tile")
 #'      grid.newpage()
 #'      grid.pattern("magick", type="octagons", fill="blue", scale=2)
+#'      grid.newpage()
+#'      grid.pattern("placeholder", type="bear")
 #'    }
 #'    grid.newpage()
 #'    grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
@@ -127,6 +130,7 @@ get_fn <- function(pattern) {
                    list(gradient = create_gradient_as_array,
                         image = img_read_as_array_wrapper,
                         magick = create_magick_pattern_as_array,
+                        placeholder = fetch_placeholder_array,
                         plasma = create_magick_plasma_as_array))
     array_fns <- lapply(array_fns, function(fn) {
                             function(...) create_pattern_array(..., array_fn=fn)
@@ -142,7 +146,7 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
 
     # possibly get from gpar()
     l$pattern_alpha <- l$pattern_alpha %||% gp$alpha %||% 1
-    l$pattern_colour <- l$pattern_colour %||% gp$col %||% "grey20"
+    l$pattern_colour <- l$pattern_colour %||% l$pattern_color %||% gp$col %||% "grey20"
     l$pattern_fill <- l$pattern_fill %||% gp$fill %||% "grey80"
     l$pattern_linetype <- l$pattern_linetype %||% gp$lty %||% 1
     l$pattern_size <- l$pattern_size %||% gp$lwd %||% 1
@@ -159,7 +163,7 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_orientation <- l$pattern_orientation %||% "vertical"
     l$pattern_shape <- l$pattern_shape %||% 1
     l$pattern_spacing <- l$pattern_spacing %||% 0.05
-    l$pattern_type <- l$pattern_type %||%"fit"
+    l$pattern_type <- l$pattern_type %||% switch(pattern, placeholder = "kitten", "fit")
     l$pattern_xoffset <- l$pattern_xoffset %||% 0
     l$pattern_yoffset <- l$pattern_yoffset %||% 0
 

@@ -79,6 +79,7 @@ Here are links to more information about the various patterns:
 \item{image}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html}}
 \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
 \item{none}{Does nothing}
+\item{placeholder}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html}}
 \item{plasma}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}}
 \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
 \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
@@ -106,6 +107,8 @@ Here are links to more information about the various patterns:
      grid.pattern("image", filename=logo_filename, type="tile")
      grid.newpage()
      grid.pattern("magick", type="octagons", fill="blue", scale=2)
+     grid.newpage()
+     grid.pattern("placeholder", type="bear")
    }
    grid.newpage()
    grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")

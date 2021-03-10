@@ -17,7 +17,7 @@ gridpattern
    :alt: Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.
    :target: https://www.repostatus.org/#wip
 
-``gridpattern`` provides `grid.pattern() / `patternGrob() <http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html>`_ functions for use with R's grid graphics system that fill in a boundary bath in a specified pattern.  These patterned grobs are extracted from the awesome `ggpattern <https://github.com/coolbutuseless/ggpattern>`_ package (which provides ggplot2 "geom" functions but `does not provide exported access to the underlying grobs <https://github.com/coolbutuseless/ggpattern/issues/11>`_ themselves).
+``gridpattern`` provides `grid.pattern() and patternGrob() <http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html>`_ to use with R's grid graphics system which fill in a specified boundary bath with a pattern.  These patterned grobs are extracted from the awesome `ggpattern <https://github.com/coolbutuseless/ggpattern>`_ package (which provides ggplot2 "geom" functions but `does not provide exported access to the underlying grobs <https://github.com/coolbutuseless/ggpattern/issues/11>`_ themselves).
 
 We currently provide support for the following ``ggpattern`` patterns:
 
@@ -27,6 +27,7 @@ We currently provide support for the following ``ggpattern`` patterns:
 #. `image <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html>`_
 #. `magick <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html>`_
 #. none
+#. `placeholder <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html>`_
 #. `plasma <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html>`_
 #. `stripe <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html>`_
 #. `Custom geometry-based patterns <https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html>`_
