@@ -8,12 +8,6 @@ alpha <- function(colour, alpha = NA_real_) {
     apply(m, 2, function(x) grDevices::rgb(x[1], x[2], x[3], x[4]))
 }
 
-augment_list <- function(l, name, default) {
-    name <- paste0("pattern_", name)
-    if (!hasName(l, name)) l[[name]] <- default
-    l
-}
-
 # Added to ggplot2 by Thomas Lin Pedersen
 # Fast data.frame constructor and indexing
 # No checking, recycling etc. unless asked for
@@ -41,6 +35,5 @@ new_data_frame <- function(x = list(), n = NULL) {
 data_frame <- function(...) {
   new_data_frame(list(...))
 }
-
 # ggplot2 constant
 .pt <- 2.845276
