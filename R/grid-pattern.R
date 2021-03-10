@@ -67,13 +67,11 @@
 grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), ...,
                          id = 1L, default.units = "npc", prefix = "pattern_", legend = FALSE,
                          name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    grob <- patternGrob(pattern, x, y, ..., prefix = prefix, legend = legend, name = name, gp = gp, vp = vp)
-    if (draw) {
-        grid.draw(grob)
-        invisible(grob)
-    } else {
-        grob
-    }
+    grob <- patternGrob(pattern, x, y, ...,
+                        id = id, default.units = default.units, prefix = prefix, legend = legend,
+                        name = name, gp = gp, vp = vp)
+    if (draw) grid.draw(grob)
+    invisible(grob)
 }
 
 #' @rdname grid.pattern
