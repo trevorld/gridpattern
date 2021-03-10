@@ -34,7 +34,7 @@ test_that("array patterns works as expected", {
     test_raster("magick.png",
                 function() grid.pattern("magick", type="octagons", fill="blue", scale=2))
     test_raster("placeholder.png",
-                function() grid.pattern("magick", type="bear"))
+                function() grid.pattern("placeholder", type="bear"))
 
     # plasma images are random and doesn't seem to be a way to set a seed
     tmpfile <- tempfile(fileext = ".png")
