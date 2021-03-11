@@ -1,6 +1,29 @@
-#' @import sf
-#' @importFrom utils tail
-NULL
+#' Stripe patterned grobs
+#'
+#' \code{grid.pattern_stripe} draws a strip pattern onto the graphic device.
+#'
+#' @inheritParams grid.pattern_circle
+#' @examples
+#'   if (require("grid")) {
+#'     grid.newpage()
+#'     grid.pattern_stripe(colour = "green", fill = "blue", density = 0.5)
+#'     grid.newpage()
+#'     grid.pattern_stripe(density = 0.3, gp = gpar(col = "blue", fill = "yellow"))
+#'   }
+#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html>
+#' @export
+grid.pattern_stripe <- function(x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+                                colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
+                                density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
+                                alpha = gp$alpha %||% 1, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
+                                default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
+    if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
+    grid.pattern("stripe", x, y, id,
+                 colour = colour, fill = fill, angle = angle,
+                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 alpha = alpha, linetype = linetype, size = size,
+                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+}
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Create a sf MULTIPOLYGON object where each polygon is an individual stripe.

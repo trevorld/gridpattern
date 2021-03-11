@@ -88,7 +88,8 @@ convert_polygon_df_to_polygon_grob <- function(polygon_df, default.units = 'npc'
 ##
 ## @return sf polygon object
 ##
-## @import sf
+#' @import sf
+#' @importFrom utils tail
 ## @export
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 convert_polygon_df_to_polygon_sf <- function(polygon_df, buffer_dist = 0) {

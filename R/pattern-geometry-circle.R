@@ -1,3 +1,41 @@
+#' Circle patterned grobs
+#'
+#' \code{grid.pattern_circle} draws a circle pattern onto the graphic device.
+#'
+#' @inheritParams grid.pattern
+#' @param ... Currently ignored
+#' @param colour Stroke colour
+#' @param fill Fill colour
+#' @param angle Rotation angle in degrees
+#' @param density Approx. fraction of area the pattern fills (between 0 and 1)
+#' @param spacing Spacing between repetitions of pattern (between 0 and 1)
+#' @param xoffset Shift pattern along x axis (between 0 and 1)
+#' @param yoffset Shift pattern along y axis (between 0 and 1)
+#' @param alpha Alpha (between 0 and 1)
+#' @param linetype Stroke linetype
+#' @param size Stroke linewidth
+#' @examples
+#'   if (require("grid")) {
+#'     grid.newpage()
+#'     grid.pattern_circle(colour = "green", fill = "blue", density = 0.5)
+#'     grid.newpage()
+#'     grid.pattern_circle(density = 0.3, gp = gpar(col = "blue", fill = "yellow"))
+#'   }
+#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html>
+#' @export
+grid.pattern_circle <- function(x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+                                colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
+                                density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
+                                alpha = gp$alpha %||% 1, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
+                                default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
+    if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
+    grid.pattern("circle", x, y, id,
+                 colour = colour, fill = fill, angle = angle,
+                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 alpha = alpha, linetype = linetype, size = size,
+                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+}
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Create a cicleGrob object for a set of points
 ##
@@ -26,7 +64,6 @@
 ##
 ## @import grid
 ## @import sf
-## @import grid
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 create_circles_grob <- function(boundary_df, params, angle=0, spacing=0.1, density=0.3,
                                 xoffset=0, yoffset=0,

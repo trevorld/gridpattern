@@ -9,11 +9,11 @@ grid.pattern(
   pattern = "stripe",
   x = c(0, 0.5, 1, 0.5),
   y = c(0.5, 1, 0.5, 0),
-  ...,
   id = 1L,
-  default.units = "npc",
-  prefix = "pattern_",
+  ...,
   legend = FALSE,
+  prefix = "pattern_",
+  default.units = "npc",
   name = NULL,
   gp = gpar(),
   draw = TRUE,
@@ -24,11 +24,11 @@ patternGrob(
   pattern = "strip",
   x = c(0, 0.5, 1, 0.5),
   y = c(0.5, 1, 0.5, 0),
-  ...,
   id = 1L,
-  default.units = "npc",
-  prefix = "pattern_",
+  ...,
   legend = FALSE,
+  prefix = "pattern_",
+  default.units = "npc",
   name = NULL,
   gp = gpar(),
   draw = TRUE,
@@ -42,17 +42,17 @@ patternGrob(
 
 \item{y}{A numeric vector or unit object specifying y-locations of the pattern boundary}
 
-\item{...}{Pattern parameters}
-
 \item{id}{A numeric vector used to separate locations in x, y into multiple boundaries.
 All locations within the same \code{id} belong to the same boundary.}
 
-\item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
-are only given as numeric vectors.}
+\item{...}{Pattern parameters}
+
+\item{legend}{Whether this is intended to be drawn in a legend or not}
 
 \item{prefix}{Prefix to prepend to the name of each of the pattern parameters in \code{...}}
 
-\item{legend}{Whether this is intended to be drawn in a legend or not}
+\item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
+are only given as numeric vectors.}
 
 \item{name}{ A character identifier. }
 
@@ -70,18 +70,18 @@ are only given as numeric vectors.}
 \code{patternGrob} returns the grid grob objects.
 }
 \details{
-Here are links to more information about the various patterns:
+Here are links to more information about the various patterns supported:
 
 \describe{
-\item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
-\item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
+\item{circle}{See \code{\link[=grid.pattern_circle]{grid.pattern_circle()}}}
+\item{crosshatch}{See \code{\link[=grid.pattern_crosshatch]{grid.pattern_crosshatch()}}}
 \item{gradient}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}}
 \item{image}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html}}
 \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
-\item{none}{Does nothing}
+\item{none}{Does nothing.  See \code{\link[grid:grid.null]{grid::grid.null()}}}
 \item{placeholder}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html}}
 \item{plasma}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}}
-\item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
+\item{stripe}{See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}}}
 \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
 \item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html}}
 }
@@ -118,5 +118,5 @@ Here are links to more information about the various patterns:
 }
 \seealso{
 \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
-         for more details on the patterns and their parameters.
+for more details on the patterns and their parameters.
 }

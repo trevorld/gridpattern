@@ -3,18 +3,18 @@
 #' \code{grid.pattern} draws patterned shapes onto the graphic device.
 #' \code{patternGrob} returns the grid grob objects.
 #'
-#' Here are links to more information about the various patterns:
+#' Here are links to more information about the various patterns supported:
 #'
 #' \describe{
-#' \item{circle}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}}
-#' \item{crosshatch}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}}
+#' \item{circle}{See [grid.pattern_circle()]}
+#' \item{crosshatch}{See [grid.pattern_crosshatch()]}
 #' \item{gradient}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}}
 #' \item{image}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html}}
 #' \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
-#' \item{none}{Does nothing}
+#' \item{none}{Does nothing.  See [grid::grid.null()]}
 #' \item{placeholder}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html}}
 #' \item{plasma}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}}
-#' \item{stripe}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}}
+#' \item{stripe}{See [grid.pattern_stripe()]}
 #' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
 #' \item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html}}
 #' }
@@ -25,13 +25,13 @@
 #' @param pattern Name of pattern
 #' @param x A numeric vector or unit object specifying x-locations of the pattern boundary
 #' @param y A numeric vector or unit object specifying y-locations of the pattern boundary
-#' @param ... Pattern parameters
 #' @param id A numeric vector used to separate locations in x, y into multiple boundaries.
 #'           All locations within the same \code{id} belong to the same boundary.
+#' @param ... Pattern parameters
+#' @param legend Whether this is intended to be drawn in a legend or not
+#' @param prefix Prefix to prepend to the name of each of the pattern parameters in \code{...}
 #' @param default.units A string indicating the default units to use if \code{x} or \code{y}
 #'                      are only given as numeric vectors.
-#' @param prefix Prefix to prepend to the name of each of the pattern parameters in \code{...}
-#' @param legend Whether this is intended to be drawn in a legend or not
 #' @examples
 #'  if (require("grid")) {
 #'    grid.newpage()
@@ -64,21 +64,21 @@
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
 #'          for more details on the patterns and their parameters.
 #' @export
-grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), ...,
-                         id = 1L, default.units = "npc", prefix = "pattern_", legend = FALSE,
-                         name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    grob <- patternGrob(pattern, x, y, ...,
-                        id = id, default.units = default.units, prefix = prefix, legend = legend,
-                        name = name, gp = gp, vp = vp)
+grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+                         legend = FALSE, prefix = "pattern_",
+                         default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
+    grob <- patternGrob(pattern, x, y, id, ...,
+                        legend = legend, prefix = prefix,
+                        default.units = default.units, name = name, gp = gp, vp = vp)
     if (draw) grid.draw(grob)
     invisible(grob)
 }
 
 #' @rdname grid.pattern
 #' @export
-patternGrob <- function(pattern = "strip", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), ...,
-                        id = 1L, default.units = "npc", prefix = "pattern_", legend = FALSE,
-                        name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
+patternGrob <- function(pattern = "strip", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+                        legend = FALSE, prefix = "pattern_",
+                        default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     params <- get_params(..., pattern = pattern, prefix = prefix, gp = gp)
     if (!inherits(x, "unit")) x <- unit(x, default.units)
     if (!inherits(y, "unit")) y <- unit(y, default.units)

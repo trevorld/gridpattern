@@ -1,3 +1,31 @@
+#' Crosshatch patterned grobs
+#'
+#' \code{grid.pattern_crosshatch} draws a crosshatch pattern onto the graphic device.
+#'
+#' @inheritParams grid.pattern_circle
+#' @examples
+#'   if (require("grid")) {
+#'     grid.newpage()
+#'     grid.pattern_crosshatch(colour = "green", fill = "blue", density = 0.5)
+#'     grid.newpage()
+#'     grid.pattern_crosshatch(density = 0.3, gp = gpar(col = "blue", fill = "yellow"))
+#'   }
+#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html>
+#' @export
+#' @seealso
+grid.pattern_crosshatch <- function(x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+                                colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
+                                density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
+                                alpha = gp$alpha %||% 1, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
+                                default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
+    if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
+    grid.pattern("crosshatch", x, y, id,
+                 colour = colour, fill = fill, angle = angle,
+                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 alpha = alpha, linetype = linetype, size = size,
+                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+}
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## @rdname create_pattern_none
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

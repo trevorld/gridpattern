@@ -8,13 +8,13 @@ test_that("geometry patterns works as expected", {
     expect_doppelganger("none", function() grid.pattern("none"))
 
     expect_doppelganger("crosshatch", function()
-        grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135))
+        grid.pattern_crosshatch(color="blue", fill="yellow", density = 0.5, angle = 135))
 
     expect_doppelganger("circle", function()
-        grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5))
+        grid.pattern_circle(color="blue", fill="yellow", size = 2, density = 0.5))
 
     expect_doppelganger("stripe", function()
-        grid.pattern("stripe", colour="blue", fill="yellow", density = 0.5, angle = 135))
+        grid.pattern_stripe(color="blue", fill="yellow", density = 0.5, angle = 135))
 
     expect_doppelganger("stripe_gpar", function() {
         x <- c(0.1, 0.6, 0.8, 0.3)
