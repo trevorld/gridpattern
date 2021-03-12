@@ -1,19 +1,19 @@
 #' Patterned grobs
 #'
-#' \code{grid.pattern} draws patterned shapes onto the graphic device.
-#' \code{patternGrob} returns the grid grob objects.
+#' `grid.pattern()` draws patterned shapes onto the graphic device.
+#' `patternGrob()` returns the grid grob objects.
 #'
 #' Here are links to more information about the various patterns supported:
 #'
 #' \describe{
 #' \item{circle}{See [grid.pattern_circle()]}
 #' \item{crosshatch}{See [grid.pattern_crosshatch()]}
-#' \item{gradient}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}}
-#' \item{image}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html}}
-#' \item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
+#' \item{gradient}{See [grid.pattern_gradient()]}
+#' \item{image}{See [grid.pattern_image()]}
+#' \item{magick}{See [grid.pattern_magick()]}
 #' \item{none}{Does nothing.  See [grid::grid.null()]}
-#' \item{placeholder}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html}}
-#' \item{plasma}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}}
+#' \item{placeholder}{See [grid.pattern_placeholder()]}
+#' \item{plasma}{See [grid.pattern_plasma()]}
 #' \item{stripe}{See [grid.pattern_stripe()]}
 #' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
 #' \item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html}}
@@ -26,12 +26,15 @@
 #' @param x A numeric vector or unit object specifying x-locations of the pattern boundary
 #' @param y A numeric vector or unit object specifying y-locations of the pattern boundary
 #' @param id A numeric vector used to separate locations in x, y into multiple boundaries.
-#'           All locations within the same \code{id} belong to the same boundary.
+#'           All locations within the same `id` belong to the same boundary.
 #' @param ... Pattern parameters
 #' @param legend Whether this is intended to be drawn in a legend or not
-#' @param prefix Prefix to prepend to the name of each of the pattern parameters in \code{...}
-#' @param default.units A string indicating the default units to use if \code{x} or \code{y}
+#' @param prefix Prefix to prepend to the name of each of the pattern parameters in `...`.
+#'               For compatibility with `ggpattern` most underlying functions assume parameters beginning with `pattern_`.
+#' @param default.units A string indicating the default units to use if `x` or `y`
 #'                      are only given as numeric vectors.
+#' @return A grid grob object (invisibly in the case of `grid.pattern()`).
+#'         If `draw` is `TRUE` then `grid.pattern()` also draws to the graphic device as a side effect.
 #' @examples
 #'  if (require("grid")) {
 #'    grid.newpage()
@@ -161,7 +164,8 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_orientation <- l$pattern_orientation %||% "vertical"
     l$pattern_shape <- l$pattern_shape %||% 1
     l$pattern_spacing <- l$pattern_spacing %||% 0.05
-    l$pattern_type <- l$pattern_type %||% switch(pattern, placeholder = "kitten", "fit")
+    l$pattern_type <- l$pattern_type %||%
+        switch(pattern, placeholder = "kitten", magick = "hexagons", "fit")
     l$pattern_xoffset <- l$pattern_xoffset %||% 0
     l$pattern_yoffset <- l$pattern_yoffset %||% 0
 

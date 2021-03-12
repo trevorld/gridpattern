@@ -1,7 +1,6 @@
 ^.appveyor.yml$
 ^.travis.yml$
 ^README.html$
-^README.rst$
 ^Rakefile$
 ^_pkgdown.yml$
 ^codecov.yml$

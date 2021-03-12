@@ -1,49 +1,4 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Names of patterns available in image magick, plus subsets for shaded intensity and stripes
-##
-## See \url{http://www.imagemagick.org/script/formats.php} for more information.
-##
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-magick_pattern_names <- c(
-  "bricks", "checkerboard", "circles", "crosshatch", "crosshatch30",
-  "crosshatch45", "fishscales", "gray0", "gray5", "gray10", "gray15",
-  "gray20", "gray25", "gray30", "gray35", "gray40", "gray45", "gray50",
-  "gray55", "gray60", "gray65", "gray70", "gray75", "gray80", "gray85",
-  "gray90", "gray95", "gray100", "hexagons", "horizontal", "horizontal2",
-  "horizontal3", "horizontalsaw", "hs_bdiagonal", "hs_cross", "hs_diagcross",
-  "hs_fdiagonal", "hs_horizontal", "hs_vertical", "left30", "left45",
-  "leftshingle", "octagons", "right30", "right45", "rightshingle",
-  "smallfishscales", "vertical", "vertical2", "vertical3", "verticalbricks",
-  "verticalleftshingle", "verticalrightshingle", "verticalsaw"
-)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## @rdname magick_pattern_names
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-magick_pattern_intensity_names <- c(
-  "gray0", "gray5", "gray10", "gray15",
-  "gray20", "gray25", "gray30", "gray35", "gray40", "gray45", "gray50",
-  "gray55", "gray60", "gray65", "gray70", "gray75", "gray80", "gray85",
-  "gray90", "gray95", "gray100"
-)
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## @rdname magick_pattern_names
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-magick_pattern_stripe_names <- c(
-  "crosshatch", "crosshatch30", "crosshatch45",
-  "horizontal", "horizontal2", "horizontal3",
-  "hs_bdiagonal", "hs_cross", "hs_diagcross",
-  "hs_fdiagonal", "hs_horizontal", "hs_vertical", "left30", "left45",
-  "right30", "right45",
-  "vertical", "vertical2", "vertical3"
-)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Create one of imagemagick's internal patterns
 ##
 ## These are all 2-colour pixel patterns - the 'white' part will be made transparent.

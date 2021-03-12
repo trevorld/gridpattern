@@ -49,7 +49,8 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{legend}{Whether this is intended to be drawn in a legend or not}
 
-\item{prefix}{Prefix to prepend to the name of each of the pattern parameters in \code{...}}
+\item{prefix}{Prefix to prepend to the name of each of the pattern parameters in \code{...}.
+For compatibility with \code{ggpattern} most underlying functions assume parameters beginning with \code{pattern_}.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}
@@ -65,9 +66,13 @@ are only given as numeric vectors.}
 
 \item{vp}{A Grid viewport object (or NULL).}
 }
+\value{
+A grid grob object (invisibly in the case of \code{grid.pattern()}).
+If \code{draw} is \code{TRUE} then \code{grid.pattern()} also draws to the graphic device as a side effect.
+}
 \description{
-\code{grid.pattern} draws patterned shapes onto the graphic device.
-\code{patternGrob} returns the grid grob objects.
+\code{grid.pattern()} draws patterned shapes onto the graphic device.
+\code{patternGrob()} returns the grid grob objects.
 }
 \details{
 Here are links to more information about the various patterns supported:
@@ -75,12 +80,12 @@ Here are links to more information about the various patterns supported:
 \describe{
 \item{circle}{See \code{\link[=grid.pattern_circle]{grid.pattern_circle()}}}
 \item{crosshatch}{See \code{\link[=grid.pattern_crosshatch]{grid.pattern_crosshatch()}}}
-\item{gradient}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}}
-\item{image}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html}}
-\item{magick}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}}
+\item{gradient}{See \code{\link[=grid.pattern_gradient]{grid.pattern_gradient()}}}
+\item{image}{See \code{\link[=grid.pattern_image]{grid.pattern_image()}}}
+\item{magick}{See \code{\link[=grid.pattern_magick]{grid.pattern_magick()}}}
 \item{none}{Does nothing.  See \code{\link[grid:grid.null]{grid::grid.null()}}}
-\item{placeholder}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html}}
-\item{plasma}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}}
+\item{placeholder}{See \code{\link[=grid.pattern_placeholder]{grid.pattern_placeholder()}}}
+\item{plasma}{See \code{\link[=grid.pattern_plasma]{grid.pattern_plasma()}}}
 \item{stripe}{See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}}}
 \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
 \item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html}}

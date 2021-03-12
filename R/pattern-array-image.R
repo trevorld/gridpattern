@@ -1,3 +1,47 @@
+#' Image patterned grobs
+#'
+#' `grid.pattern_image()` draws an image pattern onto the graphic device.
+#'
+#' Here is a description of the `type` arguments:
+#' \describe{
+#'   \item{expand}{Scale the image beyond the bounding box and crop it such that
+#'                 the image fully covers the width and the height of the region.}
+#'   \item{fit}{Scale the image such that either the width or the height of the image fits in the bounding box.
+#'              Affected by `gravity`}
+#'   \item{none}{Position a single image in the region without attempting to scale to the bounding box size.
+#'               Affected by `scale` and `gravity`.}
+#'   \item{squish}{Distort the image to cover the bounding box of the region.}
+#'   \item{tile}{Repeat the image to cover the bounding box.  Affected by `tile`.}
+#'  }
+#'
+#' @inheritParams grid.pattern_plasma
+#' @param filename Image of filename or URL
+#' @param type Image scaling type
+#' @param gravity Position of image within area.  `magick::gravity_types()` returns a vector of supported values.
+#' @param filter Filter to use when scaling. `magick::filter_types()` returns a vector of supported values.
+#' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
+#' @examples
+#'   if (require("grid")) {
+#'    \dontrun{
+#'      grid.newpage()
+#'      logo_filename   <- system.file("img", "Rlogo.png" , package="png")
+#'      grid.pattern_image(filename=logo_filename, type="tile")
+#'     }
+#'   }
+#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html>
+#' @export
+grid.pattern_image <- function(x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+                                filename = "", type = "fit", scale = 1,
+                                gravity = "center", filter = "lanczos",
+                                alpha = gp$alpha %||% 1, aspect_ratio = 1, key_scale_factor = 1,
+                                default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
+    grid.pattern("image", x, y, id,
+                 filename = filename, type = type, scale = scale,
+                 gravity = gravity, filter = filter,
+                 alpha = alpha, aspect_ratio = 1, key_scale_factor = 1,
+                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+}
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Read a user specified filename/URL as an image
 ##

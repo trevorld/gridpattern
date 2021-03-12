@@ -119,14 +119,7 @@ fill_area_with_img_none <- function(img, width, height, gravity = 'Center',
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Scale if requested
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (scale == -1) {
-    info   <- magick::image_info(img)
-    scale  <-  width/info$width
-  } else if (scale == -2) {
-    info   <- magick::image_info(img)
-    scale  <-  height/info$height
-  }
-
+  scale <- update_scale(scale, img, width, height)
   if (scale != 1) {
     geometry <- magick::geometry_size_percent(width = scale * 100)
     img      <- magick::image_resize(img, geometry, filter = filter)
@@ -137,6 +130,17 @@ fill_area_with_img_none <- function(img, width, height, gravity = 'Center',
   img      <- magick::image_extent(img, geometry, gravity = gravity)
 
   img
+}
+
+# if `scale == -1` scale to img width, if `scale == -2` sacle to img height
+update_scale <- function(scale, img, width, height) {
+  if (scale == -1) {
+    info   <- magick::image_info(img)
+    width/info$width
+  } else if (scale == -2) {
+    info   <- magick::image_info(img)
+    height/info$height
+  }
 }
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,14 +165,7 @@ fill_area_with_img_tile <- function(img, width, height, filter = filter, scale =
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Scale if requested
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  if (scale == -1) {
-    info <- magick::image_info(img)
-    scale  <-  width/info$width
-  } else if (scale == -2) {
-    info <- magick::image_info(img)
-    scale  <-  height/info$height
-  }
-
+  scale <- update_scale(scale, img, width, height)
   if (scale != 1) {
     geometry <- magick::geometry_size_percent(width = scale * 100)
     img      <- magick::image_resize(img, geometry, filter = filter)

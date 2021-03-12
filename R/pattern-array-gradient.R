@@ -1,3 +1,34 @@
+#' Gradient patterned grobs
+#'
+#' `grid.pattern_gradient()` draws a gradient pattern onto the graphic device.
+#'
+#' @inheritParams grid.pattern_circle
+#' @param fill2 Second colour
+#' @param orientation vertical, horizontal, or radial
+#' @param aspect_ratio Override aspect ratio
+#' @param key_scale_factor Additional scale factor for legend
+#' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
+#' @examples
+#'   if (require("grid")) {
+#'     grid.newpage()
+#'     grid.pattern_gradient(fill = "green")
+#'     grid.newpage()
+#'     grid.pattern_gradient(fill = "green", orientation = "radial")
+#'   }
+#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html>
+#' @export
+grid.pattern_gradient <- function(x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+                                fill = gp$fill %||% "grey80", fill2 = "#4169E1",
+                                orientation = "vertical", alpha = gp$alpha %||% 1,
+                                aspect_ratio = 1, key_scale_factor = 1,
+                                default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
+    grid.pattern("gradient", x, y, id,
+                 fill = fill, fill2 = fill2,
+                 orientation = orientation, alpha = alpha,
+                 aspect_ratio = 1, key_scale_factor = 1,
+                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+}
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## create a gradient image as an array
 ##

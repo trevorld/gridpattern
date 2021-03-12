@@ -70,8 +70,11 @@ are only given as numeric vectors.}
 
 \item{vp}{A Grid viewport object (or NULL).}
 }
+\value{
+A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to the graphic device as a side effect.
+}
 \description{
-\code{grid.pattern_stripe} draws a strip pattern onto the graphic device.
+\code{grid.pattern_stripe()} draws a strip pattern onto the graphic device.
 }
 \examples{
   if (require("grid")) {

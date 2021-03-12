@@ -1,3 +1,43 @@
+#' Placeholder image patterned grobs
+#'
+#' `grid.pattern_placeholder()` draws a placeholder image pattern onto the graphic device.
+#' `placeholder_names` are character vectors of supported placeholder types.
+#'
+#' @inheritParams grid.pattern_plasma
+#' @param type Image source.  `placeholder_names` is a vector of supported values.
+#'             If you would like only greyscale images append `bw` to the name.
+#' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
+#' @examples
+#'   if (require("grid")) {
+#'    \dontrun{
+#'      grid.newpage()
+#'      grid.pattern_placeholder(type="bear")
+#'     }
+#'     print(placeholder_names)
+#'   }
+#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html>
+#' @export
+grid.pattern_placeholder <- function(x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+                                type = "kitten", alpha = gp$alpha %||% 1, aspect_ratio = 1, key_scale_factor = 1,
+                                default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
+    grid.pattern("placeholder", x, y, id,
+                 type = type, alpha = alpha, aspect_ratio = 1, key_scale_factor = 1,
+                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## All placeholder names
+#' @rdname grid.pattern_placeholder
+#' @export
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+placeholder_names <- c(
+  "kitten", "kittenbw", "picsum", "picsumbw", "murray", "murraybw",
+  "cage", "cagebw", "bear", "bearbw", "seagal", "seagalbw", "placeholderbw",
+  "placeholder", "dummybw", "dummy", "flickr", "flickrbw", "beard",
+  "beardbw", "lorempixel", "lorempixelbw", "placeimg", "placeimgbw",
+  'keanu', 'keanubw'
+)
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Fetch a placeholder image of the correct dimensions
 ##
@@ -68,18 +108,6 @@ fetch_placeholder_img <- function(width = 100, height = 100, type = 'kitten') {
 
   img_read_memoised(filename = img_url)
 }
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## All placeholder names
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-placeholder_names <- c(
-  "kitten", "kittenbw", "picsum", "picsumbw", "murray", "murraybw",
-  "cage", "cagebw", "bear", "bearbw", "seagal", "seagalbw", "placeholderbw",
-  "placeholder", "dummybw", "dummy", "flickr", "flickrbw", "beard",
-  "beardbw", "lorempixel", "lorempixelbw", "placeimg", "placeimgbw",
-  'keanu', 'keanubw'
-)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Fetch a placeholder image of the correct size and return as an array

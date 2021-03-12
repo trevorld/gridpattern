@@ -1,6 +1,6 @@
 #' Circle patterned grobs
 #'
-#' \code{grid.pattern_circle} draws a circle pattern onto the graphic device.
+#' `grid.pattern_circle()` draws a circle pattern onto the graphic device.
 #'
 #' @inheritParams grid.pattern
 #' @param ... Currently ignored
@@ -14,6 +14,7 @@
 #' @param alpha Alpha (between 0 and 1)
 #' @param linetype Stroke linetype
 #' @param size Stroke linewidth
+#' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
 #'   if (require("grid")) {
 #'     grid.newpage()

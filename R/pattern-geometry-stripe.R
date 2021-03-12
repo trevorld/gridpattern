@@ -1,8 +1,9 @@
 #' Stripe patterned grobs
 #'
-#' \code{grid.pattern_stripe} draws a strip pattern onto the graphic device.
+#' `grid.pattern_stripe()` draws a strip pattern onto the graphic device.
 #'
 #' @inheritParams grid.pattern_circle
+#' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
 #'   if (require("grid")) {
 #'     grid.newpage()

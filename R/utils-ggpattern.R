@@ -14,13 +14,12 @@
 ##        in \code{options}.
 ## @param type NULL, 'num' or 'char'
 ## @param prefix prefix of warning message.
-## @param verbose default: FALSE
 ##
 ## @return original \code{x} value if there are no issues, otherwise the \code{default}
 ##         if given, otherwise the first element in \code{options}.
 #' @importFrom rlang %||% warn abort
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-check_default <- function(x, options = NULL, default = NULL, type = NULL, prefix = "", verbose = FALSE) {
+check_default <- function(x, options = NULL, default = NULL, type = NULL, prefix = "") {
 
   stopifnot(is.null(options) || is.atomic(options))
 
@@ -29,21 +28,9 @@ check_default <- function(x, options = NULL, default = NULL, type = NULL, prefix
     abort("check_default(): Must specify 'default' or 'options'")
   }
 
-
   if (length(x) != 1) {
-    if (verbose) {
-      warn("check_default(): ", prefix,
-           " Value should be length 1, but got ", deparse(x),
-           ". Using default: ", default, call.=FALSE)
-    }
     res <- default
   } else if (!is.null(options) && !x %in% options) {
-    if (verbose) {
-      warn("check_default(): ", prefix,
-           " Value should be one of ", deparse(options),
-           " but got ", deparse(x),
-           ". Using default: ", default, call.=FALSE)
-    }
     res <- default
   } else {
     res <- x

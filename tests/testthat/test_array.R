@@ -26,19 +26,33 @@ test_that("array patterns works as expected", {
     skip_if_not_installed("magick")
     skip_if_not(capabilities("cairo"))
     test_raster("gradient.png",
-                function() grid.pattern("gradient", fill="blue", fill2="green", orientation="radial"))
+                function() grid.pattern_gradient(fill="blue", fill2="green", orientation="radial"))
+    test_raster("gradient_horizontal.png",
+                function() grid.pattern_gradient(fill="blue", fill2="green", orientation="horizontal"))
+    logo_filename   <- system.file("img", "Rlogo.png" , package="png")
     test_raster("image.png", function() {
-                    logo_filename   <- system.file("img", "Rlogo.png" , package="png")
-                    grid.pattern("image", filename=logo_filename, type="tile")
+                    grid.pattern_image(filename=logo_filename, type="fit")
+                })
+    test_raster("image_expand.png", function() {
+                    grid.pattern_image(filename=logo_filename, type="expand")
+                })
+    test_raster("image_tile.png", function() {
+                    grid.pattern_image(filename=logo_filename, type="tile", scale=-2)
+                })
+    test_raster("image_none.png", function() {
+                    grid.pattern_image(filename=logo_filename, type="none", scale=-1)
+                })
+    test_raster("image_squish.png", function() {
+                    grid.pattern_image(filename=logo_filename, type="squish")
                 })
     test_raster("magick.png",
                 function() grid.pattern("magick", type="octagons", fill="blue", scale=2))
     test_raster("placeholder.png",
-                function() grid.pattern("placeholder", type="bear"))
+                function() grid.pattern_placeholder(type="bear"))
 
     # plasma images are random and doesn't seem to be a way to set a seed
     tmpfile <- tempfile(fileext = ".png")
-    grob <- my_png(tmpfile, function() grid.pattern("plasma", fill="green"))
+    grob <- my_png(tmpfile, function() grid.pattern_plasma(fill="green"))
     unlink(tmpfile)
     expect_true(inherits(grob, "pattern"))
 
