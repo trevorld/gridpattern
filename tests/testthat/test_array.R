@@ -74,4 +74,8 @@ test_that("array patterns works as expected", {
     }
     options(ggpattern_array_funcs = list(simple = create_pattern_simple))
     test_raster("simple.png", function() grid.pattern("simple", type = "b"))
+
+    # ambient
+    skip_if_not_installed("ambient")
+    test_raster("ambient.png", function() grid.pattern_ambient(fill = "green", fill2 = "blue", seed = 42))
 })

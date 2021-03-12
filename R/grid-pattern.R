@@ -1,11 +1,12 @@
-#' Patterned grobs
+#' Create patterned grobs
 #'
 #' `grid.pattern()` draws patterned shapes onto the graphic device.
 #' `patternGrob()` returns the grid grob objects.
 #'
-#' Here are links to more information about the various patterns supported:
+#' Here is a list of the various patterns supported:
 #'
 #' \describe{
+#' \item{ambient}{See [grid.pattern_ambient()]}
 #' \item{circle}{See [grid.pattern_circle()]}
 #' \item{crosshatch}{See [grid.pattern_crosshatch()]}
 #' \item{gradient}{See [grid.pattern_gradient()]}
@@ -22,7 +23,7 @@
 #' @inheritParams grid::polygonGrob
 #' @import grid
 #' @importFrom utils hasName
-#' @param pattern Name of pattern
+#' @param pattern Name of pattern.  See Details section for a list of supported patterns.
 #' @param x A numeric vector or unit object specifying x-locations of the pattern boundary
 #' @param y A numeric vector or unit object specifying y-locations of the pattern boundary
 #' @param id A numeric vector used to separate locations in x, y into multiple boundaries.
@@ -115,20 +116,21 @@ makeContent.pattern <- function(x) {
         aspect_ratio <-  width / height
     }
 
-    fn <- get_fn(x$pattern)
+    fn <- get_pattern_fn(x$pattern)
     grob <- fn(x$params, boundary_df, aspect_ratio, x$legend)
     gl <- gList(grob)
     setChildren(x, gl)
 }
 
-get_fn <- function(pattern) {
+get_pattern_fn <- function(pattern) {
     geometry_fns <- c(getOption("ggpattern_geometry_funcs"),
                       list(circle = create_pattern_circles,
                            crosshatch = create_pattern_crosshatch_via_sf,
                            none = create_pattern_none,
                            stripe = create_pattern_stripes_via_sf))
     array_fns <- c(getOption("ggpattern_array_funcs"),
-                   list(gradient = create_gradient_as_array,
+                   list(ambient = create_pattern_ambient,
+                        gradient = create_gradient_as_array,
                         image = img_read_as_array_wrapper,
                         magick = create_magick_pattern_as_array,
                         placeholder = fetch_placeholder_array,
@@ -165,9 +167,24 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_shape <- l$pattern_shape %||% 1
     l$pattern_spacing <- l$pattern_spacing %||% 0.05
     l$pattern_type <- l$pattern_type %||%
-        switch(pattern, placeholder = "kitten", magick = "hexagons", "fit")
+        switch(pattern,
+               ambient = "simplex",
+               placeholder = "kitten",
+               magick = "hexagons",
+               "fit")
     l$pattern_xoffset <- l$pattern_xoffset %||% 0
     l$pattern_yoffset <- l$pattern_yoffset %||% 0
+
+    # Additional ambient defaults
+    l$pattern_frequency <- l$pattern_frequency %||% 0.01 # all
+    l$pattern_interpolator <- l$pattern_interpolator %||% "quintic" # perlin, simplex, value
+    l$pattern_fractal <- l$pattern_fractal %||% "fbm" # all but white
+    l$pattern_pertubation <- l$pattern_pertubation %||% "none" # all
+    l$pattern_octaves <- l$pattern_octaves %||% 3 # all but white
+    l$pattern_lacunarity <- l$pattern_lacunarity %||% 2 # all but white
+    l$pattern_gain <- l$pattern_gain %||% 0.5 # all but white
+    l$pattern_amplitude <- l$pattern_amplitude %||% 1 # all
+    l$pattern_seed <- l$pattern_seed %||% NA_integer_
 
     l
 }

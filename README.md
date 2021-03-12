@@ -21,16 +21,17 @@ themselves).
 
 We currently provide support for the following `ggpattern` patterns:
 
-1.  [circle](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html)
-2.  [crosshatch](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html)
-3.  [gradient](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html)
-4.  [image](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html)
-5.  [magick](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html)
-6.  none
-7.  [placeholder](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html)
-8.  [plasma](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html)
-9.  [stripe](https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html)
-10. [Custom geometry-based
+1.  [ambient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_ambient.html)
+2.  [circle](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_circle.html)
+3.  [crosshatch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_crosshatch.html)
+4.  [gradient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_gradient.html)
+5.  [image](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_image.html)
+6.  [magick](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_magick.html)
+7.  none (equivalent to `grid::null()`)
+8.  [placeholder](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_placeholder.html)
+9.  [plasma](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_plasma.html)
+10. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html)
+11. [Custom geometry-based
     patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
-11. [Custom array-based
+12. [Custom array-based
     patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)

@@ -3,7 +3,7 @@
 \name{grid.pattern}
 \alias{grid.pattern}
 \alias{patternGrob}
-\title{Patterned grobs}
+\title{Create patterned grobs}
 \usage{
 grid.pattern(
   pattern = "stripe",
@@ -36,7 +36,7 @@ patternGrob(
 )
 }
 \arguments{
-\item{pattern}{Name of pattern}
+\item{pattern}{Name of pattern.  See Details section for a list of supported patterns.}
 
 \item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary}
 
@@ -75,9 +75,10 @@ If \code{draw} is \code{TRUE} then \code{grid.pattern()} also draws to the graph
 \code{patternGrob()} returns the grid grob objects.
 }
 \details{
-Here are links to more information about the various patterns supported:
+Here is a list of the various patterns supported:
 
 \describe{
+\item{ambient}{See \code{\link[=grid.pattern_ambient]{grid.pattern_ambient()}}}
 \item{circle}{See \code{\link[=grid.pattern_circle]{grid.pattern_circle()}}}
 \item{crosshatch}{See \code{\link[=grid.pattern_crosshatch]{grid.pattern_crosshatch()}}}
 \item{gradient}{See \code{\link[=grid.pattern_gradient]{grid.pattern_gradient()}}}

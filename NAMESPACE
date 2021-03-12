@@ -3,6 +3,7 @@
 S3method(makeContent,pattern)
 S3method(makeContext,pattern)
 export(grid.pattern)
+export(grid.pattern_ambient)
 export(grid.pattern_circle)
 export(grid.pattern_crosshatch)
 export(grid.pattern_gradient)
