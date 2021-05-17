@@ -12,15 +12,10 @@
 #' @param fill Fill colour
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   if (require("grid")) {
-#'    \dontrun{
-#'      grid.newpage()
-#'      grid.pattern_magick(type="octagons", fill="blue", scale=2)
-#'     }
-#'     print(magick_pattern_names)
-#'     print(magick_pattern_intensity_names)
-#'     print(magick_pattern_stripe_names)
-#'   }
+#'   grid.pattern_magick(type="octagons", fill="blue", scale=2)
+#'   print(magick_pattern_names)
+#'   print(magick_pattern_intensity_names)
+#'   print(magick_pattern_stripe_names)
 #' @seealso The `ggpattern` documentation <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html>
 #'          and `imagemagick` documentation <http://www.imagemagick.org/script/formats.php> for more information.
 #' @export

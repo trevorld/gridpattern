@@ -65,14 +65,9 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{grid.pattern_gradient()} draws a gradient pattern onto the graphic device.
 }
 \examples{
-  \dontrun{
-  if (require("grid")) {
-    grid.newpage()
-    grid.pattern_gradient(fill = "green")
-    grid.newpage()
-    grid.pattern_gradient(fill = "green", orientation = "radial")
-  }
-  }
+ grid.pattern_gradient(fill = "green")
+ grid::grid.newpage()
+ grid.pattern_gradient(fill = "green", orientation = "radial")
 }
 \seealso{
 The \code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}

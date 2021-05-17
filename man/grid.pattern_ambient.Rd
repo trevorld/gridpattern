@@ -95,14 +95,11 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{grid.pattern_ambient()} draws noise patterns onto the graphic device powered by the \code{ambient} package.
 }
 \examples{
-  \dontrun{
-    if (require("grid") && require("ambient")) {
-      grid.newpage()
-      grid.pattern_ambient(fill = "green", fill2 = "blue")
-      grid.newpage()
-      grid.pattern_ambient(fill = "green", fill2 = "blue", type = "cubic")
-    }
-  }
+ if (requireNamespace("ambient")) {
+   grid.pattern_ambient(fill = "green", fill2 = "blue")
+   grid::grid.newpage()
+   grid.pattern_ambient(fill = "green", fill2 = "blue", type = "cubic")
+ }
 }
 \seealso{
 For more information about the noise types please see the relevant \code{ambient} documentation:

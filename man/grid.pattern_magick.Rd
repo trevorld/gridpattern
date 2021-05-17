@@ -90,15 +90,10 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 plus subsets for shaded intensity and stripes.
 }
 \examples{
-  if (require("grid")) {
-   \dontrun{
-     grid.newpage()
-     grid.pattern_magick(type="octagons", fill="blue", scale=2)
-    }
-    print(magick_pattern_names)
-    print(magick_pattern_intensity_names)
-    print(magick_pattern_stripe_names)
-  }
+  grid.pattern_magick(type="octagons", fill="blue", scale=2)
+  print(magick_pattern_names)
+  print(magick_pattern_intensity_names)
+  print(magick_pattern_stripe_names)
 }
 \seealso{
 The \code{ggpattern} documentation \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}

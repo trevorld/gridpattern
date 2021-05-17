@@ -68,13 +68,11 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{placeholder_names} are character vectors of supported placeholder types.
 }
 \examples{
-  if (require("grid")) {
-   \dontrun{
-     grid.newpage()
-     grid.pattern_placeholder(type="bear")
-    }
-    print(placeholder_names)
+  \dontrun{
+    # requires internet connection to download from placeholder image websites
+    grid.pattern_placeholder(type="bear")
   }
+  print(placeholder_names)
 }
 \seealso{
 The \code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html}

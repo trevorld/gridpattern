@@ -9,14 +9,9 @@
 #' @param key_scale_factor Additional scale factor for legend
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   \dontrun{
-#'   if (require("grid")) {
-#'     grid.newpage()
-#'     grid.pattern_gradient(fill = "green")
-#'     grid.newpage()
-#'     grid.pattern_gradient(fill = "green", orientation = "radial")
-#'   }
-#'   }
+#'  grid.pattern_gradient(fill = "green")
+#'  grid::grid.newpage()
+#'  grid.pattern_gradient(fill = "green", orientation = "radial")
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html>
 #' @export
 grid.pattern_gradient <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),

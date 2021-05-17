@@ -7,14 +7,11 @@
 #' @inheritParams ambient::noise_simplex
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   \dontrun{
-#'     if (require("grid") && require("ambient")) {
-#'       grid.newpage()
-#'       grid.pattern_ambient(fill = "green", fill2 = "blue")
-#'       grid.newpage()
-#'       grid.pattern_ambient(fill = "green", fill2 = "blue", type = "cubic")
-#'     }
-#'   }
+#'  if (requireNamespace("ambient")) {
+#'    grid.pattern_ambient(fill = "green", fill2 = "blue")
+#'    grid::grid.newpage()
+#'    grid.pattern_ambient(fill = "green", fill2 = "blue", type = "cubic")
+#'  }
 #' @seealso For more information about the noise types please see the relevant `ambient` documentation:
 #'   [ambient::noise_cubic()], [ambient::noise_perlin()], [ambient::noise_simplex()],
 #'   [ambient::noise_value()], [ambient::noise_white()], and [ambient::noise_worley()]

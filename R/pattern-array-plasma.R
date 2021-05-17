@@ -6,14 +6,9 @@
 #' @param scale Extra scaling
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   \dontrun{
-#'   if (require("grid")) {
-#'     grid.newpage()
-#'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     grid.pattern_plasma(fill = "green")
-#'   }
-#'   }
+#'   x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'   y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'   grid.pattern_plasma(fill = "green")
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html>
 #' @export
 grid.pattern_plasma <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),

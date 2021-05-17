@@ -30,17 +30,21 @@ create_pattern_array <- function(params, boundary_df, aspect_ratio, legend,
   npc_y       <- mean(npc_yrange)
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Calculate the Native dimensions of the bounding box and use the integer
-  # values of these to define the image dimensions.
+  # Calculate the dimensions of the bounding box and use the integer
+  # values of these to define the image dimensions
   # Need to scale the y-dimension by the aspect_ratio
+  # 72 DPI is the imagemagick default
+  # Ideally could detect resolution of graphics device and use that...
+  # NB. large pixel sizes can cause errors with getting 'placeholder' images
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  native_width  <- grid::convertWidth(unit(npc_width , 'npc'), 'native')
-  native_height <- grid::convertWidth(unit(npc_height, 'npc'), 'native')
-  arr_width     <- as.integer(native_width)
-  arr_height    <- as.integer(as.numeric(native_height) / aspect_ratio)
+  res <- 72
+  vp_width  <- res * grid::convertWidth(unit(npc_width , 'npc'), 'inches')
+  vp_height <- res * grid::convertWidth(unit(npc_height, 'npc'), 'inches')
+  arr_width <- as.integer(vp_width)
+  arr_height <- as.integer(as.numeric(vp_height) / aspect_ratio)
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # If this is a legend, then draw a much smaller imagee.
+  # If this is a legend, then draw a much smaller image.
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (legend) {
     arr_width  <- as.integer( arr_width / 10)

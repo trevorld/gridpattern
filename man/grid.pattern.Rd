@@ -117,19 +117,20 @@ See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more informati
    grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135)
    grid.newpage()
    grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5)
+   grid.newpage()
+   logo_filename <- system.file("img", "Rlogo.png" , package="png")
+   grid.pattern("image", filename=logo_filename, type="tile")
+   grid.newpage()
+   grid.pattern("magick", type="octagons", fill="blue", scale=2)
    \dontrun{
-     grid.newpage()
-     logo_filename   <- system.file("img", "Rlogo.png" , package="png")
-     grid.pattern("image", filename=logo_filename, type="tile")
-     grid.newpage()
-     grid.pattern("magick", type="octagons", fill="blue", scale=2)
+     # requires internet connection to download from placeholder image websites
      grid.newpage()
      grid.pattern("placeholder", type="bear")
-     grid.newpage()
-     grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
-     grid.newpage()
-     grid.pattern("plasma", fill="green")
    }
+   grid.newpage()
+   grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
+   grid.newpage()
+   grid.pattern("plasma", fill="green")
  }
 }
 \seealso{

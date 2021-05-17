@@ -8,13 +8,11 @@
 #'             If you would like only greyscale images append `bw` to the name.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   if (require("grid")) {
-#'    \dontrun{
-#'      grid.newpage()
-#'      grid.pattern_placeholder(type="bear")
-#'     }
-#'     print(placeholder_names)
+#'   \dontrun{
+#'     # requires internet connection to download from placeholder image websites
+#'     grid.pattern_placeholder(type="bear")
 #'   }
+#'   print(placeholder_names)
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html>
 #' @export
 grid.pattern_placeholder <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),

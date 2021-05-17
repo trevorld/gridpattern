@@ -78,7 +78,6 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \examples{
   if (require("grid")) {
-    grid.newpage()
     grid.pattern_circle(colour = "green", fill = "blue", density = 0.5)
     grid.newpage()
     grid.pattern_circle(density = 0.3, gp = gpar(col = "blue", fill = "yellow"))
