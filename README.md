@@ -54,7 +54,7 @@ y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 
 
 ```r
-grid.pattern("ambient", x_hex, y_hex, fill = "green", fill2 = "blue", type = "worley")
+grid.pattern("ambient", x_hex, y_hex, fill = "green", fill2 = "blue")
 ```
 
 ![](man/figures/README-ambient-1.png)
@@ -82,9 +82,7 @@ logo_filename   <- system.file("img", "Rlogo.png" , package="png")
 grid.pattern("image", filename=logo_filename, type="tile")
 ```
 
-```
-## Error in if (scale != 1) {: argument is of length zero
-```
+![](man/figures/README-image-1.png)
 
 ```r
 grid.pattern("magick", x_hex, y_hex, type="octagons", fill="blue", scale=2)

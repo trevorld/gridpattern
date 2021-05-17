@@ -62,11 +62,13 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{grid.pattern_plasma()} draws a plasma pattern onto the graphic device.
 }
 \examples{
+  \dontrun{
   if (require("grid")) {
     grid.newpage()
     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     grid.pattern_plasma(fill = "green")
+  }
   }
 }
 \seealso{
