@@ -10,8 +10,8 @@ An object of class \code{character} of length 26.
 }
 \usage{
 grid.pattern_placeholder(
-  x = c(0, 0.5, 1, 0.5),
-  y = c(0.5, 1, 0.5, 0),
+  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
   id = 1L,
   ...,
   type = "kitten",

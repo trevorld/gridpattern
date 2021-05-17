@@ -14,11 +14,12 @@
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html>
 #' @export
 #' @seealso
-grid.pattern_crosshatch <- function(x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
-                                colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
-                                density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
-                                alpha = gp$alpha %||% 1, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
-                                default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
+grid.pattern_crosshatch <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+                                    y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
+                                    colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
+                                    density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
+                                    alpha = gp$alpha %||% 1, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
+                                    default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("crosshatch", x, y, id,
                  colour = colour, fill = fill, angle = angle,

@@ -1,30 +1,33 @@
 #' Ambient patterned grobs
 #'
-#' `grid.pattern_ambient()` draws patterns onto the graphic device powered by the `ambient` package.
+#' `grid.pattern_ambient()` draws noise patterns onto the graphic device powered by the `ambient` package.
 #'
 #' @param type Either cubic, perlin, simplex, value, white, or worley
 #' @inheritParams grid.pattern_gradient
 #' @inheritParams ambient::noise_simplex
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   if (require("grid") && require("ambient")) {
-#'     grid.newpage()
-#'     grid.pattern_ambient(fill = "green", fill2 = "blue")
-#'     grid.newpage()
-#'     grid.pattern_ambient(fill = "green", fill2 = "blue", type = "worley")
+#'   \dontrun{
+#'     if (require("grid") && require("ambient")) {
+#'       grid.newpage()
+#'       grid.pattern_ambient(fill = "green", fill2 = "blue")
+#'       grid.newpage()
+#'       grid.pattern_ambient(fill = "green", fill2 = "blue", type = "cubic")
+#'     }
 #'   }
 #' @seealso For more information about the noise types please see the relevant `ambient` documentation:
 #'   [ambient::noise_cubic()], [ambient::noise_perlin()], [ambient::noise_simplex()],
 #'   [ambient::noise_value()], [ambient::noise_white()], and [ambient::noise_worley()]
 #' @export
-grid.pattern_ambient <- function(x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
-                                type = "simplex", fill = gp$fill %||% "grey80", fill2 = "#4169E1",
-                                frequency = 0.01, interpolator = "quintic", fractal = "fbm",
-                                octaves = 3, lacunarity = 2, gain = 0.5,
-                                pertubation = "none", pertubation_amplitude = 1, seed = NA_integer_,
-                                default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
+grid.pattern_ambient <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+                                 y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
+                                 type = "simplex", fill = gp$fill %||% "grey80", fill2 = "#4169E1",
+                                 frequency = 0.01, interpolator = "quintic", fractal = "fbm",
+                                 octaves = 3, lacunarity = 2, gain = 0.5,
+                                 pertubation = "none", pertubation_amplitude = 1, seed = NA_integer_,
+                                 default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     grid.pattern("ambient", x, y, id,
-                 type = "simplex", fill = fill, fill2 = fill2,
+                 type = type, fill = fill, fill2 = fill2,
                  frequency = frequency, interpolator = interpolator, fractal = fractal,
                  octaves = octaves, lacunarity = lacunarity, gain = gain,
                  pertubation = pertubation, pertubation_amplitude = pertubation_amplitude, seed = seed,

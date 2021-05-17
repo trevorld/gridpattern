@@ -5,8 +5,8 @@
 \title{Gradient patterned grobs}
 \usage{
 grid.pattern_gradient(
-  x = c(0, 0.5, 1, 0.5),
-  y = c(0.5, 1, 0.5, 0),
+  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
   id = 1L,
   ...,
   fill = gp$fill \%||\% "grey80",
@@ -65,11 +65,13 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{grid.pattern_gradient()} draws a gradient pattern onto the graphic device.
 }
 \examples{
+  \dontrun{
   if (require("grid")) {
     grid.newpage()
     grid.pattern_gradient(fill = "green")
     grid.newpage()
     grid.pattern_gradient(fill = "green", orientation = "radial")
+  }
   }
 }
 \seealso{

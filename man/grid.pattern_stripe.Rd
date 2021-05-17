@@ -5,8 +5,8 @@
 \title{Stripe patterned grobs}
 \usage{
 grid.pattern_stripe(
-  x = c(0, 0.5, 1, 0.5),
-  y = c(0.5, 1, 0.5, 0),
+  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
   id = 1L,
   ...,
   colour = gp$col \%||\% "grey20",
@@ -74,7 +74,7 @@ are only given as numeric vectors.}
 A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to the graphic device as a side effect.
 }
 \description{
-\code{grid.pattern_stripe()} draws a strip pattern onto the graphic device.
+\code{grid.pattern_stripe()} draws a stripe pattern onto the graphic device.
 }
 \examples{
   if (require("grid")) {

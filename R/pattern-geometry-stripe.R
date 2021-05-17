@@ -1,6 +1,6 @@
 #' Stripe patterned grobs
 #'
-#' `grid.pattern_stripe()` draws a strip pattern onto the graphic device.
+#' `grid.pattern_stripe()` draws a stripe pattern onto the graphic device.
 #'
 #' @inheritParams grid.pattern_circle
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
@@ -13,7 +13,8 @@
 #'   }
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html>
 #' @export
-grid.pattern_stripe <- function(x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+grid.pattern_stripe <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+                                y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
                                 density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
                                 alpha = gp$alpha %||% 1, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,

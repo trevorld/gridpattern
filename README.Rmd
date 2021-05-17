@@ -35,77 +35,48 @@ We currently provide grob support for the following `ggpattern` patterns:
 To install the development version use the following command in R:
 
 
-
-```r
+```{r install, eval=FALSE}
 remotes::install_github("trevorld/gridpattern")
 ```
 
 ## Examples
 
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(fig.path = "man/figures/README-", fig.cap = '')
+```
 
-
-
-```r
+```{r hex}
 library("ambient")
 library("gridpattern")
 x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 ```
 
-
-```r
-grid.pattern("ambient", x_hex, y_hex, fill = "green", fill2 = "blue", type = "worley")
+```{r ambient}
+grid.pattern("ambient", x_hex, y_hex, fill = "green", fill2 = "blue")
 ```
-
-![](man/figures/README-ambient-1.png)
-
-```r
+```{r circle}
 grid.pattern("circle", x_hex, y_hex, colour="blue", fill="yellow", size = 2, density = 0.5)
 ```
-
-![](man/figures/README-circle-1.png)
-
-```r
+```{r crosshatch}
 grid.pattern("crosshatch", x_hex, y_hex, colour="blue", fill="yellow", density = 0.5, angle = 135)
 ```
-
-![](man/figures/README-crosshatch-1.png)
-
-```r
+```{r gradient}
 grid.pattern("gradient", x_hex, y_hex, fill="blue", fill2="green", orientation="radial")
 ```
-
-![](man/figures/README-gradient-1.png)
-
-```r
+```{r image}
 logo_filename   <- system.file("img", "Rlogo.png" , package="png")
 grid.pattern("image", filename=logo_filename, type="tile")
 ```
-
-```
-## Error in if (scale != 1) {: argument is of length zero
-```
-
-```r
+```{r magick}
 grid.pattern("magick", x_hex, y_hex, type="octagons", fill="blue", scale=2)
 ```
-
-![](man/figures/README-magick-1.png)
-
-```r
+```{r placeholder}
 grid.pattern("placeholder", x_hex, y_hex, type="bear")
 ```
-
-![](man/figures/README-placeholder-1.png)
-
-```r
+```{r plasma}
 grid.pattern("plasma", x_hex, y_hex, fill="green")
 ```
-
-![](man/figures/README-plasma-1.png)
-
-```r
+```{r stripe}
 grid.pattern("stripe", x_hex, y_hex, colour="blue", fill="yellow", density = 0.5, angle = 135)
 ```
-
-![](man/figures/README-stripe-1.png)

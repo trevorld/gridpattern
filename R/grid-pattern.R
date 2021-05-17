@@ -6,18 +6,28 @@
 #' Here is a list of the various patterns supported:
 #'
 #' \describe{
-#' \item{ambient}{See [grid.pattern_ambient()]}
-#' \item{circle}{See [grid.pattern_circle()]}
-#' \item{crosshatch}{See [grid.pattern_crosshatch()]}
-#' \item{gradient}{See [grid.pattern_gradient()]}
-#' \item{image}{See [grid.pattern_image()]}
-#' \item{magick}{See [grid.pattern_magick()]}
-#' \item{none}{Does nothing.  See [grid::grid.null()]}
-#' \item{placeholder}{See [grid.pattern_placeholder()]}
-#' \item{plasma}{See [grid.pattern_plasma()]}
-#' \item{stripe}{See [grid.pattern_stripe()]}
-#' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
-#' \item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html}}
+#' \item{ambient}{Noise array patterns onto the graphic device powered by the `ambient` package.
+#'                See [grid.pattern_ambient()] for more information.}
+#' \item{circle}{Circle geometry patterns.
+#'               See [grid.pattern_circle()] for more information.}
+#' \item{crosshatch}{Crosshatch geometry patterns.
+#'                   See [grid.pattern_crosshatch()] for more information.}
+#' \item{gradient}{Gradient array patterns.
+#'                 See [grid.pattern_gradient()] for more information.}
+#' \item{image}{Image array patterns.
+#'              See [grid.pattern_image()] for more information.}
+#' \item{magick}{`imagemagick` array patterns.
+#'               See [grid.pattern_magick()] for more information.}
+#' \item{none}{Does nothing.
+#'             See [grid::grid.null()] for more information.}
+#' \item{placeholder}{Placeholder image array patterns.
+#'                    See [grid.pattern_placeholder()] for more information.}
+#' \item{plasma}{Plasma array patterns.
+#'               See [grid.pattern_plasma()] for more information.}
+#' \item{stripe}{Stripe geometry patterns.
+#'               See [grid.pattern_stripe()] for more information.}
+#' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html} for more information.}
+#' \item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html} for more information.}
 #' }
 #'
 #' @inheritParams grid::polygonGrob
@@ -59,16 +69,18 @@
 #'      grid.pattern("magick", type="octagons", fill="blue", scale=2)
 #'      grid.newpage()
 #'      grid.pattern("placeholder", type="bear")
+#'      grid.newpage()
+#'      grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
+#'      grid.newpage()
+#'      grid.pattern("plasma", fill="green")
 #'    }
-#'    grid.newpage()
-#'    grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
-#'    grid.newpage()
-#'    grid.pattern("plasma", fill="green")
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
 #'          for more details on the patterns and their parameters.
 #' @export
-grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+grid.pattern <- function(pattern = "stripe",
+                         x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+                         y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
                          legend = FALSE, prefix = "pattern_",
                          default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     grob <- patternGrob(pattern, x, y, id, ...,
@@ -80,7 +92,9 @@ grid.pattern <- function(pattern = "stripe", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1
 
 #' @rdname grid.pattern
 #' @export
-patternGrob <- function(pattern = "strip", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+patternGrob <- function(pattern = "strip",
+                        x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+                        y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
                         legend = FALSE, prefix = "pattern_",
                         default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     params <- get_params(..., pattern = pattern, prefix = prefix, gp = gp)
@@ -89,12 +103,6 @@ patternGrob <- function(pattern = "strip", x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 
 
     gTree(pattern=pattern, x=x, y=y, id=id, params=params, legend=legend,
           name=name, gp=gp, vp=vp, cl="pattern")
-}
-
-#' @export
-makeContext.pattern <- function(x) {
-    if (hasName(x$gp, "alpha")) x$gp$alpha <- NULL # avoid applying an alpha effect twice
-    x
 }
 
 #' @export

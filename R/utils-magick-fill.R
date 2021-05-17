@@ -132,7 +132,7 @@ fill_area_with_img_none <- function(img, width, height, gravity = 'Center',
   img
 }
 
-# if `scale == -1` scale to img width, if `scale == -2` sacle to img height
+# if `scale == -1` scale to img width, if `scale == -2` scale to img height
 update_scale <- function(scale, img, width, height) {
   if (scale == -1) {
     info   <- magick::image_info(img)
@@ -140,6 +140,8 @@ update_scale <- function(scale, img, width, height) {
   } else if (scale == -2) {
     info   <- magick::image_info(img)
     height/info$height
+  } else {
+    scale
   }
 }
 

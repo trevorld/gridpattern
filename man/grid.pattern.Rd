@@ -7,8 +7,8 @@
 \usage{
 grid.pattern(
   pattern = "stripe",
-  x = c(0, 0.5, 1, 0.5),
-  y = c(0.5, 1, 0.5, 0),
+  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
   id = 1L,
   ...,
   legend = FALSE,
@@ -22,8 +22,8 @@ grid.pattern(
 
 patternGrob(
   pattern = "strip",
-  x = c(0, 0.5, 1, 0.5),
-  y = c(0.5, 1, 0.5, 0),
+  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
   id = 1L,
   ...,
   legend = FALSE,
@@ -78,18 +78,28 @@ If \code{draw} is \code{TRUE} then \code{grid.pattern()} also draws to the graph
 Here is a list of the various patterns supported:
 
 \describe{
-\item{ambient}{See \code{\link[=grid.pattern_ambient]{grid.pattern_ambient()}}}
-\item{circle}{See \code{\link[=grid.pattern_circle]{grid.pattern_circle()}}}
-\item{crosshatch}{See \code{\link[=grid.pattern_crosshatch]{grid.pattern_crosshatch()}}}
-\item{gradient}{See \code{\link[=grid.pattern_gradient]{grid.pattern_gradient()}}}
-\item{image}{See \code{\link[=grid.pattern_image]{grid.pattern_image()}}}
-\item{magick}{See \code{\link[=grid.pattern_magick]{grid.pattern_magick()}}}
-\item{none}{Does nothing.  See \code{\link[grid:grid.null]{grid::grid.null()}}}
-\item{placeholder}{See \code{\link[=grid.pattern_placeholder]{grid.pattern_placeholder()}}}
-\item{plasma}{See \code{\link[=grid.pattern_plasma]{grid.pattern_plasma()}}}
-\item{stripe}{See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}}}
-\item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html}}
-\item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html}}
+\item{ambient}{Noise array patterns onto the graphic device powered by the \code{ambient} package.
+See \code{\link[=grid.pattern_ambient]{grid.pattern_ambient()}} for more information.}
+\item{circle}{Circle geometry patterns.
+See \code{\link[=grid.pattern_circle]{grid.pattern_circle()}} for more information.}
+\item{crosshatch}{Crosshatch geometry patterns.
+See \code{\link[=grid.pattern_crosshatch]{grid.pattern_crosshatch()}} for more information.}
+\item{gradient}{Gradient array patterns.
+See \code{\link[=grid.pattern_gradient]{grid.pattern_gradient()}} for more information.}
+\item{image}{Image array patterns.
+See \code{\link[=grid.pattern_image]{grid.pattern_image()}} for more information.}
+\item{magick}{\code{imagemagick} array patterns.
+See \code{\link[=grid.pattern_magick]{grid.pattern_magick()}} for more information.}
+\item{none}{Does nothing.
+See \code{\link[grid:grid.null]{grid::grid.null()}} for more information.}
+\item{placeholder}{Placeholder image array patterns.
+See \code{\link[=grid.pattern_placeholder]{grid.pattern_placeholder()}} for more information.}
+\item{plasma}{Plasma array patterns.
+See \code{\link[=grid.pattern_plasma]{grid.pattern_plasma()}} for more information.}
+\item{stripe}{Stripe geometry patterns.
+See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more information.}
+\item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html} for more information.}
+\item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html} for more information.}
 }
 }
 \examples{
@@ -115,11 +125,11 @@ Here is a list of the various patterns supported:
      grid.pattern("magick", type="octagons", fill="blue", scale=2)
      grid.newpage()
      grid.pattern("placeholder", type="bear")
+     grid.newpage()
+     grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
+     grid.newpage()
+     grid.pattern("plasma", fill="green")
    }
-   grid.newpage()
-   grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
-   grid.newpage()
-   grid.pattern("plasma", fill="green")
  }
 }
 \seealso{

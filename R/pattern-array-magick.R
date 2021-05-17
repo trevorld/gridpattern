@@ -21,10 +21,11 @@
 #'     print(magick_pattern_intensity_names)
 #'     print(magick_pattern_stripe_names)
 #'   }
-#' @seealso The `ggpattern` documentation <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html>
+#' @seealso The `ggpattern` documentation <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html>
 #'          and `imagemagick` documentation <http://www.imagemagick.org/script/formats.php> for more information.
 #' @export
-grid.pattern_magick <- function(x = c(0, 0.5, 1, 0.5), y = c(0.5, 1, 0.5, 0), id = 1L, ...,
+grid.pattern_magick <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+                                y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
                                 type = "hexagons", fill = "grey20", scale = 1, filter = "box",
                                 alpha = gp$alpha %||% 1, aspect_ratio = 1, key_scale_factor = 1,
                                 default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {

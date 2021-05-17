@@ -5,8 +5,8 @@
 \title{Image patterned grobs}
 \usage{
 grid.pattern_image(
-  x = c(0, 0.5, 1, 0.5),
-  y = c(0.5, 1, 0.5, 0),
+  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
+  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
   id = 1L,
   ...,
   filename = "",
@@ -84,12 +84,12 @@ Affected by \code{scale} and \code{gravity}.}
 }
 }
 \examples{
+  \dontrun{
   if (require("grid")) {
-   \dontrun{
      grid.newpage()
      logo_filename   <- system.file("img", "Rlogo.png" , package="png")
      grid.pattern_image(filename=logo_filename, type="tile")
-    }
+  }
   }
 }
 \seealso{
