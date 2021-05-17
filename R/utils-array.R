@@ -34,7 +34,7 @@ create_pattern_array <- function(params, boundary_df, aspect_ratio, legend,
   # values of these to define the image dimensions
   # Need to scale the y-dimension by the aspect_ratio
   # 72 DPI is the imagemagick default
-  # Ideally could detect resolution of graphics device and use that...
+  # Ideally could pass/detect resolution of graphics device and use that...
   # NB. large pixel sizes can cause errors with getting 'placeholder' images
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   res <- 72
