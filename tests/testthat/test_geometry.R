@@ -1,6 +1,7 @@
 context("geometry")
 test_that("geometry patterns works as expected", {
     skip_if_not_installed("vdiffr")
+    skip_on_appveyor()
     library("vdiffr")
 
     expect_doppelganger("default", grid.pattern)
