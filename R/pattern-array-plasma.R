@@ -14,11 +14,11 @@
 grid.pattern_plasma <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
                                 y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
                                 fill = gp$fill %||% "grey80", scale = 1, alpha = gp$alpha %||% 1,
-                                aspect_ratio = 1, key_scale_factor = 1,
+                                aspect_ratio = 1, key_scale_factor = 1, res = 72,
                                 default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     grid.pattern("plasma", x, y, id,
                  fill = fill, scale = scale, alpha = alpha,
-                 aspect_ratio = 1, key_scale_factor = 1,
+                 aspect_ratio = aspect_ratio, key_scale_factor = key_scale_factor, res = res,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 

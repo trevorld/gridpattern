@@ -21,13 +21,15 @@ grid.pattern_ambient <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
                                  type = "simplex", fill = gp$fill %||% "grey80", fill2 = "#4169E1",
                                  frequency = 0.01, interpolator = "quintic", fractal = "fbm",
                                  octaves = 3, lacunarity = 2, gain = 0.5,
-                                 pertubation = "none", pertubation_amplitude = 1, seed = NA_integer_,
+                                 pertubation = "none", pertubation_amplitude = 1,
+                                 res = 72, seed = NA_integer_,
                                  default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     grid.pattern("ambient", x, y, id,
                  type = type, fill = fill, fill2 = fill2,
                  frequency = frequency, interpolator = interpolator, fractal = fractal,
                  octaves = octaves, lacunarity = lacunarity, gain = gain,
-                 pertubation = pertubation, pertubation_amplitude = pertubation_amplitude, seed = seed,
+                 pertubation = pertubation, pertubation_amplitude = pertubation_amplitude,
+                 res = res, seed = seed,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 

@@ -38,16 +38,16 @@ patternGrob(
 \arguments{
 \item{pattern}{Name of pattern.  See Details section for a list of supported patterns.}
 
-\item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary}
+\item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary.}
 
-\item{y}{A numeric vector or unit object specifying y-locations of the pattern boundary}
+\item{y}{A numeric vector or unit object specifying y-locations of the pattern boundary.}
 
 \item{id}{A numeric vector used to separate locations in x, y into multiple boundaries.
 All locations within the same \code{id} belong to the same boundary.}
 
-\item{...}{Pattern parameters}
+\item{...}{Pattern parameters.}
 
-\item{legend}{Whether this is intended to be drawn in a legend or not}
+\item{legend}{Whether this is intended to be drawn in a legend or not.}
 
 \item{prefix}{Prefix to prepend to the name of each of the pattern parameters in \code{...}.
 For compatibility with \code{ggpattern} most underlying functions assume parameters beginning with \code{pattern_}.}

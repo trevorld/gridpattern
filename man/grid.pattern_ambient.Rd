@@ -20,6 +20,7 @@ grid.pattern_ambient(
   gain = 0.5,
   pertubation = "none",
   pertubation_amplitude = 1,
+  res = 72,
   seed = NA_integer_,
   default.units = "npc",
   name = NULL,
@@ -29,9 +30,9 @@ grid.pattern_ambient(
 )
 }
 \arguments{
-\item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary}
+\item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary.}
 
-\item{y}{A numeric vector or unit object specifying y-locations of the pattern boundary}
+\item{y}{A numeric vector or unit object specifying y-locations of the pattern boundary.}
 
 \item{id}{A numeric vector used to separate locations in x, y into multiple boundaries.
 All locations within the same \code{id} belong to the same boundary.}
@@ -70,6 +71,8 @@ warping.}
 
 \item{pertubation_amplitude}{The maximal pertubation distance from the
 origin. Ignored if \code{pertubation = 'none'}. Defaults to \code{1}.}
+
+\item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.}
 
 \item{seed}{The seed to use for the noise. If \code{NULL} a random seed will be
 used}

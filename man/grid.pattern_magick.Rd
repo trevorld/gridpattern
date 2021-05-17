@@ -27,6 +27,7 @@ grid.pattern_magick(
   alpha = gp$alpha \%||\% 1,
   aspect_ratio = 1,
   key_scale_factor = 1,
+  res = 72,
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -41,9 +42,9 @@ magick_pattern_intensity_names
 magick_pattern_stripe_names
 }
 \arguments{
-\item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary}
+\item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary.}
 
-\item{y}{A numeric vector or unit object specifying y-locations of the pattern boundary}
+\item{y}{A numeric vector or unit object specifying y-locations of the pattern boundary.}
 
 \item{id}{A numeric vector used to separate locations in x, y into multiple boundaries.
 All locations within the same \code{id} belong to the same boundary.}
@@ -65,6 +66,8 @@ plus subsets for shaded intensity and stripes.}
 \item{aspect_ratio}{Override aspect ratio}
 
 \item{key_scale_factor}{Additional scale factor for legend}
+
+\item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}

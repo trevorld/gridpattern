@@ -32,23 +32,30 @@ create_pattern_array <- function(params, boundary_df, aspect_ratio, legend,
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Calculate the dimensions of the bounding box and use the integer
   # values of these to define the image dimensions
-  # Need to scale the y-dimension by the aspect_ratio
-  # 72 DPI is the imagemagick default
-  # Ideally could pass/detect resolution of graphics device and use that...
+  # res of 72 DPI is the imagemagick default
+  # Ideally could detect resolution of graphics device and use that as default...
   # NB. large pixel sizes can cause errors with getting 'placeholder' images
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  res <- 72
-  vp_width  <- res * grid::convertWidth(unit(npc_width , 'npc'), 'inches')
-  vp_height <- res * grid::convertWidth(unit(npc_height, 'npc'), 'inches')
-  arr_width <- as.integer(vp_width)
-  arr_height <- as.integer(as.numeric(vp_height) / aspect_ratio)
+  res <- params$pattern_res %||% 72
+  in_width <- as.numeric(grid::convertWidth(unit(npc_width , 'npc'), 'inches'))
+  in_height <- as.numeric(grid::convertHeight(unit(npc_height, 'npc'), 'inches'))
+  arr_width <- res * in_width
+  arr_height <- res * in_height
+  # enforce minimum height/width of 12 pixels
+  if (arr_width < 12 || arr_height < 12) {
+    mult <- 12 / min(in_width, in_height)
+    arr_width  <- mult * arr_width
+    arr_height <- mult * arr_height
+  }
+  arr_width  <- as.integer(arr_width)
+  arr_height <- as.integer(arr_height)
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # If this is a legend, then draw a much smaller image.
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   if (legend) {
-    arr_width  <- as.integer( arr_width / 10)
-    arr_height <- as.integer(arr_height / 10)
+    arr_width  <- as.integer( arr_width / 12)
+    arr_height <- as.integer(arr_height / 12)
 
     # Override type for better looking legend when tiling
     if (params$pattern_type %in% c('tile', 'none')) {

@@ -34,12 +34,12 @@
 #' @import grid
 #' @importFrom utils hasName
 #' @param pattern Name of pattern.  See Details section for a list of supported patterns.
-#' @param x A numeric vector or unit object specifying x-locations of the pattern boundary
-#' @param y A numeric vector or unit object specifying y-locations of the pattern boundary
+#' @param x A numeric vector or unit object specifying x-locations of the pattern boundary.
+#' @param y A numeric vector or unit object specifying y-locations of the pattern boundary.
 #' @param id A numeric vector used to separate locations in x, y into multiple boundaries.
 #'           All locations within the same `id` belong to the same boundary.
-#' @param ... Pattern parameters
-#' @param legend Whether this is intended to be drawn in a legend or not
+#' @param ... Pattern parameters.
+#' @param legend Whether this is intended to be drawn in a legend or not.
 #' @param prefix Prefix to prepend to the name of each of the pattern parameters in `...`.
 #'               For compatibility with `ggpattern` most underlying functions assume parameters beginning with `pattern_`.
 #' @param default.units A string indicating the default units to use if `x` or `y`
