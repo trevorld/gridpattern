@@ -6,8 +6,8 @@ Authors@R: c(person("Mike", "FC", role = "aut", comment = "Patterns extracted fr
         person("Trevor L", "Davis", role=c("aut", "cre"), email="trevor.l.davis@gmail.com"),
         person("Thomas Lin", "Pedersen", role = "ctb", comment = "new_data_frame() copied from ggplot2"))
 Description: Patterned grid grobs.
-URL: http://github.com/trevorld/gridpattern, https://trevorldavis.com/R/gridpattern
-BugReports: http://github.com/trevorld/gridpattern/issues
+URL: https://trevorldavis.com/R/gridpattern/, https://github.com/trevorld/gridpattern
+BugReports: https://github.com/trevorld/gridpattern/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

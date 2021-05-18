@@ -17,7 +17,7 @@ provides patterned ggplot2 "geom" functions but
 We currently provide grob support for the following `ggpattern` patterns:
 
 1.  [ambient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_ambient.html):
-    noise array patterns powered by the [ambient](https://cran.r-project.org/web/packages/ambient/index.html) package
+    noise array patterns powered by the [ambient](https://cran.r-project.org/package=ambient) package
 2.  [circle](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_circle.html): circle geometry patterns
 3.  [crosshatch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_crosshatch.html): crosshatch geometry patterns
 4.  [gradient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_gradient.html): gradient array patterns
