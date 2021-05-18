@@ -30,8 +30,6 @@ img_read <- function(filename) {
 }
 
 
-img_read_memoised <- memoise::memoise(img_read)
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Fetch a given path or URL as a 3D RGB array of values
 ##
