@@ -1,7 +1,8 @@
 ^.appveyor.yml$
 ^.travis.yml$
-^README.html$
+^LICENSE.md$
 ^README.Rmd$
+^README.html$
 ^Rakefile$
 ^_pkgdown.yml$
 ^codecov.yml$
