@@ -24,7 +24,7 @@ grid.pattern_magick <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
                                 type = "hexagons", fill = "grey20", scale = 1, filter = "box",
                                 alpha = gp$alpha %||% 1, aspect_ratio = 1, key_scale_factor = 1, res = 72,
                                 default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    grid.pattern("image", x, y, id,
+    grid.pattern("magick", x, y, id,
                  type = type, fill = fill, scale = scale, scale = scale, filter = filter,
                  alpha = alpha, aspect_ratio = aspect_ratio,
                  key_scale_factor = key_scale_factor, res = res,

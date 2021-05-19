@@ -46,7 +46,7 @@ test_that("array patterns works as expected", {
                     grid.pattern_image(filename=logo_filename, type="squish")
                 })
     test_raster("magick.png",
-                function() grid.pattern("magick", type="octagons", fill="blue", scale=2))
+                function() grid.pattern_magick(type="octagons", fill="blue", scale=2))
     test_raster("placeholder.png",
                 function() grid.pattern_placeholder(type="bear"))
 
