@@ -104,6 +104,7 @@ See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more informati
 }
 \examples{
  if (require("grid")) {
+   # geometry-based patterns
    grid.newpage()
    grid.pattern()
    grid.newpage()
@@ -117,9 +118,17 @@ See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more informati
    grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135)
    grid.newpage()
    grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5)
+
+   # array-based patterns
+   if (requireNamespace("ambient")) {
+     grid::grid.newpage()
+     grid.pattern_ambient(fill = "green", fill2 = "blue")
+   }
    grid.newpage()
+   grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
    logo_filename <- system.file("img", "Rlogo.png" , package="png")
-   grid.pattern("image", filename=logo_filename, type="tile")
+   grid.newpage()
+   grid.pattern("image", filename=logo_filename, type="fit")
    grid.newpage()
    grid.pattern("magick", type="octagons", fill="blue", scale=2)
    \dontrun{
@@ -127,8 +136,6 @@ See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more informati
      grid.newpage()
      grid.pattern("placeholder", type="bear")
    }
-   grid.newpage()
-   grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
    grid.newpage()
    grid.pattern("plasma", fill="green")
  }

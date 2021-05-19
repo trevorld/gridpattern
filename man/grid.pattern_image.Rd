@@ -87,8 +87,14 @@ Affected by \code{scale} and \code{gravity}.}
 }
 }
 \examples{
-   logo_filename <- system.file("img", "Rlogo.png" , package="png")
-   grid.pattern_image(filename=logo_filename, type="tile")
+ logo_filename <- system.file("img", "Rlogo.png" , package = "png")
+ grid.pattern_image(filename = logo_filename, type = "fit")
+ \dontrun{
+   # "tile" type image pattern depends on magick::magick_image_readpath()
+   # which is not reliable across platforms
+   grid::grid.newpage()
+   grid.pattern_image(filename = logo_filename, type = "tile")
+ }
 }
 \seealso{
 The \code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html}

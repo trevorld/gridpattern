@@ -21,8 +21,14 @@
 #' @param filter Filter to use when scaling. `magick::filter_types()` returns a vector of supported values.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'    logo_filename <- system.file("img", "Rlogo.png" , package="png")
-#'    grid.pattern_image(filename=logo_filename, type="tile")
+#'  logo_filename <- system.file("img", "Rlogo.png" , package = "png")
+#'  grid.pattern_image(filename = logo_filename, type = "fit")
+#'  \dontrun{
+#'    # "tile" type image pattern depends on magick::magick_image_readpath()
+#'    # which is not reliable across platforms
+#'    grid::grid.newpage()
+#'    grid.pattern_image(filename = logo_filename, type = "tile")
+#'  }
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html>
 #' @export
 grid.pattern_image <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
