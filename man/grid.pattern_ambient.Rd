@@ -5,8 +5,8 @@
 \title{Ambient patterned grobs}
 \usage{
 grid.pattern_ambient(
-  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
-  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
+  x = c(0, 0, 1, 1),
+  y = c(1, 0, 0, 1),
   id = 1L,
   ...,
   type = "simplex",
@@ -99,9 +99,11 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \examples{
  if (requireNamespace("ambient")) {
-   grid.pattern_ambient(fill = "green", fill2 = "blue")
+   x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+   y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+   grid.pattern_ambient(x_hex, y_hex, fill = "green", fill2 = "blue")
    grid::grid.newpage()
-   grid.pattern_ambient(fill = "green", fill2 = "blue", type = "cubic")
+   grid.pattern_ambient(x_hex, y_hex, fill = "green", fill2 = "blue", type = "cubic")
  }
 }
 \seealso{

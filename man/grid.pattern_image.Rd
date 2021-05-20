@@ -5,8 +5,8 @@
 \title{Image patterned grobs}
 \usage{
 grid.pattern_image(
-  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
-  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
+  x = c(0, 0, 1, 1),
+  y = c(1, 0, 0, 1),
   id = 1L,
   ...,
   filename = "",
@@ -87,13 +87,15 @@ Affected by \code{scale} and \code{gravity}.}
 }
 }
 \examples{
+ x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+ y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
  logo_filename <- system.file("img", "Rlogo.png" , package = "png")
- grid.pattern_image(filename = logo_filename, type = "fit")
+ grid.pattern_image(x_hex, y_hex, filename = logo_filename, type = "fit")
  \dontrun{
    # "tile" type image pattern depends on magick::magick_image_readpath()
    # which is not reliable across platforms
    grid::grid.newpage()
-   grid.pattern_image(filename = logo_filename, type = "tile")
+   grid.pattern_image(x_hex, y_hex, filename = logo_filename, type = "tile")
  }
 }
 \seealso{

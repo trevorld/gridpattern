@@ -25,30 +25,32 @@ test_that("array patterns works as expected", {
     skip_on_cran()
     skip_if_not_installed("magick")
     skip_if_not(capabilities("cairo"))
+    x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+    y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     test_raster("gradient.png",
-                function() grid.pattern_gradient(fill="blue", fill2="green", orientation="radial"))
+                function() grid.pattern_gradient(x, y, fill="blue", fill2="green", orientation="radial"))
     test_raster("gradient_horizontal.png",
-                function() grid.pattern_gradient(fill="blue", fill2="green", orientation="horizontal"))
+                function() grid.pattern_gradient(x, y, fill="blue", fill2="green", orientation="horizontal"))
     logo_filename   <- system.file("img", "Rlogo.png" , package="png")
     test_raster("image.png", function() {
-                    grid.pattern_image(filename=logo_filename, type="fit")
+                    grid.pattern_image(x, y, filename=logo_filename, type="fit")
                 })
     test_raster("image_expand.png", function() {
-                    grid.pattern_image(filename=logo_filename, type="expand")
+                    grid.pattern_image(x, y, filename=logo_filename, type="expand")
                 })
     test_raster("image_tile.png", function() {
-                    grid.pattern_image(filename=logo_filename, type="tile", scale=-2)
+                    grid.pattern_image(x, y, filename=logo_filename, type="tile", scale=-2)
                 })
     test_raster("image_none.png", function() {
-                    grid.pattern_image(filename=logo_filename, type="none", scale=-1)
+                    grid.pattern_image(x, y, filename=logo_filename, type="none", scale=-1)
                 })
     test_raster("image_squish.png", function() {
-                    grid.pattern_image(filename=logo_filename, type="squish")
+                    grid.pattern_image(x, y, filename=logo_filename, type="squish")
                 })
     test_raster("magick.png",
-                function() grid.pattern_magick(type="octagons", fill="blue", scale=2))
+                function() grid.pattern_magick(x, y, type="octagons", fill="blue", scale=2))
     test_raster("placeholder.png",
-                function() grid.pattern_placeholder(type="bear"))
+                function() grid.pattern_placeholder(x, y, type="bear"))
 
     # plasma images are random and doesn't seem to be a way to set a seed
     tmpfile <- tempfile(fileext = ".png")
@@ -73,9 +75,9 @@ test_that("array patterns works as expected", {
       simple_array
     }
     options(ggpattern_array_funcs = list(simple = create_pattern_simple))
-    test_raster("simple.png", function() grid.pattern("simple", type = "b"))
+    test_raster("simple.png", function() grid.pattern("simple", x, y, type = "b"))
 
     # ambient
     skip_if_not_installed("ambient")
-    test_raster("ambient.png", function() grid.pattern_ambient(fill = "green", fill2 = "blue", seed = 42))
+    test_raster("ambient.png", function() grid.pattern_ambient(x, y, fill = "green", fill2 = "blue", seed = 42))
 })

@@ -16,8 +16,8 @@ An object of class \code{character} of length 19.
 }
 \usage{
 grid.pattern_magick(
-  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
-  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
+  x = c(0, 0, 1, 1),
+  y = c(1, 0, 0, 1),
   id = 1L,
   ...,
   type = "hexagons",
@@ -93,7 +93,9 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 plus subsets for shaded intensity and stripes.
 }
 \examples{
-  grid.pattern_magick(type="octagons", fill="blue", scale=2)
+  x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+  y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+  grid.pattern_magick(x_hex, y_hex, type="octagons", fill="blue", scale=2)
   print(magick_pattern_names)
   print(magick_pattern_intensity_names)
   print(magick_pattern_stripe_names)

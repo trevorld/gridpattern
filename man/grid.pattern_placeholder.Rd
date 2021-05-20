@@ -10,8 +10,8 @@ An object of class \code{character} of length 26.
 }
 \usage{
 grid.pattern_placeholder(
-  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
-  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
+  x = c(0, 0, 1, 1),
+  y = c(1, 0, 0, 1),
   id = 1L,
   ...,
   type = "kitten",
@@ -72,8 +72,10 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \examples{
   \dontrun{
+    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     # requires internet connection to download from placeholder image websites
-    grid.pattern_placeholder(type="bear")
+    grid.pattern_placeholder(x_hex, y_hex, type="bear")
   }
   print(placeholder_names)
 }

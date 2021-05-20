@@ -5,8 +5,8 @@
 \title{Stripe patterned grobs}
 \usage{
 grid.pattern_stripe(
-  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
-  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
+  x = c(0, 0, 1, 1),
+  y = c(1, 0, 0, 1),
   id = 1L,
   ...,
   colour = gp$col \%||\% "grey20",
@@ -78,9 +78,12 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \examples{
   if (require("grid")) {
-    grid.pattern_stripe(colour = "green", fill = "blue", density = 0.5)
+    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+    grid.pattern_stripe(x_hex, y_hex, colour = "green", fill = "blue", density = 0.5)
     grid.newpage()
-    grid.pattern_stripe(density = 0.3, gp = gpar(col = "blue", fill = "yellow"))
+    grid.pattern_stripe(x_hex, y_hex, density = 0.3,
+                        gp = gpar(col = "blue", fill = "yellow"))
   }
 }
 \seealso{

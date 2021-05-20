@@ -5,8 +5,8 @@
 \title{Plasma patterned grobs}
 \usage{
 grid.pattern_plasma(
-  x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
-  y = c(1, 0.75, 0.25, 0, 0.25, 0.75),
+  x = c(0, 0, 1, 1),
+  y = c(1, 0, 0, 1),
   id = 1L,
   ...,
   fill = gp$fill \%||\% "grey80",
@@ -67,7 +67,7 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \examples{
   x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
   y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-  grid.pattern_plasma(fill = "green")
+  grid.pattern_plasma(x_hex, y_hex, fill = "green")
 }
 \seealso{
 The \code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}

@@ -8,14 +8,16 @@ test_that("geometry patterns works as expected", {
 
     expect_doppelganger("none", function() grid.pattern("none"))
 
+    x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+    y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     expect_doppelganger("crosshatch", function()
-        grid.pattern_crosshatch(color="blue", fill="yellow", density = 0.5, angle = 135))
+        grid.pattern_crosshatch(x, y, color="blue", fill="yellow", density = 0.5, angle = 135))
 
     expect_doppelganger("circle", function()
-        grid.pattern_circle(color="blue", fill="yellow", size = 2, density = 0.5))
+        grid.pattern_circle(x, y, color="blue", fill="yellow", size = 2, density = 0.5))
 
     expect_doppelganger("stripe", function()
-        grid.pattern_stripe(color="blue", fill="yellow", density = 0.5, angle = 135))
+        grid.pattern_stripe(x, y, color="blue", fill="yellow", density = 0.5, angle = 135))
 
     expect_doppelganger("stripe_gpar", function() {
         x <- c(0.1, 0.6, 0.8, 0.3)
@@ -35,6 +37,8 @@ test_that("geometry patterns works as expected", {
         )
     }
     options(ggpattern_geometry_funcs = list(centroid = centroid_dot_pattern))
+    x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+    y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     expect_doppelganger("centroid", function()
-        grid.pattern("centroid", fill="blue", size = 5))
+        grid.pattern("centroid", x, y, fill="blue", size = 5))
 })

@@ -48,47 +48,52 @@
 #'         If `draw` is `TRUE` then `grid.pattern()` also draws to the graphic device as a side effect.
 #' @examples
 #'  if (require("grid")) {
+#'    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'    # geometry-based patterns
 #'    grid.newpage()
 #'    grid.pattern()
 #'    grid.newpage()
-#'    grid.pattern("stripe", colour="blue", fill="yellow", density = 0.5, angle = 135)
+#'    grid.pattern("stripe", x_hex, y_hex,
+#'                 colour="blue", fill="yellow", density = 0.5, angle = 135)
 #'    grid.newpage()
 #'    # In some cases can also alternatively use "gpar()" to specify colour and line attributes
 #'    x <- c(0.1, 0.6, 0.8, 0.3)
 #'    y <- c(0.2, 0.3, 0.8, 0.5)
 #'    grid.pattern("stripe", x, y, gp = gpar(col="blue", fill="red", lwd=2))
 #'    grid.newpage()
-#'    grid.pattern("crosshatch", colour="blue", fill="yellow", density = 0.5, angle = 135)
+#'    grid.pattern("crosshatch", x_hex, y_hex,
+#'                 colour="blue", fill="yellow", density = 0.5, angle = 135)
 #'    grid.newpage()
-#'    grid.pattern("circle", colour="blue", fill="yellow", size = 2, density = 0.5)
+#'    grid.pattern("circle", x_hex, y_hex,
+#'                 colour="blue", fill="yellow", size = 2, density = 0.5)
 #'
 #'    # array-based patterns
 #'    if (requireNamespace("ambient")) {
 #'      grid::grid.newpage()
-#'      grid.pattern_ambient(fill = "green", fill2 = "blue")
+#'      grid.pattern("ambient", x_hex, y_hex, fill = "green", fill2 = "blue")
 #'    }
 #'    grid.newpage()
-#'    grid.pattern("gradient", fill="blue", fill2="green", orientation="radial")
+#'    grid.pattern("gradient", x_hex, y_hex,
+#'                 fill="blue", fill2="green", orientation="radial")
 #'    logo_filename <- system.file("img", "Rlogo.png" , package="png")
 #'    grid.newpage()
-#'    grid.pattern("image", filename=logo_filename, type="fit")
+#'    grid.pattern("image", x_hex, y_hex, filename=logo_filename, type="fit")
 #'    grid.newpage()
-#'    grid.pattern("magick", type="octagons", fill="blue", scale=2)
+#'    grid.pattern("magick", x_hex, y_hex, type="octagons", fill="blue", scale=2)
 #'    \dontrun{
 #'      # requires internet connection to download from placeholder image websites
 #'      grid.newpage()
-#'      grid.pattern("placeholder", type="bear")
+#'      grid.pattern("placeholder", x_hex, y_hex, type="bear")
 #'    }
 #'    grid.newpage()
-#'    grid.pattern("plasma", fill="green")
+#'    grid.pattern("plasma", x_hex, y_hex, fill="green")
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
 #'          for more details on the patterns and their parameters.
 #' @export
 grid.pattern <- function(pattern = "stripe",
-                         x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
-                         y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
+                         x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                          legend = FALSE, prefix = "pattern_",
                          default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     grob <- patternGrob(pattern, x, y, id, ...,
@@ -101,8 +106,7 @@ grid.pattern <- function(pattern = "stripe",
 #' @rdname grid.pattern
 #' @export
 patternGrob <- function(pattern = "strip",
-                        x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
-                        y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
+                        x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                         legend = FALSE, prefix = "pattern_",
                         default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     params <- get_params(..., pattern = pattern, prefix = prefix, gp = gp)

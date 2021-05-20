@@ -21,18 +21,19 @@
 #' @param filter Filter to use when scaling. `magick::filter_types()` returns a vector of supported values.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
+#'  x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'  y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'  logo_filename <- system.file("img", "Rlogo.png" , package = "png")
-#'  grid.pattern_image(filename = logo_filename, type = "fit")
+#'  grid.pattern_image(x_hex, y_hex, filename = logo_filename, type = "fit")
 #'  \dontrun{
 #'    # "tile" type image pattern depends on magick::magick_image_readpath()
 #'    # which is not reliable across platforms
 #'    grid::grid.newpage()
-#'    grid.pattern_image(filename = logo_filename, type = "tile")
+#'    grid.pattern_image(x_hex, y_hex, filename = logo_filename, type = "tile")
 #'  }
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html>
 #' @export
-grid.pattern_image <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
-                               y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
+grid.pattern_image <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                filename = "", type = "fit", scale = 1,
                                gravity = "center", filter = "lanczos",
                                alpha = gp$alpha %||% 1, aspect_ratio = 1, key_scale_factor = 1, res = 72,

@@ -6,14 +6,16 @@
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
 #'   if (require("grid")) {
-#'     grid.pattern_stripe(colour = "green", fill = "blue", density = 0.5)
+#'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'     grid.pattern_stripe(x_hex, y_hex, colour = "green", fill = "blue", density = 0.5)
 #'     grid.newpage()
-#'     grid.pattern_stripe(density = 0.3, gp = gpar(col = "blue", fill = "yellow"))
+#'     grid.pattern_stripe(x_hex, y_hex, density = 0.3,
+#'                         gp = gpar(col = "blue", fill = "yellow"))
 #'   }
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html>
 #' @export
-grid.pattern_stripe <- function(x = c(0.5, 0.067, 0.067, 0.5, 0.933, 0.933),
-                                y = c(1.0, 0.75, 0.25, 0.0, 0.25, 0.75), id = 1L, ...,
+grid.pattern_stripe <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
                                 density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
                                 alpha = gp$alpha %||% 1, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
