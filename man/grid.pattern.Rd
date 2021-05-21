@@ -21,7 +21,7 @@ grid.pattern(
 )
 
 patternGrob(
-  pattern = "strip",
+  pattern = "stripe",
   x = c(0, 0, 1, 1),
   y = c(1, 0, 0, 1),
   id = 1L,
@@ -111,7 +111,7 @@ See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more informati
    grid.pattern()
    grid.newpage()
    grid.pattern("stripe", x_hex, y_hex,
-                colour="blue", fill="yellow", density = 0.5, angle = 135)
+                colour="black", fill=c("yellow", "blue"), density = 0.5)
    grid.newpage()
    # In some cases can also alternatively use "gpar()" to specify colour and line attributes
    x <- c(0.1, 0.6, 0.8, 0.3)
@@ -119,7 +119,7 @@ See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more informati
    grid.pattern("stripe", x, y, gp = gpar(col="blue", fill="red", lwd=2))
    grid.newpage()
    grid.pattern("crosshatch", x_hex, y_hex,
-                colour="blue", fill="yellow", density = 0.5, angle = 135)
+                colour="black", fill="yellow", fill2="blue", angle=45)
    grid.newpage()
    grid.pattern("circle", x_hex, y_hex,
                 colour="blue", fill="yellow", size = 2, density = 0.5)

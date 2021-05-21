@@ -55,7 +55,7 @@
 #'    grid.pattern()
 #'    grid.newpage()
 #'    grid.pattern("stripe", x_hex, y_hex,
-#'                 colour="blue", fill="yellow", density = 0.5, angle = 135)
+#'                 colour="black", fill=c("yellow", "blue"), density = 0.5)
 #'    grid.newpage()
 #'    # In some cases can also alternatively use "gpar()" to specify colour and line attributes
 #'    x <- c(0.1, 0.6, 0.8, 0.3)
@@ -63,7 +63,7 @@
 #'    grid.pattern("stripe", x, y, gp = gpar(col="blue", fill="red", lwd=2))
 #'    grid.newpage()
 #'    grid.pattern("crosshatch", x_hex, y_hex,
-#'                 colour="blue", fill="yellow", density = 0.5, angle = 135)
+#'                 colour="black", fill="yellow", fill2="blue", angle=45)
 #'    grid.newpage()
 #'    grid.pattern("circle", x_hex, y_hex,
 #'                 colour="blue", fill="yellow", size = 2, density = 0.5)
@@ -105,7 +105,7 @@ grid.pattern <- function(pattern = "stripe",
 
 #' @rdname grid.pattern
 #' @export
-patternGrob <- function(pattern = "strip",
+patternGrob <- function(pattern = "stripe",
                         x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                         legend = FALSE, prefix = "pattern_",
                         default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
@@ -179,7 +179,10 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_aspect_ratio <- l$pattern_aspect_ratio %||% NA_real_
     l$pattern_density <- l$pattern_density %||% 0.2
     l$pattern_filename <- l$pattern_filename %||% ""
-    l$pattern_fill2 <- l$pattern_fill2 %||% "#4169E1"
+    l$pattern_fill2 <- l$pattern_fill2 %||%
+        switch(pattern,
+               crosshatch = l$pattern_fill,
+               "#4169E1")
     l$pattern_filter <- l$pattern_filter %||% switch(pattern, magick = "box", "lanczos")
     l$pattern_gravity <- l$pattern_gravity %||% "center"
     l$pattern_key_scale_factor <- l$pattern_key_scale_factor %||% 1
@@ -195,15 +198,23 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_xoffset <- l$pattern_xoffset %||% 0
     l$pattern_yoffset <- l$pattern_yoffset %||% 0
 
+    l$pattern_res <- l$pattern_res %||% 72 # in PPI
+
     # Additional ambient defaults
     l$pattern_frequency <- l$pattern_frequency %||% 0.01 # all
     l$pattern_interpolator <- l$pattern_interpolator %||% "quintic" # perlin, simplex, value
-    l$pattern_fractal <- l$pattern_fractal %||% "fbm" # all but white
+    l$pattern_fractal <- l$pattern_fractal %||%
+        switch(l$pattern_type,
+               worley = "none",
+               "fbm")
     l$pattern_pertubation <- l$pattern_pertubation %||% "none" # all
     l$pattern_octaves <- l$pattern_octaves %||% 3 # all but white
     l$pattern_lacunarity <- l$pattern_lacunarity %||% 2 # all but white
     l$pattern_gain <- l$pattern_gain %||% 0.5 # all but white
     l$pattern_amplitude <- l$pattern_amplitude %||% 1 # all
+    l$pattern_value <- l$pattern_value %||% "cell"
+    l$pattern_distance_ind <- l$pattern_distance_ind %||% c(1, 2)
+    l$pattern_jitter <- l$pattern_jitter %||% 0.45
     l$pattern_seed <- l$pattern_seed %||% NA_integer_
 
     l
