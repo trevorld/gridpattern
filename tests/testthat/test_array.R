@@ -80,4 +80,9 @@ test_that("array patterns works as expected", {
     # ambient
     skip_if_not_installed("ambient")
     test_raster("ambient.png", function() grid.pattern_ambient(x, y, fill = "green", fill2 = "blue", seed = 42))
+    test_raster("ambient_worley.png",
+                function() {
+                    grid.pattern_ambient(x, y, type = "worley",
+                                         fill = "green", fill2 = "blue", seed = 42)
+                })
 })
