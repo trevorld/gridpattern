@@ -14,14 +14,17 @@ grid.pattern_ambient(
   fill2 = "#4169E1",
   frequency = 0.01,
   interpolator = "quintic",
-  fractal = "fbm",
+  fractal = switch(type, worley = "none", "fbm"),
   octaves = 3,
   lacunarity = 2,
   gain = 0.5,
   pertubation = "none",
   pertubation_amplitude = 1,
-  res = 72,
+  value = "cell",
+  distance_ind = c(1, 2),
+  jitter = 0.45,
   seed = NA_integer_,
+  res = 72,
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -72,10 +75,28 @@ warping.}
 \item{pertubation_amplitude}{The maximal pertubation distance from the
 origin. Ignored if \code{pertubation = 'none'}. Defaults to \code{1}.}
 
-\item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.}
+\item{value}{The noise value to return. Either
+\itemize{
+\item \code{'value'} (default) A random value associated with the closest point
+\item \code{'distance'} The distance to the closest point
+\item \code{'distance2'} The distance to the nth closest point (n given by
+\code{distance_ind[1]})
+\item \code{'distance2add'} Addition of the distance to the nth and mth closest point given in \code{distance_ind}
+\item \code{'distance2sub'} Substraction of the distance to the nth and mth closest point given in \code{distance_ind}
+\item \code{'distance2mul'} Multiplication of the distance to the nth and mth closest point given in \code{distance_ind}
+\item \code{'distance2div'} Division of the distance to the nth and mth closest point given in \code{distance_ind}
+}}
+
+\item{distance_ind}{Reference to the nth and mth closest points that should
+be used when calculating \code{value}.}
+
+\item{jitter}{The maximum distance a point can move from its start position
+during sampling of cell points.}
 
 \item{seed}{The seed to use for the noise. If \code{NULL} a random seed will be
 used}
+
+\item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}

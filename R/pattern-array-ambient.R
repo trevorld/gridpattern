@@ -5,6 +5,7 @@
 #' @param type Either cubic, perlin, simplex, value, white, or worley
 #' @inheritParams grid.pattern_gradient
 #' @inheritParams ambient::noise_simplex
+#' @inheritParams ambient::noise_worley
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
 #'  if (requireNamespace("ambient")) {
@@ -20,17 +21,20 @@
 #' @export
 grid.pattern_ambient <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                  type = "simplex", fill = gp$fill %||% "grey80", fill2 = "#4169E1",
-                                 frequency = 0.01, interpolator = "quintic", fractal = "fbm",
+                                 frequency = 0.01, interpolator = "quintic",
+                                 fractal = switch(type, worley = "none", "fbm"),
                                  octaves = 3, lacunarity = 2, gain = 0.5,
                                  pertubation = "none", pertubation_amplitude = 1,
-                                 res = 72, seed = NA_integer_,
+                                 value = "cell", distance_ind = c(1, 2), jitter = 0.45,
+                                 seed = NA_integer_, res = 72,
                                  default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     grid.pattern("ambient", x, y, id,
                  type = type, fill = fill, fill2 = fill2,
                  frequency = frequency, interpolator = interpolator, fractal = fractal,
                  octaves = octaves, lacunarity = lacunarity, gain = gain,
                  pertubation = pertubation, pertubation_amplitude = pertubation_amplitude,
-                 res = res, seed = seed,
+                 value = value, distance_ind = distance_ind, jitter = jitter,
+                 seed = seed, res = res,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
@@ -91,6 +95,11 @@ ambient_fn <- function(params) {
         args$octaves <- params$pattern_octaves
         args$lacunarity <- params$pattern_lacunarity
         args$gain <- params$pattern_gain
+    }
+    if (type == "worley") {
+        args$value <- params$pattern_value
+        args$distance_ind <- params$pattern_distance_ind
+        args$jitter <- params$pattern_jitter
     }
     seed <- params$pattern_seed
     function(dim) {
