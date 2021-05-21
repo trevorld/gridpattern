@@ -11,6 +11,7 @@ grid.pattern_crosshatch(
   ...,
   colour = gp$col \%||\% "grey20",
   fill = gp$fill \%||\% "grey80",
+  fill2 = fill,
   angle = 30,
   density = 0.2,
   spacing = 0.05,
@@ -39,6 +40,8 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{colour}{Stroke colour}
 
 \item{fill}{Fill colour}
+
+\item{fill2}{The fill colour for the \dQuote{top} crosshatch lines.}
 
 \item{angle}{Rotation angle in degrees}
 
@@ -80,7 +83,8 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
   if (require("grid")) {
     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-    grid.pattern_crosshatch(x_hex, y_hex, colour = "green", fill = "blue", density = 0.5)
+    grid.pattern_crosshatch(x_hex, y_hex, colour = "black", fill = "blue",
+                            fill2 = "yellow", density = 0.5)
     grid.newpage()
     grid.pattern_crosshatch(x_hex, y_hex, density = 0.3,
                             gp = gpar(col = "blue", fill = "yellow"))
