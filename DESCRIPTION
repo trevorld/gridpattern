@@ -1,11 +1,11 @@
 Package: gridpattern
 Type: Package
 Title: 'grid' Pattern Grobs
-Version: 0.1.0-22
+Version: 0.1.0-23
 Authors@R: c(person("Mike", "FC", role = "aut", comment = "Patterns extracted from ggpattern"),
         person("Trevor L", "Davis", role=c("aut", "cre"), email="trevor.l.davis@gmail.com"),
         person("Thomas Lin", "Pedersen", role = "ctb", comment = "new_data_frame() copied from ggplot2"))
-Description: 'grid' grobs that fill in a user-defined area with a pattern.  Supports all geometric and image-based patterns from the 'ggpattern' package included custom user-defined patterns.
+Description: 'grid' grobs that fill in a user-defined area with various patterns.  Includes enhanced versions of geometric and image-based patterns originally contained in the 'ggpattern' package plus supports custom user-defined patterns.
 URL: https://trevorldavis.com/R/gridpattern/, https://github.com/trevorld/gridpattern
 BugReports: https://github.com/trevorld/gridpattern/issues
 License: MIT + file LICENSE
