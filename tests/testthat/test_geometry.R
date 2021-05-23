@@ -41,4 +41,10 @@ test_that("geometry patterns works as expected", {
     y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     expect_doppelganger("centroid", function()
         grid.pattern("centroid", x, y, fill="blue", size = 5))
+
+    x <- c(0, 0, 0.5, 0.5, 0.5, 0.5, 1, 1)
+    y <- c(0, 0.5, 0.5, 0, 0.5, 1, 1, 0.5)
+    id <- rep(1:2, each = 4L)
+    expect_doppelganger("two_id", function()
+        grid.pattern(x = x, y = y, id = id))
 })
