@@ -34,23 +34,6 @@ is_polygon_df <- function(x) {
     (is.data.frame(x) && all(c('x', 'y', 'id') %in% names(x)))
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Calculate the bounding box of a polygon_df object
-##
-## @param polygon_df polygon_df data.frame
-##
-## @return 4-element numeric vector of \code{c(xmin, ymin, xmax, ymax)}
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-calculate_bbox_polygon_df <- function(polygon_df) {
-
-  stopifnot(is_polygon_df(polygon_df))
-
-  x <- range(polygon_df$x)
-  y <- range(polygon_df$y)
-  c(x[1], y[1], x[2], y[2])
-}
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Convert a \code{polygon_df} to \code{grid::polygonGrob} object
 ##

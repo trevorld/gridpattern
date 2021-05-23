@@ -190,13 +190,7 @@ create_pattern_circles <- function(params, boundary_df, aspect_ratio, legend = F
 
   stopifnot(is_polygon_df(boundary_df))
 
-  boundary_grob <- convert_polygon_df_to_polygon_grob(boundary_df)
-  bbox          <- calculate_bbox_polygon_df(boundary_df)
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Create an SF object with points covering the entire viewpoint
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  circle_grob <- create_circles_grob(
+  create_circles_grob(
     boundary_df  = boundary_df,
     params       = params,
     angle        = params$pattern_angle,
@@ -206,6 +200,4 @@ create_pattern_circles <- function(params, boundary_df, aspect_ratio, legend = F
     yoffset      = params$pattern_yoffset,
     aspect_ratio = aspect_ratio
   )
-
-  circle_grob
 }
