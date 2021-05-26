@@ -27,11 +27,10 @@ grid.pattern_placeholder <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## All placeholder names
+
 #' @rdname grid.pattern_placeholder
 #' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 placeholder_names <- c(
   "kitten", "kittenbw", "picsum", "picsumbw", "murray", "murraybw",
   "cage", "cagebw", "bear", "bearbw", "seagal", "seagalbw", "placeholderbw",
@@ -40,34 +39,29 @@ placeholder_names <- c(
   'keanu', 'keanubw'
 )
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Fetch a placeholder image of the correct dimensions
-##
-## Fetch a placeholder image from one of the sites used by web designers.  Append
-## 'bw' to the name to fetch greyscale images instead of colour.
-##
-## \describe{
-## \item{\code{kitten}}{ - Kittens from \url{https://placekitten.com/}}
-## \item{\code{picsum}}{ - Random images from \url{https://picsum.photos/}}
-## \item{\code{murray}}{ - Bill Murrary images from \url{http://www.fillmurray.com}}
-## \item{\code{cage}}{ - Nicholas Cage images from \url{https://www.placecage.com/}}
-## \item{\code{bear}}{ - Bears from \url{https://placebear.com/}}
-## \item{\code{seagal}}{ - Steven Seagal images from \url{https://www.stevensegallery.com/}}
-## \item{\code{flickr}}{ - Images from Flickr \url{https://loremflickr.com/}}
-## \item{\code{beard}}{ - Beards! \url{http://placebeard.it/}}
-## \item{\code{lorempixel}}{ - Random images from \url{http://lorempixel.com/}}
-## \item{\code{placeimg}}{ - Random images from \url{http://placeimg.com/}}
-## \item{\code{dummy}}{ - Numeric placeholder images from \url{https://dummyimage.com}}
-## }
-##
-##
-## @param width,height image dimensions
-## @param type specify the server from which to fetch images. default: 'kitten'
-##
-##
-## @import magick
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Fetch a placeholder image of the correct dimensions
+#'
+#' Fetch a placeholder image from one of the sites used by web designers.  Append
+#' 'bw' to the name to fetch greyscale images instead of colour.
+#'
+#' \describe{
+#'   \item{\code{kitten}}{ - Kittens from \url{https://placekitten.com/}}
+#'   \item{\code{picsum}}{ - Random images from \url{https://picsum.photos/}}
+#'   \item{\code{murray}}{ - Bill Murrary images from \url{http://www.fillmurray.com}}
+#'   \item{\code{cage}}{ - Nicholas Cage images from \url{https://www.placecage.com/}}
+#'   \item{\code{bear}}{ - Bears from \url{https://placebear.com/}}
+#'   \item{\code{seagal}}{ - Steven Seagal images from \url{https://www.stevensegallery.com/}}
+#'   \item{\code{flickr}}{ - Images from Flickr \url{https://loremflickr.com/}}
+#'   \item{\code{beard}}{ - Beards! \url{http://placebeard.it/}}
+#'   \item{\code{lorempixel}}{ - Random images from \url{http://lorempixel.com/}}
+#'   \item{\code{placeimg}}{ - Random images from \url{http://placeimg.com/}}
+#'   \item{\code{dummy}}{ - Numeric placeholder images from \url{https://dummyimage.com}}
+#' }
+#'
+#' @param width,height image dimensions
+#' @param type specify the server from which to fetch images. default: 'kitten'
+#'
+#' @noRd
 fetch_placeholder_img <- function(width = 100, height = 100, type = 'kitten') {
 
   width  <- as.integer(width)
@@ -111,13 +105,13 @@ fetch_placeholder_img <- function(width = 100, height = 100, type = 'kitten') {
   img_read_memoised(filename = img_url)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Fetch a placeholder image of the correct size and return as an array
-##
-## @inheritParams create_gradient_as_array
-##
-## @return RGBA array
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Fetch a placeholder image of the correct size and return as an array
+#'
+#' @inheritParams create_gradient_as_array
+#'
+#' @return RGBA array
+#'
+#' @noRd
 fetch_placeholder_array <- function(width, height, params, legend) {
   if (legend) {
     img <- magick::image_blank(width, height)

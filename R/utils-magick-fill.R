@@ -1,22 +1,21 @@
 fill_types <- c('fit', 'expand', 'squish', 'none', 'tile')
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Resize image, preserving aspect, such that one of target width or height is achieved without distoring or cropping.
-##
-## The canvas of the image will be expanded to cover the full width/height but
-## will be transparent.
-##
-## @inheritParams fill_area_with_img
-##
-## @return magick image of the required dimensions
-##
-## @examples
-## \dontrun{
-## filename <- system.file("img", "Rlogo.png", package="png")
-## img <- magick::image_read(filename)
-## fill_area_with_img_fit(img, 100, 400)
-## }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Resize image, preserving aspect, such that one of target width or height is achieved without distoring or cropping.
+#'
+#' The canvas of the image will be expanded to cover the full width/height but
+#' will be transparent.
+#'
+#' @inheritParams fill_area_with_img
+#'
+#' @return magick image of the required dimensions
+#'
+#' @examples
+#' \dontrun{
+#'   filename <- system.file("img", "Rlogo.png", package="png")
+#'   img <- magick::image_read(filename)
+#'   fill_area_with_img_fit(img, 100, 400)
+#' }
+#' @noRd
 fill_area_with_img_fit <- function(img, width, height, gravity = 'Center', filter = 'lanczos') {
 
   geometry <- magick::geometry_size_pixels(width = width, height = height, preserve_aspect = TRUE)
@@ -26,23 +25,22 @@ fill_area_with_img_fit <- function(img, width, height, gravity = 'Center', filte
   img
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Resize image, ignoring aspect, such that both the target width and height is achieved.
-##
-## Unless the width and height are carefully chosen, this operation will distort
-## the image to force it to fit the dimensions
-##
-## @inheritParams fill_area_with_img
-##
-## @return magick image of the required dimensions
-##
-## @examples
-## \dontrun{
-## filename <- system.file("img", "Rlogo.png", package="png")
-## img <- magick::image_read(filename)
-## fill_area_with_img_squish(img, 100, 400)
-## }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Resize image, ignoring aspect, such that both the target width and height is achieved.
+#'
+#' Unless the width and height are carefully chosen, this operation will distort
+#' the image to force it to fit the dimensions
+#'
+#' @inheritParams fill_area_with_img
+#'
+#' @return magick image of the required dimensions
+#'
+#' @examples
+#' \dontrun{
+#'   filename <- system.file("img", "Rlogo.png", package="png")
+#'   img <- magick::image_read(filename)
+#'   fill_area_with_img_squish(img, 100, 400)
+#' }
+#' @noRd
 fill_area_with_img_squish <- function(img, width, height, filter='lanczos') {
   geometry <- magick::geometry_size_pixels(width = width, height = height,
                                            preserve_aspect = FALSE)
@@ -51,23 +49,22 @@ fill_area_with_img_squish <- function(img, width, height, filter='lanczos') {
 }
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Resize image, preserving aspect, such that when cropped, the target width and height is achieved.
-##
-## Unless the width and height are carefully chosen, this operation will distort
-## the image to force it to fit the dimensions
-##
-## @inheritParams fill_area_with_img
-##
-## @return magick image of the required dimensions
-##
-## @examples
-## \dontrun{
-## filename <- system.file("img", "Rlogo.png", package="png")
-## img <- magick::image_read(filename)
-## fill_area_with_img_expand(img, 100, 400)
-## }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Resize image, preserving aspect, such that when cropped, the target width and height is achieved.
+#'
+#' Unless the width and height are carefully chosen, this operation will distort
+#' the image to force it to fit the dimensions
+#'
+#' @inheritParams fill_area_with_img
+#'
+#' @return magick image of the required dimensions
+#'
+#' @examples
+#' \dontrun{
+#'   filename <- system.file("img", "Rlogo.png", package="png")
+#'   img <- magick::image_read(filename)
+#'   fill_area_with_img_expand(img, 100, 400)
+#' }
+#' @noRd
 fill_area_with_img_expand <- function(img, width, height, gravity = 'Center', filter='lanczos') {
   img_info   <- magick::image_info(img)
   img_aspect <- img_info$width/img_info$height
@@ -95,23 +92,22 @@ fill_area_with_img_expand <- function(img, width, height, gravity = 'Center', fi
 }
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Resize image canvas to the target width/height, and use gravity to place the undistorted image
-##
-## Unless the width and height are carefully chosen, this operation will distort
-## the image to force it to fit the dimensions
-##
-## @inheritParams fill_area_with_img
-##
-## @return magick image of the required dimensions
-##
-## @examples
-## \dontrun{
-## filename <- system.file("img", "Rlogo.png", package="png")
-## img <- magick::image_read(filename)
-## fill_area_with_img_none(img, 100, 400)
-## }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Resize image canvas to the target width/height, and use gravity to place the undistorted image
+#'
+#' Unless the width and height are carefully chosen, this operation will distort
+#' the image to force it to fit the dimensions
+#'
+#' @inheritParams fill_area_with_img
+#'
+#' @return magick image of the required dimensions
+#'
+#' @examples
+#' \dontrun{
+#'   filename <- system.file("img", "Rlogo.png", package="png")
+#'   img <- magick::image_read(filename)
+#'   fill_area_with_img_none(img, 100, 400)
+#' }
+#' @noRd
 fill_area_with_img_none <- function(img, width, height, gravity = 'Center',
                                     filter = 'lanczos', scale = 1) {
 
@@ -145,23 +141,22 @@ update_scale <- function(scale, img, width, height) {
   }
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Tile image to fill the specified area
-##
-## Unless the width and height are carefully chosen, this operation will distort
-## the image to force it to fit the dimensions
-##
-## @inheritParams fill_area_with_img
-##
-## @return magick image of the required dimensions
-##
-## @examples
-## \dontrun{
-## filename <- system.file("img", "Rlogo.png", package="png")
-## img <- magick::image_read(filename)
-## fill_area_with_img_none(img, 100, 400)
-## }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Tile image to fill the specified area
+#'
+#' Unless the width and height are carefully chosen, this operation will distort
+#' the image to force it to fit the dimensions
+#'
+#' @inheritParams fill_area_with_img
+#'
+#' @return magick image of the required dimensions
+#'
+#' @examples
+#' \dontrun{
+#'   filename <- system.file("img", "Rlogo.png", package="png")
+#'   img <- magick::image_read(filename)
+#'   fill_area_with_img_none(img, 100, 400)
+#' }
+#' @noRd
 fill_area_with_img_tile <- function(img, width, height, filter = filter, scale = 1) {
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -199,44 +194,37 @@ fill_area_with_img_tile <- function(img, width, height, filter = filter, scale =
   img
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Fill an area with a magick image
-##
-## Fill an area with a magick image
-##
-## Support fill types
-##
-## \itemize{
-## \item{\code{fit   }}{ - Fill image canvas, preserving aspect, such that one of target width or height is achieved without distoring or cropping.}
-## \item{\code{squish}}{ - Fill image canvas, ignoring aspect, such that both the target width and height is achieved.}
-## \item{\code{expand}}{ - Fill image canvas, by scaling image and preserving aspect, such that when cropped, the target width and height is achieved.}
-## \item{\code{none  }}{ - Fill image canvas canvas to the target width/height, and use gravity to place the undistorted image}
-## \item{\code{tile  }}{ - Tile the image canvas with image.}
-## }
-##
-##
-##
-## @param img magick image
-## @param width,height target dimensions for final image
-## @param type how to resize the image. 'none', 'fit', 'squish', 'expand' or 'tile'. default: squish
-## @param gravity how to anchor the image during the operation. See \code{magick::gravity_types()}
-## @param filter magick filter type. default: lanczos. See \code{magick::filter_types()}
-##        for more information.  This option has no effect for \code{type = 'none'}.
-## @param scale scale the source image before tiling. default: 1
-## @param filter default: lanczos
-##
-## @return magick image of the required dimensions
-##
-## @import magick
-## @export
-##
-## @examples
-## \dontrun{
-## filename <- system.file("img", "Rlogo.png", package="png")
-## img <- magick::image_read(filename)
-## fill_area_with_img(img, 100, 400, type = 'squish')
-## }
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Fill an area with a magick image
+#'
+#' Support fill types
+#'
+#' \itemize{
+#' \item{\code{fit   }}{ - Fill image canvas, preserving aspect, such that one of target width or height is achieved without distoring or cropping.}
+#' \item{\code{squish}}{ - Fill image canvas, ignoring aspect, such that both the target width and height is achieved.}
+#' \item{\code{expand}}{ - Fill image canvas, by scaling image and preserving aspect, such that when cropped, the target width and height is achieved.}
+#' \item{\code{none  }}{ - Fill image canvas canvas to the target width/height, and use gravity to place the undistorted image}
+#' \item{\code{tile  }}{ - Tile the image canvas with image.}
+#' }
+#'
+#' @param img magick image
+#' @param width,height target dimensions for final image
+#' @param type how to resize the image. 'none', 'fit', 'squish', 'expand' or 'tile'. default: squish
+#' @param gravity how to anchor the image during the operation. See \code{magick::gravity_types()}
+#' @param filter magick filter type. default: lanczos. See \code{magick::filter_types()}
+#'        for more information.  This option has no effect for \code{type = 'none'}.
+#' @param scale scale the source image before tiling. default: 1
+#' @param filter default: lanczos
+#'
+#' @return magick image of the required dimensions
+#'
+#' @examples
+#' \dontrun{
+#'   filename <- system.file("img", "Rlogo.png", package="png")
+#'   img <- magick::image_read(filename)
+#'   fill_area_with_img(img, 100, 400, type = 'squish')
+#' }
+#'
+#' @noRd
 fill_area_with_img <- function(img, width, height, type='squish',
                                gravity = 'Center', filter='lanczos',
                                scale = 1) {

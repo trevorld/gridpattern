@@ -11,3 +11,9 @@ img_read_memoised <- img_read
 .onLoad <- function(libname, pkgname) {
     img_read_memoised <<- memoise::memoise(img_read)
 }
+
+#' @import grid
+#' @importFrom grDevices col2rgb dev.off png rgb
+#' @importFrom rlang %||% abort warn
+#' @importFrom utils hasName tail
+NULL

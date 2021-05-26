@@ -29,18 +29,15 @@ grid.pattern_gradient <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## create a gradient image as an array
-##
-## @param width,height image dimensions
-## @param colour1,colour2 gradient colours
-## @param orientation vertical, horizontal or radial
-##
-## @return magick image
-##
-## @import magick
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' create a gradient image as an array
+#'
+#' @param width,height image dimensions
+#' @param colour1,colour2 gradient colours
+#' @param orientation vertical, horizontal or radial
+#'
+#' @return magick image
+#'
+#' @noRd
 create_gradient_img <- function(width       = 100,
                                 height      = 100,
                                 colour1     = 'red',
@@ -69,19 +66,19 @@ create_gradient_img <- function(width       = 100,
   img
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## A shim to go between the main pattern function for an image, and the
-## specific pattern functon for an image.
-##
-## This function really just unwraps the 'params' into better arguments and
-## passes them to the actual img/array creation function
-##
-## @param width,height image dimensions
-## @param params geom parameters from ggplot
-## @param legend logical. TRUE if call comes during legend creation, otherwise FALSE.
-##
-## @return RGBA array
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' A shim to go between the main pattern function for an image, and the
+#' specific pattern functon for an image.
+#'
+#' This function really just unwraps the 'params' into better arguments and
+#' passes them to the actual img/array creation function
+#'
+#' @param width,height image dimensions
+#' @param params geom parameters from ggplot
+#' @param legend logical. TRUE if call comes during legend creation, otherwise FALSE.
+#'
+#' @return RGBA array
+#'
+#' @noRd
 create_gradient_as_array <- function(width, height, params, legend) {
 
   orientation <- check_default(params$pattern_orientation, options = c('vertical', 'horizontal', 'radial'))

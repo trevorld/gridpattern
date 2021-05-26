@@ -21,13 +21,12 @@ grid.pattern_plasma <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, .
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Read a user specified filename as an image
-##
-## @inheritParams create_gradient_as_array
-##
-## @return array
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Read a user specified filename as an image
+#'
+#' @inheritParams create_gradient_as_array
+#'
+#' @return array
+#' @noRd
 create_magick_plasma_as_array <- function(width, height, params, legend) {
 
   colour <- as.character(params$pattern_fill)
@@ -41,16 +40,14 @@ create_magick_plasma_as_array <- function(width, height, params, legend) {
   convert_img_to_array(img)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Create plasma using imagemagick
-##
-## Ref: \url{https://www.imagemagick.org/Usage/canvas/}
-##
-## @param width,height image dimensions
-## @param colour colour
-##
-## @import magick
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Create plasma using imagemagick
+#'
+#' Ref: \url{https://www.imagemagick.org/Usage/canvas/}
+#'
+#' @param width,height image dimensions
+#' @param colour colour
+#'
+#' @noRd
 create_magick_plasma_img <- function(width=100, height=100, colour) {
 
   colour <- convert_r_colour_to_magick_colour(colour)

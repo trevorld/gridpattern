@@ -1,13 +1,11 @@
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Convert an R colour to a magick colour
-##
-## @param col may be a built in colour, like 'tomato' or a hex colour
-##
-## @return always returns a hex colour, except if col is NA when it retuns a special
-## magick colour 'none', which means transparent
-##
-#' @importFrom grDevices col2rgb rgb
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Convert an R colour to a magick colour
+#'
+#' @param col may be a built in colour, like 'tomato' or a hex colour
+#'
+#' @return always returns a hex colour, except if col is NA when it retuns a special
+#' magick colour 'none', which means transparent
+#'
+#' @noRd
 convert_r_colour_to_magick_colour <- function(col) {
   if (is.null(col) || is.na(col) || length(col) == 0) {
     return('none')
@@ -15,18 +13,15 @@ convert_r_colour_to_magick_colour <- function(col) {
   rgb(t(col2rgb(col)), maxColorValue = 255)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Convert a magick image to an RGBA array.
-##
-## This will promote gray or RGB images to RGBA arrays.
-##
-## @param img magick image
-##
-## @return RGBA array with all values in range [0, 1]
-##
-#' @import magick
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Convert a magick image to an RGBA array.
+#'
+#' This will promote gray or RGB images to RGBA arrays.
+#'
+#' @param img magick image
+#'
+#' @return RGBA array with all values in range [0, 1]
+#'
+#' @noRd
 convert_img_to_array <- function(img) {
 
   stopifnot(inherits(img, 'magick-image'))

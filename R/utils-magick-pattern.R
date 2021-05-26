@@ -1,16 +1,14 @@
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Create one of imagemagick's internal patterns
-##
-## These are all 2-colour pixel patterns - the 'white' part will be made transparent.
-##
-## @param width,height image dimensions
-## @param type name of the imagemagick pattern. See \url{http://www.imagemagick.org/script/formats.php}
-##        for more information. See \link{magick_pattern_names} for a list of all
-##        supported imagemagick patterns.
-## @param colour colour used to draw the pattern
-##
-#' @import magick
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Create one of imagemagick's internal patterns
+#'
+#' These are all 2-colour pixel patterns - the 'white' part will be made transparent.
+#'
+#' @param width,height image dimensions
+#' @param type name of the imagemagick pattern. See \url{http://www.imagemagick.org/script/formats.php}
+#'        for more information. See \link{magick_pattern_names} for a list of all
+#'        supported imagemagick patterns.
+#' @param colour colour used to draw the pattern
+#'
+#' @noRd
 create_magick_pattern_img <- function(width=100, height=100, type = 'hexagons',
                                       colour = 'black') {
 
@@ -48,19 +46,17 @@ create_magick_pattern_img <- function(width=100, height=100, type = 'hexagons',
   img
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Create a scaled version one of imagemagick's internal patterns
-##
-## These are all 2-colour pixel patterns - the 'white' part will be made transparent.
-##
-## @inheritParams create_magick_pattern_img
-## @param scale pattern scaling factor defualt: 1
-## @param filter filter to apply when sacling pattern.  default: 'box' for crisp
-##        edges to the pixel.  See \code{magick::filter_types()} for a full list
-##        of filters.
-##
-## @import magick
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Create a scaled version one of imagemagick's internal patterns
+#'
+#' These are all 2-colour pixel patterns - the 'white' part will be made transparent.
+#'
+#' @inheritParams create_magick_pattern_img
+#' @param scale pattern scaling factor defualt: 1
+#' @param filter filter to apply when sacling pattern.  default: 'box' for crisp
+#'        edges to the pixel.  See \code{magick::filter_types()} for a full list
+#'        of filters.
+#'
+#' @noRd
 create_magick_pattern_img_scaled <- function(width  = 100,
                                              height = 100,
                                              type   = 'hexagons',

@@ -32,14 +32,11 @@ grid.pattern_magick <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, .
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ## Names of patterns available in image magick, plus subsets for shaded intensity and stripes
-##
 ## See \url{http://www.imagemagick.org/script/formats.php} for more information.
-##
+
 #' @rdname grid.pattern_magick
 #' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 magick_pattern_names <- c(
   "bricks", "checkerboard", "circles", "crosshatch", "crosshatch30",
   "crosshatch45", "fishscales", "gray0", "gray5", "gray10", "gray15",
@@ -53,10 +50,8 @@ magick_pattern_names <- c(
   "verticalleftshingle", "verticalrightshingle", "verticalsaw"
 )
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname grid.pattern_magick
 #' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 magick_pattern_intensity_names <- c(
   "gray0", "gray5", "gray10", "gray15",
   "gray20", "gray25", "gray30", "gray35", "gray40", "gray45", "gray50",
@@ -65,10 +60,8 @@ magick_pattern_intensity_names <- c(
 )
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #' @rdname grid.pattern_magick
 #' @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 magick_pattern_stripe_names <- c(
   "crosshatch", "crosshatch30", "crosshatch45",
   "horizontal", "horizontal2", "horizontal3",
@@ -78,13 +71,13 @@ magick_pattern_stripe_names <- c(
   "vertical", "vertical2", "vertical3"
 )
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Read a user specified filename as an image
-##
-## @inheritParams create_gradient_as_array
-##
-## @return array
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Read a user specified filename as an image
+#'
+#' @inheritParams create_gradient_as_array
+#'
+#' @return array
+#'
+#' @noRd
 create_magick_pattern_as_array <- function(width, height, params, legend) {
 
   if (legend) {

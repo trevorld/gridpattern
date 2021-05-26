@@ -38,17 +38,16 @@ grid.pattern_ambient <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, 
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Create an array of noise using the 'ambient' package
-##
-## @param width,height area dimensions
-## @param params aesthetic parameters passed from the geom e.g. 'pattern_fill',
-##        'pattern_frequency' etc.
-## @param legend logical. If the request to create a pattern comes during
-##        creation of the legend, then this is TRUE, otherwise FALSE
-##
-## @return an RGBA numeric array with dimensions [height, width, 4]
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Create an array of noise using the 'ambient' package
+#'
+#' @param width,height area dimensions
+#' @param params aesthetic parameters passed from the geom e.g. 'pattern_fill',
+#'        'pattern_frequency' etc.
+#' @param legend logical. If the request to create a pattern comes during
+#'        creation of the legend, then this is TRUE, otherwise FALSE
+#'
+#' @return an RGBA numeric array with dimensions [height, width, 4]
+#' @noRd
 create_pattern_ambient <- function(width, height, params, legend) {
 
   if (!requireNamespace("ambient"))

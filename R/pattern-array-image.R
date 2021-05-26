@@ -45,15 +45,13 @@ grid.pattern_image <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ..
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Read a user specified filename/URL as an image
-##
-## @inheritParams create_gradient_as_array
-##
-## @return array
-##
-## @import magick
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Read a user specified filename/URL as an image
+#'
+#' @inheritParams create_gradient_as_array
+#'
+#' @return array
+#'
+#' @noRd
 img_read_as_array_wrapper <- function(width, height, params, legend) {
 
   filename <- as.character(params$pattern_filename)

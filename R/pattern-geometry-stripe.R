@@ -28,17 +28,16 @@ grid.pattern_stripe <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, .
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Create a sf MULTIPOLYGON object where each polygon is an individual stripe.
-##
-## The stripes are created as polygons so that when clipped to rects/polygons,
-## the ends of the stripe are clipped correctly to the boundary.
-##
-## @inheritParams create_circles_grob
-##
-## @return `sf` multipolygon object
-##
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Create a sf MULTIPOLYGON object where each polygon is an individual stripe.
+#'
+#' The stripes are created as polygons so that when clipped to rects/polygons,
+#' the ends of the stripe are clipped correctly to the boundary.
+#'
+#' @inheritParams create_circles_grob
+#'
+#' @return `sf` multipolygon object
+#'
+#' @noRd
 create_stripes_sf <- function(angle, spacing, density, xoffset=0, yoffset=0,
                                                aspect_ratio) {
 
@@ -133,9 +132,6 @@ create_stripes_sf <- function(angle, spacing, density, xoffset=0, yoffset=0,
   stripes_as_sfg_multipolygon
 }
 
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## @rdname create_pattern_none
-##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 create_pattern_stripes_via_sf <- function(params, boundary_df, aspect_ratio,
                                           legend = FALSE) {
 
@@ -152,7 +148,7 @@ create_pattern_stripes_via_sf <- function(params, boundary_df, aspect_ratio,
 
   boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df)
 
-  striped_area    <- st_intersection(stripes_sf, boundary_sf)
+  striped_area    <- sf::st_intersection(stripes_sf, boundary_sf)
   stripe_polygons <- convert_polygon_sf_to_polygon_df(striped_area)
 
   if (is.null(stripe_polygons)) {

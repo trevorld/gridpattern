@@ -39,35 +39,32 @@ grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, .
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Create a cicleGrob object for a set of points
-##
-## Use 'sf' to help with the point in polygon intersections.
-##
-## \itemize{
-##   \item{make grid to cover entire space}
-##   \item{rotate points into position}
-##   \item{create expanded boundary by r}
-##   \item{create contracted boundary by r}
-##   \item{remove all points outside the expanded boundary}
-##   \item{remove all points within contracted boundary -> internal circles}
-##   \item{any remaining points become part of the intersection grob}
-##   \item{total circles = treeGrob( internal_circls, intersection_circles)}
-## }
-##
-## @param boundary_df polygon_df data.frame
-## @param angle angle of orientation (degrees)
-## @param spacing spacing in grid 'npc' coordinates. Usually in range [0, 1]
-## @param density fill fraction. Number in range [0, 1]
-## @param xoffset,yoffset offset the pattern creation origin.
-## @param aspect_ratio aspect_ratio
-## @param params params from the geom
-##
-## @return A grid::circleGrob
-##
-## @import grid
-## @import sf
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Create a cicleGrob object for a set of points
+#'
+#' Use 'sf' to help with the point in polygon intersections.
+#'
+#' \itemize{
+#'   \item{make grid to cover entire space}
+#'   \item{rotate points into position}
+#'   \item{create expanded boundary by r}
+#'   \item{create contracted boundary by r}
+#'   \item{remove all points outside the expanded boundary}
+#'   \item{remove all points within contracted boundary -> internal circles}
+#'   \item{any remaining points become part of the intersection grob}
+#'   \item{total circles = treeGrob( internal_circls, intersection_circles)}
+#' }
+#'
+#' @param boundary_df polygon_df data.frame
+#' @param angle angle of orientation (degrees)
+#' @param spacing spacing in grid 'npc' coordinates. Usually in range [0, 1]
+#' @param density fill fraction. Number in range [0, 1]
+#' @param xoffset,yoffset offset the pattern creation origin.
+#' @param aspect_ratio aspect_ratio
+#' @param params params from the geom
+#'
+#' @return A grid::circleGrob
+#'
+#' @noRd
 create_circles_grob <- function(boundary_df, params, angle=0, spacing=0.1, density=0.3,
                                 xoffset=0, yoffset=0,
                                 aspect_ratio) {
@@ -181,11 +178,6 @@ create_circles_grob <- function(boundary_df, params, angle=0, spacing=0.1, densi
   )
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## @rdname create_pattern_none
-## @importFrom gridGeometry polyclipGrob
-## @import scales
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 create_pattern_circles <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
 
   stopifnot(is_polygon_df(boundary_df))

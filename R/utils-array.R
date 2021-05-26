@@ -1,16 +1,14 @@
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Generate an RGBA array and create a raster grob to fill the region
-##
-## the boundary of the shaded region will be used to generate a alpha mask
-## so that the array conforms to the shape.
-##
-## @inheritParams create_pattern_none
-## @param array_fn Array function to use
-##
-## @return rasterGrob
-##
-## @import grid
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Generate an RGBA array and create a raster grob to fill the region
+#'
+#' the boundary of the shaded region will be used to generate a alpha mask
+#' so that the array conforms to the shape.
+#'
+#' @inheritParams create_pattern_none
+#' @param array_fn Array function to use
+#'
+#' @return rasterGrob
+#'
+#' @noRd
 create_pattern_array <- function(params, boundary_df, aspect_ratio, legend,
                                  array_fn = create_magick_pattern_as_array) {
 

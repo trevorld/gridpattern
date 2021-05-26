@@ -31,8 +31,6 @@
 #' }
 #'
 #' @inheritParams grid::polygonGrob
-#' @import grid
-#' @importFrom utils hasName
 #' @param pattern Name of pattern.  See Details section for a list of supported patterns.
 #' @param x A numeric vector or unit object specifying x-locations of the pattern boundary.
 #' @param y A numeric vector or unit object specifying y-locations of the pattern boundary.

@@ -33,9 +33,6 @@ grid.pattern_crosshatch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## @rdname create_pattern_none
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 create_pattern_crosshatch_via_sf <- function(params, boundary_df, aspect_ratio,
                                              legend = FALSE) {
 
@@ -53,7 +50,7 @@ create_pattern_crosshatch_via_sf <- function(params, boundary_df, aspect_ratio,
 
   boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df)
 
-  striped_area     <- st_intersection(stripes_sf, boundary_sf)
+  striped_area     <- sf::st_intersection(stripes_sf, boundary_sf)
   stripe_polygons1 <- convert_polygon_sf_to_polygon_df(striped_area)
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,7 +64,7 @@ create_pattern_crosshatch_via_sf <- function(params, boundary_df, aspect_ratio,
     yoffset  = params$pattern_yoffset,
     aspect_ratio = aspect_ratio
   )
-  striped_area     <- st_intersection(stripes_sf, boundary_sf)
+  striped_area     <- sf::st_intersection(stripes_sf, boundary_sf)
   stripe_polygons2 <- convert_polygon_sf_to_polygon_df(striped_area)
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

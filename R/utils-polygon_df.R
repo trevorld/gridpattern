@@ -1,18 +1,16 @@
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Create a \code{polygon_df} object from the given coordinates
-##
-## code using \code{polygon_df} should not assume that the first and last point
-## within each id are the same.  i.e. they may have to manually set a final
-## point equal to the initial point if that is what their graphics system
-## desires
-##
-## @param x,y coordinates of polygon. not necessarily closed.
-## @param id a numeric vector used to separate locations in x,y into multiple polygons
-##
-## @return data.frame with x, y, id columns.
-##
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Create a \code{polygon_df} object from the given coordinates
+#'
+#' code using \code{polygon_df} should not assume that the first and last point
+#' within each id are the same.  i.e. they may have to manually set a final
+#' point equal to the initial point if that is what their graphics system
+#' desires
+#'
+#' @param x,y coordinates of polygon. not necessarily closed.
+#' @param id a numeric vector used to separate locations in x,y into multiple polygons
+#'
+#' @return data.frame with x, y, id columns.
+#'
+#' @noRd
 create_polygon_df <- function(x, y, id = 1L) {
   data_frame(
     x     = x,
@@ -21,31 +19,27 @@ create_polygon_df <- function(x, y, id = 1L) {
   )
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Test if object is polygon_df or NULL
-##
-## @param x object
-##
-## @return TRUE if object is polygon_df or NULL
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Test if object is polygon_df or NULL
+#'
+#' @param x object
+#'
+#' @return TRUE if object is polygon_df or NULL
+#' @noRd
 is_polygon_df <- function(x) {
   is.null(x) ||
     (is.data.frame(x) && all(c('x', 'y', 'id') %in% names(x)))
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Convert a \code{polygon_df} to \code{grid::polygonGrob} object
-##
-## @param polygon_df polygon_df data.frame
-## @param default.units 'npc
-## @param gp default: gpar()
-##
-## @return sf polygon object
-##
-## @import grid
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#' Convert a \code{polygon_df} to \code{grid::polygonGrob} object
+#'
+#' @param polygon_df polygon_df data.frame
+#' @param default.units 'npc
+#' @param gp default: gpar()
+#'
+#' @return sf polygon object
+#'
+#' @noRd
 convert_polygon_df_to_polygon_grob <- function(polygon_df, default.units = 'npc',
                                                 gp = gpar()) {
 
@@ -63,18 +57,13 @@ convert_polygon_df_to_polygon_grob <- function(polygon_df, default.units = 'npc'
   )
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Convert a \code{polygon_df} to an \code{sf} POLYGON/MULTIPOLYGON
-##
-## @param polygon_df Polygon data.frame
-## @param buffer_dist buffer the polygon by the given distance
-##
-## @return sf polygon object
-##
-#' @import sf
-#' @importFrom utils tail
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Convert a \code{polygon_df} to an \code{sf} POLYGON/MULTIPOLYGON
+#'
+#' @param polygon_df Polygon data.frame
+#' @param buffer_dist buffer the polygon by the given distance
+#'
+#' @return sf polygon object
+#' @noRd
 convert_polygon_df_to_polygon_sf <- function(polygon_df, buffer_dist = 0) {
 
   if (is.null(polygon_df) || nrow(polygon_df) < 3 ||
@@ -110,16 +99,13 @@ convert_polygon_df_to_polygon_sf <- function(polygon_df, buffer_dist = 0) {
   res
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Convert a sf POLYGON/MULTIPOLYGON into a polygon_df
-##
-## @param mp sf POLYGON or MULTIPOLYGON object
-##
-## @return polygon_df data.frame object
-##
-## @import sf
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Convert a sf POLYGON/MULTIPOLYGON into a polygon_df
+#'
+#' @param mp sf POLYGON or MULTIPOLYGON object
+#'
+#' @return polygon_df data.frame object
+#'
+#' @noRd
 convert_polygon_sf_to_polygon_df <- function(mp) {
   mat <- as.matrix(mp)
 
@@ -138,15 +124,13 @@ convert_polygon_sf_to_polygon_df <- function(mp) {
   create_polygon_df(x=mat[,1], y=mat[,2], id=id)
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Simple 2D rotation of a polygon about the origin
-##
-## @param polygon_df polygon data.frame
-## @param angle angle in degrees
-## @param aspect_ratio aspect ratio
-##
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Simple 2D rotation of a polygon about the origin
+#'
+#' @param polygon_df polygon data.frame
+#' @param angle angle in degrees
+#' @param aspect_ratio aspect ratio
+#'
+#' @noRd
 rotate_polygon_df <- function(polygon_df, angle, aspect_ratio) {
 
   angle <- angle * pi/180
@@ -160,21 +144,17 @@ rotate_polygon_df <- function(polygon_df, angle, aspect_ratio) {
   polygon_df
 }
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-## Convert a polygon to an alpha mask
-##
-## Alpha values of 1 correspond to pixels within the polygon, all other
-## values will be zero.
-##
-## @param polygon_df polygon_df object
-## @param width,height dimensions of the alpha channel matrix to return
-##
-## @return numeric matrix with all values with 0 or 1
-##
-## @import png
-#' @importFrom grDevices dev.off png
-## @export
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#' Convert a polygon to an alpha mask
+#'
+#' Alpha values of 1 correspond to pixels within the polygon, all other
+#' values will be zero.
+#'
+#' @param polygon_df polygon_df object
+#' @param width,height dimensions of the alpha channel matrix to return
+#'
+#' @return numeric matrix with all values with 0 or 1
+#'
+#' @noRd
 convert_polygon_df_to_alpha_channel <- function(polygon_df, width, height) {
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
