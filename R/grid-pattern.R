@@ -141,18 +141,19 @@ makeContent.pattern <- function(x) {
 }
 
 get_pattern_fn <- function(pattern) {
-    geometry_fns <- c(getOption("ggpattern_geometry_funcs"),
-                      list(circle = create_pattern_circles,
+    geometry_fns <- c(list(circle = create_pattern_circles,
                            crosshatch = create_pattern_crosshatch_via_sf,
                            none = create_pattern_none,
-                           stripe = create_pattern_stripes_via_sf))
-    array_fns <- c(getOption("ggpattern_array_funcs"),
-                   list(ambient = create_pattern_ambient,
+                           regular_polygon = create_pattern_regular_polygon_via_sf,
+                           stripe = create_pattern_stripes_via_sf),
+                      getOption("ggpattern_geometry_funcs"))
+    array_fns <- c(list(ambient = create_pattern_ambient,
                         gradient = create_gradient_as_array,
                         image = img_read_as_array_wrapper,
                         magick = create_magick_pattern_as_array,
                         placeholder = fetch_placeholder_array,
-                        plasma = create_magick_plasma_as_array))
+                        plasma = create_magick_plasma_as_array),
+                   getOption("ggpattern_array_funcs"))
     array_fns <- lapply(array_fns, function(fn) {
                             function(...) create_pattern_array(..., array_fn=fn)
                    })
@@ -166,7 +167,7 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     if (length(l)) names(l) <- paste0(prefix, names(l))
 
     # possibly get from gpar()
-    l$pattern_alpha <- l$pattern_alpha %||% gp$alpha %||% 1
+    l$pattern_alpha <- l$pattern_alpha %||% gp$alpha %||% NA_real_
     l$pattern_colour <- l$pattern_colour %||% l$pattern_color %||% gp$col %||% "grey20"
     l$pattern_fill <- l$pattern_fill %||% gp$fill %||% "grey80"
     l$pattern_linetype <- l$pattern_linetype %||% gp$lty %||% 1
@@ -185,13 +186,17 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_gravity <- l$pattern_gravity %||% "center"
     l$pattern_key_scale_factor <- l$pattern_key_scale_factor %||% 1
     l$pattern_orientation <- l$pattern_orientation %||% "vertical"
-    l$pattern_shape <- l$pattern_shape %||% 1
+    l$pattern_rot <- l$pattern_rot %||% 0
+    l$pattern_shape <- l$pattern_shape %||% switch(pattern, regular_polygon = "convex4", 1)
+    l$pattern_scale <- l$pattern_scale %||% switch(pattern, regular_polygon = 0.5, 1)
     l$pattern_spacing <- l$pattern_spacing %||% 0.05
+    # l$pattern_subtype <- l$pattern_subtype
     l$pattern_type <- l$pattern_type %||%
         switch(pattern,
                ambient = "simplex",
                placeholder = "kitten",
                magick = "hexagons",
+               regular_polygon = "square",
                "fit")
     l$pattern_xoffset <- l$pattern_xoffset %||% 0
     l$pattern_yoffset <- l$pattern_yoffset %||% 0

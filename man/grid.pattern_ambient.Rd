@@ -25,6 +25,7 @@ grid.pattern_ambient(
   jitter = 0.45,
   seed = NA_integer_,
   res = 72,
+  alpha = NA_real_,
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -97,6 +98,8 @@ during sampling of cell points.}
 used}
 
 \item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.}
+
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}

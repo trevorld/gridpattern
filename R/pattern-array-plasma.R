@@ -12,7 +12,7 @@
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html>
 #' @export
 grid.pattern_plasma <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
-                                fill = gp$fill %||% "grey80", scale = 1, alpha = gp$alpha %||% 1,
+                                fill = gp$fill %||% "grey80", scale = 1, alpha = gp$alpha %||% NA_real_,
                                 aspect_ratio = 1, key_scale_factor = 1, res = 72,
                                 default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     grid.pattern("plasma", x, y, id,

@@ -14,7 +14,7 @@ test_that("get_params works as expected", {
     expect_equal(params$pattern_spacing, 0.05)
     expect_equal(params$pattern_xoffset, 0)
     expect_equal(params$pattern_yoffset, 0)
-    expect_equal(params$pattern_alpha, 1)
+    expect_equal(params$pattern_alpha, NA_real_)
     expect_equal(params$pattern_linetype, 1)
     expect_equal(params$pattern_size, 1)
 

@@ -11,7 +11,7 @@
 #' @param spacing Spacing between repetitions of pattern (between 0 and 1)
 #' @param xoffset Shift pattern along x axis (between 0 and 1)
 #' @param yoffset Shift pattern along y axis (between 0 and 1)
-#' @param alpha Alpha (between 0 and 1)
+#' @param alpha Alpha (between 0 and 1) or `NA` (default, preserves colors' alpha value)
 #' @param linetype Stroke linetype
 #' @param size Stroke linewidth
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
@@ -29,7 +29,7 @@
 grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
                                 density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
-                                alpha = gp$alpha %||% 1, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
+                                alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
                                 default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("circle", x, y, id,

@@ -24,7 +24,7 @@ grid.pattern_magick(
   fill = "grey20",
   scale = 1,
   filter = "box",
-  alpha = gp$alpha \%||\% 1,
+  alpha = gp$alpha \%||\% NA_real_,
   aspect_ratio = 1,
   key_scale_factor = 1,
   res = 72,
@@ -61,7 +61,7 @@ plus subsets for shaded intensity and stripes.}
 
 \item{filter}{Filter to use when scaling. \code{magick::filter_types()} returns a vector of supported values.}
 
-\item{alpha}{Alpha (between 0 and 1)}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
 
 \item{aspect_ratio}{Override aspect ratio}
 

@@ -1,5 +1,23 @@
 context("geometry")
-test_that("geometry patterns works as expected", {
+test_that("geometry helpers work as expected", {
+    xy <- rotate_xy(c(0, 1), c(0, 1), 90)
+    expect_equal(xy$x, c(1, 0))
+    expect_equal(xy$y, c(0, 1))
+
+    xy <- get_xy_par(c(0, 1), c(0, 1), i_par = 1, n_par = 1)
+    expect_equal(xy$x, c(0, 1, 0, 1))
+    expect_equal(xy$y, c(0, 0, 1, 1))
+    xy <- get_xy_par(c(0, 1), c(0, 1), i_par = 1, n_par = 2)
+    expect_equal(xy$x, c(0, 1))
+    expect_equal(xy$y, c(0, 1))
+    xy <- get_xy_par(c(0, 1), c(0, 1), i_par = 2, n_par = 2)
+    expect_equal(xy$x, c(1, 0))
+    expect_equal(xy$y, c(0, 1))
+    xy <- get_xy_par(c(0, 1, 2), c(0, 1, 2), i_par = 2, n_par = 3)
+    expect_equal(xy$x, c(1, 0, 2))
+    expect_equal(xy$y, c(0, 1, 2))
+})
+test_that("geometry patterns work as expected", {
     skip_if_not_installed("vdiffr")
     skip_on_appveyor()
     library("vdiffr")
@@ -10,12 +28,22 @@ test_that("geometry patterns works as expected", {
 
     x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-    expect_doppelganger("crosshatch", function()
-        grid.pattern_crosshatch(x, y, color="black", fill="blue", fill2="yellow", density = 0.5))
-
     expect_doppelganger("circle", function()
         grid.pattern_circle(x, y, color="blue", fill="yellow", size = 2, density = 0.5))
 
+    expect_doppelganger("crosshatch", function()
+        grid.pattern_crosshatch(x, y, color="black", fill="blue", fill2="yellow", density = 0.5))
+
+    expect_doppelganger("regular_polygon", function()
+        grid.pattern_regular_polygon(x, y, color = "black", fill = "blue", density = 0.5))
+
+    expect_doppelganger("hexagon", function()
+        grid.pattern_regular_polygon(x, y, color = "transparent", fill = c("white", "grey", "black"),
+                                     density = 1.0, shape = "convex6", type = "hex"))
+
+    expect_doppelganger("eight_sided_star", function()
+        grid.pattern_regular_polygon(x, y, colour = "black", fill = c("blue", "yellow"),
+                                     density = 1.0, spacing = 0.1, shape = "star8"))
     expect_doppelganger("stripe", function()
         grid.pattern_stripe(x, y, color="black", fill=c("yellow", "blue"), density = 0.5))
 

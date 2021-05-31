@@ -113,7 +113,11 @@ create_pattern_array <- function(params, boundary_df, aspect_ratio, legend,
   # Using a custom version of `abind::abind()` so I could avoid having it
   # as another package dependency
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  rgba_arr[,,4] <- rgba_arr[,,4] * boundary_mask * params$pattern_alpha
+  if (is.na(params$pattern_alpha))
+      alpha <- 1
+  else
+      alpha <- params$pattern_alpha
+  rgba_arr[,,4] <- rgba_arr[,,4] * boundary_mask * alpha
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Create a rasterGrob image at the location of the 'boundary_df' bounding box.

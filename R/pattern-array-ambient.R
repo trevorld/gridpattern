@@ -26,7 +26,7 @@ grid.pattern_ambient <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, 
                                  octaves = 3, lacunarity = 2, gain = 0.5,
                                  pertubation = "none", pertubation_amplitude = 1,
                                  value = "cell", distance_ind = c(1, 2), jitter = 0.45,
-                                 seed = NA_integer_, res = 72,
+                                 seed = NA_integer_, res = 72, alpha = NA_real_,
                                  default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     grid.pattern("ambient", x, y, id,
                  type = type, fill = fill, fill2 = fill2,
@@ -34,7 +34,7 @@ grid.pattern_ambient <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, 
                  octaves = octaves, lacunarity = lacunarity, gain = gain,
                  pertubation = pertubation, pertubation_amplitude = pertubation_amplitude,
                  value = value, distance_ind = distance_ind, jitter = jitter,
-                 seed = seed, res = res,
+                 seed = seed, res = res, alpha = alpha,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 

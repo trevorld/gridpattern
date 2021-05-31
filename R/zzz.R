@@ -15,5 +15,5 @@ img_read_memoised <- img_read
 #' @import grid
 #' @importFrom grDevices col2rgb dev.off png rgb
 #' @importFrom rlang %||% abort warn
-#' @importFrom utils hasName tail
+#' @importFrom utils hasName head tail
 NULL

@@ -8,12 +8,13 @@
 `gridpattern` provides [grid.pattern() and
 patternGrob()](http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html)
 functions to use with R's grid graphics system. They fill in a
-user-specified boundary path with a user-specified pattern. These pattern grobs are
+user-specified boundary path with a user-specified pattern. These pattern grobs include
 enhanced versions of the patterns originally contained within 
 [Mike FC](https://github.com/coolbutuseless)'s awesome
 [ggpattern](https://github.com/coolbutuseless/ggpattern) package 
 (which provides patterned ``ggplot2`` "geom" functions but 
-[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves).
+[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well
+as completely new patterns.
 
 We currently provide `grid` grob support for the following patterns:
 
@@ -27,9 +28,10 @@ We currently provide `grid` grob support for the following patterns:
 7.  none (equivalent to `grid::null()`)
 8.  [placeholder](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_placeholder.html): placeholder image array patterns
 9.  [plasma](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_plasma.html): plasma array patterns
-10. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
-11. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
-12. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
+10. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
+11. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
+12. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
+13. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
 
 ## Installation
 
@@ -58,7 +60,9 @@ y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 grid.pattern("ambient", x_hex, y_hex, fill = "blue", fill2 = "yellow")
 ```
 
-![](man/figures/README-ambient-1.png)
+```
+## Error in fn(dim = c(height, width)): object '.Random.seed' not found
+```
 
 ```r
 grid.pattern("circle", x_hex, y_hex, colour="blue", fill="yellow", density=0.3)
@@ -103,6 +107,22 @@ grid.pattern("plasma", x_hex, y_hex, fill="green")
 ```
 
 ![](man/figures/README-plasma-1.png)
+
+```r
+grid.pattern_regular_polygon(x_hex, y_hex, colour = "black", fill = c("blue", "yellow"),
+                             density = 1.0, spacing = 0.1, shape = "star8")
+```
+
+![](man/figures/README-regular_star-1.png)
+
+```r
+grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
+                             fill = c("white", "grey", "black"),
+                             density = 1.0, spacing = 0.1,
+                             shape = "convex6", type = "hex")
+```
+
+![](man/figures/README-regular_hex-1.png)
 
 ```r
 grid.pattern("stripe", x_hex, y_hex, colour="black", fill=c("blue", "yellow"),

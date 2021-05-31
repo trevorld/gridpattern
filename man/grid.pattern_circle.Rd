@@ -16,7 +16,7 @@ grid.pattern_circle(
   spacing = 0.05,
   xoffset = 0,
   yoffset = 0,
-  alpha = gp$alpha \%||\% 1,
+  alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
   size = gp$lwd \%||\% 1,
   default.units = "npc",
@@ -50,7 +50,7 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{yoffset}{Shift pattern along y axis (between 0 and 1)}
 
-\item{alpha}{Alpha (between 0 and 1)}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
 
 \item{linetype}{Stroke linetype}
 

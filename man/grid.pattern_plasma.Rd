@@ -11,7 +11,7 @@ grid.pattern_plasma(
   ...,
   fill = gp$fill \%||\% "grey80",
   scale = 1,
-  alpha = gp$alpha \%||\% 1,
+  alpha = gp$alpha \%||\% NA_real_,
   aspect_ratio = 1,
   key_scale_factor = 1,
   res = 72,
@@ -36,7 +36,7 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{scale}{Extra scaling}
 
-\item{alpha}{Alpha (between 0 and 1)}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
 
 \item{aspect_ratio}{Override aspect ratio}
 
