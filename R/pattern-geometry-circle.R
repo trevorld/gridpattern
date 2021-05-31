@@ -82,7 +82,7 @@ create_circles_grob <- function(boundary_df, params, angle=0, spacing=0.1, densi
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Things get dicey at the boundaries, especially when there is very large
   # or small aspect ratio.   Include this fudge factor in buffering the
-  # boundary to ensure that all partially ntersecting circles are kept
+  # boundary to ensure that all partially intersecting circles are kept
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   fudge_factor <- aspect_ratio
   if (fudge_factor < 1) {
