@@ -18,6 +18,15 @@ test_that("geometry helpers work as expected", {
     expect_equal(xy$y, c(0, 1, 2))
 })
 test_that("geometry patterns work as expected", {
+
+    png_file <- tempfile(fileext = ".png")
+    png(png_file)
+    expect_error(grid.pattern_crosshatch(x, y, density = 1.1))
+    expect_error(grid.pattern_stripe(x, y, density = 1.1))
+    dev.off()
+    unlink(png_file)
+
+
     skip_if_not_installed("vdiffr")
     skip_on_appveyor()
     library("vdiffr")

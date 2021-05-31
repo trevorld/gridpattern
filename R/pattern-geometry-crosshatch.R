@@ -35,6 +35,8 @@ grid.pattern_crosshatch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1
 create_pattern_crosshatch_via_sf <- function(params, boundary_df, aspect_ratio,
                                              legend = FALSE) {
 
+  stopifnot(params$pattern_density <= 1)
+
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Create stripes in 1 direction
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

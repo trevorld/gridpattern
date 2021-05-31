@@ -135,6 +135,7 @@ create_stripes_sf <- function(angle, spacing, density, xoffset=0, yoffset=0,
 create_pattern_stripes_via_sf <- function(params, boundary_df, aspect_ratio,
                                           legend = FALSE) {
 
+  stopifnot(params$pattern_density <= 1)
   stopifnot(is_polygon_df(boundary_df))
 
   stripes_sf <- create_stripes_sf(
