@@ -99,9 +99,9 @@ create_pattern_array <- function(params, boundary_df, aspect_ratio, legend,
         min(rgba_arr) >= 0             &&
         max(rgba_arr) <= 1)) {
 
-    warn(glue::glue("create_pattern_array(): Expecting a numeric RGBA array with dim = c({arr_height}, {arr_width}, 4) ",
+    warn(glue("create_pattern_array(): Expecting a numeric RGBA array with dim = c({arr_height}, {arr_width}, 4) ",
                     "but instead got a {deparse(class(rgba_arr))} ",
-                    "of type {typeof(rgba_arr)} with dimensions {deparse(dim(rgba_arr))}"), call. = FALSE)
+                    "of type {typeof(rgba_arr)} with dimensions {deparse(dim(rgba_arr))}"))
 
     rgba_arr <- array(c(0, 1), dim = c(arr_height, arr_width, 4))
   }

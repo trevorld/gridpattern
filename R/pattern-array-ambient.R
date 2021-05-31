@@ -51,7 +51,7 @@ grid.pattern_ambient <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, 
 create_pattern_ambient <- function(width, height, params, legend) {
 
   if (!requireNamespace("ambient"))
-      abort("The suggested package ambient must be installed for this feature")
+      abort("The suggested package {ambient} must be installed for this feature")
 
   colour1 <- as.character(params$pattern_fill )
   colour2 <- as.character(params$pattern_fill2)
@@ -114,7 +114,7 @@ ambient_fn <- function(params) {
                value = ambient::noise_value,
                white = ambient::noise_white,
                worley = ambient::noise_worley,
-               abort("Don't know ambient type ", type))
+               abort(glue("Don't know ambient type {type}")))
         do.call(fn, args)
     }
 }

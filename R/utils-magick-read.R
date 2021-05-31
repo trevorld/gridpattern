@@ -9,7 +9,7 @@ img_read <- function(filename) {
     return(magick::image_blank(100, 100, color = 'none'))
   }
   if (is.null(filename) || length(filename)==0 || is.na(filename) || filename == '') {
-    abort("img_read(): bad filename: ", deparse(filename), call.=FALSE)
+    abort(paste0("img_read(): bad filename: ", deparse(filename)))
   }
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,8 +18,8 @@ img_read <- function(filename) {
   img <- tryCatch(
     {magick::image_read(filename)},
     error = function(cond) {
-      message(cond)
-      stop("img_read() non-specific error with magick::image_read(", shQuote(filename), ")", call. = FALSE)
+      inform(cond)
+      abort(glue("img_read() non-specific error with magick::image_read({shQuote(filename)})"))
     }
   )
 
@@ -50,7 +50,7 @@ img_read_as_array <- function(filename, width = NULL, height = NULL,
   img <- img_read_memoised(filename)
 
   if (is.null(img)) {
-    stop("img_read_as_array(): couldn't read '", filename, "'", call. = FALSE)
+    abort(glue("img_read_as_array(): couldn't read '{filename}'"))
   }
 
   img <- fill_area_with_img(img, width, height, type = fill_type, gravity = gravity,

@@ -60,7 +60,7 @@ create_gradient_img <- function(width       = 100,
     img <- magick::image_blank(height, width, pseudo_image = pseudo)
     img <- magick::image_rotate(img, 90)
   } else {
-    abort("create_gradient_img() - Orientation not supported: ", orientation)
+    abort(paste0("create_gradient_img() - Orientation not supported: ", orientation))
   }
 
   img

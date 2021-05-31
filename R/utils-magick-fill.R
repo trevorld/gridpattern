@@ -180,8 +180,8 @@ fill_area_with_img_tile <- function(img, width, height, filter = filter, scale =
   # Tile the image using command line 'imagemagick'
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   tmp_filename <- tempfile(fileext = ".png")
-  command <- glue::glue("convert -size {width}x{height} tile:'{tile_temp_filename}' ",
-                        "-background none {tmp_filename}")
+  command <- glue("convert -size {width}x{height} tile:'{tile_temp_filename}' ",
+                  "-background none {tmp_filename}")
 
   system(command)
 

@@ -45,7 +45,7 @@ check_default <- function(x, options = NULL, default = NULL, type = NULL, prefix
       chr       = ,
       char      = ifelse(is.character(res), res, default),
       {
-        abort("check_default(): Don't know how to check for type: ", type)
+        abort(paste0("check_default(): Don't know how to check for type: ", type))
       }
     )
   }
@@ -67,7 +67,7 @@ my_abind <- function(arr, mat) {
   stopifnot(is.array(arr))
   stopifnot(is.matrix(mat))
   if (!identical(utils::head(dim(arr), -1), dim(mat))) {
-    abort("Dimension missmatch. Array: ", deparse(dim(arr)), "  Matrix: ", deparse(dim(mat)))
+    abort(glue("Dimension missmatch. Array: {deparse(dim(arr))} Matrix: {deparse(dim(mat))}"))
   }
 
   new_dim    <- dim(arr)

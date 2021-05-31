@@ -13,7 +13,8 @@ img_read_memoised <- img_read
 }
 
 #' @import grid
+#' @importFrom glue glue
 #' @importFrom grDevices col2rgb dev.off png rgb
-#' @importFrom rlang %||% abort warn
+#' @importFrom rlang %||% abort inform warn
 #' @importFrom utils hasName head tail
 NULL
