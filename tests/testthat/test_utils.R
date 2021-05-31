@@ -5,6 +5,12 @@ test_that("alpha works as expected", {
     expect_equal(alpha("#FF000080", 0.25), "#FF000040")
 })
 
+test_that("mean_col() works as expected", {
+    expect_equal(mean_col("black", "white"), "#B4B4B4FF")
+    expect_equal(mean_col(c("black", "white")), "#B4B4B4FF")
+    expect_equal(mean_col("red", "blue"), "#B400B4FF")
+})
+
 test_that("get_params works as expected", {
     params <- get_params()
     expect_equal(params$pattern_colour, "grey20")
