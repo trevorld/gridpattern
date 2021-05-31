@@ -79,15 +79,15 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     xoffset <- as.numeric(convertX(unit(params$pattern_xoffset, "npc"), "bigpts"))
     yoffset <- as.numeric(convertX(unit(params$pattern_yoffset, "npc"), "bigpts"))
 
-    # create grid of points
-    # large enough so will continue to cover viewport no matter the angle
-    # 0.72 ~ sqrt(0.5) for worst case of 45 degree rotation
-    x_centers <- xoffset + seq_robust(from = x_vp - 0.72 * longer_dimension,
-                                      to = x_vp + 0.72 * longer_dimension,
+    # create grid of points large enough to cover viewport no matter the angle
+    gm <- 0.72 # A bit bigger than sqrt(0.5) for worst case of 45 degree rotation
+    x_adjust <- ifelse(params$pattern_type == "hex", 0.5 * spacing, 0)
+    x_centers <- xoffset + seq_robust(from = x_vp - gm * longer_dimension,
+                                      to = x_vp + gm * longer_dimension + x_adjust,
                                       by = spacing)
     v_spacing <- switch(params$pattern_type, square = 1.0, 0.868) * spacing
-    y_centers <- yoffset + seq_robust(from = y_vp - 0.72 * longer_dimension,
-                                      to = y_vp + 0.72 * longer_dimension,
+    y_centers <- yoffset + seq_robust(from = y_vp - gm * longer_dimension,
+                                      to = y_vp + gm * longer_dimension,
                                       by = v_spacing)
 
     # do this by subsets if certain inputs are vectorized
