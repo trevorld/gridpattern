@@ -80,7 +80,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     yoffset <- as.numeric(convertX(unit(params$pattern_yoffset, "npc"), "bigpts"))
 
     # create grid of points large enough to cover viewport no matter the angle
-    gm <- 1.00
+    gm <- 1.00 # seems to need to be this big so {ggpattern} legends render correctly
     x_adjust <- ifelse(params$pattern_type == "hex", 0.5 * spacing, 0)
     x_centers <- xoffset + seq_robust(from = x_vp - gm * longer_dimension,
                                       to = x_vp + gm * longer_dimension + x_adjust,
@@ -95,20 +95,28 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_size * .pt
     lty  <- params$pattern_linetype
+
     n_par <- max(lengths(list(fill, col, lwd, lty)))
-    n_par <- max(n_par, round(params$pattern_density + 1, 0)) # prevent overlap error
+    n_par <- max(n_par, round(params$pattern_density + 1, 0)) # sometimes prevents overlap error
+
     fill <- rep(fill, length.out = n_par)
     col <- rep(col, length.out = n_par)
     lwd <- rep(lwd, length.out = n_par)
     lty <- rep(lty, length.out = n_par)
 
     # create regular polygons centered on points
-    radius_outer <- switch(params$pattern_type, square = 0.5, 0.578) * spacing * params$pattern_density
-    n_vertices <- get_n_vertices(params$pattern_shape)
+    radius_mult <- switch(params$pattern_type, square = 0.5,
+                          ifelse(params$pattern_shape == "circle", 0.5, 0.578))
+    radius_outer <- radius_mult * spacing * params$pattern_density
     polygon_angle <- 90 + params$pattern_rot + params$pattern_angle
-    if (grepl("convex", params$pattern_shape)) {
+    if (params$pattern_shape == "circle") {
+        # grid::grobPoints.circle() defaults to regular polygon with 100 vertices
+        xy_polygon <- convex_xy(100, polygon_angle, radius_outer)
+    } else if (grepl("convex", params$pattern_shape)) {
+        n_vertices <- get_n_vertices(params$pattern_shape)
         xy_polygon <- convex_xy(n_vertices, polygon_angle, radius_outer)
     } else {
+        n_vertices <- get_n_vertices(params$pattern_shape)
         radius_inner <- params$pattern_scale * radius_outer
         xy_polygon <- concave_xy(n_vertices, polygon_angle, radius_outer, radius_inner)
     }
@@ -135,7 +143,10 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
 
         gp <- gpar(fill = fill[i_par], col = col[i_par], lwd = lwd[i_par], lty = lty[i_par])
         # create grob for interior polygons
-        grob <- sf_points_to_polygon_grob(interior_points_sf, xy_polygon, gp)
+        if (params$pattern_shape == "circle")
+            grob <- sf_points_to_circle_grob(interior_points_sf, radius_outer, gp)
+        else
+            grob <- sf_points_to_polygon_grob(interior_points_sf, xy_polygon, gp)
         gl <- append_gList(gl, grob)
 
         # create grob for exterior polygons
@@ -154,6 +165,16 @@ sf_multipolygon_to_polygon_grob <- function(multipolygons_sf, gp = gpar()) {
         nullGrob()
     else
         polygonGrob(x = df$x, y = df$y, id = df$id, default.units = "bigpts", gp = gp)
+}
+
+sf_points_to_circle_grob <- function(sf_points, radius_outer, gp = gpar()) {
+    points_mat <- as.matrix(sf_points)
+    if (is.null(points_mat) || nrow(points_mat) == 0) {
+        nullGrob()
+    } else {
+        circleGrob(x = points_mat[, 1], y = points_mat[, 2], r = radius_outer,
+                   default.units = "bigpts", gp = gp)
+    }
 }
 
 sf_points_to_polygon_grob <- function(sf_points, xy_polygon, gp = gpar()) {

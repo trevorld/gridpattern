@@ -141,7 +141,7 @@ makeContent.pattern <- function(x) {
 }
 
 get_pattern_fn <- function(pattern) {
-    geometry_fns <- c(list(circle = create_pattern_circles,
+    geometry_fns <- c(list(circle = create_pattern_circle_via_sf,
                            crosshatch = create_pattern_crosshatch_via_sf,
                            none = create_pattern_none,
                            regular_polygon = create_pattern_regular_polygon_via_sf,

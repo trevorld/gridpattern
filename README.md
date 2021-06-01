@@ -65,7 +65,8 @@ grid.pattern("ambient", x_hex, y_hex, fill = "blue", fill2 = "yellow")
 ```
 
 ```r
-grid.pattern("circle", x_hex, y_hex, colour="blue", fill="yellow", density=0.3)
+grid.pattern_circle(x_hex, y_hex, density = 0.7, type = "hex",
+                    fill = c("blue", "yellow", "red"))
 ```
 
 ![](man/figures/README-circle-1.png)
