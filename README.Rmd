@@ -46,6 +46,7 @@ remotes::install_github("trevorld/gridpattern")
 
 ```{r setup, echo = FALSE}
 knitr::opts_chunk$set(fig.path = "man/figures/README-", fig.cap = '')
+set.seed(42)
 ```
 
 ```{r hex}
@@ -67,11 +68,11 @@ grid.pattern("crosshatch", x_hex, y_hex, colour="black", fill="blue",
              fill2 = "yellow", density = 0.5, angle = 135)
 ```
 ```{r gradient}
-grid.pattern("gradient", x_hex, y_hex, fill="blue", fill2="yellow")
+grid.pattern("gradient", x_hex, y_hex, fill = "blue", fill2 = "yellow")
 ```
 ```{r image}
-logo_filename   <- system.file("img", "Rlogo.png" , package="png")
-grid.pattern("image", x_hex, y_hex, filename=logo_filename, type="tile")
+logo_filename   <- system.file("img", "Rlogo.png" , package = "png")
+grid.pattern("image", x_hex, y_hex, filename = logo_filename, type = "tile")
 ```
 ```{r magick}
 grid.pattern("magick", x_hex, y_hex, type="octagons", fill="blue", scale=2)

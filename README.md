@@ -60,9 +60,7 @@ y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 grid.pattern("ambient", x_hex, y_hex, fill = "blue", fill2 = "yellow")
 ```
 
-```
-## Error in fn(dim = c(height, width)): object '.Random.seed' not found
-```
+![](man/figures/README-ambient-1.png)
 
 ```r
 grid.pattern_circle(x_hex, y_hex, density = 0.7, type = "hex",
@@ -79,14 +77,14 @@ grid.pattern("crosshatch", x_hex, y_hex, colour="black", fill="blue",
 ![](man/figures/README-crosshatch-1.png)
 
 ```r
-grid.pattern("gradient", x_hex, y_hex, fill="blue", fill2="yellow")
+grid.pattern("gradient", x_hex, y_hex, fill = "blue", fill2 = "yellow")
 ```
 
 ![](man/figures/README-gradient-1.png)
 
 ```r
-logo_filename   <- system.file("img", "Rlogo.png" , package="png")
-grid.pattern("image", x_hex, y_hex, filename=logo_filename, type="tile")
+logo_filename   <- system.file("img", "Rlogo.png" , package = "png")
+grid.pattern("image", x_hex, y_hex, filename = logo_filename, type = "tile")
 ```
 
 ![](man/figures/README-image-1.png)
