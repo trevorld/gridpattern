@@ -65,32 +65,18 @@ grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), i
 }
 
 create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
+    # work in 'bigpts' instead 'npc' / 'snpc' units so we don't worry about the aspect ratio
+    default.units <- "bigpts"
+    boundary_df <- convert_polygon_df_units(boundary_df, default.units)
+    params <- convert_params_units(params, default.units)
+    vpm <- get_vp_measurements(default.units)
 
-    # work in 'bgpoints' instead 'npc' units
-    width <- as.numeric(convertWidth(unit(1, "npc"), "bigpts"))
-    height <- as.numeric(convertHeight(unit(1, "npc"), "bigpts"))
-    longer_dimension <- max(width, height)
-    x_vp <- as.numeric(convertX(unit(0.5, "npc"), "bigpts"))
-    y_vp <- as.numeric(convertY(unit(0.5, "npc"), "bigpts"))
-    bigpts_boundary_df <- boundary_df
-    bigpts_boundary_df$x <- as.numeric(convertX(unit(boundary_df$x, "npc"), "bigpts"))
-    bigpts_boundary_df$y <- as.numeric(convertY(unit(boundary_df$y, "npc"), "bigpts"))
-    spacing <- as.numeric(convertX(unit(params$pattern_spacing, "snpc"), "bigpts"))
-    xoffset <- as.numeric(convertX(unit(params$pattern_xoffset, "npc"), "bigpts"))
-    yoffset <- as.numeric(convertX(unit(params$pattern_yoffset, "npc"), "bigpts"))
+    spacing <- params$pattern_spacing
 
     # create grid of points large enough to cover viewport no matter the angle
-    gm <- 1.00 # seems to need to be this big so {ggpattern} legends render correctly
-    x_adjust <- ifelse(params$pattern_type == "hex", 0.5 * spacing, 0)
-    x_centers <- xoffset + seq_robust(from = x_vp - gm * longer_dimension,
-                                      to = x_vp + gm * longer_dimension + x_adjust,
-                                      by = spacing)
-    v_spacing <- switch(params$pattern_type, square = 1.0, 0.868) * spacing
-    y_centers <- yoffset + seq_robust(from = y_vp - gm * longer_dimension,
-                                      to = y_vp + gm * longer_dimension,
-                                      by = v_spacing)
+    grid_xy <- get_xy_grid(params, vpm)
 
-    # do this by subsets if certain inputs are vectorized
+    # construct grobs using subsets if certain inputs are vectorized
     fill <- alpha(params$pattern_fill, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_size * .pt
@@ -104,140 +90,108 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     lwd <- rep(lwd, length.out = n_par)
     lty <- rep(lty, length.out = n_par)
 
-    # create regular polygons centered on points
+    # compute regular polygon relative coordinates which we will center on points
     radius_mult <- switch(params$pattern_type, square = 0.5,
                           ifelse(params$pattern_shape == "circle", 0.5, 0.578))
     radius_outer <- radius_mult * spacing * params$pattern_density
-    polygon_angle <- 90 + params$pattern_rot + params$pattern_angle
-    if (params$pattern_shape == "circle") {
-        # grid::grobPoints.circle() defaults to regular polygon with 100 vertices
-        xy_polygon <- convex_xy(100, polygon_angle, radius_outer)
-    } else if (grepl("convex", params$pattern_shape)) {
-        n_vertices <- get_n_vertices(params$pattern_shape)
-        xy_polygon <- convex_xy(n_vertices, polygon_angle, radius_outer)
-    } else {
-        n_vertices <- get_n_vertices(params$pattern_shape)
-        radius_inner <- params$pattern_scale * radius_outer
-        xy_polygon <- concave_xy(n_vertices, polygon_angle, radius_outer, radius_inner)
-    }
+    xy_polygon <- get_xy_polygon(params, radius_outer)
 
     #### add fudge factor?
-    boundary_sf <- convert_polygon_df_to_polygon_sf(bigpts_boundary_df, buffer_dist = 0)
-    expanded_sf <- convert_polygon_df_to_polygon_sf(bigpts_boundary_df, buffer_dist = radius_outer)
-    contracted_sf <- convert_polygon_df_to_polygon_sf(bigpts_boundary_df, buffer_dist = -radius_outer)
+    boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
+    expanded_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = radius_outer)
+    contracted_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = -radius_outer)
 
     gl <- gList()
     for (i_par in seq(n_par)) {
-        xy_par <- get_xy_par(x_centers, y_centers, i_par, n_par, spacing, params$pattern_type)
+        xy_par <- get_xy_par(grid_xy, i_par, n_par, spacing, params$pattern_type)
         if (length(xy_par$x) == 0) next
 
         # rotate by 'angle'
-        xy_par <- rotate_xy(xy_par$x, xy_par$y, params$pattern_angle, x_vp, y_vp)
+        xy_par <- rotate_xy(xy_par$x, xy_par$y, params$pattern_angle, vpm$x, vpm$y)
 
-        # test if polygons within/near boundary?
+        # test if polygons within/near boundary
         points_sf    <- sf::st_multipoint(as.matrix(as.data.frame(xy_par)))
-
-        all_points_sf      <- sf::st_intersection(expanded_sf  , points_sf)
-        interior_points_sf <- sf::st_intersection(contracted_sf, all_points_sf)
+        all_points_sf      <- sf::st_intersection(expanded_sf, points_sf)
+        interior_points_sf <- sf::st_intersection(all_points_sf, contracted_sf)
         exterior_points_sf <- sf::st_difference(all_points_sf, contracted_sf)
 
         gp <- gpar(fill = fill[i_par], col = col[i_par], lwd = lwd[i_par], lty = lty[i_par])
+
         # create grob for interior polygons
         if (params$pattern_shape == "circle")
-            grob <- sf_points_to_circle_grob(interior_points_sf, radius_outer, gp)
+            grob <- sf_points_to_circle_grob(interior_points_sf, radius_outer, gp, default.units)
         else
-            grob <- sf_points_to_polygon_grob(interior_points_sf, xy_polygon, gp)
+            grob <- sf_points_to_polygon_grob(interior_points_sf, xy_polygon, gp, default.units)
         gl <- append_gList(gl, grob)
 
         # create grob for exterior polygons
         polygons_sf <- sf_points_to_sf_multipolygon(exterior_points_sf, xy_polygon)
         exterior_multipolygon <- sf::st_intersection(polygons_sf, boundary_sf)
-        grob <- sf_multipolygon_to_polygon_grob(exterior_multipolygon, gp)
+        grob <- sf_multipolygon_to_polygon_grob(exterior_multipolygon, gp, default.units)
         gl <- append_gList(gl, grob)
     }
 
     gl
 }
 
-sf_multipolygon_to_polygon_grob <- function(multipolygons_sf, gp = gpar()) {
-    df <- convert_polygon_sf_to_polygon_df(multipolygons_sf)
-    if (is.null(df))
-        nullGrob()
-    else
-        polygonGrob(x = df$x, y = df$y, id = df$id, default.units = "bigpts", gp = gp)
-}
-
-sf_points_to_circle_grob <- function(sf_points, radius_outer, gp = gpar()) {
-    points_mat <- as.matrix(sf_points)
-    if (is.null(points_mat) || nrow(points_mat) == 0) {
-        nullGrob()
-    } else {
-        circleGrob(x = points_mat[, 1], y = points_mat[, 2], r = radius_outer,
-                   default.units = "bigpts", gp = gp)
-    }
-}
-
-sf_points_to_polygon_grob <- function(sf_points, xy_polygon, gp = gpar()) {
-    points_mat <- as.matrix(sf_points)
-    df_polygon <- as.data.frame(xy_polygon)
-    l_xy <- lapply(seq(nrow(points_mat)),
-                   function(i_r) {
-                       x0 <- points_mat[i_r, 1]
-                       y0 <- points_mat[i_r, 2]
-                       df <- df_polygon
-                       df$x <- df$x + x0
-                       df$y <- df$y + y0
-                       df
-                   })
-    df <- do.call(rbind, l_xy)
-    if (is.null(df)) {
-        nullGrob()
-    } else {
-        df$id <- rep(seq(nrow(points_mat)), each = nrow(df_polygon))
-        polygonGrob(x = df$x, y = df$y, id = df$id, default.units = "bigpts", gp = gp)
-    }
-}
-
-sf_points_to_sf_multipolygon <- function(sf_points, xy_polygon) {
-    points_mat <- as.matrix(sf_points)
-    df_polygon <- as.data.frame(xy_polygon)
-    df_polygon <- rbind(df_polygon, df_polygon[1L, ])
-    l_xy <- lapply(seq(nrow(points_mat)),
-                   function(i_r) {
-                       x0 <- points_mat[i_r, 1]
-                       y0 <- points_mat[i_r, 2]
-                       df <- df_polygon
-                       df$x <- df$x + x0
-                       df$y <- df$y + y0
-                       list(as.matrix(df))
-                   })
-    sf::st_multipolygon(l_xy)
-}
-
-get_xy_par <- function(x_centers, y_centers, i_par, n_par, spacing = 1, type = "square") {
+get_xy_par <- function(grid_xy, i_par, n_par, spacing = 1, type = "square") {
     x <- numeric(0)
     y <- numeric(0)
     seq_par <- seq(n_par)
-    seq_x <- seq_along(x_centers)
+    seq_x <- seq_along(grid_xy$x)
     skip <- 0
-    for (i_y in seq_along(y_centers)) {
+    for (i_y in seq_along(grid_xy$y)) {
         if (type == "square") {
             i_start <- cycle_elements(seq_par, i_y - 1L)[i_par]
-            indices_x <- seq_robust(i_start, length(x_centers), n_par)
-            x <- c(x, x_centers[indices_x])
+            indices_x <- seq_robust(i_start, length(grid_xy$x), n_par)
+            x <- c(x, grid_xy$x[indices_x])
         } else {
             i_start <- cycle_elements(seq_par, skip + i_y - 1)[i_par]
-            indices_x <- seq_robust(i_start, length(x_centers), n_par)
+            indices_x <- seq_robust(i_start, length(grid_xy$x), n_par)
             if (i_y %% 2) {
                 x_offset <- 0
             } else {
                 x_offset <-  -0.5 * spacing
                 skip <- skip + 1
             }
-            indices_x <- seq_robust(i_start, length(x_centers), n_par)
-            x <- c(x,  x_offset + x_centers[indices_x])
+            indices_x <- seq_robust(i_start, length(grid_xy$x), n_par)
+            x <- c(x,  x_offset + grid_xy$x[indices_x])
         }
-        y <- c(y, rep(y_centers[i_y], length(indices_x)))
+        y <- c(y, rep(grid_xy$y[i_y], length(indices_x)))
     }
     list(x = x, y = y)
+}
+
+# create grid of points large enough to cover viewport no matter the angle
+get_xy_grid <- function(params, vpm) {
+    spacing <- params$pattern_spacing
+    xoffset <- params$pattern_xoffset
+    yoffset <- params$pattern_yoffset
+
+    gm <- 1.00 # seems to need to be this big so {ggpattern} legends render correctly
+    x_adjust <- ifelse(params$pattern_type == "hex", 0.5 * spacing, 0)
+    x <- xoffset + seq_robust(from = vpm$x - gm * vpm$length,
+                              to = vpm$x + gm * vpm$length + x_adjust,
+                              by = spacing)
+    v_spacing <- switch(params$pattern_type, square = 1.0, 0.868) * spacing
+    y <- yoffset + seq_robust(from = vpm$y - gm * vpm$length,
+                              to = vpm$y + gm * vpm$length,
+                              by = v_spacing)
+
+    list(x = x, y = y)
+}
+
+get_xy_polygon <- function(params, radius_outer) {
+    polygon_angle <- 90 + params$pattern_rot + params$pattern_angle
+    if (params$pattern_shape == "circle") {
+        # grid::grobPoints.circle() defaults to regular polygon with 100 vertices
+        convex_xy(100, polygon_angle, radius_outer)
+    } else if (grepl("convex", params$pattern_shape)) {
+        n_vertices <- get_n_vertices(params$pattern_shape)
+        convex_xy(n_vertices, polygon_angle, radius_outer)
+    } else {
+        n_vertices <- get_n_vertices(params$pattern_shape)
+        radius_inner <- params$pattern_scale * radius_outer
+        concave_xy(n_vertices, polygon_angle, radius_outer, radius_inner)
+    }
 }

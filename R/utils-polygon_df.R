@@ -30,6 +30,13 @@ is_polygon_df <- function(x) {
     (is.data.frame(x) && all(c('x', 'y', 'id') %in% names(x)))
 }
 
+# Convert units from 'npc' to another {grid} unit
+convert_polygon_df_units <- function(df, units = "bigpts") {
+    df$x <- as.numeric(convertX(unit(df$x, "npc"), units))
+    df$y <- as.numeric(convertY(unit(df$y, "npc"), units))
+    df
+}
+
 
 #' Convert a \code{polygon_df} to \code{grid::polygonGrob} object
 #'
