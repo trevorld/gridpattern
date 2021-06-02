@@ -158,5 +158,5 @@ get_pattern_fn <- function(pattern) {
                             function(...) create_pattern_array(..., array_fn=fn)
                    })
     fns <- c(geometry_fns, array_fns)
-    fns[[pattern]] %||% abort(glue("Don't know the function for pattern {pattern}"))
+    fns[[pattern]] %||% abort(paste("Don't know the function for pattern", pattern))
 }

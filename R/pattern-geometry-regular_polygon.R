@@ -9,9 +9,6 @@
 #' @param shape Either "convex" or "star" followed by the number of exterior vertices
 #'              or "circle".  For example `"convex4"` (default) corresponds to a square
 #'              whereas `"star6"` corresponds to a six-pointed star.
-#' @param type Either `"square"` (default) or `"hex"`.
-#'             Adjusts layout, density, and repeating of certain aesthetics to aid in achieving a "tiling" effect.
-#'             Note `"hex"` is also good for a layout of triangles.
 #'
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
@@ -91,8 +88,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     lty <- rep(lty, length.out = n_par)
 
     # compute regular polygon relative coordinates which we will center on points
-    radius_mult <- switch(params$pattern_type, square = 0.5,
-                          ifelse(params$pattern_shape == "circle", 0.5, 0.578))
+    radius_mult <- switch(params$pattern_type, hex = 0.578, 0.5)
     radius_outer <- radius_mult * spacing * params$pattern_density
     xy_polygon <- get_xy_polygon(params, radius_outer)
 
@@ -180,7 +176,7 @@ get_xy_grid <- function(params, vpm) {
     x <- xoffset + seq_robust(from = x_min, to = x_max, by = spacing)
 
     # adjust vertical spacing for "hex" pattern
-    v_spacing <- switch(params$pattern_type, hex = 0.868, 1.0) * spacing
+    v_spacing <- switch(params$pattern_type, square = 1.0, 0.868) * spacing
     y_min <- vpm$y - gm * vpm$length
     y_max <- vpm$y + gm * vpm$length
     y <- yoffset + seq_robust(from = y_min, to = y_max, by = v_spacing)

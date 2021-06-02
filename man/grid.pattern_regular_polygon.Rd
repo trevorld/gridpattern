@@ -61,9 +61,11 @@ applied to exterior radius to get interior radius.}
 or "circle".  For example \code{"convex4"} (default) corresponds to a square
 whereas \code{"star6"} corresponds to a six-pointed star.}
 
-\item{type}{Either \code{"square"} (default) or \code{"hex"}.
-Adjusts layout, density, and repeating of certain aesthetics to aid in achieving a "tiling" effect.
-Note \code{"hex"} is also good for a layout of triangles.}
+\item{type}{Either \code{"square"} (default), \code{"hex"}, or \code{"hex_circle"}.
+Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
+a desired "tiling" or "packing" layout.
+\code{"hex"} supports a tiling layout of hexagons (and triangles) while
+\code{"hex_circle"} supports a hexagonal packing arrangement for circles.}
 
 \item{rot}{Angle to rotate regular polygon (degrees, counter-clockwise).}
 

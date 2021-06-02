@@ -32,7 +32,8 @@ gridpattern v0.1
     * ``grid.pattern_circle()`` has several enhancements:
 
       * Allows use of the argument ``xoffset`` and ``yoffset`` (#22)
-      * Allows use of argument ``type`` to setup a "hex" arrangement instead of default "square" arrangement.
+      * Allows use of argument ``type`` to setup a "hex" or "hex_circle" arrangement 
+        instead of the default "square" arrangement.
       * Use of multiple ``fill`` colors now produces a more attractive pattern.
       * Use of ``density`` greater than ``1`` will now sometimes give an attractive result (#17).
       * Uses ``{sf}`` to clip circles to boundary instead of ``{gridGeometry}``

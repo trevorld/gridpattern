@@ -14,8 +14,11 @@
 #' @param alpha Alpha (between 0 and 1) or `NA` (default, preserves colors' alpha value)
 #' @param linetype Stroke linetype
 #' @param size Stroke linewidth
-#' @param type Either `"square"` (default) or `"hex"`.
-#'             Adjusts layout, density, and repeating of certain aesthetics to aid in achieving a "tiling" effect.
+#' @param type Either `"square"` (default), `"hex"`, or `"hex_circle"`.
+#'             Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
+#'             a desired "tiling" or "packing" layout.
+#'             `"hex"` supports a tiling layout of hexagons (and triangles) while
+#'             `"hex_circle"` supports a hexagonal packing arrangement for circles.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
 #'   if (require("grid")) {
@@ -23,10 +26,10 @@
 #'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     grid.pattern_circle(x_hex, y_hex, fill = c("blue", "yellow"), density = 0.5)
 #'     grid.newpage()
-#'     grid.pattern_circle(x_hex, y_hex, density = 0.8, type = "hex",
+#'     grid.pattern_circle(x_hex, y_hex, density = 0.8, type = "hex_circle",
 #'                         gp = gpar(fill = c("blue", "yellow", "red")))
 #'     grid.newpage()
-#'     grid.pattern_circle(x_hex, y_hex, density = 1.2, type = "hex",
+#'     grid.pattern_circle(x_hex, y_hex, density = 1.2, type = "hex_circle",
 #'                         gp = gpar(fill = c("blue", "yellow", "red")))
 #'   }
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html>

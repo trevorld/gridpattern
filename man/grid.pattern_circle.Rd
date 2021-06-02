@@ -57,8 +57,11 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{size}{Stroke linewidth}
 
-\item{type}{Either \code{"square"} (default) or \code{"hex"}.
-Adjusts layout, density, and repeating of certain aesthetics to aid in achieving a "tiling" effect.}
+\item{type}{Either \code{"square"} (default), \code{"hex"}, or \code{"hex_circle"}.
+Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
+a desired "tiling" or "packing" layout.
+\code{"hex"} supports a tiling layout of hexagons (and triangles) while
+\code{"hex_circle"} supports a hexagonal packing arrangement for circles.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}
@@ -86,10 +89,10 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     grid.pattern_circle(x_hex, y_hex, fill = c("blue", "yellow"), density = 0.5)
     grid.newpage()
-    grid.pattern_circle(x_hex, y_hex, density = 0.8, type = "hex",
+    grid.pattern_circle(x_hex, y_hex, density = 0.8, type = "hex_circle",
                         gp = gpar(fill = c("blue", "yellow", "red")))
     grid.newpage()
-    grid.pattern_circle(x_hex, y_hex, density = 1.2, type = "hex",
+    grid.pattern_circle(x_hex, y_hex, density = 1.2, type = "hex_circle",
                         gp = gpar(fill = c("blue", "yellow", "red")))
   }
 }

@@ -60,7 +60,7 @@ y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 grid.pattern("ambient", x_hex, y_hex, fill = "blue", fill2 = "yellow")
 ```
 ```{r circle}
-grid.pattern_circle(x_hex, y_hex, density = 0.7, type = "hex",
+grid.pattern_circle(x_hex, y_hex, density = 0.7, type = "hex_circle",
                     fill = c("blue", "yellow", "red"))
 ```
 ```{r crosshatch}
