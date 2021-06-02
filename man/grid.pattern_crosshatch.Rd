@@ -20,6 +20,7 @@ grid.pattern_crosshatch(
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
   size = gp$lwd \%||\% 1,
+  type = "square",
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -58,6 +59,9 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{linetype}{Stroke linetype}
 
 \item{size}{Stroke linewidth}
+
+\item{type}{Either \code{"square"} (default) or \code{"hex"}.
+Adjusts layout, density, and repeating of certain aesthetics to aid in achieving a "tiling" effect.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}

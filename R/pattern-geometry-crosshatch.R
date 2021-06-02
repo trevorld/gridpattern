@@ -23,70 +23,83 @@ grid.pattern_crosshatch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1
                                     angle = 30, density = 0.2,
                                     spacing = 0.05, xoffset = 0, yoffset = 0,
                                     alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
+                                    type = "square",
                                     default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("crosshatch", x, y, id,
                  colour = colour, fill = fill, fill2 = fill2, angle = angle,
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
                  alpha = alpha, linetype = linetype, size = size,
+                 type = type,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
-create_pattern_crosshatch_via_sf <- function(params, boundary_df, aspect_ratio,
-                                             legend = FALSE) {
-
-  stopifnot(params$pattern_density <= 1)
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Create stripes in 1 direction
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  stripes_sf <- create_stripes_sf(
-    angle     = params$pattern_angle,
-    spacing   = params$pattern_spacing,
-    density   = params$pattern_density,
-    xoffset   = params$pattern_xoffset,
-    yoffset   = params$pattern_yoffset,
-    aspect_ratio = aspect_ratio
-  )
-
-  boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df)
-
-  striped_area     <- sf::st_intersection(stripes_sf, boundary_sf)
-  stripe_polygons1 <- convert_polygon_sf_to_polygon_df(striped_area)
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Create stripes in other direction
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  stripes_sf <- create_stripes_sf(
-    angle    = params$pattern_angle + 90,
-    spacing  = params$pattern_spacing,
-    density  = params$pattern_density,
-    xoffset  = params$pattern_xoffset,
-    yoffset  = params$pattern_yoffset,
-    aspect_ratio = aspect_ratio
-  )
-  striped_area     <- sf::st_intersection(stripes_sf, boundary_sf)
-  stripe_polygons2 <- convert_polygon_sf_to_polygon_df(striped_area)
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Create the grob and return
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  under_hatch <- as_crosshatch_grob(stripe_polygons1, params, fill = params$pattern_fill)
-  over_hatch  <- as_crosshatch_grob(stripe_polygons2, params, fill = params$pattern_fill2)
-  gList(under_hatch, over_hatch)
+create_pattern_crosshatch_via_sf <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
+    create_crosshatch_via_sf_helper(params, boundary_df, add_top_hatch = TRUE)
 }
 
-as_crosshatch_grob <- function(stripe_polygons, params, fill = params$pattern_fill) {
-    if (is.null(stripe_polygons)) return(grid::nullGrob())
-    grid::polygonGrob(x = unit(stripe_polygons$x, "npc"),
-      y = unit(stripe_polygons$y, "npc"),
-      id = stripe_polygons$id,
-      gp = gpar(
-        col     = alpha(params$pattern_colour, params$pattern_alpha),
-        fill    = alpha(fill, params$pattern_alpha),
-        lwd     = params$pattern_size * .pt,
-        lty     = params$pattern_linetype,
-        lineend = 'square'
-      )
-    )
+create_crosshatch_via_sf_helper <- function(params, boundary_df, add_top_hatch = TRUE) {
+
+    stopifnot(params$pattern_density <= 1)
+
+    # work in 'bigpts' instead 'npc' / 'snpc' units so we don't worry about the aspect ratio
+    default.units <- "bigpts"
+    boundary_df <- convert_polygon_df_units(boundary_df, default.units)
+    params <- convert_params_units(params, default.units)
+    vpm <- get_vp_measurements(default.units)
+
+    # create grid of points large enough to cover viewport no matter the angle
+    grid_xy <- get_xy_grid(params, vpm)
+
+    fill <- alpha(params$pattern_fill, params$pattern_alpha)
+    col  <- alpha(params$pattern_colour, params$pattern_alpha)
+    lwd  <- params$pattern_size * .pt
+    lty  <- params$pattern_linetype
+    gp_bot <- gpar(col = col, fill = fill, lwd = lwd, lty = lty, lineend = 'square')
+
+    boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
+
+    stripes_sf_bot <- create_h_stripes_sf(params, grid_xy, vpm)
+    clipped_stripes_sf_bot <- sf::st_intersection(stripes_sf_bot, boundary_sf)
+    grob <- sf_multipolygon_to_polygon_grob(clipped_stripes_sf_bot, gp_bot, default.units)
+
+    if (add_top_hatch) {
+        fill2 <- alpha(params$pattern_fill2, params$pattern_alpha)
+        gp_top <- gpar(col = col, fill = fill2, lwd = lwd, lty = lty, lineend = 'square')
+
+        stripes_sf_top <- create_v_stripes_sf(params, grid_xy, vpm)
+        clipped_stripes_sf_top <- sf::st_intersection(stripes_sf_top, boundary_sf)
+        grob_top <- sf_multipolygon_to_polygon_grob(clipped_stripes_sf_top, gp_top, default.units)
+
+        grob <- gList(grob, grob_top)
+    }
+    grob
+}
+
+# build sf multipolygon 'rect' for each grid_xy$y value
+create_h_stripes_sf <- function(params, grid_xy, vpm) {
+    halfwidth <- 0.5 * grid_xy$v_spacing * params$pattern_density
+    l_rects <- lapply(grid_xy$y,
+                      function(y0) {
+                          x <- c(grid_xy$x_min, grid_xy$x_min, grid_xy$x_max, grid_xy$x_max)
+                          y <- y0 + c(-1, 1, 1, -1) * halfwidth
+                          xy <- rotate_xy(x, y, params$pattern_angle, vpm$x, vpm$y)
+                          m <- as.matrix(as.data.frame(xy))
+                          list(rbind(m, m[1,]))
+                      })
+    sf::st_multipolygon(l_rects)
+}
+
+# build sf multipolygon 'rect' for each grid_xy$x value
+create_v_stripes_sf <- function(params, grid_xy, vpm) {
+    halfwidth <- 0.5 * grid_xy$h_spacing * params$pattern_density
+    l_rects <- lapply(grid_xy$x,
+                      function(x0) {
+                          x <- x0 + c(-1, 1, 1, -1) * halfwidth
+                          y <- c(grid_xy$y_min, grid_xy$y_min, grid_xy$y_max, grid_xy$y_max)
+                          xy <- rotate_xy(x, y, params$pattern_angle, vpm$x, vpm$y)
+                          m <- as.matrix(as.data.frame(xy))
+                          list(rbind(m, m[1,]))
+                      })
+    sf::st_multipolygon(l_rects)
 }

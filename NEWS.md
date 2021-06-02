@@ -23,7 +23,7 @@ gridpattern v0.1
   * [Custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html) (#1)
   * [Custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html) (#2)
 
-  Enhancements to the ``{ggpattern}`` patterns provided by this package:
+  Enhancements made to the ``{ggpattern}`` patterns provided by this package:
 
     * Resolution of "array" patterns is now user-supplied.
       Defaults to 72 DPI but with a minimum of 12 pixel image width and/or height.
@@ -39,5 +39,9 @@ gridpattern v0.1
 
     * ``grid.pattern_crosshatch()`` allows using the argument ``fill2`` to set 
        different fill color(s) for the "over" crosshatch lines (#14).
+    * ``xoffset``, ``yoffset``, and ``spacing`` are now interpreted as "snpc" units and
+      ``grid.pattern_stripe()`` and ``grid.pattern_crosshatch()`` now allow using the 
+      argument ``type`` to tweak placement of lines so that they now match the placement
+      of circles from ``grid.pattern_circle()`` and polygons from ``grid.pattern_regular_polygon()`` (#24).
 
 * ``mean_col()`` is a utility function that computes an "average" color (#21)

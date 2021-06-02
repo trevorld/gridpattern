@@ -19,24 +19,12 @@ create_polygon_df <- function(x, y, id = 1L) {
   )
 }
 
-#' Test if object is polygon_df or NULL
-#'
-#' @param x object
-#'
-#' @return TRUE if object is polygon_df or NULL
-#' @noRd
-is_polygon_df <- function(x) {
-  is.null(x) ||
-    (is.data.frame(x) && all(c('x', 'y', 'id') %in% names(x)))
-}
-
 # Convert units from 'npc' to another {grid} unit
 convert_polygon_df_units <- function(df, units = "bigpts") {
     df$x <- as.numeric(convertX(unit(df$x, "npc"), units))
     df$y <- as.numeric(convertY(unit(df$y, "npc"), units))
     df
 }
-
 
 #' Convert a \code{polygon_df} to \code{grid::polygonGrob} object
 #'
@@ -47,8 +35,7 @@ convert_polygon_df_units <- function(df, units = "bigpts") {
 #' @return sf polygon object
 #'
 #' @noRd
-convert_polygon_df_to_polygon_grob <- function(polygon_df, default.units = 'npc',
-                                                gp = gpar()) {
+convert_polygon_df_to_polygon_grob <- function(polygon_df, default.units = 'npc', gp = gpar()) {
 
 
   if (is.null(polygon_df) || nrow(polygon_df) < 3) {
@@ -123,32 +110,12 @@ convert_polygon_sf_to_polygon_df <- function(mp) {
   } else if (sf::st_is_empty(mp)) {
     return(mat)
   } else {
-    warn("convert_polygon_sf_to_polygon_df(): Not POLYGON or MULTIPOLYGON: ", deparse(class(mp)))
+    warn(paste0("convert_polygon_sf_to_polygon_df(): Not POLYGON or MULTIPOLYGON: ", deparse(class(mp))))
     return(NULL)
   }
   id  <- rep.int(seq_along(poly_lengths), times = poly_lengths)
 
   create_polygon_df(x=mat[,1], y=mat[,2], id=id)
-}
-
-#' Simple 2D rotation of a polygon about the origin
-#'
-#' @param polygon_df polygon data.frame
-#' @param angle angle in degrees
-#' @param aspect_ratio aspect ratio
-#'
-#' @noRd
-rotate_polygon_df <- function(polygon_df, angle, aspect_ratio) {
-
-  angle <- angle * pi/180
-
-  new_x <- polygon_df$x * cos(angle) - polygon_df$y * sin(angle)
-  new_y <- polygon_df$x * sin(angle) + polygon_df$y * cos(angle)
-
-  polygon_df$x <- new_x
-  polygon_df$y <- new_y
-
-  polygon_df
 }
 
 #' Convert a polygon to an alpha mask

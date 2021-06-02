@@ -130,7 +130,6 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
         grob <- sf_multipolygon_to_polygon_grob(exterior_multipolygon, gp, default.units)
         gl <- append_gList(gl, grob)
     }
-
     gl
 }
 
@@ -169,16 +168,21 @@ get_xy_grid <- function(params, vpm) {
     yoffset <- params$pattern_yoffset
 
     gm <- 1.00 # seems to need to be this big so {ggpattern} legends render correctly
-    x_adjust <- ifelse(params$pattern_type == "hex", 0.5 * spacing, 0)
-    x <- xoffset + seq_robust(from = vpm$x - gm * vpm$length,
-                              to = vpm$x + gm * vpm$length + x_adjust,
-                              by = spacing)
-    v_spacing <- switch(params$pattern_type, square = 1.0, 0.868) * spacing
-    y <- yoffset + seq_robust(from = vpm$y - gm * vpm$length,
-                              to = vpm$y + gm * vpm$length,
-                              by = v_spacing)
+    x_adjust <- switch(params$pattern_type, hex = 0.5 * spacing, 0)
+    x_min <- vpm$x - (gm * vpm$length + x_adjust)
+    x_max <- vpm$x + (gm * vpm$length + x_adjust)
+    x <- xoffset + seq_robust(from = x_min, to = x_max, by = spacing)
 
-    list(x = x, y = y)
+    # adjust vertical spacing for "hex" pattern
+    v_spacing <- switch(params$pattern_type, hex = 0.868, 1.0) * spacing
+    y_min <- vpm$y - gm * vpm$length
+    y_max <- vpm$y + gm * vpm$length
+    y <- yoffset + seq_robust(from = y_min, to = y_max, by = v_spacing)
+
+    list(x = x, y = y,
+         x_min = x_min, x_max = x_max, y_min = y_min, y_max = y_max,
+         h_spacing = spacing, v_spacing = v_spacing
+    )
 }
 
 get_xy_polygon <- function(params, radius_outer) {
