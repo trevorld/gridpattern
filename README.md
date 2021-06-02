@@ -108,8 +108,10 @@ grid.pattern("plasma", x_hex, y_hex, fill="green")
 ![](man/figures/README-plasma-1.png)
 
 ```r
-grid.pattern_regular_polygon(x_hex, y_hex, colour = "black", fill = c("blue", "yellow"),
-                             density = 1.0, spacing = 0.1, shape = "star8")
+grid.pattern_regular_polygon(x_hex, y_hex, colour = "black", 
+                             fill = c("blue", "yellow", "red"), 
+                             shape = c("convex4", "star8", "circle"),
+                             density = 0.4, spacing = 0.08, angle = 0)
 ```
 
 ![](man/figures/README-regular_star-1.png)

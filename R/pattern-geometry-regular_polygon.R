@@ -78,19 +78,20 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_size * .pt
     lty  <- params$pattern_linetype
+    shape <- params$pattern_shape
 
-    n_par <- max(lengths(list(fill, col, lwd, lty)))
+    n_par <- max(lengths(list(fill, col, lwd, lty, shape)))
     n_par <- max(n_par, round(params$pattern_density + 1, 0)) # sometimes prevents overlap error
 
     fill <- rep(fill, length.out = n_par)
     col <- rep(col, length.out = n_par)
     lwd <- rep(lwd, length.out = n_par)
     lty <- rep(lty, length.out = n_par)
+    shape <- rep(shape, length.out = n_par)
 
     # compute regular polygon relative coordinates which we will center on points
     radius_mult <- switch(params$pattern_type, hex = 0.578, 0.5)
     radius_outer <- radius_mult * spacing * params$pattern_density
-    xy_polygon <- get_xy_polygon(params, radius_outer)
 
     #### add fudge factor?
     boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
@@ -99,6 +100,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
 
     gl <- gList()
     for (i_par in seq(n_par)) {
+        xy_polygon <- get_xy_polygon(shape[i_par], params, radius_outer)
         xy_par <- get_xy_par(grid_xy, i_par, n_par, spacing, params$pattern_type)
         if (length(xy_par$x) == 0) next
 
@@ -115,7 +117,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
 
         # create grob for interior polygons
         name <- paste0("interior.", i_par)
-        if (params$pattern_shape == "circle") {
+        if (shape[i_par] == "circle") {
             grob <- sf_points_to_circle_grob(interior_points_sf, radius_outer,
                                              gp, default.units, name)
         } else {
@@ -187,16 +189,16 @@ get_xy_grid <- function(params, vpm) {
     )
 }
 
-get_xy_polygon <- function(params, radius_outer) {
+get_xy_polygon <- function(shape, params, radius_outer) {
     polygon_angle <- 90 + params$pattern_rot + params$pattern_angle
-    if (params$pattern_shape == "circle") {
+    if (shape == "circle") {
         # grid::grobPoints.circle() defaults to regular polygon with 100 vertices
         convex_xy(100, polygon_angle, radius_outer)
-    } else if (grepl("convex", params$pattern_shape)) {
-        n_vertices <- get_n_vertices(params$pattern_shape)
+    } else if (grepl("convex", shape)) {
+        n_vertices <- get_n_vertices(shape)
         convex_xy(n_vertices, polygon_angle, radius_outer)
     } else {
-        n_vertices <- get_n_vertices(params$pattern_shape)
+        n_vertices <- get_n_vertices(shape)
         radius_inner <- params$pattern_scale * radius_outer
         concave_xy(n_vertices, polygon_angle, radius_outer, radius_inner)
     }
