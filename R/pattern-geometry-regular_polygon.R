@@ -6,8 +6,8 @@
 #' @param rot Angle to rotate regular polygon (degrees, counter-clockwise).
 #' @param scale For star polygons, multiplier (between 0 and 1)
 #'              applied to exterior radius to get interior radius.
-#' @param shape Either "convex" or "star" followed by the number of exterior vertices.
-#'              For example `"convex4"` (default) corresponds to a square
+#' @param shape Either "convex" or "star" followed by the number of exterior vertices
+#'              or "circle".  For example `"convex4"` (default) corresponds to a square
 #'              whereas `"star6"` corresponds to a six-pointed star.
 #' @param type Either `"square"` (default) or `"hex"`.
 #'             Adjusts layout, density, and repeating of certain aesthetics to aid in achieving a "tiling" effect.
@@ -118,19 +118,25 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
         gp <- gpar(fill = fill[i_par], col = col[i_par], lwd = lwd[i_par], lty = lty[i_par])
 
         # create grob for interior polygons
-        if (params$pattern_shape == "circle")
-            grob <- sf_points_to_circle_grob(interior_points_sf, radius_outer, gp, default.units)
-        else
-            grob <- sf_points_to_polygon_grob(interior_points_sf, xy_polygon, gp, default.units)
+        name <- paste0("interior.", i_par)
+        if (params$pattern_shape == "circle") {
+            grob <- sf_points_to_circle_grob(interior_points_sf, radius_outer,
+                                             gp, default.units, name)
+        } else {
+            grob <- sf_points_to_polygon_grob(interior_points_sf, xy_polygon,
+                                              gp, default.units, name)
+        }
         gl <- append_gList(gl, grob)
 
         # create grob for exterior polygons
         polygons_sf <- sf_points_to_sf_multipolygon(exterior_points_sf, xy_polygon)
         exterior_multipolygon <- sf::st_intersection(polygons_sf, boundary_sf)
-        grob <- sf_multipolygon_to_polygon_grob(exterior_multipolygon, gp, default.units)
+        name <- paste0("boundary.", i_par)
+        grob <- sf_multipolygon_to_polygon_grob(exterior_multipolygon,
+                                                gp, default.units, name)
         gl <- append_gList(gl, grob)
     }
-    gl
+    gTree(children = gl, name = "regular_polygon")
 }
 
 get_xy_par <- function(grid_xy, i_par, n_par, spacing = 1, type = "square") {

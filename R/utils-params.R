@@ -2,6 +2,7 @@
 get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) {
     l <- list(...)
     if (length(l)) names(l) <- paste0(prefix, names(l))
+    l$pattern <- pattern
 
     # possibly get from gpar()
     l$pattern_alpha <- l$pattern_alpha %||% gp$alpha %||% NA_real_

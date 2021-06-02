@@ -57,8 +57,8 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{scale}{For star polygons, multiplier (between 0 and 1)
 applied to exterior radius to get interior radius.}
 
-\item{shape}{Either "convex" or "star" followed by the number of exterior vertices.
-For example \code{"convex4"} (default) corresponds to a square
+\item{shape}{Either "convex" or "star" followed by the number of exterior vertices
+or "circle".  For example \code{"convex4"} (default) corresponds to a square
 whereas \code{"star6"} corresponds to a six-pointed star.}
 
 \item{type}{Either \code{"square"} (default) or \code{"hex"}.

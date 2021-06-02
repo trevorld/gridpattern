@@ -127,7 +127,8 @@ create_pattern_array <- function(params, boundary_df, aspect_ratio, legend,
     x      = npc_x,
     y      = npc_y,
     width  = npc_width,
-    height = npc_height
+    height = npc_height,
+    name = params$pattern
   )
   raster_grob
 }

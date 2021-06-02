@@ -55,23 +55,25 @@ create_crosshatch_via_sf_helper <- function(params, boundary_df, add_top_hatch =
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_size * .pt
     lty  <- params$pattern_linetype
-    gp_bot <- gpar(col = col, fill = fill, lwd = lwd, lty = lty, lineend = 'square')
+    gp <- gpar(col = col, fill = fill, lwd = lwd, lty = lty, lineend = 'square')
 
     boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
 
     stripes_sf_bot <- create_h_stripes_sf(params, grid_xy, vpm)
     clipped_stripes_sf_bot <- sf::st_intersection(stripes_sf_bot, boundary_sf)
-    grob <- sf_multipolygon_to_polygon_grob(clipped_stripes_sf_bot, gp_bot, default.units)
+    grob <- sf_multipolygon_to_polygon_grob(clipped_stripes_sf_bot,
+                                            gp, default.units, "stripe")
 
     if (add_top_hatch) {
-        fill2 <- alpha(params$pattern_fill2, params$pattern_alpha)
-        gp_top <- gpar(col = col, fill = fill2, lwd = lwd, lty = lty, lineend = 'square')
+        gp$fill <- alpha(params$pattern_fill2, params$pattern_alpha)
 
         stripes_sf_top <- create_v_stripes_sf(params, grid_xy, vpm)
         clipped_stripes_sf_top <- sf::st_intersection(stripes_sf_top, boundary_sf)
-        grob_top <- sf_multipolygon_to_polygon_grob(clipped_stripes_sf_top, gp_top, default.units)
+        grob_top <- sf_multipolygon_to_polygon_grob(clipped_stripes_sf_top,
+                                                    gp, default.units, "top")
 
-        grob <- gList(grob, grob_top)
+        grob <- editGrob(grob, name = "bottom")
+        grob <- grobTree(grob, grob_top, name = "crosshatch")
     }
     grob
 }

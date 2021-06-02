@@ -1,24 +1,29 @@
-sf_multipolygon_to_polygon_grob <- function(multipolygons_sf, gp = gpar(), default.units = "npc") {
+sf_multipolygon_to_polygon_grob <- function(multipolygons_sf, gp = gpar(),
+                                            default.units = "npc", name = NULL) {
     df <- convert_polygon_sf_to_polygon_df(multipolygons_sf)
-    if (is.null(df))
+    if (is.null(df)) {
         nullGrob()
-    else
-        polygonGrob(x = df$x, y = df$y, id = df$id, default.units = default.units, gp = gp)
+    } else {
+        polygonGrob(x = df$x, y = df$y, id = df$id,
+                    default.units = default.units, gp = gp, name = name)
+    }
 }
 
 # build a circle of radius `r` centered on each point in `sf_points`
-sf_points_to_circle_grob <- function(sf_points, r, gp = gpar(), default.units = "npc") {
+sf_points_to_circle_grob <- function(sf_points, r, gp = gpar(),
+                                     default.units = "npc", name = NULL) {
     points_mat <- as.matrix(sf_points)
     if (is.null(points_mat) || nrow(points_mat) == 0) {
         nullGrob()
     } else {
         circleGrob(x = points_mat[, 1], y = points_mat[, 2], r = r,
-                   default.units = default.units, gp = gp)
+                   default.units = default.units, gp = gp, name = name)
     }
 }
 
 # `xy_polygon` has `x` and `y` elements which will be added to each point in `sf_points`
-sf_points_to_polygon_grob <- function(sf_points, xy_polygon, gp = gpar(), default.units = "npc") {
+sf_points_to_polygon_grob <- function(sf_points, xy_polygon, gp = gpar(),
+                                      default.units = "npc", name = NULL) {
     points_mat <- as.matrix(sf_points)
     df_polygon <- as.data.frame(xy_polygon)
     l_xy <- lapply(seq(nrow(points_mat)),
@@ -36,7 +41,7 @@ sf_points_to_polygon_grob <- function(sf_points, xy_polygon, gp = gpar(), defaul
     } else {
         df$id <- rep(seq(nrow(points_mat)), each = nrow(df_polygon))
         polygonGrob(x = df$x, y = df$y, id = df$id,
-                    default.units = default.units, gp = gp)
+                    default.units = default.units, gp = gp, name = name)
     }
 }
 
