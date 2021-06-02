@@ -40,6 +40,14 @@
 #'     grid.pattern_regular_polygon(x_hex, y_hex, fill = "green",
 #'                                  density = 1.0, spacing = 0.1,
 #'                                  shape = "star3", type = "hex")
+#'
+#'     # 'shape' and 'density' are also vectorized
+#'     grid.newpage()
+#'     grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
+#'                                  fill = c("blue", "yellow", "red"),
+#'                                  shape = c("convex4", "star8", "circle"),
+#'                                  density = c(0.45, 0.42, 0.4),
+#'                                  spacing = 0.08, angle = 0)
 #'   }
 #' @export
 grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
@@ -78,28 +86,33 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_size * .pt
     lty  <- params$pattern_linetype
+
+    density <- params$pattern_density
     shape <- params$pattern_shape
 
-    n_par <- max(lengths(list(fill, col, lwd, lty, shape)))
-    n_par <- max(n_par, round(params$pattern_density + 1, 0)) # sometimes prevents overlap error
+    density_max <- max(density)
+    n_par <- max(lengths(list(fill, col, lwd, lty, density, shape)))
+    n_par <- max(n_par, round(density_max + 1, 0)) # sometimes prevents overlap error
 
     fill <- rep(fill, length.out = n_par)
     col <- rep(col, length.out = n_par)
     lwd <- rep(lwd, length.out = n_par)
     lty <- rep(lty, length.out = n_par)
+    density <- rep(density, length.out = n_par)
     shape <- rep(shape, length.out = n_par)
 
     # compute regular polygon relative coordinates which we will center on points
     radius_mult <- switch(params$pattern_type, hex = 0.578, 0.5)
-    radius_outer <- radius_mult * spacing * params$pattern_density
+    radius_max <- radius_mult * spacing * density_max
 
     #### add fudge factor?
     boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
-    expanded_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = radius_outer)
-    contracted_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = -radius_outer)
+    expanded_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = radius_max)
+    contracted_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = -radius_max)
 
     gl <- gList()
     for (i_par in seq(n_par)) {
+        radius_outer <- radius_mult * spacing * density[i_par]
         xy_polygon <- get_xy_polygon(shape[i_par], params, radius_outer)
         xy_par <- get_xy_par(grid_xy, i_par, n_par, spacing, params$pattern_type)
         if (length(xy_par$x) == 0) next

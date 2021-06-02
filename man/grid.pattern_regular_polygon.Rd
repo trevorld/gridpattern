@@ -124,5 +124,13 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
     grid.pattern_regular_polygon(x_hex, y_hex, fill = "green",
                                  density = 1.0, spacing = 0.1,
                                  shape = "star3", type = "hex")
+
+    # 'shape' and 'density' are also vectorized
+    grid.newpage()
+    grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
+                                 fill = c("blue", "yellow", "red"),
+                                 shape = c("convex4", "star8", "circle"),
+                                 density = c(0.45, 0.42, 0.4),
+                                 spacing = 0.08, angle = 0)
   }
 }
