@@ -7,47 +7,50 @@
 #' @param scale For star polygons, multiplier (between 0 and 1)
 #'              applied to exterior radius to get interior radius.
 #' @param shape Either "convex" or "star" followed by the number of exterior vertices
-#'              or "circle".  For example `"convex4"` (default) corresponds to a square
-#'              whereas `"star6"` corresponds to a six-pointed star.
+#'              or alternatively "circle" or "square".
+#'              For example `"convex5"` (default) corresponds to a pentagon
+#'              and `"star6"` corresponds to a six-pointed star.
+#'              The `"square"` shape is larger than the `"convex4"` shape and has been rotated 45 degrees,
+#'              it can be used to generate a multi-colored "checkers" effect when density is 1.
 #'
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
 #'   if (require("grid")) {
 #'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     # basic checker pattern
-#'     grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
-#'                                  colour = "black", fill = "blue")
-#'     # alternative checker patten
-#'     grid.newpage()
-#'     grid.pattern_regular_polygon(x_hex, y_hex,
-#'                                  colour = "transparent",
-#'                                  fill = c("black", "red", "blue", "yellow"),
-#'                                  angle = 0, rot = 45, density = 1.414, spacing = 0.2)
-#'     # eight-pointed star tiling
-#'     grid.newpage()
-#'     grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
-#'                                  fill = c("blue", "yellow"),
-#'                                  density = 1.0, spacing = 0.1, shape = "star8")
-#'     # hexagon tiling
-#'     grid.newpage()
-#'     grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
-#'                                  fill = c("white", "grey", "black"),
-#'                                  density = 1.0, spacing = 0.1,
-#'                                  shape = "convex6", type = "hex")
-#'     # three-pointed star
-#'     grid.newpage()
-#'     grid.pattern_regular_polygon(x_hex, y_hex, fill = "green",
-#'                                  density = 1.0, spacing = 0.1,
-#'                                  shape = "star3", type = "hex")
 #'
-#'     # 'shape' and 'density' are also vectorized
+#'     # 'density', 'rot', and 'shape' are vectorized
 #'     grid.newpage()
 #'     grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
 #'                                  fill = c("blue", "yellow", "red"),
 #'                                  shape = c("convex4", "star8", "circle"),
 #'                                  density = c(0.45, 0.42, 0.4),
 #'                                  spacing = 0.08, angle = 0)
+#'
+#'     # checker pattern using "square" shape
+#'     grid.newpage()
+#'     grid.pattern_regular_polygon(x_hex, y_hex, shape = "square",
+#'                                  colour = "transparent",
+#'                                  fill = c("black", "red", "blue", "yellow"),
+#'                                  angle = 0, density = 1.0, spacing = 0.2)
+#'
+#'     # checker pattern using the default "convex4" shape
+#'     grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
+#'                                  colour = "black", fill = "blue")
+#'
+#'     # hexagon tiling
+#'     grid.newpage()
+#'     grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
+#'                                  fill = c("white", "grey", "black"),
+#'                                  density = 1.0, spacing = 0.1,
+#'                                  shape = "convex6", type = "hex")
+#'
+#'     # triangle tiling
+#'     grid.newpage()
+#'     grid.pattern_regular_polygon(x_hex, y_hex, fill = "green",
+#'                                  density = 1.0, spacing = 0.1,
+#'                                  shape = "convex3", type = "hex")
+#'
 #'   }
 #' @export
 grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
@@ -88,10 +91,11 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     lty  <- params$pattern_linetype
 
     density <- params$pattern_density
+    rot <- params$pattern_rot
     shape <- params$pattern_shape
 
     density_max <- max(density)
-    n_par <- max(lengths(list(fill, col, lwd, lty, density, shape)))
+    n_par <- max(lengths(list(fill, col, lwd, lty, density, rot, shape)))
     n_par <- max(n_par, round(density_max + 1, 0)) # sometimes prevents overlap error
 
     fill <- rep(fill, length.out = n_par)
@@ -99,7 +103,10 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     lwd <- rep(lwd, length.out = n_par)
     lty <- rep(lty, length.out = n_par)
     density <- rep(density, length.out = n_par)
+    rot <- rep(rot, length.out = n_par)
     shape <- rep(shape, length.out = n_par)
+
+    density <- ifelse(shape == "square", 1.414 * density, density)
 
     # compute regular polygon relative coordinates which we will center on points
     radius_mult <- switch(params$pattern_type, hex = 0.578, 0.5)
@@ -113,7 +120,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     gl <- gList()
     for (i_par in seq(n_par)) {
         radius_outer <- radius_mult * spacing * density[i_par]
-        xy_polygon <- get_xy_polygon(shape[i_par], params, radius_outer)
+        xy_polygon <- get_xy_polygon(shape[i_par], params, radius_outer, rot[i_par])
         xy_par <- get_xy_par(grid_xy, i_par, n_par, spacing, params$pattern_type)
         if (length(xy_par$x) == 0) next
 
@@ -158,11 +165,13 @@ get_xy_par <- function(grid_xy, i_par, n_par, spacing = 1, type = "square") {
     skip <- 0
     for (i_y in seq_along(grid_xy$y)) {
         if (type == "square") {
-            i_start <- cycle_elements(seq_par, i_y - 1L)[i_par]
+            n_cycle <- i_y - 1L
+            i_start <- cycle_elements(seq_par, -n_cycle)[i_par]
             indices_x <- seq_robust(i_start, length(grid_xy$x), n_par)
             x <- c(x, grid_xy$x[indices_x])
         } else {
-            i_start <- cycle_elements(seq_par, skip + i_y - 1)[i_par]
+            n_cycle <- skip + i_y - 1
+            i_start <- cycle_elements(seq_par, -n_cycle)[i_par]
             indices_x <- seq_robust(i_start, length(grid_xy$x), n_par)
             if (i_y %% 2) {
                 x_offset <- 0
@@ -202,8 +211,12 @@ get_xy_grid <- function(params, vpm) {
     )
 }
 
-get_xy_polygon <- function(shape, params, radius_outer) {
-    polygon_angle <- 90 + params$pattern_rot + params$pattern_angle
+get_xy_polygon <- function(shape, params, radius_outer, rot) {
+    if (shape == "square") {
+        shape <- "convex4"
+        rot <- rot + 45
+    }
+    polygon_angle <- 90 + rot + params$pattern_angle
     if (shape == "circle") {
         # grid::grobPoints.circle() defaults to regular polygon with 100 vertices
         convex_xy(100, polygon_angle, radius_outer)

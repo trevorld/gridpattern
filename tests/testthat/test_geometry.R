@@ -52,6 +52,10 @@ test_that("geometry patterns work as expected", {
         grid.pattern_regular_polygon(x, y, color = "transparent", fill = c("white", "grey", "black"),
                                      density = 1.0, shape = "convex6", type = "hex"))
 
+    expect_doppelganger("square", function()
+        grid.pattern_regular_polygon(x, y, color = "black", fill = c("white", "grey"),
+                                     density = 1.0, shape = "square"))
+
     expect_doppelganger("eight_sided_star", function()
         grid.pattern_regular_polygon(x, y, colour = "black", fill = c("blue", "yellow"),
                                      density = 1.0, spacing = 0.1, shape = "star8"))

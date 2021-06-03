@@ -79,16 +79,26 @@ seq_robust <- function(from = 1, to = 1, by = ((to - from)/(length.out - 1)), le
     }
 }
 
-# cycle_elements(1:4, 0) = 1:4
-# cycle_elements(1:4, 1) = c(4, 1:3)
-# cycle_elements(1:4, 2) = c(3:4, 1:2)
+# cycle_elements(1:5, -2) = c(4, 5, 1, 2, 3)
+# cycle_elements(1:5, -1) = c(5, 1, 2, 3, 4)
+# cycle_elements(1:5,  0) = c(1, 2, 3, 4, 5)
+# cycle_elements(1:5,  1) = c(2, 3, 4, 5, 1)
+# cycle_elements(1:5,  2) = c(3, 4, 5, 1, 2)
 cycle_elements <- function(x, n = 1) {
     l <- length(x)
-    if (l < 2 || n == l || n == 0) {
-        x
-    } else if (n < l) {
-        c(x[(l-n+1):l], x[1:(l-n)])
+    if (l < 2 || n == l || n == 0 || n == -l)
+        return(x)
+    if (n > 0) {
+        if (n < l) {
+            c(x[(l-n+1):l], x[1:(l-n)])
+        } else {
+            cycle_elements(x, n-l)
+        }
     } else {
-        cycle_elements(cycle_elements(x, l), n-l)
+        if (-l < n) {
+            c(x[(l+n+1):l], x[1:(l+n)])
+        } else {
+            cycle_elements(x, n+l)
+        }
     }
 }

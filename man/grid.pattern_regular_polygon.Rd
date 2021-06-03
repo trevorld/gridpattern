@@ -58,8 +58,11 @@ All locations within the same \code{id} belong to the same boundary.}
 applied to exterior radius to get interior radius.}
 
 \item{shape}{Either "convex" or "star" followed by the number of exterior vertices
-or "circle".  For example \code{"convex4"} (default) corresponds to a square
-whereas \code{"star6"} corresponds to a six-pointed star.}
+or alternatively "circle" or "square".
+For example \code{"convex5"} (default) corresponds to a pentagon
+and \code{"star6"} corresponds to a six-pointed star.
+The \code{"square"} shape is larger than the \code{"convex4"} shape and has been rotated 45 degrees,
+it can be used to generate a multi-colored "checkers" effect when density is 1.}
 
 \item{type}{Either \code{"square"} (default), \code{"hex"}, or \code{"hex_circle"}.
 Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
@@ -99,38 +102,38 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
   if (require("grid")) {
     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-    # basic checker pattern
-    grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
-                                 colour = "black", fill = "blue")
-    # alternative checker patten
-    grid.newpage()
-    grid.pattern_regular_polygon(x_hex, y_hex,
-                                 colour = "transparent",
-                                 fill = c("black", "red", "blue", "yellow"),
-                                 angle = 0, rot = 45, density = 1.414, spacing = 0.2)
-    # eight-pointed star tiling
-    grid.newpage()
-    grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
-                                 fill = c("blue", "yellow"),
-                                 density = 1.0, spacing = 0.1, shape = "star8")
-    # hexagon tiling
-    grid.newpage()
-    grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
-                                 fill = c("white", "grey", "black"),
-                                 density = 1.0, spacing = 0.1,
-                                 shape = "convex6", type = "hex")
-    # three-pointed star
-    grid.newpage()
-    grid.pattern_regular_polygon(x_hex, y_hex, fill = "green",
-                                 density = 1.0, spacing = 0.1,
-                                 shape = "star3", type = "hex")
 
-    # 'shape' and 'density' are also vectorized
+    # 'density', 'rot', and 'shape' are vectorized
     grid.newpage()
     grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
                                  fill = c("blue", "yellow", "red"),
                                  shape = c("convex4", "star8", "circle"),
                                  density = c(0.45, 0.42, 0.4),
                                  spacing = 0.08, angle = 0)
+
+    # checker pattern using "square" shape
+    grid.newpage()
+    grid.pattern_regular_polygon(x_hex, y_hex, shape = "square",
+                                 colour = "transparent",
+                                 fill = c("black", "red", "blue", "yellow"),
+                                 angle = 0, density = 1.0, spacing = 0.2)
+
+    # checker pattern using the default "convex4" shape
+    grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
+                                 colour = "black", fill = "blue")
+
+    # hexagon tiling
+    grid.newpage()
+    grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
+                                 fill = c("white", "grey", "black"),
+                                 density = 1.0, spacing = 0.1,
+                                 shape = "convex6", type = "hex")
+
+    # triangle tiling
+    grid.newpage()
+    grid.pattern_regular_polygon(x_hex, y_hex, fill = "green",
+                                 density = 1.0, spacing = 0.1,
+                                 shape = "convex3", type = "hex")
+
   }
 }
