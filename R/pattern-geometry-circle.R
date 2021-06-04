@@ -50,6 +50,7 @@ grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, .
 
 create_pattern_circle_via_sf <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
     params$pattern_shape <- "circle"
-    grob <- create_pattern_regular_polygon_via_sf(params, boundary_df, aspect_ratio, legend = FALSE)
-    editGrob(grob, name = "circle")
+    grob <- create_pattern_regular_polygon_via_sf(params, boundary_df, aspect_ratio, legend = legend)
+    grob <- editGrob(grob, name = "circle")
+    grob
 }
