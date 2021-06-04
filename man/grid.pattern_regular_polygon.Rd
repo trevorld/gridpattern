@@ -119,6 +119,7 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
                                  angle = 0, density = 1.0, spacing = 0.2)
 
     # checker pattern using the default "convex4" shape
+    grid.newpage()
     grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
                                  colour = "black", fill = "blue")
 

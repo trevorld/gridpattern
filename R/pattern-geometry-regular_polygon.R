@@ -35,6 +35,7 @@
 #'                                  angle = 0, density = 1.0, spacing = 0.2)
 #'
 #'     # checker pattern using the default "convex4" shape
+#'     grid.newpage()
 #'     grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
 #'                                  colour = "black", fill = "blue")
 #'
@@ -94,9 +95,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     rot <- params$pattern_rot
     shape <- params$pattern_shape
 
-    density_max <- max(density)
     n_par <- max(lengths(list(fill, col, lwd, lty, density, rot, shape)))
-    n_par <- max(n_par, round(density_max + 1, 0)) # sometimes prevents overlap error
 
     fill <- rep(fill, length.out = n_par)
     col <- rep(col, length.out = n_par)
@@ -107,6 +106,12 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     shape <- rep(shape, length.out = n_par)
 
     density <- ifelse(shape == "square", 1.414 * density, density)
+    # avoid overlap errors when density == 1 due to machine precision issues
+    if (params$pattern_type == "square")
+        density <- ifelse(abs(density - 1) < .Machine$double.eps^0.5, 0.9999, density)
+    if (params$pattern_type == "hex" && n_par < 2)
+        density <- ifelse(abs(density - 1) < .Machine$double.eps^0.5, 0.994, density)
+    density_max <- max(density)
 
     # compute regular polygon relative coordinates which we will center on points
     radius_mult <- switch(params$pattern_type, hex = 0.578, 0.5)
