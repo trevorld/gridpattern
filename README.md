@@ -30,8 +30,9 @@ We currently provide `grid` grob support for the following patterns:
 9.  [plasma](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_plasma.html): plasma array patterns
 10. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
 11. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
-12. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
-13. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
+12. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
+13. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
+14. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
 
 ## Installation
 
@@ -57,81 +58,35 @@ y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 
 
 ```r
-grid.pattern("ambient", x_hex, y_hex, fill = "blue", fill2 = "yellow")
-```
-
-![](man/figures/README-ambient-1.png)
-
-```r
-grid.pattern_circle(x_hex, y_hex, density = 0.7, type = "hex_circle",
+grid.pattern_circle(x_hex, y_hex, density = 0.5, type = "hex_circle",
                     fill = c("blue", "yellow", "red"))
 ```
 
 ![](man/figures/README-circle-1.png)
 
 ```r
-grid.pattern("crosshatch", x_hex, y_hex, colour="black", fill="blue", 
-             fill2 = "yellow", density = 0.5, angle = 135)
-```
-
-![](man/figures/README-crosshatch-1.png)
-
-```r
-grid.pattern("gradient", x_hex, y_hex, fill = "blue", fill2 = "yellow")
-```
-
-![](man/figures/README-gradient-1.png)
-
-```r
-logo_filename   <- system.file("img", "Rlogo.png" , package = "png")
-grid.pattern("image", x_hex, y_hex, filename = logo_filename, type = "tile")
-```
-
-![](man/figures/README-image-1.png)
-
-```r
-grid.pattern("magick", x_hex, y_hex, type="octagons", fill="blue", scale=2)
-```
-
-![](man/figures/README-magick-1.png)
-
-```r
-grid.pattern("placeholder", x_hex, y_hex, type="bear")
-```
-
-![](man/figures/README-placeholder-1.png)
-
-```r
-grid.pattern("plasma", x_hex, y_hex, fill="green")
-```
-
-![](man/figures/README-plasma-1.png)
-
-```r
-grid.pattern_regular_polygon(x_hex, y_hex, colour = "black", 
-                             fill = c("blue", "yellow", "red"), 
-                             shape = c("convex4", "star8", "circle"),
-                             density = c(0.45, 0.42, 0.4), 
-                             spacing = 0.08, angle = 0)
+grid.pattern_regular_polygon(x_hex, y_hex, shape = c("convex4", "star8", "circle"),
+                             colour = "black", fill = c("blue", "yellow", "red"), 
+                             density = c(0.45, 0.42, 0.4), spacing = 0.08, angle = 0)
 ```
 
 ![](man/figures/README-regular_star-1.png)
 
 ```r
-grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
-                             fill = c("white", "grey", "black"),
-                             density = 1.0, spacing = 0.1,
-                             shape = "convex6", type = "hex")
+grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", type = "hex",
+                             color = "transparent", fill = c("white", "grey", "black"),
+                             density = 1.0, spacing = 0.1)
 ```
 
 ![](man/figures/README-regular_hex-1.png)
 
 ```r
-grid.pattern("stripe", x_hex, y_hex, colour="black", fill=c("blue", "yellow"),
-             density = 0.5, angle = 135)
+grid.pattern("weave", x_hex, y_hex, type = "satin", 
+             colour = "black", fill = "lightblue", fill2 =  "yellow",
+             density = 0.3)
 ```
 
-![](man/figures/README-stripe-1.png)
+![](man/figures/README-weave-1.png)
 
 ## Using these patterns with the "ggpattern" package
 

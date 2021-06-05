@@ -1,0 +1,19 @@
+> pww("twill_zigzag", "2/2", nrow = 15, ncol = 9)
+/ - - - - - - - - - \ 
+| X     X X     X X | 
+| X X     X X     X | 
+|   X X     X X     | 
+|     X X     X X   | 
+|   X X     X X     | 
+| X X     X X     X | 
+| X     X X     X X | 
+|     X X     X X   | 
+| X     X X     X X | 
+| X X     X X     X | 
+|   X X     X X     | 
+|     X X     X X   | 
+|   X X     X X     | 
+| X X     X X     X | 
+| X     X X     X X | 
+\ - - - - - - - - - / 
+

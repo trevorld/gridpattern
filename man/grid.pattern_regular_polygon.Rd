@@ -61,7 +61,7 @@ applied to exterior radius to get interior radius.}
 or alternatively "circle" or "square".
 For example \code{"convex5"} (default) corresponds to a pentagon
 and \code{"star6"} corresponds to a six-pointed star.
-The \code{"square"} shape is larger than the \code{"convex4"} shape and has been rotated 45 degrees,
+The \code{"square"} shape is larger than the \code{"convex4"} shape and is rotated an extra 45 degrees,
 it can be used to generate a multi-colored "checkers" effect when density is 1.}
 
 \item{type}{Either \code{"square"} (default), \code{"hex"}, or \code{"hex_circle"}.
@@ -137,4 +137,7 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
                                  shape = "convex3", type = "hex")
 
   }
+}
+\seealso{
+\code{\link[=grid.pattern_circle]{grid.pattern_circle()}} for a special case of this pattern.
 }

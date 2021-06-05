@@ -68,6 +68,10 @@ test_that("geometry patterns work as expected", {
         grid.pattern("stripe", x, y, gp = gpar(col="blue", fill="red", lwd=2))
     })
 
+    expect_doppelganger("weave", function()
+        grid.pattern_weave(x, y, color="black", fill="yellow", fill2="blue",
+                           type = "twill", density = 0.5))
+
     centroid_dot_pattern <- function(params, boundary_df, aspect_ratio, legend) {
         boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df)
         centroid    <- sf::st_centroid(boundary_sf)

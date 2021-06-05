@@ -32,7 +32,8 @@
 #'     grid.pattern_circle(x_hex, y_hex, density = 1.2, type = "hex_circle",
 #'                         gp = gpar(fill = c("blue", "yellow", "red")))
 #'   }
-#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html>
+#' @seealso [grid.pattern_regular_polygon()] for a more general case of this pattern and
+#'   `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html>
 #' @export
 grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,

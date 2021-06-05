@@ -1,0 +1,11 @@
+> pww("matt", 3, nrow = 7, ncol = 9)
+/ - - - - - - - - - \ 
+| X X X       X X X | 
+|       X X X       | 
+|       X X X       | 
+|       X X X       | 
+| X X X       X X X | 
+| X X X       X X X | 
+| X X X       X X X | 
+\ - - - - - - - - - / 
+

@@ -106,6 +106,7 @@ convert_polygon_sf_to_polygon_df <- function(mp) {
   if (inherits(mp, 'POLYGON')) {
     poly_lengths <- nrow(mat)
   } else if (inherits(mp, 'MULTIPOLYGON')) {
+    if (max(lengths(mp)) > 1L) abort("There is a MULTIPOLYGON with length greater than 1")
     poly_lengths <- vapply(mp, function(x) {nrow(x[[1]])}, integer(1))
   } else if (sf::st_is_empty(mp)) {
     return(mat)

@@ -1,0 +1,11 @@
+> pww("plain", nrow = 7, ncol = 9)
+/ - - - - - - - - - \ 
+| X   X   X   X   X | 
+|   X   X   X   X   | 
+| X   X   X   X   X | 
+|   X   X   X   X   | 
+| X   X   X   X   X | 
+|   X   X   X   X   | 
+| X   X   X   X   X | 
+\ - - - - - - - - - / 
+

@@ -98,6 +98,8 @@ See \code{\link[=grid.pattern_placeholder]{grid.pattern_placeholder()}} for more
 See \code{\link[=grid.pattern_plasma]{grid.pattern_plasma()}} for more information.}
 \item{stripe}{Stripe geometry patterns.
 See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more information.}
+\item{weave}{Weave geometry patterns.
+See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information.}
 \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html} for more information.}
 \item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html} for more information.}
 }
@@ -106,42 +108,45 @@ See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more informati
  if (require("grid")) {
    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+
    # geometry-based patterns
-   grid.newpage()
-   grid.pattern()
+   # 'stripe' pattern
    grid.newpage()
    grid.pattern("stripe", x_hex, y_hex,
                 colour="black", fill=c("yellow", "blue"), density = 0.5)
+
+   # Can alternatively use "gpar()" to specify colour and line attributes
    grid.newpage()
-   # In some cases can also alternatively use "gpar()" to specify colour and line attributes
-   x <- c(0.1, 0.6, 0.8, 0.3)
-   y <- c(0.2, 0.3, 0.8, 0.5)
-   grid.pattern("stripe", x, y, gp = gpar(col="blue", fill="red", lwd=2))
+   grid.pattern("stripe", x_hex, y_hex, gp = gpar(col="blue", fill="red", lwd=2))
+
+   # 'weave' pattern
    grid.newpage()
-   grid.pattern("crosshatch", x_hex, y_hex,
-                colour="black", fill="yellow", fill2="blue", angle=45)
+   grid.pattern("weave", x_hex, y_hex, type = "satin",
+                colour = "black", fill = "lightblue", fill2 =  "yellow",
+                density = 0.3)
+
+   # 'regular_polygon' pattern
    grid.newpage()
-   grid.pattern("circle", x_hex, y_hex,
-                colour="blue", fill="yellow", size = 2, density = 0.5)
+   grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
+                                fill = c("blue", "yellow", "red"),
+                                shape = c("convex4", "star8", "circle"),
+                                density = c(0.45, 0.42, 0.4),
+                                spacing = 0.08, angle = 0)
+
+   # can be used to achieve a variety of 'tiling' effects
+   grid.newpage()
+   grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
+                                fill = c("white", "grey", "black"),
+                                density = 1.0, spacing = 0.1,
+                                shape = "convex6", type = "hex")
 
    # array-based patterns
-   if (requireNamespace("ambient")) {
-     grid::grid.newpage()
-     grid.pattern("ambient", x_hex, y_hex, fill = "green", fill2 = "blue")
-   }
-   grid.newpage()
-   grid.pattern("gradient", x_hex, y_hex,
-                fill="blue", fill2="green", orientation="radial")
+   # 'image' pattern
    logo_filename <- system.file("img", "Rlogo.png" , package="png")
    grid.newpage()
    grid.pattern("image", x_hex, y_hex, filename=logo_filename, type="fit")
-   grid.newpage()
-   grid.pattern("magick", x_hex, y_hex, type="octagons", fill="blue", scale=2)
-   \dontrun{
-     # requires internet connection to download from placeholder image websites
-     grid.newpage()
-     grid.pattern("placeholder", x_hex, y_hex, type="bear")
-   }
+
+   # 'plasma' pattern
    grid.newpage()
    grid.pattern("plasma", x_hex, y_hex, fill="green")
  }

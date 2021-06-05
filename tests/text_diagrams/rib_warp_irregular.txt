@@ -1,0 +1,11 @@
+> ppww("rib_warp", "2/1", warp = 7, weft = 9)
+/ - - - - - - - - - \ 
+| X   X   X   X   X | 
+|   X   X   X   X   | 
+| X   X   X   X   X | 
+| X   X   X   X   X | 
+|   X   X   X   X   | 
+| X   X   X   X   X | 
+| X   X   X   X   X | 
+\ - - - - - - - - - / 
+

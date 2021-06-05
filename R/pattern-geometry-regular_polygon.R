@@ -10,10 +10,11 @@
 #'              or alternatively "circle" or "square".
 #'              For example `"convex5"` (default) corresponds to a pentagon
 #'              and `"star6"` corresponds to a six-pointed star.
-#'              The `"square"` shape is larger than the `"convex4"` shape and has been rotated 45 degrees,
+#'              The `"square"` shape is larger than the `"convex4"` shape and is rotated an extra 45 degrees,
 #'              it can be used to generate a multi-colored "checkers" effect when density is 1.
 #'
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
+#' @seealso [grid.pattern_circle()] for a special case of this pattern.
 #' @examples
 #'   if (require("grid")) {
 #'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))

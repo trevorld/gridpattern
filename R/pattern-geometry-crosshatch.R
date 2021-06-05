@@ -15,7 +15,9 @@
 #'     grid.pattern_crosshatch(x_hex, y_hex, density = 0.3,
 #'                             gp = gpar(col = "blue", fill = "yellow"))
 #'   }
-#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html>
+#' @seealso [grid.pattern_weave()] which interweaves two sets of lines
+#'   as well as the `ggpattern` documentation:
+#'   <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html>
 #' @export
 grid.pattern_crosshatch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                     colour = gp$col %||% "grey20",
@@ -40,6 +42,8 @@ create_pattern_crosshatch_via_sf <- function(params, boundary_df, aspect_ratio, 
 
 create_crosshatch_via_sf_helper <- function(params, boundary_df, add_top_hatch = TRUE) {
 
+    if (abs(params$pattern_density - 1) < .Machine$double.eps^0.5)
+        params$pattern_density <- 1 - 1e-6
     stopifnot(params$pattern_density <= 1)
 
     # work in 'bigpts' instead 'npc' / 'snpc' units so we don't worry about the aspect ratio

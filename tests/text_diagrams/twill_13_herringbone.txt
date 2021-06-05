@@ -1,0 +1,19 @@
+> pww("twill_herringbone", "1/3", nrow = 15, ncol = 9)
+/ - - - - - - - - - \ 
+| X   X X X   X X X | 
+| X X   X X X   X X | 
+| X X X   X X X   X | 
+|       X       X   | 
+|     X       X     | 
+|   X       X       | 
+| X       X       X | 
+|   X X X   X X X   | 
+| X   X X X   X X X | 
+| X X   X X X   X X | 
+| X X X   X X X   X | 
+|       X       X   | 
+|     X       X     | 
+|   X       X       | 
+| X       X       X | 
+\ - - - - - - - - - / 
+

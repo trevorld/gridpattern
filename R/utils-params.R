@@ -71,5 +71,6 @@ default_pattern_type <- function(pattern) {
            magick = "hexagons",
            regular_polygon = "square",
            stripe = "square",
+           weave = "plain",
            "fit")
 }

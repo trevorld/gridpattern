@@ -1,0 +1,28 @@
+> pww("matt_zigzag", "3/2(4+2)", nrow = 24, ncol = 9)
+/ - - - - - - - - - \ 
+|         X X       | 
+| X X X X     X X X | 
+| X X X X     X X X | 
+| X X X X     X X X | 
+|         X X       | 
+| X X X X     X X X | 
+| X X X X     X X X | 
+| X X X X     X X X | 
+|         X X       | 
+|         X X       | 
+|         X X       | 
+| X X X X     X X X | 
+| X X X X     X X X | 
+| X X X X     X X X | 
+|         X X       | 
+| X X X X     X X X | 
+| X X X X     X X X | 
+| X X X X     X X X | 
+|         X X       | 
+|         X X       | 
+|         X X       | 
+| X X X X     X X X | 
+| X X X X     X X X | 
+| X X X X     X X X | 
+\ - - - - - - - - - / 
+
