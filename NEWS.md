@@ -7,7 +7,7 @@ gridpattern v0.1
 * Supports the following original patterns:
 
   * "regular_polygon" ``grid.pattern_regular_polygon()`` (#20)
-  * "weave" ``grid.pattern_regular_weave()`` (#12)
+  * "weave" ``grid.pattern_weave()`` (#12)
 
 * Supports the following patterns from [ggpattern](https://github.com/coolbutuseless/ggpattern):
 
@@ -26,8 +26,8 @@ gridpattern v0.1
 
   Enhancements made to the ``{ggpattern}`` patterns provided by this package:
 
-    * Resolution of "array" patterns is now user-supplied.
-      Defaults to 72 DPI but with a minimum of 12 pixel image width and/or height.
+    * Resolution of "array" patterns is now settable by new "pattern_res".
+      Defaults to 72 pixels per inch but sets a minimum 12 pixel image width and/or height.
     * Default for "pattern_alpha" is now ``NA_real_`` (preserve existing alpha transparency) instead of ``1`` (set to fully opaque).
     * ``grid.pattern_ambient()`` pattern supports all arguments of the six ``{ambient}`` "noise" functions.
     * ``grid.pattern_circle()`` has several enhancements:
@@ -47,7 +47,7 @@ gridpattern v0.1
       of circles from ``grid.pattern_circle()`` and polygons from ``grid.pattern_regular_polygon()`` (#24).
 
 * ``mean_col()`` is a utility function that computes an "average" color (#21)
-* ``weave()`` returns logical matrix a logical matrix indicating where the warp
+* ``pattern_weave()`` returns logical matrix indicating where the warp
   lines should "up" for a specified weave pattern type and subtype.  Supports
   weaves listed in `weave_names`.  In particular supports "irregular matt" and
   "elongated twill" family of weave patterns including "zig-zag" and

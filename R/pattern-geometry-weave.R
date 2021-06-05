@@ -5,8 +5,8 @@
 #' @inheritParams grid.pattern_crosshatch
 #' @param fill The fill colour for the horizontal "weft" lines.
 #' @param fill2 The fill colour for the vertical "warp" lines.
-#' @param type The weave type.  See [weave()] for more details.
-#' @param subtype The weave subtype.  See [weave()] for more details.
+#' @param type The weave type.  See [pattern_weave()] for more details.
+#' @param subtype The weave subtype.  See [pattern_weave()] for more details.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
 #'   if (require("grid")) {
@@ -40,7 +40,7 @@
 #'                        fill2 = "yellow", gp = gp, spacing = 0.05, density = 1.0)
 #'
 #'   }
-#' @seealso [weave()]
+#' @seealso [pattern_weave()]
 #' @export
 grid.pattern_weave <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                     colour = gp$col %||% "grey20",
@@ -90,8 +90,8 @@ create_warp_via_sf <- function(params, boundary_df) {
     lty  <- params$pattern_linetype
     gp <- gpar(col = col, fill = fill, lwd = lwd, lty = lty, lineend = 'square')
 
-    m_weave <- weave(params$pattern_type, params$pattern_subtype,
-                     nrow = length(grid_xy$y), ncol = length(grid_xy$x))
+    m_weave <- pattern_weave(params$pattern_type, params$pattern_subtype,
+                             nrow = length(grid_xy$y), ncol = length(grid_xy$x))
 
     # compute vertical stripes clipped to boundary
     boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)

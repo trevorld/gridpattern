@@ -1,6 +1,6 @@
 #' Weave pattern matrix
 #'
-#' `weave()` returns a logical matrix indicating where the warp lines should
+#' `pattern_weave()` returns a logical matrix indicating where the warp lines should
 #'  be "up" for a specified weave pattern type and subtype.
 #' `weave_names` is a character vector listing supported weave pattern types.
 #'
@@ -55,24 +55,24 @@
 #'         is "up" (if `TRUE`) or "down" (if `FALSE`).
 #'         Indices `[1,1]` of the matrix corresponds to the bottom-left of the weave
 #'         while indices `[1,ncol]` corresponds to the bottom-right of the weave.
-#'         This matrix has a "weave" subclass which supports a special `print()` method.
+#'         This matrix has a "pattern_weave" subclass which supports a special `print()` method.
 #' @examples
 #'  # supported weave names
 #'  print(weave_names)
 #'
-#'  plain <- weave("plain", nrow = 7, ncol = 9)
+#'  plain <- pattern_weave("plain", nrow = 7, ncol = 9)
 #'  print(plain)
 #'
-#'  matt_irregular <- weave("matt_irregular", nrow = 9, ncol = 11)
+#'  matt_irregular <- pattern_weave("matt_irregular", nrow = 9, ncol = 11)
 #'  print(matt_irregular)
 #'
-#'  satin <- weave("satin", nrow = 9, ncol = 11)
+#'  satin <- pattern_weave("satin", nrow = 9, ncol = 11)
 #'  print(satin)
 #'
-#'  twill <- weave("twill", nrow = 9, ncol = 11)
+#'  twill <- pattern_weave("twill", nrow = 9, ncol = 11)
 #'  print(twill)
 #'
-#'  twill_zigzag <- weave("twill_zigzag", nrow = 18, ncol = 11)
+#'  twill_zigzag <- pattern_weave("twill_zigzag", nrow = 18, ncol = 11)
 #'  print(twill_zigzag)
 #'
 #' @seealso [grid.pattern_weave()] for drawing weaves onto a graphics device.
@@ -84,7 +84,7 @@
 #'          for further information on "satin" weaves.
 
 #' @export
-weave <- function(type = "plain", subtype = NULL, nrow = 5L, ncol = 5L) {
+pattern_weave <- function(type = "plain", subtype = NULL, nrow = 5L, ncol = 5L) {
     spec <- get_weave_spec(type, subtype)
     skip <- 0L
     m <- matrix(FALSE, nrow = nrow, ncol = ncol)
@@ -117,12 +117,12 @@ weave <- function(type = "plain", subtype = NULL, nrow = 5L, ncol = 5L) {
         m[, j] <- v
         skip <- skip + spec$move
     }
-    class(m) <- c("weave", "matrix", "array")
+    class(m) <- c("pattern_weave", "matrix", "array")
     m
 }
 
 #' @export
-print.weave <- function(x, ...) {
+print.pattern_weave <- function(x, ...) {
     indices_x <- which(x)
     indices_o <- which(!x)
     x[indices_x] <- "X"
@@ -135,7 +135,7 @@ print.weave <- function(x, ...) {
     invisible(NULL)
 }
 
-#' @rdname weave
+#' @rdname pattern_weave
 #' @export
 weave_names <- c("basket",
                  "matt",

@@ -61,9 +61,9 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{size}{Stroke linewidth}
 
-\item{type}{The weave type.  See \code{\link[=weave]{weave()}} for more details.}
+\item{type}{The weave type.  See \code{\link[=pattern_weave]{pattern_weave()}} for more details.}
 
-\item{subtype}{The weave subtype.  See \code{\link[=weave]{weave()}} for more details.}
+\item{subtype}{The weave subtype.  See \code{\link[=pattern_weave]{pattern_weave()}} for more details.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}
@@ -119,5 +119,5 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
   }
 }
 \seealso{
-\code{\link[=weave]{weave()}}
+\code{\link[=pattern_weave]{pattern_weave()}}
 }

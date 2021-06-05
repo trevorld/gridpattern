@@ -1,6 +1,6 @@
 test_that("weaves work as expected", {
 
-    pww <- function(...) print.weave(weave(...))
+    pww <- function(...) print.pattern_weave(pattern_weave(...))
 
     # irregular mat
     verify_output("../text_diagrams/plain.txt", pww("plain", nrow = 7, ncol = 9))
