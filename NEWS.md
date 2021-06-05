@@ -7,6 +7,7 @@ gridpattern v0.1
 * Supports the following original patterns:
 
   * "regular_polygon" ``grid.pattern_regular_polygon()`` (#20)
+  * "weave" ``grid.pattern_regular_weave()`` (#12)
 
 * Supports the following patterns from [ggpattern](https://github.com/coolbutuseless/ggpattern):
 
@@ -46,3 +47,8 @@ gridpattern v0.1
       of circles from ``grid.pattern_circle()`` and polygons from ``grid.pattern_regular_polygon()`` (#24).
 
 * ``mean_col()`` is a utility function that computes an "average" color (#21)
+* ``weave()`` returns logical matrix a logical matrix indicating where the warp
+  lines should "up" for a specified weave pattern type and subtype.  Supports
+  weaves listed in `weave_names`.  In particular supports "irregular matt" and
+  "elongated twill" family of weave patterns including "zig-zag" and
+  "herringbone" variations.
