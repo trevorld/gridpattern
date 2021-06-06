@@ -13,8 +13,7 @@ enhanced versions of the patterns originally contained within
 [Mike FC](https://github.com/coolbutuseless)'s awesome
 [ggpattern](https://github.com/coolbutuseless/ggpattern) package 
 (which provides patterned ``ggplot2`` "geom" functions but 
-[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well
-as completely new patterns.
+[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as completely new "regular_polygon" and "weave" patterns.
 
 We currently provide `grid` grob support for the following patterns:
 

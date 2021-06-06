@@ -18,7 +18,7 @@ grid.pattern_regular_polygon(
   yoffset = 0,
   scale = 0.5,
   shape = "convex4",
-  type = "square",
+  type = "diagonal",
   rot = 0,
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
@@ -64,7 +64,7 @@ and \code{"star6"} corresponds to a six-pointed star.
 The \code{"square"} shape is larger than the \code{"convex4"} shape and is rotated an extra 45 degrees,
 it can be used to generate a multi-colored "checkers" effect when density is 1.}
 
-\item{type}{Either \code{"square"} (default), \code{"hex"}, or \code{"hex_circle"}.
+\item{type}{Either \code{"diagonal"} (default), \code{"hex"}, or \code{"hex_circle"}.
 Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
 a desired "tiling" or "packing" layout.
 \code{"hex"} supports a tiling layout of hexagons (and triangles) while

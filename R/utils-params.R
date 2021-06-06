@@ -65,12 +65,12 @@ convert_params_units <- function(params, units = "bigpts") {
 default_pattern_type <- function(pattern) {
     switch(pattern,
            ambient = "simplex",
-           circle = "square",
-           crosshatch = "square",
+           circle = "diagonal",
+           crosshatch = "diagonal",
            placeholder = "kitten",
            magick = "hexagons",
-           regular_polygon = "square",
-           stripe = "square",
+           regular_polygon = "diagonal",
+           stripe = "diagonal",
            weave = "plain",
            "fit")
 }

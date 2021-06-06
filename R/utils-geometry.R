@@ -90,7 +90,7 @@ cycle_elements <- function(x, n = 1) {
         return(x)
     if (n > 0) {
         if (n < l) {
-            c(x[(l-n+1):l], x[1:(l-n)])
+            c(x[(n+1):l], x[1:n])
         } else {
             cycle_elements(x, n-l)
         }
@@ -102,3 +102,5 @@ cycle_elements <- function(x, n = 1) {
         }
     }
 }
+
+nigh <- function(x, y) abs(x - y) < .Machine$double.eps^0.5

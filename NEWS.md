@@ -1,7 +1,7 @@
 gridpattern v0.1
 ================
 
-* ``grid.pattern()`` draws a specified "pattern" to the active graphics device.
+* ``grid.pattern()`` draws a specified "pattern" to the active graphics device
   while ``patternGrob()`` returns a "pattern" (grid) grob.
 
 * Supports the following original patterns:
@@ -33,8 +33,7 @@ gridpattern v0.1
     * ``grid.pattern_circle()`` has several enhancements:
 
       * Allows use of the argument ``xoffset`` and ``yoffset`` (#22)
-      * Allows use of argument ``type`` to setup a "hex" or "hex_circle" arrangement 
-        instead of the default "square" arrangement.
+      * Allows use of argument ``type`` and ``subtype`` to customize the pattern arrangement.
       * Use of multiple ``fill`` colors now produces a more attractive pattern.
       * Use of ``density`` greater than ``1`` will now sometimes give an attractive result (#17).
       * Uses ``{sf}`` to clip circles to boundary instead of ``{gridGeometry}``
@@ -47,7 +46,11 @@ gridpattern v0.1
       of circles from ``grid.pattern_circle()`` and polygons from ``grid.pattern_regular_polygon()`` (#24).
 
 * ``mean_col()`` is a utility function that computes an "average" color (#21)
-* ``pattern_weave()`` returns logical matrix indicating where the warp
+* ``pattern_hex()`` returns an integer matrix indicating placement of multiple
+  colors (or other graphical elements) on a hex grid.
+* ``pattern_square()`` returns an integer matrix indicating placement of multiple
+  colors (or other graphical elements) on a rectangular grid.
+* ``pattern_weave()`` returns a logical matrix indicating where the warp
   lines should "up" for a specified weave pattern type and subtype.  Supports
   weaves listed in `weave_names`.  In particular supports "irregular matt" and
   "elongated twill" family of weave patterns including "zig-zag" and

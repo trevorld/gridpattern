@@ -3,21 +3,6 @@ test_that("geometry helpers work as expected", {
     xy <- rotate_xy(c(0, 1), c(0, 1), 90)
     expect_equal(xy$x, c(1, 0))
     expect_equal(xy$y, c(0, 1))
-
-    grid_xy <- list(x = c(0, 1), y = c(0, 1))
-    xy <- get_xy_par(grid_xy, i_par = 1, n_par = 1)
-    expect_equal(xy$x, c(0, 1, 0, 1))
-    expect_equal(xy$y, c(0, 0, 1, 1))
-    xy <- get_xy_par(grid_xy, i_par = 1, n_par = 2)
-    expect_equal(xy$x, c(0, 1))
-    expect_equal(xy$y, c(0, 1))
-    xy <- get_xy_par(grid_xy, i_par = 2, n_par = 2)
-    expect_equal(xy$x, c(1, 0))
-    expect_equal(xy$y, c(0, 1))
-    grid_xy <- list(x = c(0, 1, 2), y = c(0, 1, 2))
-    xy <- get_xy_par(grid_xy, i_par = 2, n_par = 3)
-    expect_equal(xy$x, c(1, 0, 2))
-    expect_equal(xy$y, c(0, 1, 2))
 })
 test_that("geometry patterns work as expected", {
 

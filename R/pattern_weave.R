@@ -4,7 +4,7 @@
 #'  be "up" for a specified weave pattern type and subtype.
 #' `weave_names` is a character vector listing supported weave pattern types.
 #'
-#' Here is a list of the various weave `type`'s supported:
+#' Here is a list of the various weave `type`s supported:
 #'
 #' \describe{
 #' \item{basket}{A simple criss-cross pattern using two threads at a time.
@@ -82,16 +82,19 @@
 #'          for further information on the "twill" family of weaves, and
 #'          \url{https://texwiz101.blogspot.com/2012/03/features-and-classification-of-satin.html}
 #'          for further information on "satin" weaves.
-
 #' @export
 pattern_weave <- function(type = "plain", subtype = NULL, nrow = 5L, ncol = 5L) {
     spec <- get_weave_spec(type, subtype)
-    skip <- 0L
-    m <- matrix(FALSE, nrow = nrow, ncol = ncol)
-    j <- 0L
+
+    # assuming for now spec$up_repeat > 0 always
+    stopifnot(spec$up_repeat > 0)
     should_do_up <- TRUE
-    up_repeat <- spec$up_repeat # assuming for now spec$up_repeat > 0 always
+
+    skip <- 0L
+    up_repeat <- spec$up_repeat
     down_repeat <- spec$down_repeat
+
+    m <- matrix(FALSE, nrow = nrow, ncol = ncol)
     for (j in seq_len(ncol)) {
         if (should_do_up) {
             v <- c(rep(TRUE, spec$up), rep(FALSE, spec$down))
@@ -108,7 +111,7 @@ pattern_weave <- function(type = "plain", subtype = NULL, nrow = 5L, ncol = 5L) 
                 down_repeat <- spec$down_repeat
             }
         }
-        v <- cycle_elements(v, skip)
+        v <- cycle_elements(v, -skip)
         if (spec$add_vertical_herringbone)
             v <- add_herringbone(v)
         if (spec$add_vertical_zigzag)
@@ -117,7 +120,7 @@ pattern_weave <- function(type = "plain", subtype = NULL, nrow = 5L, ncol = 5L) 
         m[, j] <- v
         skip <- skip + spec$move
     }
-    class(m) <- c("pattern_weave", "matrix", "array")
+    class(m) <- c("pattern_weave", class(m))
     m
 }
 
@@ -253,7 +256,7 @@ ud_to_twill <- function(ud = "2/1") {
 
 is_integer <- function(s) is.integer(s) || grepl("^[[:digit:]]+$", s)
 
-# "5/1" -> TRUE ; "5" -> FALSE ; "5/1(3)" -> FALSE ; "5/1(4+2" -> FALSE
+# "5/1" -> TRUE ; "5" -> FALSE ; "5/1(3)" -> FALSE ; "5/1(4+2)" -> FALSE
 is_ud <- function(ud) grepl("^[[:digit:]]+/[[:digit:]]+$", ud)
 
 # "5/1(4+2)" -> c(5L, 1L) or "5/1(3)" -> c(5L, 1L)

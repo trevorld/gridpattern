@@ -35,7 +35,7 @@ be "up" for a specified weave pattern type and subtype.
 \code{weave_names} is a character vector listing supported weave pattern types.
 }
 \details{
-Here is a list of the various weave \code{type}'s supported:
+Here is a list of the various weave \code{type}s supported:
 
 \describe{
 \item{basket}{A simple criss-cross pattern using two threads at a time.

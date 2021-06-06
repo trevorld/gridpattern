@@ -60,7 +60,7 @@ grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), i
                                          fill = gp$fill %||% "grey80",
                                          angle = 30, density = 0.2,
                                          spacing = 0.05, xoffset = 0, yoffset = 0,
-                                         scale = 0.5, shape = "convex4", type = "square", rot = 0,
+                                         scale = 0.5, shape = "convex4", type = "diagonal", rot = 0,
                                          alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1,
                                          size = gp$lwd %||% 1,
                                          default.units = "npc", name = NULL,
@@ -82,6 +82,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     vpm <- get_vp_measurements(default.units)
 
     spacing <- params$pattern_spacing
+    type <- params$pattern_type
 
     # create grid of points large enough to cover viewport no matter the angle
     grid_xy <- get_xy_grid(params, vpm)
@@ -108,14 +109,14 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
 
     density <- ifelse(shape == "square", 1.414 * density, density)
     # avoid overlap errors when density == 1 due to machine precision issues
-    if (params$pattern_type == "square")
-        density <- ifelse(abs(density - 1) < .Machine$double.eps^0.5, 0.9999, density)
-    if (params$pattern_type == "hex" && n_par < 2)
-        density <- ifelse(abs(density - 1) < .Machine$double.eps^0.5, 0.994, density)
+    if (is_pattern_square(type))
+        density <- ifelse(nigh(density, 1), 0.9999, density)
+    if (grepl("^hex", type) && n_par < 2)
+        density <- ifelse(nigh(density, 1), 0.994, density)
     density_max <- max(density)
 
     # compute regular polygon relative coordinates which we will center on points
-    radius_mult <- switch(params$pattern_type, hex = 0.578, 0.5)
+    radius_mult <- switch(type, hex = 0.578, 0.5)
     radius_max <- radius_mult * spacing * density_max
 
     #### add fudge factor?
@@ -123,11 +124,14 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     expanded_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = radius_max)
     contracted_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = -radius_max)
 
+    # compute pattern matrix of graphical elements (e.g. fill colors)
+    m_pat <- get_pattern_matrix(type, params$pattern_subtype, grid_xy, n_par)
+
     gl <- gList()
     for (i_par in seq(n_par)) {
         radius_outer <- radius_mult * spacing * density[i_par]
         xy_polygon <- get_xy_polygon(shape[i_par], params, radius_outer, rot[i_par])
-        xy_par <- get_xy_par(grid_xy, i_par, n_par, spacing, params$pattern_type)
+        xy_par <- get_xy_par(grid_xy, i_par, m_pat, type, spacing)
         if (length(xy_par$x) == 0) next
 
         # rotate by 'angle'
@@ -163,32 +167,57 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     gTree(children = gl, name = "regular_polygon")
 }
 
-get_xy_par <- function(grid_xy, i_par, n_par, spacing = 1, type = "square") {
+get_pattern_matrix <- function(type, subtype, grid_xy, n_par) {
+    nrow <- length(grid_xy$y)
+    ncol <- length(grid_xy$x)
+    if (is_pattern_square(type)) {
+        if (is.null(subtype) || is.na(subtype)) {
+            if (type %in% weave_names) {
+                subtype <- NULL
+            } else {
+                subtype <- n_par
+            }
+        }
+        if (type %in% weave_names && n_par > 2) {
+            abort(c(glue("pattern_type '{type}' can't arrange more than two elements"),
+                    i = glue("We detected {n_par} elements requested")))
+        }
+        m_pat <- pattern_square(type, subtype, nrow = nrow, ncol = ncol)
+    } else {
+        if (is.null(subtype) || is.na(subtype))
+            subtype <- n_par
+        m_pat <- pattern_hex(type, subtype, nrow = nrow, ncol = ncol)
+    }
+    m_pat
+}
+
+get_xy_par <- function(grid_xy, i_par, m_pat, type, spacing) {
+    if (is_pattern_square(type))
+        get_xy_par_square(grid_xy, i_par, m_pat)
+    else
+        get_xy_par_hex(grid_xy, i_par, m_pat, spacing)
+}
+get_xy_par_square <- function(grid_xy, i_par, m_pat) {
     x <- numeric(0)
     y <- numeric(0)
-    seq_par <- seq(n_par)
-    seq_x <- seq_along(grid_xy$x)
-    skip <- 0
-    for (i_y in seq_along(grid_xy$y)) {
-        if (type == "square") {
-            n_cycle <- i_y - 1L
-            i_start <- cycle_elements(seq_par, -n_cycle)[i_par]
-            indices_x <- seq_robust(i_start, length(grid_xy$x), n_par)
-            x <- c(x, grid_xy$x[indices_x])
-        } else {
-            n_cycle <- skip + i_y - 1
-            i_start <- cycle_elements(seq_par, -n_cycle)[i_par]
-            indices_x <- seq_robust(i_start, length(grid_xy$x), n_par)
-            if (i_y %% 2) {
-                x_offset <- 0
-            } else {
-                x_offset <-  -0.5 * spacing
-                skip <- skip + 1
-            }
-            indices_x <- seq_robust(i_start, length(grid_xy$x), n_par)
-            x <- c(x,  x_offset + grid_xy$x[indices_x])
-        }
-        y <- c(y, rep(grid_xy$y[i_y], length(indices_x)))
+    for (i in seq_along(grid_xy$y)) {
+        indices_x <- which(m_pat[i,] == i_par)
+        x <- c(x, grid_xy$x[indices_x])
+        y <- c(y, rep(grid_xy$y[i], length(indices_x)))
+    }
+    list(x = x, y = y)
+}
+get_xy_par_hex <- function(grid_xy, i_par, m_pat, spacing = 1) {
+    x <- numeric(0)
+    y <- numeric(0)
+    for (i in seq_along(grid_xy$y)) {
+        indices_x <- which(m_pat[i,] == i_par)
+        if (i %% 2)
+            x_offset <- 0
+        else
+            x_offset <-  -0.5 * spacing
+        x <- c(x,  x_offset + grid_xy$x[indices_x])
+        y <- c(y, rep(grid_xy$y[i], length(indices_x)))
     }
     list(x = x, y = y)
 }
@@ -206,7 +235,10 @@ get_xy_grid <- function(params, vpm) {
     x <- xoffset + seq_robust(from = x_min, to = x_max, by = spacing)
 
     # adjust vertical spacing for "hex" pattern
-    v_spacing <- switch(params$pattern_type, square = 1.0, 0.868) * spacing
+    if (is_pattern_square(params$pattern_type))
+        v_spacing <- spacing
+    else
+        v_spacing <- 0.868 * spacing
     y_min <- vpm$y - gm * vpm$length
     y_max <- vpm$y + gm * vpm$length
     y <- yoffset + seq_robust(from = y_min, to = y_max, by = v_spacing)

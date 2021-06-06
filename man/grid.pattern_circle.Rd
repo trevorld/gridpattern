@@ -19,7 +19,7 @@ grid.pattern_circle(
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
   size = gp$lwd \%||\% 1,
-  type = "square",
+  type = "diagonal",
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -57,7 +57,7 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{size}{Stroke linewidth}
 
-\item{type}{Either \code{"square"} (default), \code{"hex"}, or \code{"hex_circle"}.
+\item{type}{Either \code{"diagonal"} (default), \code{"hex"}, or \code{"hex_circle"}.
 Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
 a desired "tiling" or "packing" layout.
 \code{"hex"} supports a tiling layout of hexagons (and triangles) while
