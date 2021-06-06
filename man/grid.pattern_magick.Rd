@@ -3,9 +3,9 @@
 \docType{data}
 \name{grid.pattern_magick}
 \alias{grid.pattern_magick}
-\alias{magick_pattern_names}
-\alias{magick_pattern_intensity_names}
-\alias{magick_pattern_stripe_names}
+\alias{names_magick}
+\alias{names_magick_intensity}
+\alias{names_magick_stripe}
 \title{Magick patterned grobs}
 \format{
 An object of class \code{character} of length 54.
@@ -35,11 +35,11 @@ grid.pattern_magick(
   vp = NULL
 )
 
-magick_pattern_names
+names_magick
 
-magick_pattern_intensity_names
+names_magick_intensity
 
-magick_pattern_stripe_names
+names_magick_stripe
 }
 \arguments{
 \item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary.}
@@ -51,8 +51,8 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{...}{Currently ignored}
 
-\item{type}{Magick pattern types.  \code{magick_pattern_names}, \code{magick_pattern_intensity_names}, and
-\code{magick_pattern_stripe_names} are character vectors of supported \code{type} values
+\item{type}{Magick pattern types.  \code{names_magick}, \code{names_magick_intensity}, and
+\code{names_magick_stripe} are character vectors of supported \code{type} values
 plus subsets for shaded intensity and stripes.}
 
 \item{fill}{Fill colour}
@@ -88,17 +88,16 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \description{
 \code{grid.pattern_image()} draws a \code{imagemagick} pattern onto the graphic device.
-\code{magick_pattern_names}, \code{magick_pattern_intensity_names}, and
-\code{magick_pattern_stripe_names} are character vectors of supported \code{type} values
+\code{names_magick}, \code{names_magick_intensity}, and
+\code{names_magick_stripe} are character vectors of supported \code{type} values
 plus subsets for shaded intensity and stripes.
 }
 \examples{
   x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
   y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
   grid.pattern_magick(x_hex, y_hex, type="octagons", fill="blue", scale=2)
-  print(magick_pattern_names)
-  print(magick_pattern_intensity_names)
-  print(magick_pattern_stripe_names)
+  # supported magick pattern names
+  print(names_magick)
 }
 \seealso{
 The \code{ggpattern} documentation \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}

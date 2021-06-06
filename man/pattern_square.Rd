@@ -3,7 +3,7 @@
 \docType{data}
 \name{pattern_square}
 \alias{pattern_square}
-\alias{square_names}
+\alias{names_square}
 \title{Square pattern matrix}
 \format{
 An object of class \code{character} of length 2.
@@ -11,7 +11,7 @@ An object of class \code{character} of length 2.
 \usage{
 pattern_square(type = "diagonal", subtype = NULL, nrow = 5L, ncol = 5L)
 
-square_names
+names_square
 }
 \arguments{
 \item{type}{Either "diagonal" or "diagonal_skew" or any of the weave patterns
@@ -36,7 +36,7 @@ This matrix has a "pattern_square" subclass which supports a special \code{print
 \code{pattern_square()} returns an integer matrix indicating where each
 color (or other graphical element) should be drawn on a rectangular grid
 for a specified square pattern type and subtype.
-\code{square_names} lists the currently supported square \code{type}s (excluding those in \code{weave_names}).
+\code{names_square} lists the currently supported square \code{type}s (excluding those in \code{names_weave}).
 }
 \details{
 "diagonal" and "diagonal_skew" simply cycle through the colors
@@ -52,7 +52,7 @@ Hence the various weave patterns only support (up to) two-color patterns.
 }
 \examples{
  # supported square names
- print(square_names)
+ print(names_square)
 
  # (main) diagonal has colors going from top left to bottom right
  diagonal <- pattern_square("diagonal", 4L, nrow = 7L, ncol = 9L)

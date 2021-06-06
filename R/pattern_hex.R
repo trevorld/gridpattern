@@ -3,7 +3,7 @@
 #' `pattern_hex()` returns an integer matrix indicating where each
 #'  color (or other graphical element) should be drawn on a (horizontal) hex grid
 #'  for a specified hex pattern type and subtype.
-#'  `hex_names` lists the currently supported hex `type`s.
+#'  `names_hex` lists the currently supported hex `type`s.
 #'
 #'  Currently we cycle through elements on the horizontal line and "main" (downward-sloping) diagonal line.
 #'  If `subtype` is `3L` this provides a 3-color hexagonal tiling pattern.
@@ -25,7 +25,7 @@
 #'         This matrix has a "pattern_hex" subclass which supports a special `print()` method.
 #' @examples
 #'  # supported hex names
-#'  print(hex_names)
+#'  print(names_hex)
 #'
 #'  hex_3color <- pattern_hex("hex", 3L, nrow = 7L, ncol = 9L)
 #'  print(hex_3color)
@@ -53,7 +53,7 @@ pattern_hex <- function(type = "hex", subtype = NULL, nrow = 5L, ncol = 5L) {
 
 #' @rdname pattern_hex
 #' @export
-hex_names <- c("hex", "hex_circle")
+names_hex <- c("hex", "hex_circle")
 
 #' @export
 print.pattern_hex <- function(x, ...) {

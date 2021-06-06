@@ -3,7 +3,7 @@
 \docType{data}
 \name{pattern_hex}
 \alias{pattern_hex}
-\alias{hex_names}
+\alias{names_hex}
 \title{Hex pattern matrix}
 \format{
 An object of class \code{character} of length 2.
@@ -11,7 +11,7 @@ An object of class \code{character} of length 2.
 \usage{
 pattern_hex(type = "hex", subtype = NULL, nrow = 5L, ncol = 5L)
 
-hex_names
+names_hex
 }
 \arguments{
 \item{type}{Either "hex" or "hex_circle".
@@ -38,7 +38,7 @@ This matrix has a "pattern_hex" subclass which supports a special \code{print()}
 \code{pattern_hex()} returns an integer matrix indicating where each
 color (or other graphical element) should be drawn on a (horizontal) hex grid
 for a specified hex pattern type and subtype.
-\code{hex_names} lists the currently supported hex \code{type}s.
+\code{names_hex} lists the currently supported hex \code{type}s.
 }
 \details{
 Currently we cycle through elements on the horizontal line and "main" (downward-sloping) diagonal line.
@@ -47,7 +47,7 @@ If \code{subtype} is strictly greater than \code{2L} then a hexagon should never
 }
 \examples{
  # supported hex names
- print(hex_names)
+ print(names_hex)
 
  hex_3color <- pattern_hex("hex", 3L, nrow = 7L, ncol = 9L)
  print(hex_3color)

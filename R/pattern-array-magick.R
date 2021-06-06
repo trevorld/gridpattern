@@ -1,13 +1,13 @@
 #' Magick patterned grobs
 #'
 #' `grid.pattern_image()` draws a `imagemagick` pattern onto the graphic device.
-#' `magick_pattern_names`, `magick_pattern_intensity_names`, and
-#' `magick_pattern_stripe_names` are character vectors of supported `type` values
+#' `names_magick`, `names_magick_intensity`, and
+#' `names_magick_stripe` are character vectors of supported `type` values
 #' plus subsets for shaded intensity and stripes.
 #'
 #' @inheritParams grid.pattern_image
-#' @param type Magick pattern types.  `magick_pattern_names`, `magick_pattern_intensity_names`, and
-#'             `magick_pattern_stripe_names` are character vectors of supported `type` values
+#' @param type Magick pattern types.  `names_magick`, `names_magick_intensity`, and
+#'             `names_magick_stripe` are character vectors of supported `type` values
 #'             plus subsets for shaded intensity and stripes.
 #' @param fill Fill colour
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
@@ -15,9 +15,8 @@
 #'   x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'   y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'   grid.pattern_magick(x_hex, y_hex, type="octagons", fill="blue", scale=2)
-#'   print(magick_pattern_names)
-#'   print(magick_pattern_intensity_names)
-#'   print(magick_pattern_stripe_names)
+#'   # supported magick pattern names
+#'   print(names_magick)
 #' @seealso The `ggpattern` documentation <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html>
 #'          and `imagemagick` documentation <http://www.imagemagick.org/script/formats.php> for more information.
 #' @export
@@ -37,7 +36,7 @@ grid.pattern_magick <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, .
 
 #' @rdname grid.pattern_magick
 #' @export
-magick_pattern_names <- c(
+names_magick <- c(
   "bricks", "checkerboard", "circles", "crosshatch", "crosshatch30",
   "crosshatch45", "fishscales", "gray0", "gray5", "gray10", "gray15",
   "gray20", "gray25", "gray30", "gray35", "gray40", "gray45", "gray50",
@@ -52,7 +51,7 @@ magick_pattern_names <- c(
 
 #' @rdname grid.pattern_magick
 #' @export
-magick_pattern_intensity_names <- c(
+names_magick_intensity <- c(
   "gray0", "gray5", "gray10", "gray15",
   "gray20", "gray25", "gray30", "gray35", "gray40", "gray45", "gray50",
   "gray55", "gray60", "gray65", "gray70", "gray75", "gray80", "gray85",
@@ -62,7 +61,7 @@ magick_pattern_intensity_names <- c(
 
 #' @rdname grid.pattern_magick
 #' @export
-magick_pattern_stripe_names <- c(
+names_magick_stripe <- c(
   "crosshatch", "crosshatch30", "crosshatch45",
   "horizontal", "horizontal2", "horizontal3",
   "hs_bdiagonal", "hs_cross", "hs_diagcross",
@@ -84,7 +83,7 @@ create_magick_pattern_as_array <- function(width, height, params, legend) {
       params$pattern_scale <- params$pattern_scale * params$pattern_key_scale_factor
   }
   type   <- check_default(as.character(params$pattern_type),
-                          options = magick_pattern_names,
+                          options = names_magick,
                           default = 'hexagons')
 
   scale  <- check_default(params$pattern_scale, default = 1, type = 'numeric')

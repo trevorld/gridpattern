@@ -4,7 +4,7 @@
 #'
 #' @param width,height image dimensions
 #' @param type name of the imagemagick pattern. See \url{http://www.imagemagick.org/script/formats.php}
-#'        for more information. See \link{magick_pattern_names} for a list of all
+#'        for more information. See \link{names_magick} for a list of all
 #'        supported imagemagick patterns.
 #' @param colour colour used to draw the pattern
 #'
@@ -12,7 +12,7 @@
 create_magick_pattern_img <- function(width=100, height=100, type = 'hexagons',
                                       colour = 'black') {
 
-  type   <- check_default(tolower(type), magick_pattern_names, default = 'checkerboard')
+  type   <- check_default(tolower(type), names_magick, default = 'checkerboard')
   colour <- convert_r_colour_to_magick_colour(colour)
 
   if (width == 0 || height == 0) {

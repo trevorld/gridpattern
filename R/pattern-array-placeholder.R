@@ -1,10 +1,10 @@
 #' Placeholder image patterned grobs
 #'
 #' `grid.pattern_placeholder()` draws a placeholder image pattern onto the graphic device.
-#' `placeholder_names` are character vectors of supported placeholder types.
+#' `names_placeholder` are character vectors of supported placeholder types.
 #'
 #' @inheritParams grid.pattern_plasma
-#' @param type Image source.  `placeholder_names` is a vector of supported values.
+#' @param type Image source.  `names_placeholder` is a vector of supported values.
 #'             If you would like only greyscale images append `bw` to the name.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
@@ -14,7 +14,7 @@
 #'     # requires internet connection to download from placeholder image websites
 #'     grid.pattern_placeholder(x_hex, y_hex, type="bear")
 #'   }
-#'   print(placeholder_names)
+#'   print(names_placeholder)
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html>
 #' @export
 grid.pattern_placeholder <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
@@ -31,7 +31,7 @@ grid.pattern_placeholder <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 
 
 #' @rdname grid.pattern_placeholder
 #' @export
-placeholder_names <- c(
+names_placeholder <- c(
   "kitten", "kittenbw", "picsum", "picsumbw", "murray", "murraybw",
   "cage", "cagebw", "bear", "bearbw", "seagal", "seagalbw", "placeholderbw",
   "placeholder", "dummybw", "dummy", "flickr", "flickrbw", "beard",

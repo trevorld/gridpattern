@@ -3,7 +3,7 @@
 \docType{data}
 \name{pattern_weave}
 \alias{pattern_weave}
-\alias{weave_names}
+\alias{names_weave}
 \title{Weave pattern matrix}
 \format{
 An object of class \code{character} of length 10.
@@ -11,7 +11,7 @@ An object of class \code{character} of length 10.
 \usage{
 pattern_weave(type = "plain", subtype = NULL, nrow = 5L, ncol = 5L)
 
-weave_names
+names_weave
 }
 \arguments{
 \item{type}{Type of weave.  See Details.}
@@ -32,7 +32,7 @@ This matrix has a "pattern_weave" subclass which supports a special \code{print(
 \description{
 \code{pattern_weave()} returns a logical matrix indicating where the warp lines should
 be "up" for a specified weave pattern type and subtype.
-\code{weave_names} is a character vector listing supported weave pattern types.
+\code{names_weave} is a character vector listing supported weave pattern types.
 }
 \details{
 Here is a list of the various weave \code{type}s supported:
@@ -80,7 +80,7 @@ Default \code{subtype} of \code{"4/3(2)"}.}
 }
 \examples{
  # supported weave names
- print(weave_names)
+ print(names_weave)
 
  plain <- pattern_weave("plain", nrow = 7, ncol = 9)
  print(plain)

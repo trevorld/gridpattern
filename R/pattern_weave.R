@@ -2,7 +2,7 @@
 #'
 #' `pattern_weave()` returns a logical matrix indicating where the warp lines should
 #'  be "up" for a specified weave pattern type and subtype.
-#' `weave_names` is a character vector listing supported weave pattern types.
+#' `names_weave` is a character vector listing supported weave pattern types.
 #'
 #' Here is a list of the various weave `type`s supported:
 #'
@@ -58,7 +58,7 @@
 #'         This matrix has a "pattern_weave" subclass which supports a special `print()` method.
 #' @examples
 #'  # supported weave names
-#'  print(weave_names)
+#'  print(names_weave)
 #'
 #'  plain <- pattern_weave("plain", nrow = 7, ncol = 9)
 #'  print(plain)
@@ -140,7 +140,7 @@ print.pattern_weave <- function(x, ...) {
 
 #' @rdname pattern_weave
 #' @export
-weave_names <- c("basket",
+names_weave <- c("basket",
                  "matt",
                  # "matt_herringbone",
                  "matt_irregular",

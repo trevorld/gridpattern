@@ -3,7 +3,7 @@
 \docType{data}
 \name{grid.pattern_placeholder}
 \alias{grid.pattern_placeholder}
-\alias{placeholder_names}
+\alias{names_placeholder}
 \title{Placeholder image patterned grobs}
 \format{
 An object of class \code{character} of length 26.
@@ -26,7 +26,7 @@ grid.pattern_placeholder(
   vp = NULL
 )
 
-placeholder_names
+names_placeholder
 }
 \arguments{
 \item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary.}
@@ -38,7 +38,7 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{...}{Currently ignored}
 
-\item{type}{Image source.  \code{placeholder_names} is a vector of supported values.
+\item{type}{Image source.  \code{names_placeholder} is a vector of supported values.
 If you would like only greyscale images append \code{bw} to the name.}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
@@ -68,7 +68,7 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \description{
 \code{grid.pattern_placeholder()} draws a placeholder image pattern onto the graphic device.
-\code{placeholder_names} are character vectors of supported placeholder types.
+\code{names_placeholder} are character vectors of supported placeholder types.
 }
 \examples{
   \dontrun{
@@ -77,7 +77,7 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
     # requires internet connection to download from placeholder image websites
     grid.pattern_placeholder(x_hex, y_hex, type="bear")
   }
-  print(placeholder_names)
+  print(names_placeholder)
 }
 \seealso{
 The \code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html}

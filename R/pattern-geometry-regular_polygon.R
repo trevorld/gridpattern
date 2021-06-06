@@ -172,13 +172,13 @@ get_pattern_matrix <- function(type, subtype, grid_xy, n_par) {
     ncol <- length(grid_xy$x)
     if (is_pattern_square(type)) {
         if (is.null(subtype) || is.na(subtype)) {
-            if (type %in% weave_names) {
+            if (type %in% names_weave) {
                 subtype <- NULL
             } else {
                 subtype <- n_par
             }
         }
-        if (type %in% weave_names && n_par > 2) {
+        if (type %in% names_weave && n_par > 2) {
             abort(c(glue("pattern_type '{type}' can't arrange more than two elements"),
                     i = glue("We detected {n_par} elements requested")))
         }

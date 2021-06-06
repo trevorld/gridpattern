@@ -3,7 +3,7 @@
 #' `pattern_square()` returns an integer matrix indicating where each
 #' color (or other graphical element) should be drawn on a rectangular grid
 #' for a specified square pattern type and subtype.
-#' `square_names` lists the currently supported square `type`s (excluding those in `weave_names`).
+#' `names_square` lists the currently supported square `type`s (excluding those in `names_weave`).
 #'
 #' "diagonal" and "diagonal_skew" simply cycle through the colors
 #' both horizontally and vertically.
@@ -30,7 +30,7 @@
 #'         This matrix has a "pattern_square" subclass which supports a special `print()` method.
 #' @examples
 #'  # supported square names
-#'  print(square_names)
+#'  print(names_square)
 #'
 #'  # (main) diagonal has colors going from top left to bottom right
 #'  diagonal <- pattern_square("diagonal", 4L, nrow = 7L, ncol = 9L)
@@ -49,7 +49,7 @@
 #'           [pattern_weave()] for more information on "weave" patterns.
 #' @export
 pattern_square <- function(type = "diagonal", subtype = NULL, nrow = 5L, ncol = 5L) {
-    if (type %in% weave_names) {
+    if (type %in% names_weave) {
         v <- as.integer(!pattern_weave(type, subtype, nrow, ncol)) + 1L
         m <- matrix(v, nrow = nrow, ncol = ncol)
     } else if (type == "diagonal") {
@@ -65,7 +65,7 @@ pattern_square <- function(type = "diagonal", subtype = NULL, nrow = 5L, ncol = 
 
 #' @rdname pattern_square
 #' @export
-square_names <- c("diagonal", "diagonal_skew")
+names_square <- c("diagonal", "diagonal_skew")
 
 pattern_diagonal <- function(subtype = NULL, nrow = 5L, ncol = 5L, skew = FALSE) {
     if (is.null(subtype) || is.na(subtype)) subtype <- 3L
@@ -96,7 +96,7 @@ print.pattern_square <- function(x, ...) {
 }
 
 is_pattern_square <- function(type) {
-    (type %in% weave_names) || (type %in% square_names)
+    (type %in% names_weave) || (type %in% names_square)
 }
 
 int_to_char <- function(x) {
