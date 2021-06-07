@@ -7,12 +7,9 @@ test_that("weaves work as expected", {
     verify_output("../text_diagrams/basket.txt", pww("basket", nrow = 7, ncol = 9))
     verify_output("../text_diagrams/matt.txt", pww("matt", 3, nrow = 7, ncol = 9))
     verify_output("../text_diagrams/matt_21.txt", pww("matt", "2/1", nrow = 7, ncol = 9))
-    verify_output("../text_diagrams/matt_herringbone.txt",
-                  pww("matt_herringbone", "3/2(4+2)", nrow = 24, ncol = 9))
+    verify_output("../text_diagrams/matt3221.txt", pww("matt", "3/2*2/1", nrow = 15, ncol = 9))
     verify_output("../text_diagrams/matt_irregular.txt",
                   pww("matt_irregular", "3/2(4+2)", nrow = 7, ncol = 9))
-    verify_output("../text_diagrams/matt_zigzag.txt",
-                  pww("matt_zigzag", "3/2(4+2)", nrow = 24, ncol = 9))
     verify_output("../text_diagrams/rib_warp",
                   pww("rib_warp", "2/1", nrow = 7, ncol = 9))
     verify_output("../text_diagrams/rib_warp.txt", pww("rib_warp", "2", nrow = 7, ncol = 9))
@@ -26,4 +23,5 @@ test_that("weaves work as expected", {
                   pww("twill_zigzag", "2/2", nrow = 15, ncol = 9))
     verify_output("../text_diagrams/twill_13_herringbone.txt",
                   pww("twill_herringbone", "1/3", nrow = 15, ncol = 9))
+    verify_output("../text_diagrams/twill3221.txt", pww("twill", "3/2*2/1", nrow = 15, ncol = 9))
 })

@@ -77,6 +77,10 @@ Default \code{subtype} of \code{"4/3(2)"}.}
 \item{twill_zigzag}{Adds a (vertical) "zig-zag" effect to the specified "twill_elongated" weave.
 Default \code{subtype} of \code{"4/3(2)"}.}
 }
+For both "matt" and "twill" weaves the \code{U/D} part of the subtype can be further extended
+to \code{U1/D1*U2/D2}, \code{U1/D1*U2/D2*U3/D3}, etc.
+For the "matt" weave the "(L+R)" part of the subtype can be further extended
+to \code{(L1+R1+L2+R2)}, \code{(L1+R1+L2+R2+L3+R3)}, etc.
 }
 \examples{
  # supported weave names

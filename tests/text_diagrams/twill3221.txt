@@ -1,0 +1,19 @@
+> pww("twill", "3/2*2/1", nrow = 15, ncol = 9)
+/ - - - - - - - - - \ 
+| X X     X X X   X | 
+| X     X X X   X X | 
+|     X X X   X X   | 
+|   X X X   X X     | 
+| X X X   X X     X | 
+| X X   X X     X X | 
+| X   X X     X X X | 
+|   X X     X X X   | 
+| X X     X X X   X | 
+| X     X X X   X X | 
+|     X X X   X X   | 
+|   X X X   X X     | 
+| X X X   X X     X | 
+| X X   X X     X X | 
+| X   X X     X X X | 
+\ - - - - - - - - - / 
+
