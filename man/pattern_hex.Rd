@@ -41,7 +41,7 @@ for a specified hex pattern type and subtype.
 \code{names_hex} lists the currently supported hex \code{type}s.
 }
 \details{
-Currently we cycle through elements on the horizontal line and "main" (downward-sloping) diagonal line.
+Currently we cycle through elements on the horizontal line and the two diagonal lines.
 If \code{subtype} is \code{3L} this provides a 3-color hexagonal tiling pattern.
 If \code{subtype} is strictly greater than \code{2L} then a hexagon should never touch another hexagon of the same color.
 }

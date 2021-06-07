@@ -5,7 +5,7 @@
 #'  for a specified hex pattern type and subtype.
 #'  `names_hex` lists the currently supported hex `type`s.
 #'
-#'  Currently we cycle through elements on the horizontal line and "main" (downward-sloping) diagonal line.
+#'  Currently we cycle through elements on the horizontal line and the two diagonal lines.
 #'  If `subtype` is `3L` this provides a 3-color hexagonal tiling pattern.
 #'  If `subtype` is strictly greater than `2L` then a hexagon should never touch another hexagon of the same color.
 #'

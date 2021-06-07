@@ -8,3 +8,9 @@ test_that("square patterns work as expected", {
     verify_output("../text_diagrams/square_twill.txt", pss("twill", nrow = 7, ncol = 9))
     verify_output("../text_diagrams/vertical.txt", pss("vertical", nrow = 7, ncol = 9))
 })
+
+test_that("hex patterns work as expected", {
+    phh <- function(...) print.pattern_hex(pattern_hex(...))
+
+    verify_output("../text_diagrams/hex.txt", phh("hex", 3L, nrow = 7, ncol = 9))
+})
