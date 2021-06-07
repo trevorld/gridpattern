@@ -7,14 +7,17 @@
 #' @param scale For star polygons, multiplier (between 0 and 1)
 #'              applied to exterior radius to get interior radius.
 #' @param shape Either "convex" or "star" followed by the number of exterior vertices
-#'              or alternatively "circle" or "square".
+#'              or alternatively "circle", "null", or "square".
 #'              For example `"convex5"` (default) corresponds to a pentagon
 #'              and `"star6"` corresponds to a six-pointed star.
 #'              The `"square"` shape is larger than the `"convex4"` shape and is rotated an extra 45 degrees,
 #'              it can be used to generate a multi-colored "checkers" effect when density is 1.
+#'              The `"null"` shape is not drawn, it can be used to create holes within multiple-element patterns.
 #'
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @seealso [grid.pattern_circle()] for a special case of this pattern.
+#'          The tiling vignette features more examples of regular poylgon tiling using
+#'          this function `vignette("tiling", package = "gridpattern")`.
 #' @examples
 #'   if (require("grid")) {
 #'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -129,6 +132,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
 
     gl <- gList()
     for (i_par in seq(n_par)) {
+        if (shape[i_par] == "null") next
         radius_outer <- radius_mult * spacing * density[i_par]
         xy_polygon <- get_xy_polygon(shape[i_par], params, radius_outer, rot[i_par])
         xy_par <- get_xy_par(grid_xy, i_par, m_pat, type, spacing)

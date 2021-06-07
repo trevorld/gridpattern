@@ -58,11 +58,12 @@ All locations within the same \code{id} belong to the same boundary.}
 applied to exterior radius to get interior radius.}
 
 \item{shape}{Either "convex" or "star" followed by the number of exterior vertices
-or alternatively "circle" or "square".
+or alternatively "circle", "null", or "square".
 For example \code{"convex5"} (default) corresponds to a pentagon
 and \code{"star6"} corresponds to a six-pointed star.
 The \code{"square"} shape is larger than the \code{"convex4"} shape and is rotated an extra 45 degrees,
-it can be used to generate a multi-colored "checkers" effect when density is 1.}
+it can be used to generate a multi-colored "checkers" effect when density is 1.
+The \code{"null"} shape is not drawn, it can be used to create holes within multiple-element patterns.}
 
 \item{type}{Either \code{"diagonal"} (default), \code{"hex"}, or \code{"hex_circle"}.
 Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
@@ -140,4 +141,6 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \seealso{
 \code{\link[=grid.pattern_circle]{grid.pattern_circle()}} for a special case of this pattern.
+The tiling vignette features more examples of regular poylgon tiling using
+this function \code{vignette("tiling", package = "gridpattern")}.
 }
