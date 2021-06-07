@@ -5,22 +5,29 @@
 #' for a specified square pattern type and subtype.
 #' `names_square` lists the currently supported square `type`s (excluding those in `names_weave`).
 #'
-#' "diagonal" and "diagonal_skew" simply cycle through the colors
-#' both horizontally and vertically.
-#' If two colors are requested this provides the standard two-color checkerboard pattern.
-#' If there are more than three colors than "diagonal" will have colored diagonals
-#' going from top left to bottom right while "diagonal_skew" will have them
-#' going form bottom left to top right.
+#' \describe{
+#' \item{"horizontal", "vertical"}{"horizontal" and "vertical" simply cycle through the colors
+#'   either horizontally or vertically.
+#'   Use `subtype` to indicate the (integer) number of colors (or other graphical elements).
+#'   "horizontal" will produce horizontal stripes of color whereas "vertical" will produce vertical stripes.}
+#' \item{"diagonal", "diagonal_skew"}{"diagonal" and "diagonal_skew" simply cycle through the colors
+#'   both horizontally and vertically.
+#'   Use `subtype` to indicate the (integer) number of colors (or other graphical elements).
+#'   If two colors are requested this provides the standard two-color checkerboard pattern.
+#'   If there are more than three colors than "diagonal" will have colored diagonals
+#'   going from top left to bottom right while "diagonal_skew" will have them
+#'   going form bottom left to top right.}
+#' \item{any pattern from `names_weave`}{
+#'   We simply convert the logical matrix returned by [pattern_weave()] into an
+#'   integer matrix by having any `TRUE` set to `1L` and `FALSE` set to `2L`.
+#'   Hence the various weave patterns only support (up to) two-color patterns.
+#'   See [pattern_weave()] for more details about supported `type` and `subtype`.}
+#' }
 #'
-#' The weave patterns simply convert the logical matrix returned by [pattern_weave()] into an
-#' integer matrix by having `TRUE` set to `1L` and `FALSE` set to `2L`.
-#' Hence the various weave patterns only support (up to) two-color patterns.
-#'
-#' @param type Either "diagonal" or "diagonal_skew" or any of the weave patterns
-#'             documented in [pattern_weave()].
-#' @param subtype For the "diagonal" and "diagonal_skew" patterns
-#'                an integer indicating number of colors (or other graphical elements).
-#'                See [pattern_weave()] for supported `subtype` arguments for the various weave patterns.
+#' @param type Either "diagonal" (default), "diagonal_skew", "horizontal", "vertical",
+#'             or any `type` in `names_weave`.  See Details.
+#' @param subtype See Details.  For "diagonal", "diagonal_skew", "horizontal", or "vertical"
+#'                an integer of the desired number of colors (or other graphical elements).
 #' @param nrow Number of rows (height).
 #' @param ncol Number of columns (width).
 #' @return A matrix of integer values indicating where the each color
@@ -40,6 +47,12 @@
 #'  skew <- pattern_square("diagonal_skew", 4L, nrow = 7L, ncol = 9L)
 #'  print(skew)
 #'
+#'  horizontal <- pattern_square("horizontal", 4L, nrow = 8L, ncol = 8L)
+#'  print(horizontal)
+#'
+#'  vertical <- pattern_square("vertical", 4L, nrow = 8L, ncol = 8L)
+#'  print(vertical)
+#'
 #'  # also supports the various 'weave' patterns
 #'  zigzag <- pattern_square("twill_zigzag", nrow = 15L, ncol = 9L)
 #'  print(zigzag)
@@ -56,6 +69,10 @@ pattern_square <- function(type = "diagonal", subtype = NULL, nrow = 5L, ncol = 
         m <- pattern_diagonal(subtype, nrow, ncol)
     } else if (type == "diagonal_skew") {
         m <- pattern_diagonal(subtype, nrow, ncol, skew = TRUE)
+    } else if (type == "horizontal") {
+        m <- pattern_horizontal(subtype, nrow, ncol)
+    } else if (type == "vertical") {
+        m <- pattern_vertical(subtype, nrow, ncol)
     } else {
         abort(paste("Don't recognize square pattern type", type))
     }
@@ -72,6 +89,7 @@ pattern_diagonal <- function(subtype = NULL, nrow = 5L, ncol = 5L, skew = FALSE)
     stopifnot(is_integer(subtype))
     m <- matrix(1L, nrow = nrow, ncol = ncol)
     n <- as.integer(subtype)
+    if (n == 1L) return(m)
     s <- seq.int(n)
     for (e in s) {
         step <- ifelse(skew, -(e - 1L), e - 1L)
@@ -81,6 +99,26 @@ pattern_diagonal <- function(subtype = NULL, nrow = 5L, ncol = 5L, skew = FALSE)
         }
     }
     m
+}
+
+pattern_horizontal <- function(subtype = NULL, nrow = 5L, ncol = 5L) {
+    if (is.null(subtype) || is.na(subtype)) subtype <- 3L
+    stopifnot(is_integer(subtype))
+    n <- as.integer(subtype)
+    s <- seq.int(n)
+    v <- rep(s, length.out = ncol)
+    v <- rep(v, length.out = nrow)
+    matrix(v, nrow = nrow, ncol = ncol)
+}
+
+pattern_vertical <- function(subtype = NULL, nrow = 5L, ncol = 5L) {
+    if (is.null(subtype) || is.na(subtype)) subtype <- 3L
+    stopifnot(is_integer(subtype))
+    n <- as.integer(subtype)
+    s <- seq.int(n)
+    v <- rep(s, length.out = nrow)
+    v <- rep(v, length.out = ncol)
+    matrix(v, nrow = nrow, ncol = ncol, byrow = TRUE)
 }
 
 #' @export

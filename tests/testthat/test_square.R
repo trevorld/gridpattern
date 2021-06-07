@@ -1,0 +1,10 @@
+test_that("square patterns work as expected", {
+
+    pss <- function(...) print.pattern_square(pattern_square(...))
+
+    verify_output("../text_diagrams/diagonal.txt", pss("diagonal", nrow = 7, ncol = 9))
+    verify_output("../text_diagrams/diagonal_skew.txt", pss("diagonal_skew", nrow = 7, ncol = 9))
+    verify_output("../text_diagrams/horizontal.txt", pss("horizontal", nrow = 7, ncol = 9))
+    verify_output("../text_diagrams/square_twill.txt", pss("twill", nrow = 7, ncol = 9))
+    verify_output("../text_diagrams/vertical.txt", pss("vertical", nrow = 7, ncol = 9))
+})

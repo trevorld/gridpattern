@@ -14,12 +14,11 @@ pattern_square(type = "diagonal", subtype = NULL, nrow = 5L, ncol = 5L)
 names_square
 }
 \arguments{
-\item{type}{Either "diagonal" or "diagonal_skew" or any of the weave patterns
-documented in \code{\link[=pattern_weave]{pattern_weave()}}.}
+\item{type}{Either "diagonal" (default), "diagonal_skew", "horizontal", "vertical",
+or any \code{type} in \code{names_weave}.  See Details.}
 
-\item{subtype}{For the "diagonal" and "diagonal_skew" patterns
-an integer indicating number of colors (or other graphical elements).
-See \code{\link[=pattern_weave]{pattern_weave()}} for supported \code{subtype} arguments for the various weave patterns.}
+\item{subtype}{See Details.  For "diagonal", "diagonal_skew", "horizontal", or "vertical"
+an integer of the desired number of colors (or other graphical elements).}
 
 \item{nrow}{Number of rows (height).}
 
@@ -39,16 +38,24 @@ for a specified square pattern type and subtype.
 \code{names_square} lists the currently supported square \code{type}s (excluding those in \code{names_weave}).
 }
 \details{
-"diagonal" and "diagonal_skew" simply cycle through the colors
+\describe{
+\item{"horizontal", "vertical"}{"horizontal" and "vertical" simply cycle through the colors
+either horizontally or vertically.
+Use \code{subtype} to indicate the (integer) number of colors (or other graphical elements).
+"horizontal" will produce horizontal stripes of color whereas "vertical" will produce vertical stripes.}
+\item{"diagonal", "diagonal_skew"}{"diagonal" and "diagonal_skew" simply cycle through the colors
 both horizontally and vertically.
+Use \code{subtype} to indicate the (integer) number of colors (or other graphical elements).
 If two colors are requested this provides the standard two-color checkerboard pattern.
 If there are more than three colors than "diagonal" will have colored diagonals
 going from top left to bottom right while "diagonal_skew" will have them
-going form bottom left to top right.
-
-The weave patterns simply convert the logical matrix returned by \code{\link[=pattern_weave]{pattern_weave()}} into an
-integer matrix by having \code{TRUE} set to \code{1L} and \code{FALSE} set to \code{2L}.
+going form bottom left to top right.}
+\item{any pattern from \code{names_weave}}{
+We simply convert the logical matrix returned by \code{\link[=pattern_weave]{pattern_weave()}} into an
+integer matrix by having any \code{TRUE} set to \code{1L} and \code{FALSE} set to \code{2L}.
 Hence the various weave patterns only support (up to) two-color patterns.
+See \code{\link[=pattern_weave]{pattern_weave()}} for more details about supported \code{type} and \code{subtype}.}
+}
 }
 \examples{
  # supported square names
@@ -61,6 +68,12 @@ Hence the various weave patterns only support (up to) two-color patterns.
  # skew diagonal has colors going from bottom left to top right
  skew <- pattern_square("diagonal_skew", 4L, nrow = 7L, ncol = 9L)
  print(skew)
+
+ horizontal <- pattern_square("horizontal", 4L, nrow = 8L, ncol = 8L)
+ print(horizontal)
+
+ vertical <- pattern_square("vertical", 4L, nrow = 8L, ncol = 8L)
+ print(vertical)
 
  # also supports the various 'weave' patterns
  zigzag <- pattern_square("twill_zigzag", nrow = 15L, ncol = 9L)
