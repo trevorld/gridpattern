@@ -82,7 +82,7 @@ pattern_square <- function(type = "diagonal", subtype = NULL, nrow = 5L, ncol = 
 
 #' @rdname pattern_square
 #' @export
-names_square <- c("diagonal", "diagonal_skew")
+names_square <- c("diagonal", "diagonal_skew", "horizontal", "vertical")
 
 pattern_diagonal <- function(subtype = NULL, nrow = 5L, ncol = 5L, skew = FALSE) {
     if (is.null(subtype) || is.na(subtype)) subtype <- 3L
