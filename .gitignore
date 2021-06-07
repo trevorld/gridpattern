@@ -1,3 +1,5 @@
 README.html
 codecov.yml
 *.swp
+/doc/
+/Meta/
