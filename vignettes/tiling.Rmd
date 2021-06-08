@@ -354,13 +354,12 @@ gp <- gpar(fill = c(red, orange, yellow), col = "black")
 grid.pattern_regular_polygon(shape="convex12", density=1, type = "hex_circle",
                              angle=0, gp = gp, spacing=0.3)
 popViewport()
-# (6.6_{pi/3})^2
+# 4.4*_α.4**_α 
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
-gp <- gpar(fill = red, col = "black")
-grid.pattern_regular_polygon(shape="star6", density=0.86, type = "hex",
-                             rot = 30, scale = 0.582,
-                             angle=0, gp = gp, spacing=0.3)
+gp <- gpar(fill = c(red, orange), col = "black")
+grid.pattern_regular_polygon(shape="star4", density=1.41, angle=0, rot=-14, 
+                             spacing=0.3, gp = gp)
 popViewport()
 # (4.6_{pi/6})^3
 pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
