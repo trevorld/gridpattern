@@ -340,14 +340,14 @@ popViewport()
 Some additional [uniform tilings with star polygons](https://en.wikipedia.org/wiki/Uniform_tiling#Uniform_tilings_using_star_polygons) not shown above.
 
 ```{r}
-# 12.12.4_{pi/3}
+# 12.12.4_{π/3}
 pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
 gp <- gpar(fill = c(red, blue), col = "black")
 grid.pattern_regular_polygon(shape="convex12", rot=15, density=1.04, 
                              angle=0, gp = gp, spacing=0.3)
 popViewport()
-# (12.3_{pi/6})^2
+# (12.3_{π/6})^2
 pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
 gp <- gpar(fill = c(red, orange, yellow), col = "black")
@@ -358,15 +358,60 @@ popViewport()
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
 gp <- gpar(fill = c(red, orange), col = "black")
-grid.pattern_regular_polygon(shape="star4", density=1.41, angle=0, rot=-14, 
-                             spacing=0.3, gp = gp)
+grid.pattern_regular_polygon(shape="star4", density=1.64, angle=0, scale=0.27, 
+                             rot=-9.0, spacing=0.3, gp = gp)
 popViewport()
-# (4.6_{pi/6})^3
+# (4.6_{π/6})^3
 pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
-grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
-gp <- gpar(fill = red, col = "black")
+grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
+gp <- gpar(fill = c(red, orange, yellow), col = "black")
 grid.pattern_regular_polygon(shape="star6", density=1.0, type = "hex",
                              scale = 0.35, angle=0, gp = gp, spacing=0.3)
+popViewport()
+add_borders()
+```
+
+```{r}
+# Make sure our viewport is square for rhombitrihexagonal plus star tiling
+pushViewport(viewport(width = unit(1, "snpc"), height = unit(1, "snpc")))
+# 3.6*.6*
+pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
+grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
+gp <- gpar(fill = c("red", "orange", "yellow"), col = "black")
+grid.pattern_regular_polygon(shape="star6", density=1.25, angle=0, scale=0.4, rot=-21.9, 
+                             spacing=0.3, type="hex", gp=gp)
+popViewport()
+# 4.6.4*.6
+pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
+grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
+gp <- gpar(fill = c(yellow, red), col = "black")
+grid.pattern_regular_polygon(shape=c("star4", "convex4"), density=c(1.2, 0.8), scale = 0.3, 
+                                     spacing = 0.2, gp = gp, angle=45)
+popViewport()
+# 3.4.6.3.12*_{π/6} (rhombitrihexagonal plus star)
+pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
+grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
+gp <- gpar(fill = red, col = "black")
+grid.pattern_stripe(type = "hex_circle", density = 0.25, spacing = 0.3, 
+                    angle = 0, gp = gp)
+grid.pattern_stripe(type = "hex_circle", density = 0.25, spacing = 0.3, 
+                    angle = -60, gp = gp, yoffset=-0.110)
+grid.pattern_stripe(type = "hex_circle", density = 0.25, spacing = 0.3, 
+                    angle = 60, gp = gp, yoffset=0.068)
+gp <- gpar(fill = blue, col = "black")
+grid.pattern_regular_polygon(shape = "convex12", type = "hex_circle", rot = 15,
+                             density = 0.82, spacing = 0.3, angle = 0, gp = gp)
+gp <- gpar(fill = green, col = "black")
+grid.pattern_regular_polygon(shape = "star12", type = "hex_circle", rot = 15,
+                             density = 0.82, spacing = 0.3, angle = 0, gp = gp,
+                             scale = 0.55)
+popViewport()
+# 9.3.9.3*_{π/9}
+pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
+grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
+gp <- gpar(fill = c(red, orange, yellow), col = "black")
+grid.pattern_regular_polygon(shape = "convex9", density = 1.01, angle = 0, 
+                             type = "hex_circle", spacing = 0.3, gp = gp)
 popViewport()
 add_borders()
 ```
