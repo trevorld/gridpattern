@@ -20,6 +20,7 @@ grid.pattern_circle(
   linetype = gp$lty \%||\% 1,
   size = gp$lwd \%||\% 1,
   type = "diagonal",
+  subtype = NULL,
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -43,25 +44,27 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{angle}{Rotation angle in degrees}
 
-\item{density}{Approx. fraction of area the pattern fills (between 0 and 1)}
+\item{density}{Approx. fraction of area the pattern fills.}
 
-\item{spacing}{Spacing between repetitions of pattern (between 0 and 1)}
+\item{spacing}{Spacing between repetitions of pattern ('snpc' units between 0 and 1).}
 
-\item{xoffset}{Shift pattern along x axis (between 0 and 1)}
+\item{xoffset}{Shift pattern along x axis ('snpc' units between 0 and 1).}
 
-\item{yoffset}{Shift pattern along y axis (between 0 and 1)}
+\item{yoffset}{Shift pattern along y axis ('snpc' units between 0 and 1).}
 
-\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
 \item{linetype}{Stroke linetype}
 
 \item{size}{Stroke linewidth}
 
-\item{type}{Either \code{"diagonal"} (default), \code{"hex"}, or \code{"hex_circle"}.
-Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
-a desired "tiling" or "packing" layout.
-\code{"hex"} supports a tiling layout of hexagons (and triangles) while
-\code{"hex_circle"} supports a hexagonal packing arrangement for circles.}
+\item{type}{Adjusts layout, density, and repeating of certain aesthetics.
+Can use any type in \code{names_hex}, \code{names_square}, or \code{names_weave}.
+See for \code{\link[=pattern_hex]{pattern_hex()}}, \code{\link[=pattern_square]{pattern_square()}}, and \code{\link[=pattern_weave]{pattern_weave()}} for
+more information about supported \code{type} arguments.}
+
+\item{subtype}{See for \code{\link[=pattern_hex]{pattern_hex()}}, \code{\link[=pattern_square]{pattern_square()}}, and \code{\link[=pattern_weave]{pattern_weave()}} for
+more information about supported \code{subtype} arguments.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}
@@ -94,9 +97,13 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
     grid.newpage()
     grid.pattern_circle(x_hex, y_hex, density = 1.2, type = "hex_circle",
                         gp = gpar(fill = c("blue", "yellow", "red")))
+
+    # using a "twill_zigzag" 'weave' pattern
+    grid.newpage()
+    grid.pattern_circle(x_hex, y_hex, fill = "blue", density = 0.5, type = "twill_zigzag")
   }
 }
 \seealso{
-\code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}} for a more general case of this pattern and
+See\code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}} for a more general case of this pattern and
 \code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}
 }

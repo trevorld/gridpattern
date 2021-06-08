@@ -61,7 +61,7 @@ plus subsets for shaded intensity and stripes.}
 
 \item{filter}{Filter to use when scaling. \code{magick::filter_types()} returns a vector of supported values.}
 
-\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
 \item{aspect_ratio}{Override aspect ratio}
 

@@ -4,8 +4,9 @@
 ^README.Rmd$
 ^README.html$
 ^Rakefile$
-^raw-data$
+^pkgdown$
 ^_pkgdown.yml$
+^raw-data$
 ^codecov.yml$
 ^doc$
 ^Meta$

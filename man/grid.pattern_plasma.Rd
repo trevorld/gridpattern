@@ -36,7 +36,7 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{scale}{Extra scaling}
 
-\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
 \item{aspect_ratio}{Override aspect ratio}
 

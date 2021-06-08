@@ -46,34 +46,33 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{angle}{Rotation angle in degrees}
 
-\item{density}{Approx. fraction of area the pattern fills (between 0 and 1)}
+\item{density}{Approx. fraction of area the pattern fills.}
 
-\item{spacing}{Spacing between repetitions of pattern (between 0 and 1)}
+\item{spacing}{Spacing between repetitions of pattern ('snpc' units between 0 and 1).}
 
-\item{xoffset}{Shift pattern along x axis (between 0 and 1)}
+\item{xoffset}{Shift pattern along x axis ('snpc' units between 0 and 1).}
 
-\item{yoffset}{Shift pattern along y axis (between 0 and 1)}
+\item{yoffset}{Shift pattern along y axis ('snpc' units between 0 and 1).}
 
 \item{scale}{For star polygons, multiplier (between 0 and 1)
 applied to exterior radius to get interior radius.}
 
 \item{shape}{Either "convex" or "star" followed by the number of exterior vertices
 or alternatively "circle", "null", or "square".
-For example \code{"convex5"} (default) corresponds to a pentagon
+For example \code{"convex5"} corresponds to a pentagon
 and \code{"star6"} corresponds to a six-pointed star.
 The \code{"square"} shape is larger than the \code{"convex4"} shape and is rotated an extra 45 degrees,
 it can be used to generate a multi-colored "checkers" effect when density is 1.
 The \code{"null"} shape is not drawn, it can be used to create holes within multiple-element patterns.}
 
-\item{type}{Either \code{"diagonal"} (default), \code{"hex"}, or \code{"hex_circle"}.
-Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
-a desired "tiling" or "packing" layout.
-\code{"hex"} supports a tiling layout of hexagons (and triangles) while
-\code{"hex_circle"} supports a hexagonal packing arrangement for circles.}
+\item{type}{Adjusts layout, density, and repeating of certain aesthetics.
+Can use any type in \code{names_hex}, \code{names_square}, or \code{names_weave}.
+See for \code{\link[=pattern_hex]{pattern_hex()}}, \code{\link[=pattern_square]{pattern_square()}}, and \code{\link[=pattern_weave]{pattern_weave()}} for
+more information about supported \code{type} arguments.}
 
 \item{rot}{Angle to rotate regular polygon (degrees, counter-clockwise).}
 
-\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
 \item{linetype}{Stroke linetype}
 
@@ -123,6 +122,12 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
     grid.newpage()
     grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
                                  colour = "black", fill = "blue")
+
+    # using a "twill_zigzag" 'weave' pattern
+    grid.newpage()
+    grid.pattern_regular_polygon(x_hex, y_hex, fill = c("blue", "yellow"),
+                                 shape = c("circle", "star8"),
+                                 density = c(0.5, 0.6), type = "twill_zigzag")
 
     # hexagon tiling
     grid.newpage()

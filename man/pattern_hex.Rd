@@ -15,8 +15,12 @@ names_hex
 }
 \arguments{
 \item{type}{Either "hex" or "hex_circle".
-However for this function there is currently no difference in
-behaviour between the two (unlike in \code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}}).}
+Adjusts the layout, density, and repeating of certain elements
+in order to aid in achieving a desired "tiling" or "packing" layout in functions
+like \code{grid.pattern_regular_polygon()} and \code{grid.pattern_circle()}.
+\code{"hex"} supports a hexagonal tiling layout while
+\code{"hex_circle"} supports a hexagonal packing arrangement for circles.
+However for \code{pattern_hex()} there is currently no difference in behaviour between the two.}
 
 \item{subtype}{An integer indicating number of colors (or other graphical elements).}
 
@@ -56,5 +60,7 @@ If \code{subtype} is strictly greater than \code{2L} then a hexagon should never
 \seealso{
 \code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}} for drawing to a graphics device
 hexagons, triangles, circles, etc. in hexagon patterns.
+The tiling vignette features several examples of regular polygon tiling using
+this both the "hex" and "hex_circle" types \code{vignette("tiling", package = "gridpattern")}.
 }
 \keyword{datasets}

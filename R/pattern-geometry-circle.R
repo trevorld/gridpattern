@@ -7,18 +7,19 @@
 #' @param colour Stroke colour
 #' @param fill Fill colour
 #' @param angle Rotation angle in degrees
-#' @param density Approx. fraction of area the pattern fills (between 0 and 1)
-#' @param spacing Spacing between repetitions of pattern (between 0 and 1)
-#' @param xoffset Shift pattern along x axis (between 0 and 1)
-#' @param yoffset Shift pattern along y axis (between 0 and 1)
-#' @param alpha Alpha (between 0 and 1) or `NA` (default, preserves colors' alpha value)
+#' @param density Approx. fraction of area the pattern fills.
+#' @param spacing Spacing between repetitions of pattern ('snpc' units between 0 and 1).
+#' @param xoffset Shift pattern along x axis ('snpc' units between 0 and 1).
+#' @param yoffset Shift pattern along y axis ('snpc' units between 0 and 1).
+#' @param alpha Alpha (between 0 and 1) or `NA` (default, preserves colors' alpha value).
 #' @param linetype Stroke linetype
 #' @param size Stroke linewidth
-#' @param type Either `"diagonal"` (default), `"hex"`, or `"hex_circle"`.
-#'             Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
-#'             a desired "tiling" or "packing" layout.
-#'             `"hex"` supports a tiling layout of hexagons (and triangles) while
-#'             `"hex_circle"` supports a hexagonal packing arrangement for circles.
+#' @param type  Adjusts layout, density, and repeating of certain aesthetics.
+#'             Can use any type in `names_hex`, `names_square`, or `names_weave`.
+#'             See for [pattern_hex()], [pattern_square()], and [pattern_weave()] for
+#'             more information about supported `type` arguments.
+#' @param subtype See for [pattern_hex()], [pattern_square()], and [pattern_weave()] for
+#'             more information about supported `subtype` arguments.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
 #'   if (require("grid")) {
@@ -31,21 +32,26 @@
 #'     grid.newpage()
 #'     grid.pattern_circle(x_hex, y_hex, density = 1.2, type = "hex_circle",
 #'                         gp = gpar(fill = c("blue", "yellow", "red")))
+#'
+#'     # using a "twill_zigzag" 'weave' pattern
+#'     grid.newpage()
+#'     grid.pattern_circle(x_hex, y_hex, fill = "blue", density = 0.5, type = "twill_zigzag")
 #'   }
-#' @seealso [grid.pattern_regular_polygon()] for a more general case of this pattern and
+#' @seealso
+#'   See[grid.pattern_regular_polygon()] for a more general case of this pattern and
 #'   `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html>
 #' @export
 grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
                                 density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
                                 alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
-                                type = "diagonal",
+                                type = "diagonal", subtype = NULL,
                                 default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("circle", x, y, id,
                  colour = colour, fill = fill, angle = angle,
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
-                 alpha = alpha, linetype = linetype, size = size, type = type,
+                 alpha = alpha, linetype = linetype, size = size, type = type, subtype = NULL,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 

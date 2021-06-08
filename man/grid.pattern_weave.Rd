@@ -47,15 +47,15 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{angle}{Rotation angle in degrees}
 
-\item{density}{Approx. fraction of area the pattern fills (between 0 and 1)}
+\item{density}{Approx. fraction of area the pattern fills.}
 
-\item{spacing}{Spacing between repetitions of pattern (between 0 and 1)}
+\item{spacing}{Spacing between repetitions of pattern ('snpc' units between 0 and 1).}
 
-\item{xoffset}{Shift pattern along x axis (between 0 and 1)}
+\item{xoffset}{Shift pattern along x axis ('snpc' units between 0 and 1).}
 
-\item{yoffset}{Shift pattern along y axis (between 0 and 1)}
+\item{yoffset}{Shift pattern along y axis ('snpc' units between 0 and 1).}
 
-\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
 \item{linetype}{Stroke linetype}
 

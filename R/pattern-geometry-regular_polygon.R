@@ -8,12 +8,11 @@
 #'              applied to exterior radius to get interior radius.
 #' @param shape Either "convex" or "star" followed by the number of exterior vertices
 #'              or alternatively "circle", "null", or "square".
-#'              For example `"convex5"` (default) corresponds to a pentagon
+#'              For example `"convex5"` corresponds to a pentagon
 #'              and `"star6"` corresponds to a six-pointed star.
 #'              The `"square"` shape is larger than the `"convex4"` shape and is rotated an extra 45 degrees,
 #'              it can be used to generate a multi-colored "checkers" effect when density is 1.
 #'              The `"null"` shape is not drawn, it can be used to create holes within multiple-element patterns.
-#'
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @seealso [grid.pattern_circle()] for a special case of this pattern.
 #'          The tiling vignette features more examples of regular poylgon tiling using
@@ -42,6 +41,12 @@
 #'     grid.newpage()
 #'     grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
 #'                                  colour = "black", fill = "blue")
+#'
+#'     # using a "twill_zigzag" 'weave' pattern
+#'     grid.newpage()
+#'     grid.pattern_regular_polygon(x_hex, y_hex, fill = c("blue", "yellow"),
+#'                                  shape = c("circle", "star8"),
+#'                                  density = c(0.5, 0.6), type = "twill_zigzag")
 #'
 #'     # hexagon tiling
 #'     grid.newpage()

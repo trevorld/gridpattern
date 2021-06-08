@@ -41,7 +41,7 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{type}{Image source.  \code{names_placeholder} is a vector of supported values.
 If you would like only greyscale images append \code{bw} to the name.}
 
-\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
 \item{aspect_ratio}{Override aspect ratio}
 

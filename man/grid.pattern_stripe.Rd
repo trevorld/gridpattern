@@ -43,25 +43,24 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{angle}{Rotation angle in degrees}
 
-\item{density}{Approx. fraction of area the pattern fills (between 0 and 1)}
+\item{density}{Approx. fraction of area the pattern fills.}
 
-\item{spacing}{Spacing between repetitions of pattern (between 0 and 1)}
+\item{spacing}{Spacing between repetitions of pattern ('snpc' units between 0 and 1).}
 
-\item{xoffset}{Shift pattern along x axis (between 0 and 1)}
+\item{xoffset}{Shift pattern along x axis ('snpc' units between 0 and 1).}
 
-\item{yoffset}{Shift pattern along y axis (between 0 and 1)}
+\item{yoffset}{Shift pattern along y axis ('snpc' units between 0 and 1).}
 
-\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value)}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
 \item{linetype}{Stroke linetype}
 
 \item{size}{Stroke linewidth}
 
-\item{type}{Either \code{"diagonal"} (default), \code{"hex"}, or \code{"hex_circle"}.
-Adjusts layout, density, and repeating of certain aesthetics in order to aid in achieving
-a desired "tiling" or "packing" layout.
-\code{"hex"} supports a tiling layout of hexagons (and triangles) while
-\code{"hex_circle"} supports a hexagonal packing arrangement for circles.}
+\item{type}{Adjusts layout, density, and repeating of certain aesthetics.
+Can use any type in \code{names_hex}, \code{names_square}, or \code{names_weave}.
+See for \code{\link[=pattern_hex]{pattern_hex()}}, \code{\link[=pattern_square]{pattern_square()}}, and \code{\link[=pattern_weave]{pattern_weave()}} for
+more information about supported \code{type} arguments.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}
