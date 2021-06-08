@@ -3,3 +3,4 @@ codecov.yml
 *.swp
 /doc/
 /Meta/
+/pkgdown/

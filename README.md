@@ -1,12 +1,12 @@
-# gridpattern
+# gridpattern <img src="man/figures/logo.png" align="right" width="200px" alt="gridpattern hex sticker">
 
 [![CRAN Status Badge](https://www.r-pkg.org/badges/version/gridpattern)](https://cran.r-project.org/package=gridpattern)
 [![Build Status](https://travis-ci.org/trevorld/gridpattern.png?branch=main)](https://travis-ci.org/trevorld/gridpattern)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/trevorld/gridpattern?branch=main&svg=true)](https://ci.appveyor.com/project/trevorld/gridpattern)
 [![Coverage Status](https://img.shields.io/codecov/c/github/trevorld/gridpattern.svg)](https://codecov.io/github/trevorld/gridpattern?branch=main)
 
-`gridpattern` provides [grid.pattern() and
-patternGrob()](http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html)
+`gridpattern` provides [grid.pattern()](http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html) and
+[patternGrob()](http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html)
 functions to use with R's grid graphics system. They fill in a
 user-specified boundary path with a user-specified pattern. These pattern grobs include
 enhanced versions of the patterns originally contained within 
