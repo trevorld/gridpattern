@@ -11,13 +11,12 @@
 #'              For subtype `4L` we use the "hex2" pattern.
 #'              For subtype `7L` we use the "hex3" pattern.
 #'              Else a uniform coloring does not exist and we use the "hex_skew" pattern.}
+#' \item{"hex1"}{Provides the 1-uniform colorings of a hexagonal tiling.  Only exists for `subtype` `1L`, `2L`, or `3L`.}
+#' \item{"hex2"}{Provides the 2-uniform colorings of a hexagonal tiling.  Only exists for `subtype` `2L` or `4L`.}
+#' \item{"hex3"}{Provides the 3-uniform colorings of a hexagonal tiling.  Only exists for `subtype` `2L` or `7L`.}
 #' \item{"hex_skew"}{For the "hex_skew" `type` we cycle through `subtype` elements on the horizontal line and "main" diagonal line.
 #'    For some `subtype` numbers this may lead to noticeable color repeats on the "skew" diagonal line.
 #'    If `subtype` is strictly greater than `2L` then a hexagon should never touch another hexagon of the same color.}
-#' \item{"hex1"}{Provides the 1-uniform colorings of a hexagonal tiling.  Only exists for `subtype` `1L`, `2L`, or `3L`.
-#'               Only the `2L` `subtype` gives a different answer than the default "hex" type.}
-#' \item{"hex2"}{Provides the 2-uniform colorings of a hexagonal tiling.  Only exists for `subtype` `2L` or `4L`.}
-#' \item{"hex3"}{Provides the 3-uniform colorings of a hexagonal tiling.  Only exists for `subtype` `2L` or `7L`.}
 #' }
 #'
 #' @param type Currently just supports "hex".

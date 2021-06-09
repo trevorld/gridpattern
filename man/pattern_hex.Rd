@@ -45,13 +45,12 @@ For subtype \code{1L}, \code{2L}, and \code{3L} we use the "hex1" pattern.
 For subtype \code{4L} we use the "hex2" pattern.
 For subtype \code{7L} we use the "hex3" pattern.
 Else a uniform coloring does not exist and we use the "hex_skew" pattern.}
+\item{"hex1"}{Provides the 1-uniform colorings of a hexagonal tiling.  Only exists for \code{subtype} \code{1L}, \code{2L}, or \code{3L}.}
+\item{"hex2"}{Provides the 2-uniform colorings of a hexagonal tiling.  Only exists for \code{subtype} \code{2L} or \code{4L}.}
+\item{"hex3"}{Provides the 3-uniform colorings of a hexagonal tiling.  Only exists for \code{subtype} \code{2L} or \code{7L}.}
 \item{"hex_skew"}{For the "hex_skew" \code{type} we cycle through \code{subtype} elements on the horizontal line and "main" diagonal line.
 For some \code{subtype} numbers this may lead to noticeable color repeats on the "skew" diagonal line.
 If \code{subtype} is strictly greater than \code{2L} then a hexagon should never touch another hexagon of the same color.}
-\item{"hex1"}{Provides the 1-uniform colorings of a hexagonal tiling.  Only exists for \code{subtype} \code{1L}, \code{2L}, or \code{3L}.
-Only the \code{2L} \code{subtype} gives a different answer than the default "hex" type.}
-\item{"hex2"}{Provides the 2-uniform colorings of a hexagonal tiling.  Only exists for \code{subtype} \code{2L} or \code{4L}.}
-\item{"hex3"}{Provides the 3-uniform colorings of a hexagonal tiling.  Only exists for \code{subtype} \code{2L} or \code{7L}.}
 }
 }
 \examples{
