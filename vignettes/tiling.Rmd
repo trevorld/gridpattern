@@ -84,7 +84,7 @@ add_borders()
 <a name="square">Square tiling</a>
 ----------------------------------
 
-We can achieve several [uniform colorings of a square tiling](https://en.wikipedia.org/wiki/Square_tiling#Uniform_colorings) using either the "square" or "convex4" shapes.
+We can achieve the nine non-staggered [uniform colorings of a square tiling](https://en.wikipedia.org/wiki/Square_tiling#Uniform_colorings) using the "square" shape and the appropriate "type" (and perhaps "subtype").
 
 ```{r}
 # 2 color uniform square tiling (1212)
@@ -101,20 +101,15 @@ grid.pattern_regular_polygon(shape = "square", density = 1, type = "horizontal",
 popViewport()
 # 3 color uniform square tiling (1213)
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
-grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
-gp <- gpar(fill = c(red, blue), col = "black")
-grid.pattern_regular_polygon(shape = "convex4", density = 1,
-                             spacing = 0.2, angle = 45, gp = gp)
+gp <- gpar(fill = c(yellow, red, blue), col = "black")
+grid.pattern_regular_polygon(shape = "square", density = 1,
+                             spacing = 0.2, angle = 0, gp = gp)
 popViewport()
 # 4 color uniform square tiling (1234)
 pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
-gp <- gpar(fill = c(yellow, red), col = "black")
-grid.pattern_regular_polygon(shape = "convex4", density = 1,
-                             spacing = 0.2, angle = 45, gp = gp)
-gp <- gpar(fill = c(blue, green), col = "black")
-grid.pattern_regular_polygon(shape = "convex4", density = 1,
-                             xoffset = 0.1, yoffset = 0.1,
-                             spacing = 0.2, angle = 45, gp = gp)
+gp <- gpar(fill = c(yellow, red, blue, green), col = "black")
+grid.pattern_regular_polygon(shape = "square", density = 1,
+                             spacing = 0.2, angle = 0, gp = gp)
 popViewport()
 add_borders()
 ```
@@ -122,7 +117,7 @@ add_borders()
 <a name="hexagon">Hexagonal tiling</a>
 --------------------------------------------
 
-We can achieve all the [uniform colorings of a hexagonal tiling](https://en.wikipedia.org/wiki/Hexagonal_tiling#Uniform_colorings) using the "convex6" shape with the "hex" grid and "hex" type.  Replacing the "convex6" shape with an appropriately scaled "star6" shape results in a uniform tiling using star polygons.
+We can achieve all the [uniform colorings of a hexagonal tiling](https://en.wikipedia.org/wiki/Hexagonal_tiling#Uniform_colorings) using the "convex6" shape with the "hex" grid and the appropriate "type".  Replacing the "convex6" shape with an appropriately scaled "star6" shape results in a uniform tiling using star polygons.
 
 ```{r}
 grid.hexagonal_tiling <- function(..., shape = "convex6", spacing = 0.2) {

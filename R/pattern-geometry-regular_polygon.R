@@ -136,7 +136,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
 
     # compute pattern matrix of graphical elements (e.g. fill colors)
     if (is.null(params$pattern_type) || is.na(params$pattern_type))
-        params$pattern_type <- switch(grid, square = "diagonal", "hex")
+        params$pattern_type <- switch(grid, square = "square", "hex")
     m_pat <- get_pattern_matrix(params$pattern_type, params$pattern_subtype, grid_xy, n_par)
 
     gl <- gList()

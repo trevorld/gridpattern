@@ -1,7 +1,7 @@
 Package: gridpattern
 Type: Package
 Title: 'grid' Pattern Grobs
-Version: 0.1.0-46
+Version: 0.1.0-47
 Authors@R: c(person("Mike", "FC", role = "aut", comment = "Patterns extracted from ggpattern"),
         person("Trevor L", "Davis", role=c("aut", "cre"), email="trevor.l.davis@gmail.com"),
         person("Thomas Lin", "Pedersen", role = "ctb", comment = "new_data_frame() copied from ggplot2"))

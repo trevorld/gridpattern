@@ -6,7 +6,7 @@
 \alias{names_square}
 \title{Square pattern matrix}
 \format{
-An object of class \code{character} of length 4.
+An object of class \code{character} of length 6.
 }
 \usage{
 pattern_square(type = "diagonal", subtype = NULL, nrow = 5L, ncol = 5L)
@@ -50,6 +50,15 @@ If two colors are requested this provides the standard two-color checkerboard pa
 If there are more than three colors than "diagonal" will have colored diagonals
 going from top left to bottom right while "diagonal_skew" will have them
 going form bottom left to top right.}
+\item{"square"}{"square" attempts a uniform coloring using "square_tiling" before falling
+falling back on "diagonal".  If \code{subtype} is \code{1L}, \code{2L}, \code{3L}, or \code{4L} uses "square_tiling"
+else uses "diagonal".}
+\item{"square_tiling"}{"square_tiling" supports
+uniform coloring for (non-staggered) square tilings.
+Use \code{subtype} to either indicate the (integer) number of colors
+or a string with four integers such as \code{"1231"}
+(will fill in a 2x2 matrix by row which will then be tiled).
+Supports up to a max of four colors.}
 \item{any pattern from \code{names_weave}}{
 We simply convert the logical matrix returned by \code{\link[=pattern_weave]{pattern_weave()}} into an
 integer matrix by having any \code{TRUE} set to \code{1L} and \code{FALSE} set to \code{2L}.
@@ -74,6 +83,14 @@ See \code{\link[=pattern_weave]{pattern_weave()}} for more details about support
 
  vertical <- pattern_square("vertical", 4L, nrow = 8L, ncol = 8L)
  print(vertical)
+
+ # uniform coloring using 4 colors
+ color4 <- pattern_square("square_tiling", 4L, nrow = 7L, ncol = 9L)
+ print(color4)
+
+ # uniform coloring using 3 colors
+ color3 <- pattern_square("square_tiling", 3L, nrow = 7L, ncol = 9L)
+ print(color3)
 
  # also supports the various 'weave' patterns
  zigzag <- pattern_square("twill_zigzag", nrow = 15L, ncol = 9L)
