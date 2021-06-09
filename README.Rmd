@@ -5,6 +5,15 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/trevorld/gridpattern?branch=main&svg=true)](https://ci.appveyor.com/project/trevorld/gridpattern)
 [![Coverage Status](https://img.shields.io/codecov/c/github/trevorld/gridpattern.svg)](https://codecov.io/github/trevorld/gridpattern?branch=main)
 
+### Table of Contents
+
+* [Overview](#overview)
+* [Installation](#installation)
+* [Examples](#examples)
+* [Using these patterns with the "ggpattern" package](#ggpattern)
+
+## <a name="overview">Overview</a>
+
 `gridpattern` provides [grid.pattern()](http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html) and
 [patternGrob()](http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html)
 functions to use with R's grid graphics system. They fill in a
@@ -15,7 +24,7 @@ enhanced versions of the patterns originally contained within
 (which provides patterned ``ggplot2`` "geom" functions but 
 [does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as completely new "regular_polygon" and "weave" patterns.
 
-We currently provide `grid` grob support for the following patterns:
+`{gridpattern}` currently provide `{grid}` grob support for the following patterns:
 
 1.  [ambient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_ambient.html):
     noise array patterns powered by the [ambient](https://cran.r-project.org/package=ambient) package
@@ -33,7 +42,7 @@ We currently provide `grid` grob support for the following patterns:
 13. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
 14. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
 
-## Installation
+## <a name="installation">Installation</a>
 
 To install the development version use the following command in R:
 
@@ -42,7 +51,7 @@ To install the development version use the following command in R:
 remotes::install_github("trevorld/gridpattern")
 ```
 
-## Examples
+## <a name="examples">Examples</a>
 
 ```{r hidden, echo = FALSE}
 knitr::opts_chunk$set(fig.path = "man/figures/README-", fig.cap = '')
@@ -50,13 +59,14 @@ knitr::opts_chunk$set(fig.path = "man/figures/README-", fig.cap = '')
 
 ```{r setup}
 library("ambient")
+library("grid")
 library("gridpattern")
 x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 ```
 
 ```{r circle}
-grid.pattern_circle(x_hex, y_hex, density = 0.5, type = "hex_circle",
+grid.pattern_circle(x_hex, y_hex, density = 0.5, grid = "hex_circle",
                     fill = c("blue", "yellow", "red"))
 ```
 ```{r regular_star}
@@ -65,7 +75,7 @@ grid.pattern_regular_polygon(x_hex, y_hex, shape = c("convex4", "star8", "circle
                              density = c(0.45, 0.42, 0.4), spacing = 0.08, angle = 0)
 ```
 ```{r regular_hex}
-grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", type = "hex",
+grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", grid = "hex",
                              color = "transparent", fill = c("white", "grey", "black"),
                              density = 1.0, spacing = 0.1)
 ```
@@ -74,8 +84,29 @@ grid.pattern("weave", x_hex, y_hex, type = "satin",
              colour = "black", fill = "lightblue", fill2 =  "yellow",
              density = 0.3)
 ```
+```{r rhombitrihexagonal}
+blue <- grDevices::rgb(0.35, 0.70, 0.90)
+yellow <- grDevices::rgb(0.95, 0.90, 0.25)
+red <- grDevices::rgb(0.80, 0.40, 0.00)
+green <- grDevices::rgb(0.00, 0.60, 0.50)
+grid.rect(gp = gpar(fill = yellow, col = NA))
+gp <- gpar(fill = red, col = "black")
+grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
+                    angle = 0, gp = gp)
+grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
+                    angle = -60, gp = gp, yoffset=-0.110)
+grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
+                    angle = 60, gp = gp, yoffset=0.068)
+gp <- gpar(fill = blue, col = "black")
+grid.pattern_regular_polygon(shape = "convex12", grid = "hex_circle", rot = 15,
+                             density = 0.82, spacing = 0.3, angle = 0, gp = gp)
+gp <- gpar(fill = green, col = "black")
+grid.pattern_regular_polygon(shape = "star12", grid = "hex_circle", rot = 15,
+                             density = 0.82, spacing = 0.3, angle = 0, gp = gp,
+                             scale = 0.55)
+```
 
-## Using these patterns with the "ggpattern" package
+## <a name="ggpattern">Using these patterns with the "ggpattern" package</a>
 
 The patterns provided by ``gridpattern`` can be used to create [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html).  
 
@@ -124,7 +155,7 @@ hex_pattern <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
     args$pattern <- "regular_polygon"
     args$pattern_density <- 1
     args$pattern_shape <- "convex6"
-    args$pattern_type <- "hex"
+    args$pattern_grid <- "hex"
 
     if (legend) args$pattern_spacing <- 0.5 * args$pattern_spacing
 
