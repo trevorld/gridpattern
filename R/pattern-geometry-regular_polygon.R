@@ -53,13 +53,13 @@
 #'     grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
 #'                                  fill = c("white", "grey", "black"),
 #'                                  density = 1.0, spacing = 0.1,
-#'                                  shape = "convex6", type = "hex")
+#'                                  shape = "convex6", grid = "hex")
 #'
 #'     # triangle tiling
 #'     grid.newpage()
 #'     grid.pattern_regular_polygon(x_hex, y_hex, fill = "green",
 #'                                  density = 1.0, spacing = 0.1,
-#'                                  shape = "convex3", type = "hex")
+#'                                  shape = "convex3", grid = "hex")
 #'
 #'   }
 #' @export
@@ -68,7 +68,8 @@ grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), i
                                          fill = gp$fill %||% "grey80",
                                          angle = 30, density = 0.2,
                                          spacing = 0.05, xoffset = 0, yoffset = 0,
-                                         scale = 0.5, shape = "convex4", type = "diagonal", rot = 0,
+                                         scale = 0.5, shape = "convex4",
+                                         grid = "square", type = NULL, subtype = NULL, rot = 0,
                                          alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1,
                                          size = gp$lwd %||% 1,
                                          default.units = "npc", name = NULL,
@@ -77,7 +78,8 @@ grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), i
     grid.pattern("regular_polygon", x, y, id,
                  colour = colour, fill = fill, angle = angle,
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
-                 scale = scale, shape = shape, type = type, rot = rot,
+                 scale = scale, shape = shape,
+                 grid = grid, type = type, subtype = subtype, rot = rot,
                  alpha = alpha, linetype = linetype, size = size,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
@@ -90,7 +92,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     vpm <- get_vp_measurements(default.units)
 
     spacing <- params$pattern_spacing
-    type <- params$pattern_type
+    grid <- params$pattern_grid
 
     # create grid of points large enough to cover viewport no matter the angle
     grid_xy <- get_xy_grid(params, vpm)
@@ -117,14 +119,14 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
 
     density <- ifelse(shape == "square", 1.414 * density, density)
     # avoid overlap errors when density == 1 due to machine precision issues
-    if (is_pattern_square(type))
+    if (grid == "square")
         density <- ifelse(nigh(density, 1), 0.9999, density)
-    if (grepl("^hex", type) && n_par < 2)
+    if (grepl("^hex", grid) && n_par < 2)
         density <- ifelse(nigh(density, 1), 0.994, density)
     density_max <- max(density)
 
     # compute regular polygon relative coordinates which we will center on points
-    radius_mult <- switch(type, hex = 0.578, 0.5)
+    radius_mult <- switch(grid, hex = 0.578, 0.5)
     radius_max <- radius_mult * spacing * density_max
 
     #### add fudge factor?
@@ -133,14 +135,16 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     contracted_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = -radius_max)
 
     # compute pattern matrix of graphical elements (e.g. fill colors)
-    m_pat <- get_pattern_matrix(type, params$pattern_subtype, grid_xy, n_par)
+    if (is.null(params$pattern_type) || is.na(params$pattern_type))
+        params$pattern_type <- switch(grid, square = "diagonal", "hex")
+    m_pat <- get_pattern_matrix(params$pattern_type, params$pattern_subtype, grid_xy, n_par)
 
     gl <- gList()
     for (i_par in seq(n_par)) {
         if (shape[i_par] == "null") next
         radius_outer <- radius_mult * spacing * density[i_par]
         xy_polygon <- get_xy_polygon(shape[i_par], params, radius_outer, rot[i_par])
-        xy_par <- get_xy_par(grid_xy, i_par, m_pat, type, spacing)
+        xy_par <- get_xy_par(grid_xy, i_par, m_pat, grid, spacing)
         if (length(xy_par$x) == 0) next
 
         # rotate by 'angle'
@@ -200,8 +204,8 @@ get_pattern_matrix <- function(type, subtype, grid_xy, n_par) {
     m_pat
 }
 
-get_xy_par <- function(grid_xy, i_par, m_pat, type, spacing) {
-    if (is_pattern_square(type))
+get_xy_par <- function(grid_xy, i_par, m_pat, grid, spacing) {
+    if (grid == "square")
         get_xy_par_square(grid_xy, i_par, m_pat)
     else
         get_xy_par_hex(grid_xy, i_par, m_pat, spacing)
@@ -238,13 +242,13 @@ get_xy_grid <- function(params, vpm) {
     yoffset <- params$pattern_yoffset
 
     gm <- 1.00 # seems to need to be this big so {ggpattern} legends render correctly
-    x_adjust <- switch(params$pattern_type, hex = 0.5 * spacing, 0)
+    x_adjust <- switch(params$pattern_grid, hex = 0.5 * spacing, 0)
     x_min <- vpm$x - (gm * vpm$length + x_adjust)
     x_max <- vpm$x + (gm * vpm$length + x_adjust)
     x <- xoffset + seq_robust(from = x_min, to = x_max, by = spacing)
 
     # adjust vertical spacing for "hex" pattern
-    if (is_pattern_square(params$pattern_type))
+    if (params$pattern_grid == "square")
         v_spacing <- spacing
     else
         v_spacing <- 0.868 * spacing

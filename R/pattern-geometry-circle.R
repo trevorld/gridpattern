@@ -14,7 +14,11 @@
 #' @param alpha Alpha (between 0 and 1) or `NA` (default, preserves colors' alpha value).
 #' @param linetype Stroke linetype
 #' @param size Stroke linewidth
-#' @param type  Adjusts layout, density, and repeating of certain aesthetics.
+#' @param grid Adjusts placement and density of certain graphical elements.
+#'             `"square"` (default) is a square grid.
+#'             `"hex"` is a hexagonal grid suitable for hexagonal and triangular tiling.
+#'             `"hex_circle"` is a hexagonal grid suitable for circle packing.
+#' @param type Adjusts the repeating of certain aesthetics such as color.
 #'             Can use any type in `names_hex`, `names_square`, or `names_weave`.
 #'             See for [pattern_hex()], [pattern_square()], and [pattern_weave()] for
 #'             more information about supported `type` arguments.
@@ -45,13 +49,14 @@ grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, .
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
                                 density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
                                 alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
-                                type = "diagonal", subtype = NULL,
+                                grid = "square", type = NULL, subtype = NULL,
                                 default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("circle", x, y, id,
                  colour = colour, fill = fill, angle = angle,
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
-                 alpha = alpha, linetype = linetype, size = size, type = type, subtype = NULL,
+                 alpha = alpha, linetype = linetype, size = size,
+                 grid = grid, type = type, subtype = subtype,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 

@@ -6,7 +6,7 @@
 \alias{names_hex}
 \title{Hex pattern matrix}
 \format{
-An object of class \code{character} of length 2.
+An object of class \code{character} of length 1.
 }
 \usage{
 pattern_hex(type = "hex", subtype = NULL, nrow = 5L, ncol = 5L)
@@ -14,13 +14,7 @@ pattern_hex(type = "hex", subtype = NULL, nrow = 5L, ncol = 5L)
 names_hex
 }
 \arguments{
-\item{type}{Either "hex" or "hex_circle".
-Adjusts the layout, density, and repeating of certain elements
-in order to aid in achieving a desired "tiling" or "packing" layout in functions
-like \code{grid.pattern_regular_polygon()} and \code{grid.pattern_circle()}.
-\code{"hex"} supports a hexagonal tiling layout while
-\code{"hex_circle"} supports a hexagonal packing arrangement for circles.
-However for \code{pattern_hex()} there is currently no difference in behaviour between the two.}
+\item{type}{Currently just supports "hex".}
 
 \item{subtype}{An integer indicating number of colors (or other graphical elements).}
 
@@ -45,7 +39,7 @@ for a specified hex pattern type and subtype.
 \code{names_hex} lists the currently supported hex \code{type}s.
 }
 \details{
-Currently we cycle through elements on the horizontal line and the two diagonal lines.
+Currently for the "hex" \code{type} we cycle through elements on the horizontal line and the two diagonal lines.
 If \code{subtype} is \code{3L} this provides a 3-color hexagonal tiling pattern.
 If \code{subtype} is strictly greater than \code{2L} then a hexagon should never touch another hexagon of the same color.
 }

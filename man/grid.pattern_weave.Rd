@@ -20,6 +20,7 @@ grid.pattern_weave(
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
   size = gp$lwd \%||\% 1,
+  grid = "square",
   type = "plain",
   subtype = NA,
   default.units = "npc",
@@ -60,6 +61,11 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{linetype}{Stroke linetype}
 
 \item{size}{Stroke linewidth}
+
+\item{grid}{Adjusts placement and density of certain graphical elements.
+\code{"square"} (default) is a square grid.
+\code{"hex"} is a hexagonal grid suitable for hexagonal and triangular tiling.
+\code{"hex_circle"} is a hexagonal grid suitable for circle packing.}
 
 \item{type}{The weave type.  See \code{\link[=pattern_weave]{pattern_weave()}} for more details.}
 

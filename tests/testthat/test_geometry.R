@@ -35,7 +35,7 @@ test_that("geometry patterns work as expected", {
 
     expect_doppelganger("hexagon", function()
         grid.pattern_regular_polygon(x, y, color = "transparent", fill = c("white", "grey", "black"),
-                                     density = 1.0, shape = "convex6", type = "hex"))
+                                     density = 1.0, shape = "convex6", grid = "hex"))
 
     expect_doppelganger("square", function()
         grid.pattern_regular_polygon(x, y, color = "black", fill = c("white", "grey"),

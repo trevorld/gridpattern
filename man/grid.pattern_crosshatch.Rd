@@ -20,7 +20,7 @@ grid.pattern_crosshatch(
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
   size = gp$lwd \%||\% 1,
-  type = "diagonal",
+  grid = "square",
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -60,10 +60,10 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{size}{Stroke linewidth}
 
-\item{type}{Adjusts layout, density, and repeating of certain aesthetics.
-Can use any type in \code{names_hex}, \code{names_square}, or \code{names_weave}.
-See for \code{\link[=pattern_hex]{pattern_hex()}}, \code{\link[=pattern_square]{pattern_square()}}, and \code{\link[=pattern_weave]{pattern_weave()}} for
-more information about supported \code{type} arguments.}
+\item{grid}{Adjusts placement and density of certain graphical elements.
+\code{"square"} (default) is a square grid.
+\code{"hex"} is a hexagonal grid suitable for hexagonal and triangular tiling.
+\code{"hex_circle"} is a hexagonal grid suitable for circle packing.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}

@@ -5,17 +5,11 @@
 #'  for a specified hex pattern type and subtype.
 #'  `names_hex` lists the currently supported hex `type`s.
 #'
-#'  Currently we cycle through elements on the horizontal line and the two diagonal lines.
+#'  Currently for the "hex" `type` we cycle through elements on the horizontal line and the two diagonal lines.
 #'  If `subtype` is `3L` this provides a 3-color hexagonal tiling pattern.
 #'  If `subtype` is strictly greater than `2L` then a hexagon should never touch another hexagon of the same color.
 #'
-#' @param type Either "hex" or "hex_circle".
-#'             Adjusts the layout, density, and repeating of certain elements
-#'             in order to aid in achieving a desired "tiling" or "packing" layout in functions
-#'             like `grid.pattern_regular_polygon()` and `grid.pattern_circle()`.
-#'            `"hex"` supports a hexagonal tiling layout while
-#'            `"hex_circle"` supports a hexagonal packing arrangement for circles.
-#'             However for `pattern_hex()` there is currently no difference in behaviour between the two.
+#' @param type Currently just supports "hex".
 #' @param subtype An integer indicating number of colors (or other graphical elements).
 #' @param nrow Number of rows (height).
 #' @param ncol Number of columns (width).
@@ -58,7 +52,7 @@ pattern_hex <- function(type = "hex", subtype = NULL, nrow = 5L, ncol = 5L) {
 
 #' @rdname pattern_hex
 #' @export
-names_hex <- c("hex", "hex_circle")
+names_hex <- c("hex")
 
 #' @export
 print.pattern_hex <- function(x, ...) {

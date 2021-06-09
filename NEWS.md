@@ -33,7 +33,7 @@ gridpattern v0.1
     * ``grid.pattern_circle()`` has several enhancements:
 
       * Allows use of the argument ``xoffset`` and ``yoffset`` (#22)
-      * Allows use of argument ``type`` and ``subtype`` to customize the pattern arrangement.
+      * Allows use of arguments ``grid``, ``type``, and ``subtype`` to customize the pattern arrangement.
       * Use of multiple ``fill`` colors now produces a more attractive pattern.
       * Use of ``density`` greater than ``1`` will now sometimes give an attractive result (#17).
       * Uses ``{sf}`` to clip circles to boundary instead of ``{gridGeometry}``
@@ -42,7 +42,7 @@ gridpattern v0.1
        different fill color(s) for the "over" crosshatch lines (#14).
     * ``xoffset``, ``yoffset``, and ``spacing`` are now interpreted as "snpc" units and
       ``grid.pattern_stripe()`` and ``grid.pattern_crosshatch()`` now allow using the 
-      argument ``type`` to tweak placement of lines so that they now match the placement
+      argument ``grid`` to tweak placement of lines so that they now match the placement
       of circles from ``grid.pattern_circle()`` and polygons from ``grid.pattern_regular_polygon()`` (#24).
 
 * ``mean_col()`` is a utility function that computes an "average" color (#21)

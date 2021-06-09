@@ -18,7 +18,9 @@ grid.pattern_regular_polygon(
   yoffset = 0,
   scale = 0.5,
   shape = "convex4",
-  type = "diagonal",
+  grid = "square",
+  type = NULL,
+  subtype = NULL,
   rot = 0,
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
@@ -65,10 +67,18 @@ The \code{"square"} shape is larger than the \code{"convex4"} shape and is rotat
 it can be used to generate a multi-colored "checkers" effect when density is 1.
 The \code{"null"} shape is not drawn, it can be used to create holes within multiple-element patterns.}
 
-\item{type}{Adjusts layout, density, and repeating of certain aesthetics.
+\item{grid}{Adjusts placement and density of certain graphical elements.
+\code{"square"} (default) is a square grid.
+\code{"hex"} is a hexagonal grid suitable for hexagonal and triangular tiling.
+\code{"hex_circle"} is a hexagonal grid suitable for circle packing.}
+
+\item{type}{Adjusts the repeating of certain aesthetics such as color.
 Can use any type in \code{names_hex}, \code{names_square}, or \code{names_weave}.
 See for \code{\link[=pattern_hex]{pattern_hex()}}, \code{\link[=pattern_square]{pattern_square()}}, and \code{\link[=pattern_weave]{pattern_weave()}} for
 more information about supported \code{type} arguments.}
+
+\item{subtype}{See for \code{\link[=pattern_hex]{pattern_hex()}}, \code{\link[=pattern_square]{pattern_square()}}, and \code{\link[=pattern_weave]{pattern_weave()}} for
+more information about supported \code{subtype} arguments.}
 
 \item{rot}{Angle to rotate regular polygon (degrees, counter-clockwise).}
 
@@ -134,13 +144,13 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
     grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
                                  fill = c("white", "grey", "black"),
                                  density = 1.0, spacing = 0.1,
-                                 shape = "convex6", type = "hex")
+                                 shape = "convex6", grid = "hex")
 
     # triangle tiling
     grid.newpage()
     grid.pattern_regular_polygon(x_hex, y_hex, fill = "green",
                                  density = 1.0, spacing = 0.1,
-                                 shape = "convex3", type = "hex")
+                                 shape = "convex3", grid = "hex")
 
   }
 }

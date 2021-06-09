@@ -49,7 +49,7 @@ grid.pattern_weave <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ..
                                     spacing = 0.05, xoffset = 0, yoffset = 0,
                                     alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1,
                                     size = gp$lwd %||% 1,
-                                    type = "plain", subtype = NA,
+                                    grid = "square", type = "plain", subtype = NA,
                                     default.units = "npc", name = NULL,
                                     gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
@@ -57,7 +57,7 @@ grid.pattern_weave <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ..
                  colour = colour, fill = fill, fill2 = fill2, angle = angle,
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
                  alpha = alpha, linetype = linetype, size = size,
-                 type = type, subtype = subtype,
+                 grid = grid, type = type, subtype = subtype,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 

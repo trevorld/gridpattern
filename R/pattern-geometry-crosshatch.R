@@ -25,14 +25,14 @@ grid.pattern_crosshatch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1
                                     angle = 30, density = 0.2,
                                     spacing = 0.05, xoffset = 0, yoffset = 0,
                                     alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
-                                    type = "diagonal",
+                                    grid = "square",
                                     default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("crosshatch", x, y, id,
                  colour = colour, fill = fill, fill2 = fill2, angle = angle,
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
                  alpha = alpha, linetype = linetype, size = size,
-                 type = type,
+                 grid = grid,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 

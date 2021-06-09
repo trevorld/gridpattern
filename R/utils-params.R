@@ -21,6 +21,7 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_filter <- l$pattern_filter %||%
         switch(pattern, magick = "box", "lanczos")
     l$pattern_gravity <- l$pattern_gravity %||% "center"
+    l$pattern_grid <- l$pattern_grid %||% "square"
     l$pattern_key_scale_factor <- l$pattern_key_scale_factor %||% 1
     l$pattern_orientation <- l$pattern_orientation %||% "vertical"
     l$pattern_rot <- l$pattern_rot %||% 0
@@ -65,12 +66,9 @@ convert_params_units <- function(params, units = "bigpts") {
 default_pattern_type <- function(pattern) {
     switch(pattern,
            ambient = "simplex",
-           circle = "diagonal",
-           crosshatch = "diagonal",
+           image = "fit",
            placeholder = "kitten",
            magick = "hexagons",
-           regular_polygon = "diagonal",
-           stripe = "diagonal",
            weave = "plain",
-           "fit")
+           NA_character_)
 }
