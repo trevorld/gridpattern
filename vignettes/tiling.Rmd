@@ -53,12 +53,12 @@ orange <- grDevices::rgb(0.90, 0.60, 0.00)
 -----------------------------------------
 
 When we consider the background to be a triangle fill color we can straight-forwardly
-achieve three [uniform colorings of a triangular tiling](https://en.wikipedia.org/wiki/Triangular_tiling#Uniform_colorings) using the "convex3" shape with the "hex" grid.
+achieve several of the [uniform colorings of a triangular tiling](https://en.wikipedia.org/wiki/Triangular_tiling#Uniform_colorings) using the "convex3" shape with the "hex" grid.
 
 ```{r}
 grid.triangular_tiling <- function(...) {
     grid.pattern_regular_polygon(..., shape = "convex3", density = 1, grid = "hex",
-                                 spacing = 0.2, angle = 0)
+                                 spacing = 0.2, angle = 0, rot = 180)
 }
 # 1 color uniform triangular tiling
 pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
@@ -66,14 +66,23 @@ grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
 gp <- gpar(fill = yellow, col = "black")
 grid.triangular_tiling(gp = gp)
 popViewport()
+
 # 2 color uniform triangular tiling
 pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
 gp <- gpar(fill = red, col = "black")
 grid.triangular_tiling(gp = gp)
 popViewport()
-# 4 color uniform triangular tiling
+
+# 3 color uniform triangular tiling
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
+grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
+gp <- gpar(fill = c(blue, red), col = "black")
+grid.triangular_tiling(gp = gp)
+popViewport()
+
+# 4 color uniform triangular tiling
+pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
 gp <- gpar(fill = c(red, blue, green), col = "black")
 grid.triangular_tiling(gp = gp)
@@ -401,24 +410,24 @@ Some additional [uniform tilings with star polygons](https://en.wikipedia.org/wi
 ```{r}
 # 12.12.4_{π/3}
 pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
-grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
-gp <- gpar(fill = c(red, blue), col = "black")
+grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
+gp <- gpar(fill = c(yellow, blue), col = "black")
 grid.pattern_regular_polygon(shape="convex12", rot=15, density=1.04, 
                              angle=0, gp = gp, spacing=0.3)
 popViewport()
 
 # (12.3_{π/6})^2
 pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
-grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
-gp <- gpar(fill = c(red, orange, yellow), col = "black")
+grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
+gp <- gpar(fill = c(yellow), col = "black")
 grid.pattern_regular_polygon(shape="convex12", density=1, grid = "hex_circle",
                              angle=0, gp = gp, spacing=0.4)
 popViewport()
 
 # 4.4*_α.4**_α 
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
-grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
-gp <- gpar(fill = c(red, orange), col = "black")
+grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
+gp <- gpar(fill = c(yellow, blue), col = "black")
 grid.pattern_regular_polygon(shape="star4", density=1.64, angle=0, scale=0.27, 
                              rot=-9.0, spacing=0.3, gp = gp)
 popViewport()
@@ -426,13 +435,13 @@ popViewport()
 # 3.3.8*.4**.8*
 pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
 sp <- 0.35
-gp <- gpar(fill = yellow, col = "black")
+gp <- gpar(fill = red, col = "black")
 grid.pattern_regular_polygon(shape = "square", density = 1, angle = 0, 
                              spacing = sp, gp = gp)
-gp <- gpar(fill = orange, col = "black")
+gp <- gpar(fill = blue, col = "black")
 grid.pattern_regular_polygon(shape = "star8", density = 1.082, rot = 22.5, 
                              angle = 0, scale = 0.30, spacing = sp, gp = gp)
-gp <- gpar(fill = red, col = "black")
+gp <- gpar(fill = yellow, col = "black")
 grid.pattern_regular_polygon(shape = "star4", density = 1.08, rot = 45, 
                              xoffset = sp / 2, yoffset = sp / 2,
                              angle = 0, scale = 0.56, spacing = sp, gp = gp)
@@ -443,32 +452,35 @@ add_borders()
 ```{r}
 # 3.6*.6*
 pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
-grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
-gp <- gpar(fill = c("red", "orange", "yellow"), col = "black")
+grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
+gp <- gpar(fill = yellow, col = "black")
 grid.pattern_regular_polygon(shape="star6", density=1.25, angle=0, scale=0.4, rot=-21.9, 
                              spacing=0.3, grid="hex", gp=gp)
 popViewport()
 
 # 4.6.4*.6
 pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
-grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
-gp <- gpar(fill = c(yellow, red), col = "black")
+grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
+gp <- gpar(fill = c(blue, red), col = "black")
 grid.pattern_regular_polygon(shape=c("star4", "convex4"), density=c(1.2, 0.8), scale = 0.3, 
                                      spacing = 0.2, gp = gp, angle=45)
 popViewport()
 
 # 9.3.9.3*_{π/9}
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
-grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
-gp <- gpar(fill = c(red, orange, yellow), col = "black")
+grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
+gp <- gpar(fill = blue, col = NA)
+grid.pattern_stripe(spacing = 0.4, density = 0.35, angle = 0,
+                    grid = "hex_circle", gp = gp, yoffset = 0.096)
+gp <- gpar(fill = yellow, col = "black")
 grid.pattern_regular_polygon(shape = "convex9", density = 1.01, angle = 0, 
                              grid = "hex_circle", spacing = 0.4, gp = gp)
 popViewport()
 
 # 8.4*.8.4*
 pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
-grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
-gp <- gpar(fill = orange, col = "black")
+grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
+gp <- gpar(fill = yellow, col = "black")
 grid.pattern_regular_polygon(shape = c("convex8", "null"), density = 1.41, 
                              angle = 0, spacing = 0.2, gp = gp)
 popViewport()
