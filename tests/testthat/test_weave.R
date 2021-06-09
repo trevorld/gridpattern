@@ -2,6 +2,8 @@ test_that("weaves work as expected", {
 
     pww <- function(...) print.pattern_weave(pattern_weave(...))
 
+    expect_error(pattern_weave("foobar"), "Don't know weave type foobar")
+
     # irregular mat
     verify_output("../text_diagrams/plain.txt", pww("plain", nrow = 7, ncol = 9))
     verify_output("../text_diagrams/basket.txt", pww("basket", nrow = 7, ncol = 9))
@@ -16,6 +18,7 @@ test_that("weaves work as expected", {
 
     # elongated twill
     verify_output("../text_diagrams/satin_5.txt", pww("satin", "5", nrow = 7, ncol = 9))
+    verify_output("../text_diagrams/twill_3.txt", pww("twill", 3L, nrow = 7, ncol = 9))
     verify_output("../text_diagrams/twill_212.txt", pww("twill_elongated", "2/1(2)", nrow = 7, ncol = 9))
     verify_output("../text_diagrams/twill_22.txt", pww("twill", "2/2", nrow = 7, ncol = 9))
     verify_output("../text_diagrams/twill_13.txt", pww("twill", "1/3", nrow = 7, ncol = 9))
