@@ -94,7 +94,7 @@ pattern_weave <- function(type = "plain", subtype = NULL, nrow = 5L, ncol = 5L) 
         m <- pattern_weave_twill(spec, nrow, ncol)
     else
         m <- pattern_weave_matt(spec, nrow, ncol)
-    class(m) <- c("pattern_weave", class(m))
+    class(m) <- c("pattern_weave", "matrix", "array")
     m
 }
 

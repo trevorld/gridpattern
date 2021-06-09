@@ -98,10 +98,10 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     grid.pattern_circle(x_hex, y_hex, fill = c("blue", "yellow"), density = 0.5)
     grid.newpage()
-    grid.pattern_circle(x_hex, y_hex, density = 0.8, type = "hex_circle",
+    grid.pattern_circle(x_hex, y_hex, density = 0.8, grid = "hex_circle",
                         gp = gpar(fill = c("blue", "yellow", "red")))
     grid.newpage()
-    grid.pattern_circle(x_hex, y_hex, density = 1.2, type = "hex_circle",
+    grid.pattern_circle(x_hex, y_hex, density = 1.2, grid = "hex_circle",
                         gp = gpar(fill = c("blue", "yellow", "red")))
 
     # using a "twill_zigzag" 'weave' pattern

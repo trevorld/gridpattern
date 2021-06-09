@@ -76,7 +76,7 @@ pattern_square <- function(type = "diagonal", subtype = NULL, nrow = 5L, ncol = 
     } else {
         abort(paste("Don't recognize square pattern type", type))
     }
-    class(m) <- c("pattern_square", class(m))
+    class(m) <- c("pattern_square", "matrix", "array")
     m
 }
 

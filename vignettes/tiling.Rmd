@@ -122,7 +122,7 @@ add_borders()
 <a name="hexagon">Hexagonal tiling</a>
 --------------------------------------------
 
-We can achieve two [uniform colorings of a hexagonal tiling](https://en.wikipedia.org/wiki/Hexagonal_tiling#Uniform_colorings) using the "convex6" shape with the "hex" grid.  Replacing the "convex6" shape with an appropriately scaled "star6" shape results in a uniform tiling using star polygons.
+We can achieve all the [uniform colorings of a hexagonal tiling](https://en.wikipedia.org/wiki/Hexagonal_tiling#Uniform_colorings) using the "convex6" shape with the "hex" grid and "hex" type.  Replacing the "convex6" shape with an appropriately scaled "star6" shape results in a uniform tiling using star polygons.
 
 ```{r}
 grid.hexagonal_tiling <- function(..., shape = "convex6", spacing = 0.2) {
@@ -135,20 +135,23 @@ gp <- gpar(fill = yellow, col = "black")
 grid.hexagonal_tiling(gp = gp)
 popViewport()
 
-# 3 color uniform hexagonal tiling
+# One of several 2 color uniform hexagonal tiling
 pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
+gp <- gpar(fill = c(red, yellow), col = "black")
+grid.hexagonal_tiling(gp = gp)
+popViewport()
+
+# 3 color uniform hexagonal tiling
+pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
 gp <- gpar(fill = c(yellow, red, blue), col = "black")
 grid.hexagonal_tiling(gp = gp)
 popViewport()
 
 # (4.6_{π/6})^3
-pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
+pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
 gp <- gpar(fill = red, col = "black")
 grid.hexagonal_tiling(shape = "star6", spacing = 0.3, gp = gp)
-popViewport()
-
-pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
 popViewport()
 add_borders()
 ```

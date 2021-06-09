@@ -121,7 +121,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     # avoid overlap errors when density == 1 due to machine precision issues
     if (grid == "square")
         density <- ifelse(nigh(density, 1), 0.9999, density)
-    if (grepl("^hex", grid) && n_par < 2)
+    if (grepl("^hex", grid) && n_par < 3L)
         density <- ifelse(nigh(density, 1), 0.994, density)
     density_max <- max(density)
 

@@ -6,7 +6,7 @@
 \alias{names_hex}
 \title{Hex pattern matrix}
 \format{
-An object of class \code{character} of length 1.
+An object of class \code{character} of length 5.
 }
 \usage{
 pattern_hex(type = "hex", subtype = NULL, nrow = 5L, ncol = 5L)
@@ -39,16 +39,32 @@ for a specified hex pattern type and subtype.
 \code{names_hex} lists the currently supported hex \code{type}s.
 }
 \details{
-Currently for the "hex" \code{type} we cycle through elements on the horizontal line and the two diagonal lines.
-If \code{subtype} is \code{3L} this provides a 3-color hexagonal tiling pattern.
-If \code{subtype} is strictly greater than \code{2L} then a hexagon should never touch another hexagon of the same color.
+\describe{
+\item{"hex"}{Attempts to use a uniform coloring if it exists.
+For subtype \code{1L}, \code{2L}, and \code{3L} we use the "hex1" pattern.
+For subtype \code{4L} we use the "hex2" pattern.
+For subtype \code{7L} we use the "hex3" pattern.
+Else a uniform coloring does not exist and we use the "hex_skew" pattern.}
+\item{"hex_skew"}{For the "hex_skew" \code{type} we cycle through \code{subtype} elements on the horizontal line and "main" diagonal line.
+For some \code{subtype} numbers this may lead to noticeable color repeats on the "skew" diagonal line.
+If \code{subtype} is strictly greater than \code{2L} then a hexagon should never touch another hexagon of the same color.}
+\item{"hex1"}{Provides the 1-uniform colorings of a hexagonal tiling.  Only exists for \code{subtype} \code{1L}, \code{2L}, or \code{3L}.
+Only the \code{2L} \code{subtype} gives a different answer than the default "hex" type.}
+\item{"hex2"}{Provides the 2-uniform colorings of a hexagonal tiling.  Only exists for \code{subtype} \code{2L} or \code{4L}.}
+\item{"hex3"}{Provides the 3-uniform colorings of a hexagonal tiling.  Only exists for \code{subtype} \code{2L} or \code{7L}.}
+}
 }
 \examples{
  # supported hex names
  print(names_hex)
 
- hex_3color <- pattern_hex("hex", 3L, nrow = 7L, ncol = 9L)
+ # 1-uniform 3-color
+ hex_3color <- pattern_hex("hex1", 3L, nrow = 7L, ncol = 9L)
  print(hex_3color)
+
+ # 2-uniform 4-color
+ hex_4color <- pattern_hex("hex2", 4L, nrow = 7L, ncol = 9L)
+ print(hex_4color)
 
 }
 \seealso{
@@ -56,5 +72,7 @@ If \code{subtype} is strictly greater than \code{2L} then a hexagon should never
 hexagons, triangles, circles, etc. in hexagon patterns.
 The tiling vignette features several examples of regular polygon tiling using
 this both the "hex" and "hex_circle" types \code{vignette("tiling", package = "gridpattern")}.
+For more information on uniform colorings of a hexagonal tiling see
+\url{https://en.wikipedia.org/wiki/Hexagonal_tiling#Uniform_colorings}.
 }
 \keyword{datasets}
