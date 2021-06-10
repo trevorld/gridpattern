@@ -96,6 +96,10 @@ See \code{\link[grid:grid.null]{grid::grid.null()}} for more information.}
 See \code{\link[=grid.pattern_placeholder]{grid.pattern_placeholder()}} for more information.}
 \item{plasma}{Plasma array patterns.
 See \code{\link[=grid.pattern_plasma]{grid.pattern_plasma()}} for more information.}
+\item{polygon_tiling}{Polygon tiling patterns.
+See \code{\link[=grid.pattern_polygon_tiling]{grid.pattern_polygon_tiling()}} for more information.}
+\item{regular_polygon}{Regular polygon patterns.
+See \code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}} for more information.}
 \item{stripe}{Stripe geometry patterns.
 See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more information.}
 \item{weave}{Weave geometry patterns.
@@ -153,5 +157,5 @@ See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information
 }
 \seealso{
 \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
-for more details on the patterns and their parameters.
+for more details on the \code{ggpattern} patterns and their parameters.
 }

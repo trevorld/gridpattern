@@ -7,7 +7,7 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     # possibly get from gpar()
     l$pattern_alpha <- l$pattern_alpha %||% gp$alpha %||% NA_real_
     l$pattern_colour <- l$pattern_colour %||% l$pattern_color %||% gp$col %||% "grey20"
-    l$pattern_fill <- l$pattern_fill %||% gp$fill %||% "grey80"
+    l$pattern_fill <- l[["pattern_fill"]] %||% gp$fill %||% "grey80"
     l$pattern_linetype <- l$pattern_linetype %||% gp$lty %||% 1
     l$pattern_size <- l$pattern_size %||% gp$lwd %||% 1
 
@@ -68,6 +68,7 @@ default_pattern_type <- function(pattern) {
            ambient = "simplex",
            image = "fit",
            placeholder = "kitten",
+           polygon_tiling = "square",
            magick = "hexagons",
            weave = "plain",
            NA_character_)

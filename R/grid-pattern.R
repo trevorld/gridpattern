@@ -24,6 +24,10 @@
 #'                    See [grid.pattern_placeholder()] for more information.}
 #' \item{plasma}{Plasma array patterns.
 #'               See [grid.pattern_plasma()] for more information.}
+#' \item{polygon_tiling}{Polygon tiling patterns.
+#'                        See [grid.pattern_polygon_tiling()] for more information.}
+#' \item{regular_polygon}{Regular polygon patterns.
+#'                        See [grid.pattern_regular_polygon()] for more information.}
 #' \item{stripe}{Stripe geometry patterns.
 #'               See [grid.pattern_stripe()] for more information.}
 #' \item{weave}{Weave geometry patterns.
@@ -93,7 +97,7 @@
 #'    grid.pattern("plasma", x_hex, y_hex, fill="green")
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
-#'          for more details on the patterns and their parameters.
+#'          for more details on the `ggpattern` patterns and their parameters.
 #' @export
 grid.pattern <- function(pattern = "stripe",
                          x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
@@ -149,6 +153,7 @@ get_pattern_fn <- function(pattern) {
     geometry_fns <- c(list(circle = create_pattern_circle_via_sf,
                            crosshatch = create_pattern_crosshatch_via_sf,
                            none = create_pattern_none,
+                           polygon_tiling = create_pattern_polygon_tiling,
                            regular_polygon = create_pattern_regular_polygon_via_sf,
                            stripe = create_pattern_stripes_via_sf,
                            weave = create_pattern_weave_via_sf),

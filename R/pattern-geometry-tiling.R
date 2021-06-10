@@ -1,0 +1,221 @@
+#' Polygon tiling patterned grobs
+#'
+#' `grid.pattern_polygon_tiling()` draws a specified polygon tiling pattern onto the graphic device.
+#'
+#' `grid.pattern_polygon_tiling()` supports 1, 2, or 3 `fill` colors with the first colors (weakly)
+#'  covering a larger area.  Size of the pattern is controlled by `spacing`.
+#'  We support the following polygon tiling `type`s:
+#'
+#' \describe{
+#' \item{herringbone}{Creates a herringbone tiling made of rectangles.}
+#' \item{hexagonal}{Creates a hexagonal tiling made of hexagons.}
+#' \item{pythagorean}{Creates a Pythagorean tiling made of squares of two different sizes.}
+#' \item{square}{Creates a square tiling made of squares.}
+#' \item{triangular}{Creates a triangular tiling made of equilateral triangles.}
+#' \item{truncated_square}{Creates a truncated square tiling made of octagons and squares.}
+#' \item{truncated_hexagonal}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
+#' \item{trihexagonal}{Creates a trihexagonal tiling made of hexagons and triangles.}
+#' }
+#'
+#' @inheritParams grid.pattern_circle
+#' @param type Name of polygon tiling to draw.  See Details.
+#' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
+#' @seealso The tiling vignette `vignette("tiling", package = "gridpattern")`features more
+#'          examples of polygon tiling using the [grid.pattern_regular_polygon()] function.
+#' @examples
+#'  if (require("grid")) {
+#'    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'    gp1 <- gpar(fill = "yellow", col = "black")
+#'    gp2 <- gpar(fill = c("yellow", "red"), col = "black")
+#'    gp3 <- gpar(fill = c("yellow", "red", "blue"), col = "black")
+#'
+#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "herringbone", gp = gp1)
+#'
+#'    grid.newpage()
+#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "hexagonal", gp = gp3)
+#'
+#'    grid.newpage()
+#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "pythagorean", gp = gp2)
+#'
+#'    grid.newpage()
+#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_square", gp = gp3)
+#'  }
+#'
+#' @export
+grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
+                                        colour = gp$col %||% "grey20",
+                                        fill = gp$fill %||% "grey80",
+                                        angle = 30, spacing = 0.05, xoffset = 0, yoffset = 0,
+                                        type = "square",
+                                        alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1,
+                                        size = gp$lwd %||% 1,
+                                        default.units = "npc", name = NULL,
+                                        gp = gpar(), draw = TRUE, vp = NULL) {
+    if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
+    grid.pattern("polygon_tiling", x, y, id,
+                 colour = colour, fill = fill, angle = angle,
+                 spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 type = type,
+                 alpha = alpha, linetype = linetype, size = size,
+                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+}
+
+# More tilings we could do
+# What should their names be
+# Hexagonal replaced with star?
+# Truncated Square with (alternating) star?
+# Truncated Hexagonal with star?
+# Trihexagonal topological equivalent "star6"
+# Trihexagonal topological equivalent "star3"
+# Trihexagonal topological equivalent "convex3"
+# Lots of stars...
+
+create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
+    type <- params$pattern_type
+
+    xyi <- boundary_df
+
+    fill <- alpha(params$pattern_fill, params$pattern_alpha)
+    col <- alpha(params$pattern_colour, params$pattern_alpha)
+    lwd <- params$pattern_size
+    lty <- params$pattern_linetype
+    stopifnot(length(fill) < 4L, max(lengths(list(col, lwd, lty))) == 1L)
+    gp <- gpar(fill = fill, col = col, lwd = lwd, lty = lty)
+
+    angle <- params$pattern_angle
+    spacing <- params$pattern_spacing
+
+    gl <- switch(type,
+                 herringbone = create_herringbone_tiling(xyi, gp, spacing, angle),
+                 hexagonal = create_hexagonal_tiling(xyi, gp, spacing, angle),
+                 pythagorean = create_pythogorean_tiling(xyi, gp, spacing, angle),
+                 square = create_square_tiling(xyi, gp, spacing, angle),
+                 triangular = create_triangular_tiling(xyi, gp, spacing, angle),
+                 trihexagonal = create_trihexagonal_tiling(xyi, gp, spacing, angle),
+                 truncated_hexagonal = create_trunc_hex_tiling(xyi, gp, spacing, angle),
+                 truncated_square = create_trunc_square_tiling(xyi, gp, spacing, angle),
+                 abort(paste("Don't know how to do tiling", type)))
+    gTree(children = gl, name = "polygon_tiling")
+}
+
+create_herringbone_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    fill2 <- gp$fill[1L]
+    if (n_col > 1L)
+        gp$fill <- gp$fill[-1L]
+    grob <- patternGrob("weave", xyi$x, xyi$y, xyi$id,
+                        type = "twill", subtype = "2/2(1)",
+                        density = 1, fill2 = fill2,
+                        spacing = spacing, angle = angle + 45, gp = gp,
+                        name = "rectangles")
+    gList(grob)
+}
+
+create_hexagonal_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    if (n_col == 2L)
+        gp$fill <- rev(gp$fill)
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex6", density = 1, grid = "hex",
+                        spacing = spacing, angle = angle, gp = gp,
+                        name = "hexagons")
+    gList(grob)
+}
+
+create_pythogorean_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_bg <- gp
+    gp_bg$fill <- gp$fill[n_col]
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    if (n_col == 2L)
+        gp$fill <- gp$fill[1L]
+    else if (n_col == 3L)
+        gp$fill <- gp$fill[2:1]
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex4", density = 1.222, rot = 15,
+                        spacing = spacing, angle = angle - 60, gp = gp,
+                        name = "squares_larger")
+    gList(bg, grob)
+}
+
+create_square_tiling <- function(xyi, gp, spacing, angle) {
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "square", density = 1,
+                        spacing = spacing, angle = angle, gp = gp,
+                        name = "squares")
+    gList(grob)
+}
+
+create_triangular_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_bg <- gp
+    gp_bg$fill <- gp$fill[1]
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    if (n_col == 2L)
+        gp$fill <- gp$fill[2L]
+    else if (n_col == 3L)
+        gp$fill <- gp$fill[3:2]
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex3", density = 1, grid = "hex", rot = 180,
+                        spacing = spacing, angle = angle, gp = gp,
+                        name = "triangles")
+    gList(bg, grob)
+}
+
+create_trunc_square_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_bg <- gp
+    gp_bg$fill <- gp$fill[n_col]
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    if (n_col == 2L)
+        gp$fill <- gp$fill[1L]
+    else if (n_col == 3L)
+        gp$fill <- gp$fill[1:2]
+
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex8", density = 1.082, rot = 22.5,
+                        spacing = spacing, angle = angle, gp = gp,
+                        name = "octagons")
+    gList(bg, grob)
+}
+
+create_trunc_hex_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_bg <- gp
+    gp_bg$fill <- gp$fill[n_col]
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    if (n_col == 2L)
+        gp$fill <- gp$fill[1L]
+    else if (n_col == 3L)
+        gp$fill <- gp$fill[2:1]
+
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex12", density = 1.034, rot = 15,
+                        grid = "hex_circle",
+                        spacing = spacing, angle = angle, gp = gp,
+                        name = "dodecagons")
+    gList(bg, grob)
+}
+
+create_trihexagonal_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_bg <- gp
+    gp_bg$fill <- gp$fill[n_col]
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    if (n_col == 2L)
+        gp$fill <- gp$fill[1L]
+    else if (n_col == 3L)
+        gp$fill <- gp$fill[2:1]
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex6", density = 1, rot = 30,
+                        grid = "hex_circle",
+                        spacing = spacing, angle = angle, gp = gp,
+                        name = "hexagons")
+    gList(bg, grob)
+}

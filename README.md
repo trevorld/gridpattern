@@ -22,7 +22,7 @@ enhanced versions of the patterns originally contained within
 [Mike FC](https://github.com/coolbutuseless)'s awesome
 [ggpattern](https://github.com/coolbutuseless/ggpattern) package 
 (which provides patterned ``ggplot2`` "geom" functions but 
-[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as completely new "regular_polygon" and "weave" patterns.
+[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as completely new "polygon_tiling", "regular_polygon", and "weave" patterns.
 
 `{gridpattern}` currently provide `{grid}` grob support for the following patterns:
 
@@ -36,11 +36,12 @@ enhanced versions of the patterns originally contained within
 7.  none (equivalent to `grid::null()`)
 8.  [placeholder](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_placeholder.html): placeholder image array patterns
 9.  [plasma](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_plasma.html): plasma array patterns
-10. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
-11. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
-12. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
-13. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
-14. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
+11. [polygon_tiling](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_polygon_tiling.html): polygon tiling patterns
+11. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
+12. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
+13. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
+14. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
+15. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
 
 ## <a name="installation">Installation</a>
 
@@ -90,12 +91,20 @@ grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", grid = "hex",
 ![](man/figures/README-regular_hex-1.png)
 
 ```r
-grid.pattern("weave", x_hex, y_hex, type = "satin", 
+grid.pattern_weave(x_hex, y_hex, type = "satin", 
              colour = "black", fill = "lightblue", fill2 =  "yellow",
              density = 0.3)
 ```
 
 ![](man/figures/README-weave-1.png)
+
+```r
+gp <- gpar(fill = c("yellow", "red", "blue"))
+grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_hexagonal", 
+                            spacing = 0.15, gp = gp)
+```
+
+![](man/figures/README-truncated_hexagonal-1.png)
 
 ```r
 blue <- grDevices::rgb(0.35, 0.70, 0.90)

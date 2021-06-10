@@ -6,6 +6,7 @@ gridpattern v0.1
 
 * Supports the following original patterns:
 
+  * "polygon_tiling" ``grid.pattern_polygon_tiling()`` (#13)
   * "regular_polygon" ``grid.pattern_regular_polygon()`` (#20)
   * "weave" ``grid.pattern_weave()`` (#12)
 
@@ -47,9 +48,9 @@ gridpattern v0.1
 
 * ``mean_col()`` is a utility function that computes an "average" color (#21)
 * ``pattern_hex()`` returns an integer matrix indicating placement of multiple
-  colors (or other graphical elements) on a hex grid.
+  colors (or other graphical elements) on a hex grid.  Supports types listed in `hex_names`.
 * ``pattern_square()`` returns an integer matrix indicating placement of multiple
-  colors (or other graphical elements) on a rectangular grid.
+  colors (or other graphical elements) on a rectangular grid.  Supports types listed in `square_names`.
 * ``pattern_weave()`` returns a logical matrix indicating where the warp
   lines should "up" for a specified weave pattern type and subtype.  Supports
   weaves listed in `weave_names`.  In particular supports "irregular matt" and
