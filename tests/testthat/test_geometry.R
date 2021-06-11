@@ -80,3 +80,4 @@ test_that("geometry patterns work as expected", {
     expect_doppelganger("two_id", function()
         grid.pattern(x = x, y = y, id = id))
 })
+

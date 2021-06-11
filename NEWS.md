@@ -47,6 +47,8 @@ gridpattern v0.1
       of circles from ``grid.pattern_circle()`` and polygons from ``grid.pattern_regular_polygon()`` (#24).
 
 * ``mean_col()`` is a utility function that computes an "average" color (#21)
+* ``star_scale()`` and `star_angle()` are utility functions for converting
+  between regular star polygon parameterizations (#39).
 * ``pattern_hex()`` returns an integer matrix indicating placement of multiple
   colors (or other graphical elements) on a hex grid.  Supports types listed in `hex_names`.
 * ``pattern_square()`` returns an integer matrix indicating placement of multiple

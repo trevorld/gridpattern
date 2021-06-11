@@ -33,3 +33,12 @@ test_that("get_params works as expected", {
     expect_equal(params$pattern_colour, "blue")
     expect_equal(params$pattern_linetype, 2)
 })
+
+test_that("star_scale() works as expected", {
+   # |8/3| star has internal angle 45 degrees and external angle 90 degrees
+   scale <- star_scale(8, 45)
+   scale2 <- star_scale(8, 90, external = TRUE)
+   expect_equal(scale, scale2)
+   expect_equal(star_angle(8, scale), 45)
+   expect_equal(star_angle(8, scale, external = TRUE), 90)
+})
