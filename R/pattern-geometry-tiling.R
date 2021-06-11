@@ -89,7 +89,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
     gl <- switch(type,
                  herringbone = create_herringbone_tiling(xyi, gp, spacing, angle),
                  hexagonal = create_hexagonal_tiling(xyi, gp, spacing, angle),
-                 pythagorean = create_pythogorean_tiling(xyi, gp, spacing, angle),
+                 pythagorean = create_pythagorean_tiling(xyi, gp, spacing, angle),
                  square = create_square_tiling(xyi, gp, spacing, angle),
                  triangular = create_triangular_tiling(xyi, gp, spacing, angle),
                  trihexagonal = create_trihexagonal_tiling(xyi, gp, spacing, angle),
@@ -123,7 +123,7 @@ create_hexagonal_tiling <- function(xyi, gp, spacing, angle) {
     gList(grob)
 }
 
-create_pythogorean_tiling <- function(xyi, gp, spacing, angle) {
+create_pythagorean_tiling <- function(xyi, gp, spacing, angle) {
     n_col <- length(gp$fill)
     gp_bg <- gp
     gp_bg$fill <- gp$fill[n_col]

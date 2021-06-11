@@ -123,9 +123,10 @@ gp <- gpar(fill = blue, col = "black")
 grid.pattern_regular_polygon(shape = "convex12", grid = "hex_circle", rot = 15,
                              density = 0.82, spacing = 0.3, angle = 0, gp = gp)
 gp <- gpar(fill = green, col = "black")
+scale <- star_scale(12, 30)
 grid.pattern_regular_polygon(shape = "star12", grid = "hex_circle", rot = 15,
                              density = 0.82, spacing = 0.3, angle = 0, gp = gp,
-                             scale = 0.55)
+                             scale = scale)
 ```
 
 ![](man/figures/README-rhombitrihexagonal-1.png)
