@@ -116,9 +116,9 @@ gp <- gpar(fill = red, col = "black")
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
                     angle = 0, gp = gp)
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
-                    angle = -60, gp = gp, yoffset=-0.110)
+                    angle = -60, gp = gp)
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
-                    angle = 60, gp = gp, yoffset=0.068)
+                    angle = 60, gp = gp)
 gp <- gpar(fill = blue, col = "black")
 grid.pattern_regular_polygon(shape = "convex12", grid = "hex_circle", rot = 15,
                              density = 0.82, spacing = 0.3, angle = 0, gp = gp)

@@ -45,6 +45,7 @@ gridpattern v0.1
       ``grid.pattern_stripe()`` and ``grid.pattern_crosshatch()`` now allow using the 
       argument ``grid`` to tweak placement of lines so that they now match the placement
       of circles from ``grid.pattern_circle()`` and polygons from ``grid.pattern_regular_polygon()`` (#24).
+    * The center point of the geometry "grid" now matches the center of the viewport.
 
 * ``mean_col()`` is a utility function that computes an "average" color (#21)
 * ``star_scale()`` and `star_angle()` are utility functions for converting

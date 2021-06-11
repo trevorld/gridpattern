@@ -17,7 +17,7 @@ vignette: >
 * [Truncated square tiling](#truncatedsquare)
 * [Truncated hexagonal tiling](#truncatedhex)
 * [Trihexagonal tiling](#trihexagon)
-* [Truncated trihexagonal and rhombitrihexagonal tiling](#truncatedtrihexagon)
+* [Truncated trihexagonal tiling](#truncatedtrihexagon)
 * [Rhombitrihexagonal tiling](#rhombitrihexagon)
 * [Additional uniform tilings with star polygons](#star)
 
@@ -25,7 +25,7 @@ vignette: >
 
 * [Herringbone tiling](#herringbone)
 * [Pythagorean tiling](#pythagorean)
-* [Rhombile tiling](#rhombile)
+* [Rhombille tiling](#rhombille)
 * [Tetrakis square tiling](#tetrakis)
 
 Several [uniform regular polygon tiling patterns](https://en.wikipedia.org/wiki/Uniform_tiling) can be achieved by use of `grid.pattern_regular_polygon()` plus occasionally `grid.polygon()` to set a background color.  This vignette highlights several such tiling patterns plus a couple notable non-uniform tiling patterns.
@@ -312,8 +312,6 @@ add_borders()
 By carefully using `grid.pattern_stripe()` it is possible to achieve the [truncated trihexagonal tiling](https://en.wikipedia.org/wiki/Truncated_trihexagonal_tiling).
 
 ```{r}
-# Make sure our viewport is square
-pushViewport(viewport(width = unit(1, "snpc"), height = unit(1, "snpc")))
 # truncated trihexagonal
 pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
@@ -321,9 +319,9 @@ gp <- gpar(fill = red, col = "black")
 grid.pattern_stripe(grid = "hex_circle", density = 0.42, spacing = 0.3,
                     angle = 0, gp = gp)
 grid.pattern_stripe(grid = "hex_circle", density = 0.42, spacing = 0.3, 
-                    angle = -60, gp = gp, yoffset=-0.110)
+                    angle = -60, gp = gp)
 grid.pattern_stripe(grid = "hex_circle", density = 0.42, spacing = 0.3, 
-                    angle = 60, gp = gp, yoffset=0.068)
+                    angle = 60, gp = gp)
 gp <- gpar(fill = blue, col = "black")
 grid.pattern_regular_polygon(shape = "convex6", grid = "hex_circle", 
                              density = 0.75, spacing = 0.3, angle = 0, gp = gp)
@@ -336,9 +334,9 @@ gp <- gpar(fill = orange, col = "black")
 grid.pattern_stripe(grid = "hex_circle", density = 0.42, spacing = 0.3, 
                     angle = 0, gp = gp)
 grid.pattern_stripe(grid = "hex_circle", density = 0.42, spacing = 0.3, 
-                    angle = -60, gp = gp, yoffset=-0.110)
+                    angle = -60, gp = gp)
 grid.pattern_stripe(grid = "hex_circle", density = 0.42, spacing = 0.3, 
-                    angle = 60, gp = gp, yoffset=0.068)
+                    angle = 60, gp = gp)
 gp <- gpar(fill = c(yellow, red, blue), col = "black")
 grid.pattern_regular_polygon(shape = "convex6", grid = "hex_circle", 
                              density = 0.75, spacing = 0.3, angle = 0, gp = gp)
@@ -348,7 +346,6 @@ popViewport()
 pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
 popViewport()
 add_borders()
-popViewport()
 ```
 
 <a name="rhombitrihexagon">Rhombitrihexagonal tiling</a>
@@ -357,9 +354,6 @@ popViewport()
 By carefully using `grid.pattern_stripe()` it is also possible to achieve the [rhombitrihexagonal tiling](https://en.wikipedia.org/wiki/Rhombitrihexagonal_tiling).  There are also variant tilings where we add in "star12" polygons.
 
 ```{r}
-# Make sure our viewport is square
-pushViewport(viewport(width = unit(1, "snpc"), height = unit(1, "snpc")))
-
 # rhombitrihexagonal
 pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
@@ -367,9 +361,9 @@ gp <- gpar(fill = red, col = "black")
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
                     angle = 0, gp = gp)
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
-                    angle = -60, gp = gp, yoffset=-0.110)
+                    angle = -60, gp = gp)
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
-                    angle = 60, gp = gp, yoffset=0.068)
+                    angle = 60, gp = gp)
 gp <- gpar(fill = blue, col = "black")
 grid.pattern_regular_polygon(shape = "convex12", grid = "hex_circle", rot = 15,
                              density = 0.82, spacing = 0.3, angle = 0, gp = gp)
@@ -383,10 +377,10 @@ grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3,
                     angle = 0, gp = gp)
 gp <- gpar(fill = yellow, col = "black")
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
-                    angle = -60, gp = gp, yoffset=-0.110)
+                    angle = -60, gp = gp)
 gp <- gpar(fill = blue, col = "black")
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
-                    angle = 60, gp = gp, yoffset=0.068)
+                    angle = 60, gp = gp)
 gp <- gpar(fill = orange, col = "black")
 grid.pattern_regular_polygon(shape = "convex12", grid = "hex_circle", rot = 15,
                              density = 0.82, spacing = 0.3, angle = 0, gp = gp)
@@ -399,9 +393,9 @@ gp <- gpar(fill = red, col = "black")
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
                     angle = 0, gp = gp)
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
-                    angle = -60, gp = gp, yoffset=-0.110)
+                    angle = -60, gp = gp)
 grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
-                    angle = 60, gp = gp, yoffset=0.068)
+                    angle = 60, gp = gp)
 gp <- gpar(fill = blue, col = "black")
 grid.pattern_regular_polygon(shape = "convex12", grid = "hex_circle", rot = 15,
                              density = 0.82, spacing = 0.3, angle = 0, gp = gp)
@@ -415,7 +409,6 @@ popViewport()
 pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
 popViewport()
 add_borders()
-popViewport()
 ```
 
 <a name="star">Additional uniform tilings with star polygons</a>
@@ -585,7 +578,7 @@ popViewport()
 add_borders()
 ```
 
-<a name="rhombile tiling">Rhombille tiling</a>
+<a name="rhombille">Rhombille tiling</a>
 ----------------------------------------------
 
 We can get a single-color [Rhombille tiling](https://en.wikipedia.org/wiki/Rhombille_tiling) by using the "convex6" and a very narrow "star3" shape:

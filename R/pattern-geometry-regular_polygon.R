@@ -228,7 +228,7 @@ get_xy_par_hex <- function(grid_xy, i_par, m_pat, spacing = 1) {
         if (i %% 2)
             x_offset <- 0
         else
-            x_offset <-  -0.5 * spacing
+            x_offset <- -0.5 * spacing
         x <- c(x,  x_offset + grid_xy$x[indices_x])
         y <- c(y, rep(grid_xy$y[i], length(indices_x)))
     }
@@ -243,18 +243,23 @@ get_xy_grid <- function(params, vpm) {
 
     gm <- 1.00 # seems to need to be this big so {ggpattern} legends render correctly
     x_adjust <- switch(params$pattern_grid, hex = 0.5 * spacing, 0)
-    x_min <- vpm$x - (gm * vpm$length + x_adjust)
-    x_max <- vpm$x + (gm * vpm$length + x_adjust)
-    x <- xoffset + seq_robust(from = x_min, to = x_max, by = spacing)
+    x_seq <- seq_robust(from = 0, to = gm * vpm$length + x_adjust, by = spacing)
+    x <- xoffset + vpm$x + c(rev(tail(-x_seq, -1L)), x_seq)
+    x_min <- min(x)
+    x_max <- max(x)
 
     # adjust vertical spacing for "hex" pattern
     if (params$pattern_grid == "square")
         v_spacing <- spacing
     else
         v_spacing <- 0.5 * sqrt(3) * spacing
-    y_min <- vpm$y - gm * vpm$length
-    y_max <- vpm$y + gm * vpm$length
-    y <- yoffset + seq_robust(from = y_min, to = y_max, by = v_spacing)
+    y_seq <- seq_robust(from = 0, to = gm * vpm$length, by = v_spacing)
+    # ensure middle y point in a hex grid is an odd number so we don't accidentally offset it
+    if (params$pattern_grid != "square" && (length(y_seq) %% 2L == 0L))
+        y_seq <- c(y_seq, y_seq[length(y_seq)] + v_spacing)
+    y <- yoffset + vpm$y + c(rev(tail(-y_seq, -1L)), y_seq)
+    y_min <- min(y)
+    y_max <- max(y)
 
     list(x = x, y = y,
          x_min = x_min, x_max = x_max, y_min = y_min, y_max = y_max,
