@@ -35,30 +35,33 @@ grid.pattern_regular_polygon(bd_low$x, bd_low$y, shape = "square",
                              density = 1, angle = 0, spacing=0.125, gp = gp)
 gp <- gpar(fill = c(yellow, orange, red), col = "black")
 grid.pattern_regular_polygon(bd_hih$x, bd_hih$y, shape = "convex6",
-                             density = 1, angle = 0, type = "hex", spacing=0.175, gp = gp,
-                             yoffset = 0.06, xoffset = 0.03)
+                             density = 1, angle = 0, grid = "hex", spacing=0.175, gp = gp,
+                             yoffset = -0.03, xoffset = -0.01)
 grid.polygon(bd_top$x, bd_top$y, gp = gpar(fill = "white", col = NA))
 gp <- gpar(fill = c(yellow, orange, red), col = "black")
 grid.pattern_regular_polygon(bd_top$x, bd_top$y, shape = "convex3", density = 1.33,
-                             type = "hex_circle", gp = gp,
+                             grid = "hex_circle", gp = gp,
                              spacing = 0.05, rot = 30, angle = 0)
 
-gp = gpar(col = "black", fontsize = 42, fontfamily = "sans", fontface = "bold")
-grid.text("g", x=0.23, y=0.625, gp = gp)
-grid.text("r", x=0.40, y=0.625, gp = gp)
-grid.text("i", x=0.58, y=0.625, gp = gp)
-grid.text("d", x=0.75, y=0.625, gp = gp)
+gp = gpar(col = "black", fontsize = 50, fontfamily = "sans", fontface = "bold")
+yoffset <- 0.002
+grid.text("g", x=0.23, y=0.625 + yoffset, gp = gp)
+grid.text("r", x=0.40, y=0.625 + yoffset, gp = gp)
+grid.text("i", x=0.58, y=0.625 + yoffset, gp = gp)
+grid.text("d", x=0.75, y=0.625 + yoffset, gp = gp)
 
 xr <- range(x_hex)
 step <- (xr[2] - xr[1]) / 7
 x <- seq(xr[1] + step / 2, by = step, length.out = 7)
-grid.text("p", x=x[1], y=0.375, gp = gp)
-grid.text("a", x=x[2], y=0.375, gp = gp)
-grid.text("t", x=x[3], y=0.375, gp = gp)
-grid.text("t", x=x[4], y=0.375, gp = gp)
-grid.text("e", x=x[5], y=0.375, gp = gp)
-grid.text("r", x=x[6], y=0.375, gp = gp)
-grid.text("n", x=x[7], y=0.375, gp = gp)
+yoffset <- -0.001
+gp = gpar(col = "black", fontsize = 48, fontfamily = "sans", fontface = "bold")
+grid.text("p", x=x[1], y=0.375 + yoffset, gp = gp)
+grid.text("a", x=x[2], y=0.375 + yoffset, gp = gp)
+grid.text("t", x=x[3], y=0.375 + yoffset, gp = gp)
+grid.text("t", x=x[4], y=0.375 + yoffset, gp = gp)
+grid.text("e", x=x[5], y=0.375 + yoffset, gp = gp)
+grid.text("r", x=x[6], y=0.375 + yoffset, gp = gp)
+grid.text("n", x=x[7], y=0.375 + yoffset, gp = gp)
 
 hex <- pp_shape("convex6")
 grid.draw(hex$shape(gp = gpar(fill = NA, col = "white", lwd=4)))
