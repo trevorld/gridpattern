@@ -50,7 +50,8 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{type}{Name of polygon tiling to draw.  See Details.}
 
-\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
+\item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).
+Not supported for all polygon tiling \code{type}.}
 
 \item{linetype}{Stroke linetype}
 
@@ -87,9 +88,10 @@ We support the following polygon tiling \code{type}s:
 \item{pythagorean}{Creates a Pythagorean tiling made of squares of two different sizes.}
 \item{square}{Creates a square tiling made of squares.}
 \item{triangular}{Creates a triangular tiling made of equilateral triangles.}
+\item{trihexagonal}{Creates a trihexagonal tiling made of hexagons and triangles.}
 \item{truncated_square}{Creates a truncated square tiling made of octagons and squares.}
 \item{truncated_hexagonal}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
-\item{trihexagonal}{Creates a trihexagonal tiling made of hexagons and triangles.}
+\item{truncated_trihexagonal}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
 }
 }
 \examples{
@@ -114,6 +116,7 @@ We support the following polygon tiling \code{type}s:
 
 }
 \seealso{
-The tiling vignette \code{vignette("tiling", package = "gridpattern")}features more
+The tiling vignette \code{vignette("tiling", package = "gridpattern")} for more
+information about these tilings as well as more
 examples of polygon tiling using the \code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}} function.
 }
