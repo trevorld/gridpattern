@@ -251,7 +251,7 @@ get_xy_grid <- function(params, vpm) {
     if (params$pattern_grid == "square")
         v_spacing <- spacing
     else
-        v_spacing <- 0.868 * spacing
+        v_spacing <- 0.5 * sqrt(3) * spacing
     y_min <- vpm$y - gm * vpm$length
     y_max <- vpm$y + gm * vpm$length
     y <- yoffset + seq_robust(from = y_min, to = y_max, by = v_spacing)
