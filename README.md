@@ -99,7 +99,7 @@ grid.pattern_weave(x_hex, y_hex, type = "satin",
 ![](man/figures/README-weave-1.png)
 
 ```r
-gp <- gpar(fill = c("yellow", "red", "blue"))
+gp <- gpar(fill = c("yellow", "blue", "red"))
 grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_hexagonal", 
                             spacing = 0.15, gp = gp)
 ```

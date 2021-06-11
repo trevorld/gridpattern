@@ -1,6 +1,7 @@
 #' Polygon tiling patterned grobs
 #'
 #' `grid.pattern_polygon_tiling()` draws a specified polygon tiling pattern onto the graphic device.
+#'  `names_polygon_tiling` lists all supported types.
 #'
 #' `grid.pattern_polygon_tiling()` supports 1, 2, or 3 `fill` colors with the first colors (weakly)
 #'  covering a larger area.  Size of the pattern is controlled by `spacing`.
@@ -11,6 +12,8 @@
 #' \item{hexagonal}{Creates a hexagonal tiling made of hexagons.}
 #' \item{pythagorean}{Creates a Pythagorean tiling made of squares of two different sizes.}
 #' \item{square}{Creates a square tiling made of squares.}
+#' \item{rhombitrihexagonal}{Creates a rhombitrihexagonal tiling made out of
+#'                           dodecagons, hexagons, and squares.}
 #' \item{triangular}{Creates a triangular tiling made of equilateral triangles.}
 #' \item{trihexagonal}{Creates a trihexagonal tiling made of hexagons and triangles.}
 #' \item{truncated_square}{Creates a truncated square tiling made of octagons and squares.}
@@ -27,6 +30,7 @@
 #'          information about these tilings as well as more
 #'          examples of polygon tiling using the [grid.pattern_regular_polygon()] function.
 #' @examples
+#'  print(names_polygon_tiling)
 #'  if (require("grid")) {
 #'    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -65,6 +69,14 @@ grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
+#' @rdname grid.pattern_polygon_tiling
+#' @export
+names_polygon_tiling <- c("herringbone", "hexagonal", "pythagorean", "square",
+                          "rhombitrihexagonal", "triangular", "trihexagonal",
+                          "truncated_square", "truncated_hexagonal",
+                          "truncated_trihexagonal")
+
+
 # More tilings we could do
 # What should their names be
 # Hexagonal replaced with star?
@@ -95,6 +107,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  hexagonal = create_hexagonal_tiling(xyi, gp, spacing, angle),
                  pythagorean = create_pythagorean_tiling(xyi, gp, spacing, angle),
                  square = create_square_tiling(xyi, gp, spacing, angle),
+                 rhombitrihexagonal = create_rhombitrihexagonal_tiling(xyi, gp, spacing, angle),
                  triangular = create_triangular_tiling(xyi, gp, spacing, angle),
                  trihexagonal = create_trihexagonal_tiling(xyi, gp, spacing, angle),
                  truncated_hexagonal = create_trunc_hex_tiling(xyi, gp, spacing, angle),
@@ -143,6 +156,49 @@ create_pythagorean_tiling <- function(xyi, gp, spacing, angle) {
                         spacing = spacing, angle = angle - 60, gp = gp,
                         name = "squares_larger")
     gList(bg, grob)
+}
+
+create_rhombitrihexagonal_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_bg <- gp
+    gp_sq <- gp_bg
+    gp_dd <- gp_bg
+    gp_bg$fill <- gp$fill[n_col]
+    if (n_col == 2L) {
+        gp_sq$fill <- gp$fill[1L]
+        gp_dd$fill <- gp$fill[1L]
+    }
+    else if (n_col == 3L) {
+        gp_bg$fill <- gp$fill[2L]
+        gp_sq$fill <- gp$fill[3L]
+        gp_dd$fill <- gp$fill[1L]
+    }
+    # triangles
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    # squares
+    stripe1 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
+                           angle = angle,
+                           grid = "hex_circle", density = 0.25,
+                           spacing = spacing,
+                           gp = gp_sq, name = "square_stripes.1")
+    stripe2 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
+                           angle = angle + 60,
+                           grid = "hex_circle", density = 0.25,
+                           spacing = spacing,
+                           gp = gp_sq, name = "square_stripes.2")
+    stripe3 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
+                           angle = angle - 60,
+                           grid = "hex_circle", density = 0.25,
+                           spacing = spacing,
+                           gp = gp_sq, name = "square_stripes.3")
+    # hexagons
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex12", density = 0.82, rot = 15,
+                        grid = "hex_circle",
+                        spacing = spacing, angle = angle, gp = gp_dd,
+                        name = "dodecagons")
+    gList(bg, stripe1, stripe2, stripe3, grob)
 }
 
 create_square_tiling <- function(xyi, gp, spacing, angle) {
@@ -229,14 +285,17 @@ create_trunc_trihex_tiling <- function(xyi, gp, spacing, angle) {
     stripe1 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
                            angle = angle,
                            grid = "hex_circle", density = 0.42,
+                           spacing = spacing,
                            gp = gp_sq, name = "square_stripes.1")
     stripe2 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
                            angle = angle + 60,
                            grid = "hex_circle", density = 0.42,
+                           spacing = spacing,
                            gp = gp_sq, name = "square_stripes.2")
     stripe3 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
                            angle = angle - 60,
                            grid = "hex_circle", density = 0.42,
+                           spacing = spacing,
                            gp = gp_sq, name = "square_stripes.3")
     # hexagons
     grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
