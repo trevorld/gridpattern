@@ -14,6 +14,7 @@
 #' \item{rhombitrihexagonal}{Creates a rhombitrihexagonal tiling made out of
 #'                           dodecagons, hexagons, and squares.}
 #' \item{snub_square}{Creates a snub square tiling made of squares and triangles.}
+#' \item{snub_trihexagonal}{Creates a snub trihexagonal tiling made of hexagons and triangles.}
 #' \item{square}{Creates a square tiling made of squares.}
 #' \item{triangular}{Creates a triangular tiling made of equilateral triangles.}
 #' \item{trihexagonal}{Creates a trihexagonal tiling made of hexagons and triangles.}
@@ -74,7 +75,7 @@ grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id
 #' @export
 names_polygon_tiling <- c("herringbone", "hexagonal", "pythagorean",
                           "rhombitrihexagonal",
-                          "snub_square", "square",
+                          "snub_square", "snub_trihexagonal", "square",
                           "triangular", "trihexagonal",
                           "truncated_square", "truncated_hexagonal",
                           "truncated_trihexagonal")
@@ -110,6 +111,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  hexagonal = create_hexagonal_tiling(xyi, gp, spacing, angle),
                  pythagorean = create_pythagorean_tiling(xyi, gp, spacing, angle),
                  snub_square = create_snub_square_tiling(xyi, gp, spacing, angle),
+                 snub_trihexagonal = create_snub_trihex_tiling(xyi, gp, spacing, angle),
                  square = create_square_tiling(xyi, gp, spacing, angle),
                  rhombitrihexagonal = create_rhombitrihexagonal_tiling(xyi, gp, spacing, angle),
                  triangular = create_triangular_tiling(xyi, gp, spacing, angle),
@@ -228,6 +230,32 @@ create_snub_square_tiling <- function(xyi, gp, spacing, angle) {
                        angle = angle, rot = 60, spacing = spacing,
                        density = scale_star * 1.41, gp = gp_sq2, name = "squares.2")
     gList(sq1, tri, sq2)
+}
+
+create_snub_trihex_tiling <- function(xyi, gp, spacing, angle) {
+    scale_star <- star_scale(6, 60 + 60, external = TRUE)
+    n_col <- length(gp$fill)
+    gp_tri1 <- gp_tri2 <- gp_hex <- gp
+    if (n_col == 2) {
+        gp_tri1$fill <- gp_tri2$fill <- gp$fill[1L]
+        gp_hex$fill <- gp$fill[2L]
+    } else if (n_col == 3) {
+        gp_tri2$fill <- gp$fill[1L]
+        gp_hex$fill <- gp$fill[2L]
+        gp_tri1$fill <- gp$fill[3L]
+    }
+    tri1 <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc",
+                        gp = gp_tri1, name = "triangles.1")
+    tri2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "star6", scale = scale_star,
+                        grid = "hex_circle",
+                        angle = angle, rot = 19, spacing = spacing,
+                        density = 1.305, gp = gp_tri2, name = "triangles.2")
+    hex <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                       shape = "convex6", grid = "hex_circle",
+                       angle = angle, rot = 49, spacing = spacing,
+                       density = scale_star * 1.305, gp = gp_hex, name = "hexagons")
+    gList(tri1, tri2, hex)
 }
 
 create_square_tiling <- function(xyi, gp, spacing, angle) {

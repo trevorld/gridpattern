@@ -18,6 +18,7 @@ vignette: >
 * [Truncated square tiling](#truncatedsquare)
 * [Truncated hexagonal tiling](#truncatedhex)
 * [Trihexagonal tiling](#trihexagon)
+* [Snub trihexagonal tiling](#snubtrihex)
 * [Truncated trihexagonal tiling](#truncatedtrihexagon)
 * [Rhombitrihexagonal tiling](#rhombitrihexagon)
 * [Additional uniform tilings with star polygons](#star)
@@ -346,6 +347,48 @@ grid.trihexagonal_tiling(shape = "convex3", density=1.33, gp = gp)
 popViewport()
 add_borders()
 ```
+
+<a name=snubtrihex>Snub trihexagonal tiling</a>
+-----------------------------------------
+
+We can achieve the one [uniform colorings of a snub (tri)hexagonal tiling](https://en.wikipedia.org/wiki/Snub_trihexagonal_tiling) using a "star6" shape and a "convex6" shape.
+
+```{r}
+grid.snub_trihexagonal <- function(..., gp_tri, gp_tri2 = gp_tri, gp_hex = gp_tri) {
+    scale_star <- star_scale(6, 60 + 60, external = TRUE)
+    grid.polygon(x_sq, y_sq, gp = gp_tri)
+    grid.pattern_regular_polygon(shape = "star6", scale = scale_star,
+                                 grid = "hex_circle",
+                                 angle = 0, rot = 19, spacing = 0.2,
+                                 density = 1.305, gp = gp_tri2)
+    grid.pattern_regular_polygon(shape = "convex6", grid = "hex_circle",
+                                 angle = 0, rot = 19 + 30, spacing = 0.2,
+                                 density = scale_star * 1.305, gp = gp_hex)
+}
+
+# 3 color uniform snub square tiling
+pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
+gp_y <- gpar(fill = yellow, col = "black")
+gp_r <- gpar(fill = red, col = "black")
+gp_b <- gpar(fill = blue, col = "black")
+grid.snub_trihexagonal(gp_tri = gp_b, gp_tri2 = gp_r, gp_hex = gp_y)
+popViewport()
+
+# 2 color snub trihexagonal tiling
+pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
+grid.snub_trihexagonal(gp_tri = gp_y, gp_hex = gp_r)
+popViewport()
+
+# 1 color snub trihexagonal tiling
+pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
+grid.snub_trihexagonal(gp_tri = gp_y)
+popViewport()
+
+pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
+popViewport()
+add_borders()
+```
+
 
 <a name="truncatedtrihexagon">Truncated trihexagonal</a>
 ---------------------------------------------------------------------------------------

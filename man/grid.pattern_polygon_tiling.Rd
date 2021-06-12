@@ -6,7 +6,7 @@
 \alias{names_polygon_tiling}
 \title{Polygon tiling patterned grobs}
 \format{
-An object of class \code{character} of length 11.
+An object of class \code{character} of length 12.
 }
 \usage{
 grid.pattern_polygon_tiling(
@@ -97,6 +97,7 @@ We support the following polygon tiling \code{type}s:
 \item{rhombitrihexagonal}{Creates a rhombitrihexagonal tiling made out of
 dodecagons, hexagons, and squares.}
 \item{snub_square}{Creates a snub square tiling made of squares and triangles.}
+\item{snub_trihexagonal}{Creates a snub trihexagonal tiling made of hexagons and triangles.}
 \item{square}{Creates a square tiling made of squares.}
 \item{triangular}{Creates a triangular tiling made of equilateral triangles.}
 \item{trihexagonal}{Creates a trihexagonal tiling made of hexagons and triangles.}
