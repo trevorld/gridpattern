@@ -23,6 +23,8 @@ test_that("tiling patterns work as expected", {
         g.ppt("pythagorean", gp = gp2))
     expect_doppelganger("rhombitrihexagonal_tiling", function()
         g.ppt("rhombitrihexagonal", gp = gp3))
+    expect_doppelganger("snub_square_tiling", function()
+        g.ppt("snub_square", gp = gp3))
     expect_doppelganger("square_tiling", function()
         g.ppt("square", gp = gp2))
     expect_doppelganger("triangular_tiling", function()
