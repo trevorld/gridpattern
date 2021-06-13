@@ -1,5 +1,6 @@
 ^.appveyor.yml$
 ^.travis.yml$
+^cran-comments.md$
 ^LICENSE.md$
 ^README.Rmd$
 ^README.html$
