@@ -6,6 +6,7 @@ gridpattern v0.1
 
 * Supports the following original patterns:
 
+  * "pch" ``grid.pattern_pch()``
   * "polygon_tiling" ``grid.pattern_polygon_tiling()`` (#13)
   * "regular_polygon" ``grid.pattern_regular_polygon()`` (#20)
   * "weave" ``grid.pattern_weave()`` (#12)
