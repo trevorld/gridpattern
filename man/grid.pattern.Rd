@@ -92,6 +92,8 @@ See \code{\link[=grid.pattern_image]{grid.pattern_image()}} for more information
 See \code{\link[=grid.pattern_magick]{grid.pattern_magick()}} for more information.}
 \item{none}{Does nothing.
 See \code{\link[grid:grid.null]{grid::grid.null()}} for more information.}
+\item{pch}{Plotting character geometry patterns.
+See \code{\link[=grid.pattern_pch]{grid.pattern_pch()}} for more information.}
 \item{placeholder}{Placeholder image array patterns.
 See \code{\link[=grid.pattern_placeholder]{grid.pattern_placeholder()}} for more information.}
 \item{plasma}{Plasma array patterns.

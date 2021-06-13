@@ -81,6 +81,4 @@ internal_to_external <- function(n_vertices, internal) {
     external
 }
 
-plot_p <- function(xy) grid.points(x = xy$x, y = xy$y, default.units="npc")
-
 dist <- function(p1, p2) sqrt((p2$x - p1$x)^2 + (p2$y - p1$y)^2)

@@ -20,6 +20,8 @@
 #'               See [grid.pattern_magick()] for more information.}
 #' \item{none}{Does nothing.
 #'             See [grid::grid.null()] for more information.}
+#' \item{pch}{Plotting character geometry patterns.
+#'            See [grid.pattern_pch()] for more information.}
 #' \item{placeholder}{Placeholder image array patterns.
 #'                    See [grid.pattern_placeholder()] for more information.}
 #' \item{plasma}{Plasma array patterns.
@@ -153,6 +155,7 @@ get_pattern_fn <- function(pattern) {
     geometry_fns <- c(list(circle = create_pattern_circle_via_sf,
                            crosshatch = create_pattern_crosshatch_via_sf,
                            none = create_pattern_none,
+                           pch = create_pattern_pch,
                            polygon_tiling = create_pattern_polygon_tiling,
                            regular_polygon = create_pattern_regular_polygon_via_sf,
                            stripe = create_pattern_stripes_via_sf,
