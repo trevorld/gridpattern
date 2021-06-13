@@ -69,6 +69,7 @@ create_pattern_pch <- function(params, boundary_df, aspect_ratio, legend = FALSE
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_size
     lty  <- params$pattern_linetype
+    params$pattern_alpha <- NA_real_
 
     density <- params$pattern_density
     rot <- params$pattern_rot
