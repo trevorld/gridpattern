@@ -6,6 +6,8 @@
 #' by using the quadratic mean of the colors' RGBA values.
 #'
 #' @param ... Colors to average
+#' @return A color string of 9 characters: `"#"` followed by the
+#'         red, blue, green, and alpha values in hexadecimal.
 #' @examples
 #'  mean_col("black", "white")
 #'  mean_col(c("black", "white"))

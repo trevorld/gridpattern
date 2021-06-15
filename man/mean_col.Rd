@@ -9,6 +9,10 @@ mean_col(...)
 \arguments{
 \item{...}{Colors to average}
 }
+\value{
+A color string of 9 characters: \code{"#"} followed by the
+red, blue, green, and alpha values in hexadecimal.
+}
 \description{
 \code{mean_col()} computes an average color.
 }

@@ -10,11 +10,11 @@ fill_types <- c('fit', 'expand', 'squish', 'none', 'tile')
 #' @return magick image of the required dimensions
 #'
 #' @examples
-#' \dontrun{
+#' try({
 #'   filename <- system.file("img", "Rlogo.png", package="png")
 #'   img <- magick::image_read(filename)
 #'   fill_area_with_img_fit(img, 100, 400)
-#' }
+#' })
 #' @noRd
 fill_area_with_img_fit <- function(img, width, height, gravity = 'Center', filter = 'lanczos') {
 
@@ -35,11 +35,11 @@ fill_area_with_img_fit <- function(img, width, height, gravity = 'Center', filte
 #' @return magick image of the required dimensions
 #'
 #' @examples
-#' \dontrun{
+#' try({
 #'   filename <- system.file("img", "Rlogo.png", package="png")
 #'   img <- magick::image_read(filename)
 #'   fill_area_with_img_squish(img, 100, 400)
-#' }
+#' })
 #' @noRd
 fill_area_with_img_squish <- function(img, width, height, filter='lanczos') {
   geometry <- magick::geometry_size_pixels(width = width, height = height,
@@ -59,11 +59,11 @@ fill_area_with_img_squish <- function(img, width, height, filter='lanczos') {
 #' @return magick image of the required dimensions
 #'
 #' @examples
-#' \dontrun{
+#' try({
 #'   filename <- system.file("img", "Rlogo.png", package="png")
 #'   img <- magick::image_read(filename)
 #'   fill_area_with_img_expand(img, 100, 400)
-#' }
+#' })
 #' @noRd
 fill_area_with_img_expand <- function(img, width, height, gravity = 'Center', filter='lanczos') {
   img_info   <- magick::image_info(img)
@@ -102,11 +102,11 @@ fill_area_with_img_expand <- function(img, width, height, gravity = 'Center', fi
 #' @return magick image of the required dimensions
 #'
 #' @examples
-#' \dontrun{
+#' try({
 #'   filename <- system.file("img", "Rlogo.png", package="png")
 #'   img <- magick::image_read(filename)
 #'   fill_area_with_img_none(img, 100, 400)
-#' }
+#' })
 #' @noRd
 fill_area_with_img_none <- function(img, width, height, gravity = 'Center',
                                     filter = 'lanczos', scale = 1) {
@@ -151,11 +151,11 @@ update_scale <- function(scale, img, width, height) {
 #' @return magick image of the required dimensions
 #'
 #' @examples
-#' \dontrun{
+#' try({
 #'   filename <- system.file("img", "Rlogo.png", package="png")
 #'   img <- magick::image_read(filename)
 #'   fill_area_with_img_none(img, 100, 400)
-#' }
+#' })
 #' @noRd
 fill_area_with_img_tile <- function(img, width, height, filter = filter, scale = 1) {
 
@@ -218,12 +218,11 @@ fill_area_with_img_tile <- function(img, width, height, filter = filter, scale =
 #' @return magick image of the required dimensions
 #'
 #' @examples
-#' \dontrun{
+#' try({
 #'   filename <- system.file("img", "Rlogo.png", package="png")
 #'   img <- magick::image_read(filename)
 #'   fill_area_with_img(img, 100, 400, type = 'squish')
-#' }
-#'
+#' })
 #' @noRd
 fill_area_with_img <- function(img, width, height, type='squish',
                                gravity = 'Center', filter='lanczos',

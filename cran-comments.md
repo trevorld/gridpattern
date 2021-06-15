@@ -1,3 +1,9 @@
+Re-submission with the following changes requested by Gregor Seyer:
+
+* Now documents a return value in `mean_col.Rd` and `star_scale.Rd`.
+* Examples that may throw an ERROR in certain situations that 
+  were previously wrapped by `dontrun{}` are now wrapped by `try({})`.
+
 ## Test environments
 
 * appveyor (windows, R devel)

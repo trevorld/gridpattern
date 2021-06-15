@@ -14,6 +14,9 @@
 #' @param angle Angle in degrees.
 #' @param scale Scale from 0 to 1.
 #' @param external If `TRUE` angle should be considered an external angle.
+#' @return `star_scale()` returns a numeric value between 0 and 1 intended
+#'         for use as the `scale` argument in [grid.pattern_regular_polygon()].
+#'         `star_angle()` returns a numeric value between 0 and 360 (degrees).
 #' @examples
 #'   # |8/3| star has internal angle 45 degrees and external angle 90 degrees
 #'   scale <- star_scale(8, 45)

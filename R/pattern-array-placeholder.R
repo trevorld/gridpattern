@@ -8,12 +8,11 @@
 #'             If you would like only greyscale images append `bw` to the name.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   \dontrun{
-#'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     # requires internet connection to download from placeholder image websites
-#'     grid.pattern_placeholder(x_hex, y_hex, type="bear")
-#'   }
+#'   x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'   y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'   # requires internet connection to download from placeholder image websites
+#'   try(grid.pattern_placeholder(x_hex, y_hex, type="bear"))
+#'
 #'   print(names_placeholder)
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html>
 #' @export

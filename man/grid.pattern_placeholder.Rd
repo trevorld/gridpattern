@@ -71,12 +71,11 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{names_placeholder} are character vectors of supported placeholder types.
 }
 \examples{
-  \dontrun{
-    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-    # requires internet connection to download from placeholder image websites
-    grid.pattern_placeholder(x_hex, y_hex, type="bear")
-  }
+  x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+  y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+  # requires internet connection to download from placeholder image websites
+  try(grid.pattern_placeholder(x_hex, y_hex, type="bear"))
+
   print(names_placeholder)
 }
 \seealso{

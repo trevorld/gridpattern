@@ -18,6 +18,11 @@ star_angle(n_vertices, scale, external = FALSE)
 
 \item{scale}{Scale from 0 to 1.}
 }
+\value{
+\code{star_scale()} returns a numeric value between 0 and 1 intended
+for use as the \code{scale} argument in \code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}}.
+\code{star_angle()} returns a numeric value between 0 and 360 (degrees).
+}
 \description{
 \code{star_scale()} computes star \code{scale} value given
 an internal or external angle.  \code{star_angle()} computes

@@ -1,4 +1,4 @@
-gridpattern v0.1.1
+gridpattern v0.1.2
 ==================
 
 * ``grid.pattern()`` draws a specified "pattern" to the active graphics device
