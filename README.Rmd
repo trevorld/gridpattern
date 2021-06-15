@@ -1,7 +1,7 @@
 # gridpattern <img src="man/figures/logo.png" align="right" width="200px" alt="gridpattern hex sticker">
 
 [![CRAN Status Badge](https://www.r-pkg.org/badges/version/gridpattern)](https://cran.r-project.org/package=gridpattern)
-[![Build Status](https://travis-ci.org/trevorld/gridpattern.png?branch=main)](https://travis-ci.org/trevorld/gridpattern)
+[![Build Status](https://api.travis-ci.com/trevorld/gridpattern.svg?branch=main)](https://travis-ci.com/trevorld/gridpattern)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/trevorld/gridpattern?branch=main&svg=true)](https://ci.appveyor.com/project/trevorld/gridpattern)
 [![Coverage Status](https://img.shields.io/codecov/c/github/trevorld/gridpattern.svg)](https://codecov.io/github/trevorld/gridpattern?branch=main)
 
