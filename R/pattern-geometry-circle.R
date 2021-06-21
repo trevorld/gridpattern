@@ -42,7 +42,7 @@
 #'     grid.pattern_circle(x_hex, y_hex, fill = "blue", density = 0.5, type = "twill_zigzag")
 #'   }
 #' @seealso
-#'   See[grid.pattern_regular_polygon()] for a more general case of this pattern and
+#'   See [grid.pattern_regular_polygon()] for a more general case of this pattern and
 #'   `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html>
 #' @export
 grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,

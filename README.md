@@ -1,8 +1,7 @@
 # gridpattern <img src="man/figures/logo.png" align="right" width="200px" alt="gridpattern hex sticker">
 
 [![CRAN Status Badge](https://www.r-pkg.org/badges/version/gridpattern)](https://cran.r-project.org/package=gridpattern)
-[![Build Status](https://api.travis-ci.com/trevorld/gridpattern.svg?branch=main)](https://travis-ci.com/trevorld/gridpattern)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/trevorld/gridpattern?branch=main&svg=true)](https://ci.appveyor.com/project/trevorld/gridpattern)
+[![R-CMD-check](https://github.com/trevorld/gridpattern/workflows/R-CMD-check/badge.svg)](https://github.com/trevorld/gridpattern/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/trevorld/gridpattern.svg)](https://codecov.io/github/trevorld/gridpattern?branch=main)
 
 ### Table of Contents
@@ -11,6 +10,7 @@
 * [Installation](#installation)
 * [Examples](#examples)
 * [Using these patterns with the "ggpattern" package](#ggpattern)
+* [Using these patterns with the "piecepackr" package](#piecepackr)
 
 ## <a name="overview">Overview</a>
 
@@ -208,3 +208,43 @@ ggplot(df, aes(trt, outcome)) +
 ```
 
 ![](man/figures/README-hex_ggpattern-1.png)
+
+## <a name="piecepackr">Using these patterns with the "piecepackr" package</a>
+
+[piecepackr](https://github.com/trevorld/piecepackr) allows the use of [custom grob functions](https://trevorldavis.com/piecepackr/custom-grob-functions.html) to completely customize the appearance of one's game pieces.  `{piecepackr}` comes with a variety of convenience functions such as `pp_shape()` to facilitate creating custom game pieces using custom grob functions.  Here is an example of creating "patterned" checkers filled with uniform polygon tilings by using ``pp_shape()`` objects' `pattern()` method powered by `{gridpattern}`:
+
+
+```r
+library("grid")
+library("gridpattern")
+library("piecepackr") # pattern support introduced in v1.8
+
+tilings <- c("hexagonal", "snub_square", "pythagorean",
+             "truncated_square", "triangular", "trihexagonal")
+patternedCheckerGrobFn <- function(piece_side, suit, rank, cfg) {
+    opt <- cfg$get_piece_opt(piece_side, suit, rank)
+    shape <- pp_shape(opt$shape, opt$shape_t, opt$shape_r, opt$back)
+    gp_pattern <- gpar(col=opt$suit_color, fill=c(opt$background_color, "white"))
+    pattern_grob <- shape$pattern("polygon_tiling", type = tilings[suit],
+                                  spacing = 0.3, name = "pattern",
+                                  gp = gp_pattern, angle = 0)
+    gp_border <- gpar(col=opt$border_color, fill=NA, lex=opt$border_lex)
+    border_grob <- shape$shape(gp=gp_border, name = "border")
+    grobTree(pattern_grob, border_grob)
+}
+checkers1 <- as.list(game_systems()$checkers1)
+checkers1$grob_fn.bit <- patternedCheckerGrobFn
+checkers1 <- pp_cfg(checkers1)
+
+x1 <- c(1:3, 1:2, 1)
+x2 <- c(6:8, 7:8, 8)
+df <- tibble::tibble(piece_side = c("board_face", rep_len("bit_back", 24L)),
+                     suit = c(6L, rep(c(1L, 3L, 4L, 5L), each = 6L)),
+                     rank = 8L,
+                     x = c(4.5, x1, rev(x1), x2, rev(x2)),
+                     y = c(4.5, rep(c(1,1,1, 2,2, 3, 6, 7,7, 8,8,8), 2)))
+
+pmap_piece(df, cfg=checkers1, default.units="in")
+```
+
+![](man/figures/README-piecepackr-1.png)
