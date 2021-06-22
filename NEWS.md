@@ -1,3 +1,12 @@
+gridpattern v0.1.3
+==================
+
+Bug fixes and minor improvements
+--------------------------------
+
+* Fixes an error when *catching* a {magick} image reading error
+  for some array patterns.
+
 gridpattern v0.1.2
 ==================
 
