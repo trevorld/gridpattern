@@ -18,14 +18,13 @@ img_read <- function(filename) {
   img <- tryCatch(
     {magick::image_read(filename)},
     error = function(cond) {
-      inform(cond)
-      abort(glue("img_read() non-specific error with magick::image_read({shQuote(filename)})"))
+      msg <- c(glue("img_read() non-specific error with magick::image_read({shQuote(filename)})"),
+               i = cond$message)
+      abort(msg)
     }
   )
-
   img
 }
-
 
 #' Fetch a given path or URL as a 3D RGB array of values
 #'
