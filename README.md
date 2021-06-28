@@ -24,7 +24,7 @@ enhanced versions of the patterns originally contained within
 (which provides patterned ``ggplot2`` "geom" functions but 
 [does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as original "pch", "polygon_tiling", "regular_polygon", and "weave" patterns.
 
-`{gridpattern}` currently provide `{grid}` grob support for the following patterns:
+`{gridpattern}` currently provides `{grid}` grob support for the following patterns:
 
 1.  [ambient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_ambient.html):
     noise array patterns powered by the [ambient](https://cran.r-project.org/package=ambient) package
@@ -60,7 +60,6 @@ remotes::install_github("trevorld/gridpattern")
 
 
 ```r
-library("ambient")
 library("grid")
 library("gridpattern")
 x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
