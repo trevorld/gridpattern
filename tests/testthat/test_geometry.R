@@ -30,6 +30,9 @@ test_that("geometry patterns work as expected", {
     expect_doppelganger("crosshatch", function()
         grid.pattern_crosshatch(x, y, color="black", fill="blue", fill2="yellow", density = 0.5))
 
+    expect_error(assert_rp_shape(1), "Unknown shape 1")
+    expect_null(assert_rp_shape(c("square", "convex4")))
+    expect_null(assert_rp_shape(c("star5", "circle", "null")))
     expect_doppelganger("regular_polygon", function()
         grid.pattern_regular_polygon(x, y, color = "black", fill = "blue", density = 0.5))
 

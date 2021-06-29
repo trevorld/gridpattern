@@ -106,6 +106,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     density <- params$pattern_density
     rot <- params$pattern_rot
     shape <- params$pattern_shape
+    assert_rp_shape(shape)
 
     n_par <- max(lengths(list(fill, col, lwd, lty, density, rot, shape)))
 
@@ -283,5 +284,17 @@ get_xy_polygon <- function(shape, params, radius_outer, rot) {
         n_vertices <- get_n_vertices(shape)
         radius_inner <- params$pattern_scale * radius_outer
         concave_xy(n_vertices, polygon_angle, radius_outer, radius_inner)
+    }
+}
+
+assert_rp_shape <- function(shape) {
+    tf <- grepl("^convex[[:digit:]]+$|^star[[:digit:]]+$|^square$|^circle$|^null$", shape)
+    if (all(tf)) {
+        invisible(NULL)
+    } else {
+        shape <- shape[which(!tf)[1]]
+        msg <- c(paste("Unknown shape", shape),
+                 i = 'See `help("grid.pattern_regular_polygon")` for supported shapes')
+        abort(msg)
     }
 }
