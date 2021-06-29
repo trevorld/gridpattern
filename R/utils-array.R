@@ -38,25 +38,13 @@ create_pattern_array <- function(params, boundary_df, aspect_ratio, legend,
   in_vp_width <- as.numeric(grid::convertWidth(unit(1, 'npc'), 'inches'))
   in_width <- npc_width * in_vp_width
   in_height <- npc_height * in_vp_width / aspect_ratio
-  arr_width <- res * in_width
-  arr_height <- res * in_height
-  # enforce minimum height/width of 12 pixels
-  if (arr_width < 12 || arr_height < 12) {
-    mult <- 12 / min(in_width, in_height)
-    arr_width  <- mult * arr_width
-    arr_height <- mult * arr_height
-  }
-  arr_width  <- as.integer(arr_width)
-  arr_height <- as.integer(arr_height)
+  arr_width <- as.integer(res * in_width)
+  arr_height <- as.integer(res * in_height)
+  if (arr_width == 0L || arr_height == 0L)
+      return(nullGrob(name = params$pattern))
 
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # If this is a legend, then draw a much smaller image.
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Override type for better looking legend when tiling
   if (legend) {
-    arr_width  <- as.integer( arr_width / 12)
-    arr_height <- as.integer(arr_height / 12)
-
-    # Override type for better looking legend when tiling
     if (params$pattern_type %in% c('tile', 'none')) {
       params$pattern_type <- 'fit'
     }

@@ -53,6 +53,10 @@ test_that("array patterns works as expected", {
     test_raster("placeholder.png",
                 function() grid.pattern_placeholder(x, y, type="bear"))
 
+    test_raster("plasma_zero.png",
+                function() grid.pattern_plasma(x = c(0.5, 0.5, 0.5, 0.5),
+                                               y = c(0, 1, 1, 0), fill = "green"))
+
     # plasma images are random and doesn't seem to be a way to set a seed
     tmpfile <- tempfile(fileext = ".png")
     grob <- my_png(tmpfile, function() grid.pattern_plasma(fill="green"))

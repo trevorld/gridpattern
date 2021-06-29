@@ -1,5 +1,13 @@
-gridpattern v0.1.3
+gridpattern v0.2.0
 ==================
+
+Breaking Changes
+----------------
+
+* "array" patterns no longer set a minimum 12 pixel image width and/or height.
+  In particular, they can now have a zero pixel image width and/or height
+  (in which case the array pattern returns a ``grid::nullGrob()``).
+* "array" patterns no longer reduce the number of requested pixels when `legend = TRUE`.
 
 Bug fixes and minor improvements
 --------------------------------
