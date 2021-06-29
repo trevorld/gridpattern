@@ -2,6 +2,7 @@
 #'
 #' `grid.pattern()` draws patterned shapes onto the graphic device.
 #' `patternGrob()` returns the grid grob objects.
+#' `names_pattern` is a character vector of builtin patterns.
 #'
 #' Here is a list of the various patterns supported:
 #'
@@ -53,6 +54,7 @@
 #' @return A grid grob object (invisibly in the case of `grid.pattern()`).
 #'         If `draw` is `TRUE` then `grid.pattern()` also draws to the graphic device as a side effect.
 #' @examples
+#'  print(names_pattern)
 #'  if (require("grid")) {
 #'    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -111,6 +113,12 @@ grid.pattern <- function(pattern = "stripe",
     if (draw) grid.draw(grob)
     invisible(grob)
 }
+
+#' @rdname grid.pattern
+#' @export
+names_pattern <- c("ambient", "circle", "crosshatch", "gradient", "image",
+                   "magick", "none", "pch", "placeholder", "plasma", "polygon_tiling",
+                   "regular_polygon", "stripe", "weave")
 
 #' @rdname grid.pattern
 #' @export

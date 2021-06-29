@@ -9,6 +9,11 @@ Breaking Changes
   (in which case the array pattern returns a ``grid::nullGrob()``).
 * "array" patterns no longer reduce the number of requested pixels when `legend = TRUE`.
 
+New Features
+------------
+
+* `names_pattern` is a character vector of supported (builtin) patterns.
+
 Bug fixes and minor improvements
 --------------------------------
 
