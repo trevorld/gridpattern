@@ -7,7 +7,7 @@ Breaking Changes
 * "array" patterns no longer set a minimum 12 pixel image width and/or height.
   In particular, they can now have a zero pixel image width and/or height
   (in which case the array pattern returns a ``grid::nullGrob()``).
-* "array" patterns no longer reduce the number of requested pixels when `legend = TRUE`.
+* "array" patterns no longer reduces the number of requested pixels when `legend = TRUE`.
 
 New Features
 ------------
@@ -17,6 +17,8 @@ New Features
 Bug fixes and minor improvements
 --------------------------------
 
+* `grid.pattern()` now throws an error if there is a non-unique pattern name
+  (set by `options("ggpattern_geometry_funcs")` and/or `options("ggpattern_array_funcs")`).
 * Fixes an error when *catching* a {magick} image reading error
   for some array patterns.
 
