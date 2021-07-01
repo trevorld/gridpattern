@@ -6,10 +6,10 @@ append_gList <- function(gl, grob) {
 
 # get width, height, length, and center cooordinates of the viewport in `units` units
 get_vp_measurements <- function(units = "bigpts") {
-    width <- as.numeric(convertWidth(unit(1, "npc"), units))
-    height <- as.numeric(convertHeight(unit(1, "npc"), units))
+    width <- convertWidth(unit(1, "npc"), units, valueOnly = TRUE)
+    height <- convertHeight(unit(1, "npc"), units, valueOnly = TRUE)
     length <- max(width, height)
-    x <- as.numeric(convertX(unit(0.5, "npc"), units))
-    y <- as.numeric(convertY(unit(0.5, "npc"), units))
+    x <- convertX(unit(0.5, "npc"), units, valueOnly = TRUE)
+    y <- convertY(unit(0.5, "npc"), units, valueOnly = TRUE)
     list(width = width, height = height, length = length, x = x, y = y)
 }

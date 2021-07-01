@@ -57,9 +57,9 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
 }
 
 convert_params_units <- function(params, units = "bigpts") {
-    params$pattern_spacing <- as.numeric(convertX(unit(params$pattern_spacing, "snpc"), units))
-    params$pattern_xoffset <- as.numeric(convertX(unit(params$pattern_xoffset, "snpc"), units))
-    params$pattern_yoffset <- as.numeric(convertX(unit(params$pattern_yoffset, "snpc"), units))
+    params$pattern_spacing <- convertX(unit(params$pattern_spacing, "snpc"), units, valueOnly = TRUE)
+    params$pattern_xoffset <- convertX(unit(params$pattern_xoffset, "snpc"), units, valueOnly = TRUE)
+    params$pattern_yoffset <- convertX(unit(params$pattern_yoffset, "snpc"), units, valueOnly = TRUE)
     params
 }
 

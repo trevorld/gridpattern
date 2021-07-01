@@ -140,16 +140,16 @@ makeContent.pattern <- function(x) {
     current_dev <- grDevices::dev.cur()
     on.exit(grDevices::dev.set(current_dev))
 
-    xp <- as.numeric(convertX(x$x, "npc"))
-    yp <- as.numeric(convertY(x$y, "npc"))
+    xp <- convertX(x$x, "npc", valueOnly = TRUE)
+    yp <- convertY(x$y, "npc", valueOnly = TRUE)
     id <- x$id
     boundary_df <- create_polygon_df(xp, yp, id)
 
     if (!is.na(x$params$pattern_aspect_ratio)) {
         aspect_ratio <- x$params$pattern_aspect_ratio
     } else {
-        width <- as.numeric(convertWidth(unit(1, "npc"), "in"))
-        height <- as.numeric(convertHeight(unit(1, "npc"), "in"))
+        width <- convertWidth(unit(1, "npc"), "in", valueOnly = TRUE)
+        height <- convertHeight(unit(1, "npc"), "in", valueOnly = TRUE)
         aspect_ratio <-  width / height
     }
 

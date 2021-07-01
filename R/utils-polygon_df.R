@@ -21,8 +21,8 @@ create_polygon_df <- function(x, y, id = 1L) {
 
 # Convert units from 'npc' to another {grid} unit
 convert_polygon_df_units <- function(df, units = "bigpts") {
-    df$x <- as.numeric(convertX(unit(df$x, "npc"), units))
-    df$y <- as.numeric(convertY(unit(df$y, "npc"), units))
+    df$x <- convertX(unit(df$x, "npc"), units, valueOnly = TRUE)
+    df$y <- convertY(unit(df$y, "npc"), units, valueOnly = TRUE)
     df
 }
 

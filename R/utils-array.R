@@ -35,7 +35,7 @@ create_pattern_array <- function(params, boundary_df, aspect_ratio, legend,
   # NB. large pixel sizes can cause errors with getting 'placeholder' images
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   res <- params$pattern_res # defaults to 72 DPI
-  in_vp_width <- as.numeric(grid::convertWidth(unit(1, 'npc'), 'inches'))
+  in_vp_width <- grid::convertWidth(unit(1, 'npc'), 'inches', valueOnly = TRUE)
   in_width <- npc_width * in_vp_width
   in_height <- npc_height * in_vp_width / aspect_ratio
   arr_width <- as.integer(res * in_width)
