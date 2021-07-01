@@ -13,9 +13,8 @@ test_that("geometry patterns work as expected", {
     dev.off()
     unlink(png_file)
 
-
     skip_if_not_installed("vdiffr")
-    skip_on_appveyor()
+    skip_on_ci()
     library("vdiffr")
 
     expect_doppelganger("default", grid.pattern)
@@ -83,4 +82,3 @@ test_that("geometry patterns work as expected", {
     expect_doppelganger("two_id", function()
         grid.pattern(x = x, y = y, id = id))
 })
-

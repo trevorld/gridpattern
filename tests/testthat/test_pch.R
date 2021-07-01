@@ -2,7 +2,7 @@ context("pch")
 test_that("pch patterns work as expected", {
 
     skip_if_not_installed("vdiffr")
-    skip_on_appveyor()
+    skip_on_ci()
     library("vdiffr")
 
     x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))

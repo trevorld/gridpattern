@@ -2,7 +2,7 @@ context("tiling")
 test_that("tiling patterns work as expected", {
 
     skip_if_not_installed("vdiffr")
-    skip_on_appveyor()
+    skip_on_ci()
     library("vdiffr")
 
     x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -39,5 +39,4 @@ test_that("tiling patterns work as expected", {
         g.ppt("truncated_trihexagonal", gp = gp2))
     expect_doppelganger("trunc_square_tiling", function()
         g.ppt("truncated_square", gp = gp3))
-
 })
