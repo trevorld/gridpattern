@@ -61,7 +61,7 @@ test_that("array patterns works as expected", {
     tmpfile <- tempfile(fileext = ".png")
     grob <- my_png(tmpfile, function() grid.pattern_plasma(fill="green"))
     unlink(tmpfile)
-    expect_true(inherits(grob, "pattern"))
+    expect_true(inherits(grob, "gridpattern_pattern"))
 
     create_pattern_simple <- function(width, height, params, legend) {
       choice <- params$pattern_type
@@ -81,6 +81,20 @@ test_that("array patterns works as expected", {
     }
     options(ggpattern_array_funcs = list(simple = create_pattern_simple))
     test_raster("simple.png", function() grid.pattern("simple", x, y, type = "b"))
+
+    # clipGrob
+    clippee <- patternGrob("circle", gp = gpar(col = "black", fill = "yellow"),
+                           spacing = 0.1, density = 0.5)
+    angle <- seq(2 * pi / 4, by = 2 * pi / 6, length.out = 7)
+    x_hex_outer <- 0.5 + 0.5 * cos(angle)
+    y_hex_outer <- 0.5 + 0.5 * sin(angle)
+    x_hex_inner <- 0.5 + 0.25 * cos(rev(angle))
+    y_hex_inner <- 0.5 + 0.25 * sin(rev(angle))
+    clipper <- grid::pathGrob(x = c(x_hex_outer, x_hex_inner),
+                              y = c(y_hex_outer, y_hex_inner),
+                              rule = "evenodd")
+    clipped <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = FALSE)
+    test_raster("clipGrob.png", function() grid.draw(clipped))
 
     # ambient
     skip_if_not_installed("ambient")

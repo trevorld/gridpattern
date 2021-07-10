@@ -131,11 +131,11 @@ patternGrob <- function(pattern = "stripe",
     if (!inherits(y, "unit")) y <- unit(y, default.units)
 
     gTree(pattern=pattern, x=x, y=y, id=id, params=params, legend=legend,
-          name=name, gp=gp, vp=vp, cl="pattern")
+          name=name, gp=gp, vp=vp, cl="gridpattern_pattern")
 }
 
 #' @export
-makeContent.pattern <- function(x) {
+makeContent.gridpattern_pattern <- function(x) {
     # avoid weird errors with array patterns if there is an active device open
     current_dev <- grDevices::dev.cur()
     on.exit(grDevices::dev.set(current_dev))

@@ -13,6 +13,11 @@ New Features
 ------------
 
 * `names_pattern` is a character vector of supported (builtin) patterns.
+* `clippingPathGrob()` is a function that clips one grob according to clipping path set by a second grob.
+
+  * If `use_R4.1_clipping` is `TRUE` we simply use the new R 4.1 clipping path feature
+  * If `use_R4.1_clipping` is `FALSE` we generate a `grid::rasterGrob()` approximation
+  * The default for `use_R4.1_clipping` can be set by `options("ggpattern_use_R4.1_clipping")`
 
 Bug fixes and minor improvements
 --------------------------------
