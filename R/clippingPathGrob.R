@@ -53,7 +53,8 @@ makeContent.gridpattern_clip <- function(x) {
     width <- x$res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
     png_clippee <- tempfile(fileext = ".png")
     on.exit(unlink(png_clippee))
-    if (is.null(x$png_device)) {
+    png_device <- x$png_device
+    if (is.null(png_device)) {
         if (requireNamespace("ragg", quietly = TRUE))
             png_device <- ragg::agg_png
         else
