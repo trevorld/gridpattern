@@ -6,7 +6,8 @@
 #' @param clipper Grob that defines clipping region
 #' @param use_R4.1_clipping If `TRUE` use the grid clipping path feature introduced in R v4.1.0
 #'                          else do a `rasterGrob` approximation.
-#'                          Note not all graphic devices support the grid clipping path feature.
+#'                          Note not all graphic devices support the grid clipping path feature
+#'                          and the grid clipping path feature does not nest.
 #' @param png_device \dQuote{png} graphics device to use if `use_R4.1_clipping` is `FALSE`.
 #'                   If `NULL` (default) will use `ragg::agg_png()` if the
 #'                   suggested package `ragg` is available else `grDevices::png()`.
@@ -31,24 +32,37 @@
 #'   }
 #' @export
 clippingPathGrob <- function(clippee, clipper,
-         use_R4.1_clipping = getOption("ggpattern_use_R4.1_clipping", FALSE),
+         use_R4.1_clipping = getOption("ggpattern_use_R4.1_clipping",
+                                       getOption("ggpattern_use_R4.1_features")),
          png_device = NULL, res = 72,
          name = NULL, gp = gpar(), vp = NULL) {
-    if (use_R4.1_clipping) {
-        grob_clip <- grobTree(clippee, vp = viewport(clip = clipper), name = "clip")
-        grobTree(grob_clip, name = name, gp = gp, vp = vp)
-    } else {
-        gTree(clippee = clippee, clipper = clipper,
-              res = res, png_device = png_device,
-              name=name, gp=gp, vp=vp, cl="gridpattern_clip")
-    }
+    gTree(clippee = clippee, clipper = clipper,
+          use_R4.1_clipping = use_R4.1_clipping,
+          res = res, png_device = png_device,
+          name=name, gp=gp, vp=vp, cl="clipping_path")
 }
 
 #' @export
-makeContent.gridpattern_clip <- function(x) {
+makeContent.clipping_path <- function(x) {
     current_dev <- grDevices::dev.cur()
     on.exit(grDevices::dev.set(current_dev))
 
+    # maybe later try to guess if current device supports R 4.1 clipping
+    use_R4.1_clipping <- isTRUE(x$use_R4.1_clipping)
+
+    if (use_R4.1_clipping) {
+        grob <- grobTree(x$clippee,
+                         vp = viewport(clip = x$clipper),
+                         name = "clip")
+    } else {
+        grob <- gridpattern_clip_raster(x)
+    }
+
+    gl <- gList(grob)
+    setChildren(x, gl)
+}
+
+gridpattern_clip_raster <- function(x) {
     height <- x$res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
     width <- x$res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
     png_clippee <- tempfile(fileext = ".png")
@@ -84,7 +98,5 @@ makeContent.gridpattern_clip <- function(x) {
             raster_clippee[!clip_region, j] <- 0
         }
     }
-    grob <- rasterGrob(raster_clippee, name = "clip")
-    gl <- gList(grob)
-    setChildren(x, gl)
+    rasterGrob(raster_clippee, name = "clip")
 }

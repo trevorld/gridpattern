@@ -61,7 +61,7 @@ test_that("array patterns works as expected", {
     tmpfile <- tempfile(fileext = ".png")
     grob <- my_png(tmpfile, function() grid.pattern_plasma(fill="green"))
     unlink(tmpfile)
-    expect_true(inherits(grob, "gridpattern_pattern"))
+    expect_true(inherits(grob, "pattern"))
 
     create_pattern_simple <- function(width, height, params, legend) {
       choice <- params$pattern_type

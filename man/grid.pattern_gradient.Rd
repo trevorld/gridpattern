@@ -13,6 +13,8 @@ grid.pattern_gradient(
   fill2 = "#4169E1",
   orientation = "vertical",
   alpha = gp$alpha \%||\% NA_real_,
+  use_R4.1_gradients = getOption("ggpattern_use_R4.1_gradients",
+    getOption("ggpattern_use_R4.1_features")),
   aspect_ratio = 1,
   key_scale_factor = 1,
   res = 72,
@@ -40,6 +42,10 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{orientation}{vertical, horizontal, or radial}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
+
+\item{use_R4.1_gradients}{Whether to use the gradient feature introduced in R v4.1
+or use a \code{rasterGrob} approximation.
+Note not all graphic devices support the grid gradient feature.}
 
 \item{aspect_ratio}{Override aspect ratio}
 

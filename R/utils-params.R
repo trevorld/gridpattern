@@ -53,6 +53,24 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_distance_ind <- l$pattern_distance_ind %||% c(1, 2)
     l$pattern_jitter <- l$pattern_jitter %||% 0.45
 
+    # R 4.1 features
+    l$pattern_use_R4.1_clipping <- l$pattern_use_R4.1_clipping %||%
+        getOption("ggpattern_use_R4.1_clipping") %||%
+        getOption("ggpattern_use_R4.1_features") %||%
+        FALSE
+    l$pattern_use_R4.1_gradients <- l$pattern_use_R4.1_gradients %||%
+        getOption("ggpattern_use_R4.1_gradients") %||%
+        getOption("ggpattern_use_R4.1_features") %||%
+        FALSE
+    l$pattern_use_R4.1_masks <- l$pattern_use_R4.1_masks %||%
+        getOption("ggpattern_use_R4.1_masks") %||%
+        getOption("ggpattern_use_R4.1_features") %||%
+        FALSE
+    l$pattern_use_R4.1_patterns <- l$pattern_use_R4.1_patterns %||%
+        getOption("ggpattern_use_R4.1_patterns") %||%
+        getOption("ggpattern_use_R4.1_features") %||%
+        FALSE
+
     l
 }
 

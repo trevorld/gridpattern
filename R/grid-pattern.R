@@ -131,11 +131,11 @@ patternGrob <- function(pattern = "stripe",
     if (!inherits(y, "unit")) y <- unit(y, default.units)
 
     gTree(pattern=pattern, x=x, y=y, id=id, params=params, legend=legend,
-          name=name, gp=gp, vp=vp, cl="gridpattern_pattern")
+          name=name, gp=gp, vp=vp, cl="pattern")
 }
 
 #' @export
-makeContent.gridpattern_pattern <- function(x) {
+makeContent.pattern <- function(x) {
     # avoid weird errors with array patterns if there is an active device open
     current_dev <- grDevices::dev.cur()
     on.exit(grDevices::dev.set(current_dev))
@@ -165,6 +165,7 @@ get_pattern_fn <- function(pattern) {
     assert_patterns_unique(user_geometry_fns, user_array_fns)
     geometry_fns <- c(list(circle = create_pattern_circle_via_sf,
                            crosshatch = create_pattern_crosshatch_via_sf,
+                           gradient = create_pattern_gradient,
                            none = create_pattern_none,
                            pch = create_pattern_pch,
                            polygon_tiling = create_pattern_polygon_tiling,
@@ -173,7 +174,6 @@ get_pattern_fn <- function(pattern) {
                            weave = create_pattern_weave_via_sf),
                       user_geometry_fns)
     array_fns <- c(list(ambient = create_pattern_ambient,
-                        gradient = create_gradient_as_array,
                         image = img_read_as_array_wrapper,
                         magick = create_magick_pattern_as_array,
                         placeholder = fetch_placeholder_array,
