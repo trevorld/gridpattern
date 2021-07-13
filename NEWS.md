@@ -12,7 +12,11 @@ Breaking Changes
 New Features
 ------------
 
-* `names_pattern` is a character vector of supported (builtin) patterns.
+* Supports the following new pattern:
+
+  * "text" ``grid.pattern_text()`` (#40)
+
+* `names_pattern` is a new character vector of supported (builtin) patterns.
 * `clippingPathGrob()` is a function that clips one grob according to clipping path set by a second grob.
 
   * If `use_R4.1_clipping` is `TRUE` we simply use the new R 4.1 clipping path feature

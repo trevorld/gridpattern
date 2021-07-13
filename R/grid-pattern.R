@@ -13,7 +13,7 @@
 #'               See [grid.pattern_circle()] for more information.}
 #' \item{crosshatch}{Crosshatch geometry patterns.
 #'                   See [grid.pattern_crosshatch()] for more information.}
-#' \item{gradient}{Gradient array patterns.
+#' \item{gradient}{Gradient array/geometry patterns.
 #'                 See [grid.pattern_gradient()] for more information.}
 #' \item{image}{Image array patterns.
 #'              See [grid.pattern_image()] for more information.}
@@ -33,6 +33,8 @@
 #'                        See [grid.pattern_regular_polygon()] for more information.}
 #' \item{stripe}{Stripe geometry patterns.
 #'               See [grid.pattern_stripe()] for more information.}
+#' \item{text}{Text array/geometry patterns.
+#'             See [grid.pattern_text()] for more information.}
 #' \item{weave}{Weave geometry patterns.
 #'               See [grid.pattern_weave()] for more information.}
 #' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html} for more information.}
@@ -118,7 +120,7 @@ grid.pattern <- function(pattern = "stripe",
 #' @export
 names_pattern <- c("ambient", "circle", "crosshatch", "gradient", "image",
                    "magick", "none", "pch", "placeholder", "plasma", "polygon_tiling",
-                   "regular_polygon", "stripe", "weave")
+                   "regular_polygon", "stripe", "text", "weave")
 
 #' @rdname grid.pattern
 #' @export
@@ -171,6 +173,7 @@ get_pattern_fn <- function(pattern) {
                            polygon_tiling = create_pattern_polygon_tiling,
                            regular_polygon = create_pattern_regular_polygon_via_sf,
                            stripe = create_pattern_stripes_via_sf,
+                           text = create_pattern_text,
                            weave = create_pattern_weave_via_sf),
                       user_geometry_fns)
     array_fns <- c(list(ambient = create_pattern_ambient,

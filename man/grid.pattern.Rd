@@ -7,7 +7,7 @@
 \alias{patternGrob}
 \title{Create patterned grobs}
 \format{
-An object of class \code{character} of length 14.
+An object of class \code{character} of length 15.
 }
 \usage{
 grid.pattern(
@@ -92,7 +92,7 @@ See \code{\link[=grid.pattern_ambient]{grid.pattern_ambient()}} for more informa
 See \code{\link[=grid.pattern_circle]{grid.pattern_circle()}} for more information.}
 \item{crosshatch}{Crosshatch geometry patterns.
 See \code{\link[=grid.pattern_crosshatch]{grid.pattern_crosshatch()}} for more information.}
-\item{gradient}{Gradient array patterns.
+\item{gradient}{Gradient array/geometry patterns.
 See \code{\link[=grid.pattern_gradient]{grid.pattern_gradient()}} for more information.}
 \item{image}{Image array patterns.
 See \code{\link[=grid.pattern_image]{grid.pattern_image()}} for more information.}
@@ -112,6 +112,8 @@ See \code{\link[=grid.pattern_polygon_tiling]{grid.pattern_polygon_tiling()}} fo
 See \code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}} for more information.}
 \item{stripe}{Stripe geometry patterns.
 See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more information.}
+\item{text}{Text array/geometry patterns.
+See \code{\link[=grid.pattern_text]{grid.pattern_text()}} for more information.}
 \item{weave}{Weave geometry patterns.
 See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information.}
 \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html} for more information.}

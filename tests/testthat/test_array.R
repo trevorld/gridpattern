@@ -57,6 +57,13 @@ test_that("array patterns works as expected", {
                 function() grid.pattern_plasma(x = c(0.5, 0.5, 0.5, 0.5),
                                                y = c(0, 1, 1, 0), fill = "green"))
 
+    playing_card_symbols <- c("\u2660", "\u2665", "\u2666", "\u2663")
+    test_raster("text.png",
+                function() grid.pattern_text(x, y, shape = playing_card_symbols,
+                                             colour = c("black", "red", "red", "black"),
+                                             use_R4.1_clipping = FALSE,
+                                             size = 18, spacing = 0.1, angle = 0))
+
     # plasma images are random and doesn't seem to be a way to set a seed
     tmpfile <- tempfile(fileext = ".png")
     grob <- my_png(tmpfile, function() grid.pattern_plasma(fill="green"))
