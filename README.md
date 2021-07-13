@@ -22,7 +22,7 @@ enhanced versions of the patterns originally contained within
 [Mike FC](https://github.com/coolbutuseless)'s awesome
 [ggpattern](https://github.com/coolbutuseless/ggpattern) package 
 (which provides patterned ``ggplot2`` "geom" functions but 
-[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as original "pch", "polygon_tiling", "regular_polygon", and "weave" patterns.
+[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as original "pch", "polygon_tiling", "regular_polygon", "text", and "weave" patterns.
 
 `{gridpattern}` currently provides `{grid}` grob support for the following patterns:
 
@@ -131,6 +131,16 @@ grid.pattern_regular_polygon(shape = "star12", grid = "hex_circle", rot = 15,
 ```
 
 ![](man/figures/README-rhombitrihexagonal-1.png)
+
+```r
+playing_card_symbols <- c("\u2660", "\u2665", "\u2666", "\u2663")
+grid.pattern_text(x_hex, y_hex,
+                 shape = playing_card_symbols,
+                 colour = c("black", "red", "red", "black"),
+                 size = 24, spacing = 0.12, angle = 0)
+```
+
+![](man/figures/README-text-1.png)
 
 ## <a name="ggpattern">Using these patterns with the "ggpattern" package</a>
 
