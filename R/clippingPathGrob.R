@@ -75,14 +75,16 @@ gridpattern_clip_raster <- function(x) {
             png_device <- grDevices::png
     }
 
-    png_device(png_clippee, height = height, width = width, bg = "transparent")
+    png_device(png_clippee, height = height, width = width,
+               res = x$res, bg = "transparent")
 
     grid.draw(x$clippee)
     dev.off()
 
     png_clipper <- tempfile(fileext = ".png")
     on.exit(unlink(png_clipper))
-    png_device(png_clipper, height = height, width = width, bg = "transparent")
+    png_device(png_clipper, height = height, width = width,
+               res = x$res, bg = "transparent")
     pushViewport(viewport(gp = gpar(lwd = 0, col = NA, fill = "black")))
     grid.draw(x$clipper)
     popViewport()
