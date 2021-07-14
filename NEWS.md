@@ -14,6 +14,7 @@ New Features
 
 * Supports the following new pattern:
 
+  * "rose" ``grid.pattern_rose()`` (#43)
   * "text" ``grid.pattern_text()`` (#40)
 
 * `names_pattern` is a new character vector of supported (builtin) patterns.

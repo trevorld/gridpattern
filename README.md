@@ -22,7 +22,7 @@ enhanced versions of the patterns originally contained within
 [Mike FC](https://github.com/coolbutuseless)'s awesome
 [ggpattern](https://github.com/coolbutuseless/ggpattern) package 
 (which provides patterned ``ggplot2`` "geom" functions but 
-[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as original "pch", "polygon_tiling", "regular_polygon", "text", and "weave" patterns.
+[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", and "weave" patterns.
 
 `{gridpattern}` currently provides `{grid}` grob support for the following patterns:
 
@@ -39,11 +39,12 @@ enhanced versions of the patterns originally contained within
 10. [pch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_pch.html): plotting character geometry patterns
 11. [polygon_tiling](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_polygon_tiling.html): polygon tiling patterns
 12. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
-13. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
-14. [text](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_text.html): text array/geometry patterns
-15. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
-16. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
-17. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
+13. [rose](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_rose.html): rose curve array/geometry patterns
+14. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
+15. [text](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_text.html): text array/geometry patterns
+16. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
+17. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
+18. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
 
 ## <a name="installation">Installation</a>
 
@@ -131,6 +132,16 @@ grid.pattern_regular_polygon(shape = "star12", grid = "hex_circle", rot = 15,
 ```
 
 ![](man/figures/README-rhombitrihexagonal-1.png)
+
+```r
+gp <- gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
+grid.newpage()
+grid.pattern_rose(x_hex, y_hex,
+                  spacing = 0.15, density = 0.5, angle = 0,
+                  frequency = c(2, 6/4, 5/4, 3/7), gp = gp)
+```
+
+![](man/figures/README-rose-1.png)
 
 ```r
 playing_card_symbols <- c("\u2660", "\u2665", "\u2666", "\u2663")
@@ -221,7 +232,7 @@ ggplot(df, aes(trt, outcome)) +
 
 ## <a name="piecepackr">Using these patterns with the "piecepackr" package</a>
 
-[piecepackr](https://github.com/trevorld/piecepackr) allows the use of [custom grob functions](https://trevorldavis.com/piecepackr/custom-grob-functions.html) to completely customize the appearance of one's game pieces.  `{piecepackr}` comes with a variety of convenience functions such as `pp_shape()` to facilitate creating custom game pieces using custom grob functions.  Here is an example of creating "patterned" checkers filled with uniform polygon tilings by using ``pp_shape()`` objects' `pattern()` method powered by `{gridpattern}`:
+[piecepackr](https://github.com/piecepackr/piecepackr) allows the use of [custom grob functions](https://trevorldavis.com/piecepackr/custom-grob-functions.html) to completely customize the appearance of one's game pieces.  `{piecepackr}` comes with a variety of convenience functions such as `pp_shape()` to facilitate creating custom game pieces using custom grob functions.  Here is an example of creating "patterned" checkers filled with uniform polygon tilings by using ``pp_shape()`` objects' `pattern()` method powered by `{gridpattern}`:
 
 
 ```r

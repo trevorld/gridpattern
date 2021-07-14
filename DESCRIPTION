@@ -1,11 +1,11 @@
 Package: gridpattern
 Type: Package
 Title: 'grid' Pattern Grobs
-Version: 0.2.0-8
+Version: 0.2.0-9
 Authors@R: c(person("Mike", "FC", role = "aut", comment = "Patterns extracted from ggpattern"),
         person("Trevor L", "Davis", role=c("aut", "cre"), email="trevor.l.davis@gmail.com"),
         person("Thomas Lin", "Pedersen", role = "ctb", comment = "new_data_frame() copied from ggplot2"))
-Description: Provides 'grid' grobs that fill in a user-defined area with various patterns.  Includes enhanced versions of the geometric and image-based patterns originally contained in the 'ggpattern' package as well as original 'pch', 'polygon_tiling', 'regular_polygon', 'text', and 'weave' patterns plus support for custom user-defined patterns.
+Description: Provides 'grid' grobs that fill in a user-defined area with various patterns.  Includes enhanced versions of the geometric and image-based patterns originally contained in the 'ggpattern' package as well as original 'pch', 'polygon_tiling', 'regular_polygon', 'rose', 'text', and 'weave' patterns plus support for custom user-defined patterns.
 URL: https://trevorldavis.com/R/gridpattern/, https://github.com/trevorld/gridpattern
 BugReports: https://github.com/trevorld/gridpattern/issues
 License: MIT + file LICENSE

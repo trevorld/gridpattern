@@ -172,6 +172,7 @@ get_pattern_fn <- function(pattern) {
                            pch = create_pattern_pch,
                            polygon_tiling = create_pattern_polygon_tiling,
                            regular_polygon = create_pattern_regular_polygon_via_sf,
+                           rose = create_pattern_rose,
                            stripe = create_pattern_stripes_via_sf,
                            text = create_pattern_text,
                            weave = create_pattern_weave_via_sf),

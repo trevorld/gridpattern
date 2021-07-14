@@ -112,5 +112,5 @@ create_pattern_text <- function(params, boundary_df, aspect_ratio, legend = FALS
     clippingPathGrob(clippee, clipper,
                      use_R4.1_clipping = params$pattern_use_R4.1_clipping,
                      png_device = params$pattern_png_device,
-                     res = params$pattern_res)
+                     res = params$pattern_res, name = "text")
 }

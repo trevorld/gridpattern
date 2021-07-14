@@ -64,6 +64,14 @@ test_that("array patterns works as expected", {
                                              use_R4.1_clipping = FALSE,
                                              size = 18, spacing = 0.1, angle = 0))
 
+
+    gp <- gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
+    test_raster("rose.png",
+             function() grid.pattern_rose(x, y,
+                                          spacing = 0.15, density = 0.5, angle = 0,
+                                          use_R4.1_clipping = FALSE,
+                                          frequency = 1:4, gp = gp))
+
     # plasma images are random and doesn't seem to be a way to set a seed
     tmpfile <- tempfile(fileext = ".png")
     grob <- my_png(tmpfile, function() grid.pattern_plasma(fill="green"))
