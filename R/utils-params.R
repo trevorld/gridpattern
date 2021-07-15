@@ -45,7 +45,8 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_res <- l$pattern_res %||% 72 # in PPI
 
     # Additional ambient defaults
-    l$pattern_frequency <- l$pattern_frequency %||% 0.01 # all
+    l$pattern_frequency <- l$pattern_frequency %||%
+        switch(pattern, ambient = 0.01, rose = 0.1, 1 / l$pattern_spacing)
     l$pattern_interpolator <- l$pattern_interpolator %||% "quintic" # perlin, simplex, value
     l$pattern_fractal <- l$pattern_fractal %||%
         switch(l$pattern_type, worley = "none", "fbm")
@@ -53,7 +54,8 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_octaves <- l$pattern_octaves %||% 3 # all but white
     l$pattern_lacunarity <- l$pattern_lacunarity %||% 2 # all but white
     l$pattern_gain <- l$pattern_gain %||% 0.5 # all but white
-    l$pattern_amplitude <- l$pattern_amplitude %||% 1 # all
+    l$pattern_amplitude <- l$pattern_amplitude %||%
+        switch(pattern, wave = 0.5 * l$pattern_spacing, 1) # all
     l$pattern_value <- l$pattern_value %||% "cell"
     l$pattern_distance_ind <- l$pattern_distance_ind %||% c(1, 2)
     l$pattern_jitter <- l$pattern_jitter %||% 0.45
@@ -80,9 +82,11 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
 }
 
 convert_params_units <- function(params, units = "bigpts") {
+    params$pattern_amplitude <- convertX(unit(params$pattern_amplitude, "snpc"), units, valueOnly = TRUE)
     params$pattern_spacing <- convertX(unit(params$pattern_spacing, "snpc"), units, valueOnly = TRUE)
     params$pattern_xoffset <- convertX(unit(params$pattern_xoffset, "snpc"), units, valueOnly = TRUE)
     params$pattern_yoffset <- convertX(unit(params$pattern_yoffset, "snpc"), units, valueOnly = TRUE)
+    params$pattern_wavelength <- convertX(unit(1/params$pattern_frequency, "snpc"), units, valueOnly = TRUE)
     params
 }
 
@@ -93,6 +97,7 @@ default_pattern_type <- function(pattern) {
            placeholder = "kitten",
            polygon_tiling = "square",
            magick = "hexagons",
+           wave = "triangle",
            weave = "plain",
            NA_character_)
 }

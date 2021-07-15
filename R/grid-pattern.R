@@ -35,6 +35,8 @@
 #'               See [grid.pattern_stripe()] for more information.}
 #' \item{text}{Text array/geometry patterns.
 #'             See [grid.pattern_text()] for more information.}
+#' \item{wave}{Wave geometry patterns.
+#'               See [grid.pattern_wave()] for more information.}
 #' \item{weave}{Weave geometry patterns.
 #'               See [grid.pattern_weave()] for more information.}
 #' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html} for more information.}
@@ -120,7 +122,7 @@ grid.pattern <- function(pattern = "stripe",
 #' @export
 names_pattern <- c("ambient", "circle", "crosshatch", "gradient", "image",
                    "magick", "none", "pch", "placeholder", "plasma", "polygon_tiling",
-                   "regular_polygon", "stripe", "text", "weave")
+                   "regular_polygon", "rose", "stripe", "text", "wave", "weave")
 
 #' @rdname grid.pattern
 #' @export
@@ -175,6 +177,7 @@ get_pattern_fn <- function(pattern) {
                            rose = create_pattern_rose,
                            stripe = create_pattern_stripes_via_sf,
                            text = create_pattern_text,
+                           wave = create_pattern_wave_via_sf,
                            weave = create_pattern_weave_via_sf),
                       user_geometry_fns)
     array_fns <- c(list(ambient = create_pattern_ambient,

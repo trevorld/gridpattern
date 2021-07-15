@@ -7,7 +7,7 @@
 \alias{patternGrob}
 \title{Create patterned grobs}
 \format{
-An object of class \code{character} of length 15.
+An object of class \code{character} of length 17.
 }
 \usage{
 grid.pattern(
@@ -114,6 +114,8 @@ See \code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}} 
 See \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for more information.}
 \item{text}{Text array/geometry patterns.
 See \code{\link[=grid.pattern_text]{grid.pattern_text()}} for more information.}
+\item{wave}{Wave geometry patterns.
+See \code{\link[=grid.pattern_wave]{grid.pattern_wave()}} for more information.}
 \item{weave}{Weave geometry patterns.
 See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information.}
 \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html} for more information.}

@@ -12,10 +12,11 @@ Breaking Changes
 New Features
 ------------
 
-* Supports the following new pattern:
+* Supports the following new patterns:
 
-  * "rose" ``grid.pattern_rose()`` (#43)
+  * "rose" (curve) ``grid.pattern_rose()`` (#43)
   * "text" ``grid.pattern_text()`` (#40)
+  * "wave" ``grid.pattern_wave()`` which supports "sine" and "triangle" `type` waves (#16)
 
 * `names_pattern` is a new character vector of supported (builtin) patterns.
 * `clippingPathGrob()` is a function that clips one grob according to clipping path set by a second grob.
@@ -34,7 +35,8 @@ New Features
 
   * `ggpattern_use_R4.1_clipping` If `TRUE` use the grid clipping path feature introduced in R v4.1.0
                     else do a `rasterGrob` approximation of the clipped pattern.
-                    Currently used by `clippingPathGrob()` and available for custom patterns.
+                    Currently used by `clippingPathGrob()`, `grid.pattern_rose()`, 
+                    `grid.pattern_text()`, and available for custom patterns.
   * `ggpattern_use_R4.1_features` If `TRUE` sets the default for all the other
                     `ggpattern_use_R4.1_*` options arguments to `TRUE`.
   * `ggpattern_use_R4.1_gradients` If `TRUE` use the grid gradient feature introduced in R v4.1.0

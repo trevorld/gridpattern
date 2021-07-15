@@ -22,7 +22,7 @@ enhanced versions of the patterns originally contained within
 [Mike FC](https://github.com/coolbutuseless)'s awesome
 [ggpattern](https://github.com/coolbutuseless/ggpattern) package 
 (which provides patterned ``ggplot2`` "geom" functions but 
-[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", and "weave" patterns.
+[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", "wave", and "weave" patterns.
 
 `{gridpattern}` currently provides `{grid}` grob support for the following patterns:
 
@@ -42,9 +42,10 @@ enhanced versions of the patterns originally contained within
 13. [rose](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_rose.html): rose curve array/geometry patterns
 14. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
 15. [text](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_text.html): text array/geometry patterns
-16. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
-17. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
-18. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
+16. [wave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_wave.html): wave geometry patterns
+17. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
+18. [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html)
+19. [custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html)
 
 ## <a name="installation">Installation</a>
 
@@ -91,14 +92,6 @@ grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", grid = "hex",
 ```
 
 ![](man/figures/README-regular_hex-1.png)
-
-```r
-grid.pattern_weave(x_hex, y_hex, type = "satin", 
-             colour = "black", fill = "lightblue", fill2 =  "yellow",
-             density = 0.3)
-```
-
-![](man/figures/README-weave-1.png)
 
 ```r
 gp <- gpar(fill = c("yellow", "blue", "red"))
@@ -152,6 +145,23 @@ grid.pattern_text(x_hex, y_hex,
 ```
 
 ![](man/figures/README-text-1.png)
+
+```r
+grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
+                  fill = c("red", "blue"), density = 0.4,
+                  spacing = 0.15, angle = 0,
+                  amplitude = 0.05, frequency = 1 / 0.20)
+```
+
+![](man/figures/README-wave-1.png)
+
+```r
+grid.pattern_weave(x_hex, y_hex, type = "satin", 
+             colour = "black", fill = "lightblue", fill2 =  "yellow",
+             density = 0.3)
+```
+
+![](man/figures/README-weave-1.png)
 
 ## <a name="ggpattern">Using these patterns with the "ggpattern" package</a>
 
