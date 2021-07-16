@@ -48,7 +48,11 @@ makeContent.clipping_path <- function(x) {
     on.exit(grDevices::dev.set(current_dev))
 
     # maybe later try to guess if current device supports R 4.1 clipping
-    use_R4.1_clipping <- isTRUE(x$use_R4.1_clipping)
+    use_R4.1_clipping <- x$use_R4.1_clipping
+    if (is.null(use_R4.1_clipping))
+        use_R4.1_clipping <- guess_has_R4.1_features()
+    else
+        use_R4.1_clipping <- as.logical(use_R4.1_clipping)
 
     if (use_R4.1_clipping) {
         grob <- grobTree(x$clippee,

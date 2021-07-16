@@ -64,13 +64,17 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l
 }
 
-get_R4.1_params <- function(l) {
+guess_has_R4.1_features <- function() {
     device <- names(grDevices::dev.cur())
     if (device %in% c("cairo_pdf", "pdf", "png", "svg", "X11cairo"))
-        default <- getRversion() >= '4.1.0'
+        getRversion() >= '4.1.0'
     else
-        default <- FALSE
+        FALSE
+}
+
+get_R4.1_params <- function(l) {
     # R 4.1 features
+    default <- guess_has_R4.1_features()
     l$pattern_use_R4.1_clipping <- l$pattern_use_R4.1_clipping %||%
         getOption("ggpattern_use_R4.1_clipping") %||%
         getOption("ggpattern_use_R4.1_features") %||%
