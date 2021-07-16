@@ -1,4 +1,4 @@
-gridpattern v0.2.0
+gridpattern v0.2.1
 ==================
 
 Breaking Changes
