@@ -24,8 +24,8 @@
 #'                       frequency = 1/1:4, gp = gp)
 #'     grid.newpage()
 #'     grid.pattern_rose(x_hex, y_hex,
-#'                       spacing = 0.35, density = 0.5, angle = 0,
-#'                       frequency = 1:4, gp = gp)
+#'                       spacing = 0.18, density = 0.5, angle = 0,
+#'                       frequency = c(3/2, 7/3, 5/4, 3/7), gp = gp)
 #'   }
 #' @export
 grid.pattern_rose <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
