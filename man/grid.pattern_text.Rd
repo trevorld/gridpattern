@@ -84,8 +84,9 @@ more information about supported \code{subtype} arguments.}
 
 \item{fontface}{The font face.  See \code{\link[grid:gpar]{grid::gpar()}} for more details.}
 
-\item{use_R4.1_clipping}{If \code{TRUE} use the grid clipping path feature introduced in R v4.1.0
-else do a \code{rasterGrob} approximation.
+\item{use_R4.1_clipping}{If \code{TRUE} use the grid clipping path feature introduced in R v4.1.0.
+If \code{FALSE} do a \code{rasterGrob} approximation.
+If \code{NULL} try to guess an appropriate choice.
 Note not all graphic devices support the grid clipping path feature
 and the grid clipping path feature does not nest.}
 

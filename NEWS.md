@@ -23,12 +23,14 @@ New Features
 
   * If `use_R4.1_clipping` is `TRUE` we simply use the new R 4.1 clipping path feature
   * If `use_R4.1_clipping` is `FALSE` we generate a `grid::rasterGrob()` approximation
+  * If `use_R4.1_clipping` is `NULL` try to guess an appropriate choice.
   * The default for `use_R4.1_clipping` can be set by `options("ggpattern_use_R4.1_clipping")`
 
 * `grid.pattern_gradient()` now supports the argument `use_R4.1_gradients`
 
   * If `TRUE` use the new R 4.1 gradient feature
   * If `FALSE` use a `rasterGrob` approximation (old behaviour)
+  * If `NULL` try to guess an appropriate choice.
   * The default for `use_R4.1_gradients` can be set by `options("ggpattern_use_R4.1_gradients")`
 
 * The following package options can now be set by `options()`:

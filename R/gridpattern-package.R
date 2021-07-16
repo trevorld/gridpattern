@@ -3,12 +3,15 @@
 #'  \describe{
 #'    \item{ggpattern_array_funcs}{Set custom \dQuote{array} pattern functions.}
 #'    \item{ggpattern_geometry_funcs}{Set custom \dQuote{geometry} pattern functions.}
-#'    \item{ggpattern_use_R4.1_clipping}{If `TRUE` use the grid clipping path feature introduced in R v4.1.0
-#'                          else do a `rasterGrob` approximation of the clipped pattern.}
+#'    \item{ggpattern_use_R4.1_clipping}{If `TRUE` use the grid clipping path feature introduced in R v4.1.0.
+#'                          If `FALSE` do a `rasterGrob` approximation of the clipped pattern.
+#'                          If `NULL` try to guess an appropriate choice.}
 #'    \item{ggpattern_use_R4.1_features}{If `TRUE` sets the default for all the other
-#'                          `ggpattern_use_R4.1_*` options arguments to `TRUE`.}
-#'    \item{ggpattern_use_R4.1_gradients}{If `TRUE` use the grid gradient feature introduced in R v4.1.0
-#'                          else do a `rasterGrob` approximation of the gradient pattern.}
+#'                          `ggpattern_use_R4.1_*` options arguments to `TRUE`.
+#'                          If `FALSE` sets them to `FALSE`.}
+#'    \item{ggpattern_use_R4.1_gradients}{If `TRUE` use the grid gradient feature introduced in R v4.1.0.
+#'                          If `FALSE` do a `rasterGrob` approximation of the gradient pattern.
+#'                          If `NULL` try to guess an appropriate choice.}
 #'    \item{ggpattern_use_R4.1_masks}{If `TRUE` use the grid mask feature introduced in R v4.1.0.
 #'                          Currently unused by this package.}
 #'    \item{ggpattern_use_R4.1_patterns}{If `TRUE` use the grid pattern feature introduced in R v4.1.0.

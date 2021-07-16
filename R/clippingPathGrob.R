@@ -4,8 +4,9 @@
 #'
 #' @param clippee Grob to be clipped
 #' @param clipper Grob that defines clipping region
-#' @param use_R4.1_clipping If `TRUE` use the grid clipping path feature introduced in R v4.1.0
-#'                          else do a `rasterGrob` approximation.
+#' @param use_R4.1_clipping If `TRUE` use the grid clipping path feature introduced in R v4.1.0.
+#'                          If `FALSE` do a `rasterGrob` approximation.
+#'                          If `NULL` try to guess an appropriate choice.
 #'                          Note not all graphic devices support the grid clipping path feature
 #'                          and the grid clipping path feature does not nest.
 #' @param png_device \dQuote{png} graphics device to use if `use_R4.1_clipping` is `FALSE`.
