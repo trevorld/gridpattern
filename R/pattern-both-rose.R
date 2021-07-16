@@ -9,11 +9,11 @@
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @seealso See \url{https://en.wikipedia.org/wiki/Rose_(mathematics)} for more information.
 #' @examples
-#'   if (require("grid")) {
+#'   if (require("grid") && capabilities("png")) {
 #'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'
 #'     gp <- gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
+#'
 #'     grid.newpage()
 #'     grid.pattern_rose(x_hex, y_hex,
 #'                       spacing = 0.15, density = 0.5, angle = 0,
@@ -22,6 +22,10 @@
 #'     grid.pattern_rose(x_hex, y_hex,
 #'                       spacing = 0.15, density = 0.5, angle = 0,
 #'                       frequency = 1/1:4, gp = gp)
+#'     grid.newpage()
+#'     grid.pattern_rose(x_hex, y_hex,
+#'                       spacing = 0.35, density = 0.5, angle = 0,
+#'                       frequency = 1:4, gp = gp)
 #'   }
 #' @export
 grid.pattern_rose <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
@@ -119,7 +123,7 @@ create_pattern_rose <- function(params, boundary_df, aspect_ratio, legend = FALS
 }
 
 get_xy_rose <- function(frequency, params, radius_outer, rot) {
-    theta <- to_radians(seq.int(from = 0, to = 16 * 360, by = 1))
+    theta <- to_radians(seq.int(from = 0, to = 12 * 360, by = 3))
     x <- radius_outer * cos(frequency * theta) * cos(theta)
     y <- radius_outer * cos(frequency * theta) * sin(theta)
     rose_angle <- rot + params$pattern_angle

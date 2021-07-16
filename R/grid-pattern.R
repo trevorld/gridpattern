@@ -157,8 +157,11 @@ makeContent.pattern <- function(x) {
         aspect_ratio <-  width / height
     }
 
+    # needs to be called within active graphics device to guess R4.1 capabilities
+    params <- get_R4.1_params(x$params)
+
     fn <- get_pattern_fn(x$pattern)
-    grob <- fn(x$params, boundary_df, aspect_ratio, x$legend)
+    grob <- fn(params, boundary_df, aspect_ratio, x$legend)
     gl <- gList(grob)
     setChildren(x, gl)
 }

@@ -10,7 +10,7 @@
 #' @param fontface The font face.  See [grid::gpar()] for more details.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   if (require("grid")) {
+#'   if (require("grid") && capabilities("png")) {
 #'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'
@@ -109,8 +109,11 @@ create_pattern_text <- function(params, boundary_df, aspect_ratio, legend = FALS
     }
     clippee <- gTree(children = gl)
     clipper <- convert_polygon_df_to_polygon_grob(boundary_df, default.units = "bigpts")
+    png_device <- params$pattern_png_device
+    if (is.null(png_device) && requireNamespace("ragg", quietly = TRUE))
+        png_device <- ragg::agg_png # more robust cross-platform Unicode support
     clippingPathGrob(clippee, clipper,
                      use_R4.1_clipping = params$pattern_use_R4.1_clipping,
-                     png_device = params$pattern_png_device,
+                     png_device = png_device,
                      res = params$pattern_res, name = "text")
 }

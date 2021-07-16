@@ -114,11 +114,11 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{grid.pattern_rose()} draws a rose curve pattern onto the graphic device.
 }
 \examples{
-  if (require("grid")) {
+  if (require("grid") && capabilities("png")) {
     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-
     gp <- gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
+
     grid.newpage()
     grid.pattern_rose(x_hex, y_hex,
                       spacing = 0.15, density = 0.5, angle = 0,
@@ -127,6 +127,10 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
     grid.pattern_rose(x_hex, y_hex,
                       spacing = 0.15, density = 0.5, angle = 0,
                       frequency = 1/1:4, gp = gp)
+    grid.newpage()
+    grid.pattern_rose(x_hex, y_hex,
+                      spacing = 0.35, density = 0.5, angle = 0,
+                      frequency = 1:4, gp = gp)
   }
 }
 \seealso{

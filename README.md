@@ -21,8 +21,7 @@ user-specified boundary path with a user-specified pattern. These pattern grobs 
 enhanced versions of the patterns originally contained within 
 [Mike FC](https://github.com/coolbutuseless)'s awesome
 [ggpattern](https://github.com/coolbutuseless/ggpattern) package 
-(which provides patterned ``ggplot2`` "geom" functions but 
-[does not provide exported access to the underlying grobs](https://github.com/coolbutuseless/ggpattern/issues/11) themselves) as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", "wave", and "weave" patterns.
+as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", "wave", and "weave" patterns.
 
 `{gridpattern}` currently provides `{grid}` grob support for the following patterns:
 
@@ -130,7 +129,7 @@ grid.pattern_regular_polygon(shape = "star12", grid = "hex_circle", rot = 15,
 gp <- gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
 grid.newpage()
 grid.pattern_rose(x_hex, y_hex,
-                  spacing = 0.15, density = 0.5, angle = 0,
+                  spacing = 0.18, density = 0.5, angle = 0,
                   frequency = c(2, 6/4, 5/4, 3/7), gp = gp)
 ```
 

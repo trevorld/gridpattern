@@ -29,9 +29,11 @@ test_that("array patterns works as expected", {
     x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     test_raster("gradient.png",
-                function() grid.pattern_gradient(x, y, fill="blue", fill2="green", orientation="radial"))
+                function() grid.pattern_gradient(x, y, fill="blue", fill2="green",
+                                                 orientation="radial", use_R4.1_gradients = FALSE))
     test_raster("gradient_horizontal.png",
-                function() grid.pattern_gradient(x, y, fill="blue", fill2="green", orientation="horizontal"))
+                function() grid.pattern_gradient(x, y, fill="blue", fill2="green",
+                                                 orientation="horizontal", use_R4.1_gradients = FALSE))
     logo_filename   <- system.file("img", "Rlogo.png" , package="png")
     test_raster("image.png", function() {
                     grid.pattern_image(x, y, filename=logo_filename, type="fit")

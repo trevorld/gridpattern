@@ -69,10 +69,8 @@ gridpattern_clip_raster <- function(x) {
     on.exit(unlink(png_clippee))
     png_device <- x$png_device
     if (is.null(png_device)) {
-        if (requireNamespace("ragg", quietly = TRUE))
-            png_device <- ragg::agg_png
-        else
-            png_device <- grDevices::png
+        stopifnot(capabilities("png"))
+        png_device <- grDevices::png
     }
 
     png_device(png_clippee, height = height, width = width,

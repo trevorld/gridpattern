@@ -33,14 +33,14 @@ New Features
 
 * The following package options can now be set by `options()`:
 
-  * `ggpattern_use_R4.1_clipping` If `TRUE` use the grid clipping path feature introduced in R v4.1.0
-                    else do a `rasterGrob` approximation of the clipped pattern.
+  * `ggpattern_use_R4.1_clipping` If `TRUE` use the grid clipping path feature introduced in R v4.1.0.
+                    If `FALSE` do a `rasterGrob` approximation of the clipped pattern.
                     Currently used by `clippingPathGrob()`, `grid.pattern_rose()`, 
                     `grid.pattern_text()`, and available for custom patterns.
-  * `ggpattern_use_R4.1_features` If `TRUE` sets the default for all the other
-                    `ggpattern_use_R4.1_*` options arguments to `TRUE`.
-  * `ggpattern_use_R4.1_gradients` If `TRUE` use the grid gradient feature introduced in R v4.1.0
-                    else do a `rasterGrob` approximation of the gradient pattern.
+  * `ggpattern_use_R4.1_features` Set the default for all the other
+                    `ggpattern_use_R4.1_*` options arguments.
+  * `ggpattern_use_R4.1_gradients` If `TRUE` use the grid gradient feature introduced in R v4.1.0.
+                    If `FALSE` do a `rasterGrob` approximation of the gradient pattern.
                     Currently used by `grid.pattern_gradient()` and available for custom patterns.
   * `ggpattern_use_R4.1_masks` If `TRUE` use the grid mask feature introduced in R v4.1.0.
                     Currently unused by this package but available for custom patterns.
