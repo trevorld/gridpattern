@@ -21,16 +21,18 @@
 #' @param filter Filter to use when scaling. `magick::filter_types()` returns a vector of supported values.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'  x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'  y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'  logo_filename <- system.file("img", "Rlogo.png" , package = "png")
-#'  grid.pattern_image(x_hex, y_hex, filename = logo_filename, type = "fit")
+#'   if (require("magick")) {
+#'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'     logo_filename <- system.file("img", "Rlogo.png" , package = "png")
+#'     grid.pattern_image(x_hex, y_hex, filename = logo_filename, type = "fit")
 #'
-#'  # "tile" `type` image pattern depends on `magick` functionality
-#'  # which is not reliable across platforms
-#'  grid::grid.newpage()
-#'  try(grid.pattern_image(x_hex, y_hex, filename = logo_filename,
-#'                         type = "tile"))
+#'     # "tile" `type` image pattern depends on `magick` functionality
+#'     # which is not reliable across platforms
+#'     grid::grid.newpage()
+#'     try(grid.pattern_image(x_hex, y_hex, filename = logo_filename,
+#'                            type = "tile"))
+#'   }
 #' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html>
 #' @export
 grid.pattern_image <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
@@ -53,6 +55,8 @@ grid.pattern_image <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ..
 #'
 #' @noRd
 img_read_as_array_wrapper <- function(width, height, params, legend) {
+
+  assert_suggested("magick", "image")
 
   filename <- as.character(params$pattern_filename)
 

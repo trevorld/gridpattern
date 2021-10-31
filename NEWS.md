@@ -1,3 +1,19 @@
+gridpattern v0.3.0
+==================
+
+Breaking Changes
+----------------
+
+* The package `{magick}` has been downgraded from "Imports" to "Suggests".
+  You'll need to manually install `{magick}` with `install.packages("magick")` 
+  in order to use the following "array" patterns:
+
+  - "gradient" (but only if `use_R4.1_gradients` is `FALSE`)
+  - "image"
+  - "magick"
+  - "placeholder"
+  - "plasma"
+
 gridpattern v0.2.1
 ==================
 

@@ -31,6 +31,8 @@
 #'                        See [grid.pattern_polygon_tiling()] for more information.}
 #' \item{regular_polygon}{Regular polygon patterns.
 #'                        See [grid.pattern_regular_polygon()] for more information.}
+#' \item{rose}{Rose array/geometry patterns.
+#'             See [grid.pattern_rose()] for more information.}
 #' \item{stripe}{Stripe geometry patterns.
 #'               See [grid.pattern_stripe()] for more information.}
 #' \item{text}{Text array/geometry patterns.
@@ -93,16 +95,17 @@
 #'                                 fill = c("white", "grey", "black"),
 #'                                 density = 1.0, spacing = 0.1,
 #'                                 shape = "convex6", type = "hex")
+#'    if (require("magick")) {
+#'      # array-based patterns
+#'      # 'image' pattern
+#'      logo_filename <- system.file("img", "Rlogo.png" , package="png")
+#'      grid.newpage()
+#'      grid.pattern("image", x_hex, y_hex, filename=logo_filename, type="fit")
 #'
-#'    # array-based patterns
-#'    # 'image' pattern
-#'    logo_filename <- system.file("img", "Rlogo.png" , package="png")
-#'    grid.newpage()
-#'    grid.pattern("image", x_hex, y_hex, filename=logo_filename, type="fit")
-#'
-#'    # 'plasma' pattern
-#'    grid.newpage()
-#'    grid.pattern("plasma", x_hex, y_hex, fill="green")
+#'      # 'plasma' pattern
+#'      grid.newpage()
+#'      grid.pattern("plasma", x_hex, y_hex, fill="green")
+#'    }
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
 #'          for more details on the `ggpattern` patterns and their parameters.

@@ -12,9 +12,12 @@
 #' @param fill Fill colour
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'   y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'   grid.pattern_magick(x_hex, y_hex, type="octagons", fill="blue", scale=2)
+#'   if (require("magick")) {
+#'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'     grid.pattern_magick(x_hex, y_hex, type="octagons", fill="blue", scale=2)
+#'   }
+#'
 #'   # supported magick pattern names
 #'   print(names_magick)
 #' @seealso The `ggpattern` documentation <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html>
@@ -78,6 +81,8 @@ names_magick_stripe <- c(
 #'
 #' @noRd
 create_magick_pattern_as_array <- function(width, height, params, legend) {
+
+  assert_suggested("magick", "magick")
 
   if (legend) {
       params$pattern_scale <- params$pattern_scale * params$pattern_key_scale_factor

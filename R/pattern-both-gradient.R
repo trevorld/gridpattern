@@ -13,7 +13,7 @@
 #' @param res Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'  if (require("grid") && capabilities("png")) {
+#'  if (require("grid") && require("magick") && capabilities("png")) {
 #'    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'    grid.pattern_gradient(x_hex, y_hex, fill = "green")
@@ -130,6 +130,8 @@ create_gradient_as_geometry <- function(params, boundary_df, aspect_ratio, legen
 #'
 #' @noRd
 create_gradient_as_array <- function(width, height, params, legend) {
+
+  assert_suggested("magick", "gradient")
 
   orientation <- check_default(params$pattern_orientation,
                                options = c('vertical', 'horizontal', 'radial'))
