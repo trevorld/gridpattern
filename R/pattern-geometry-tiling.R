@@ -25,6 +25,7 @@
 #' \item{truncated_trihexagonal}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
 #' \item{`3.3.8*15.3.4.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
 #' \item{`3.4.8.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
+#' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
 #' }
 #'
 #' @inheritParams grid.pattern_circle
@@ -95,7 +96,8 @@ names_polygon_tiling <- c("herringbone",
                           "truncated_hexagonal",
                           "truncated_trihexagonal",
                           "3.3.8*15.3.4.3.8*15",
-                          "3.4.8.3.8*15")
+                          "3.4.8.3.8*15",
+                          "4.6*30.4.6*30.4.6*30")
 
 create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
     type <- tolower(params$pattern_type)
@@ -129,6 +131,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  truncated_trihexagonal = create_trunc_trihex_tiling(xyi, gp, spacing, angle),
                  `3.3.8*15.3.4.3.8*15` = create_3.3.8_15.3.4.3.8_15_tiling(xyi, gp, spacing, angle),
                  `3.4.8.3.8*15` = create_3.4.8.3.8_15_tiling(xyi, gp, spacing, angle),
+                 `4.6*30.4.6*30.4.6*30` = create_4.6_30.4.6_30.4.6_30_tiling(xyi, gp, spacing, angle),
                  abort(paste("Don't know how to do tiling", type)))
     gTree(children = gl, name = "polygon_tiling")
 }
@@ -141,10 +144,9 @@ create_3.3.8_15.3.4.3.8_15_tiling <- function(xyi, gp, spacing, angle) {
         gp_oct$fill <- gp$fill[2L]
     } else if (n_col == 3L) {
         gp_bg$fill <- gp$fill[3]
-        gp_oct$fill <- gp$fill[2]
-        gp_star$fill <- gp$fill[1]
+        gp_oct$fill <- gp$fill[1]
+        gp_star$fill <- gp$fill[2]
     }
-
     bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
                       name = "background_color")
     octagons <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
@@ -154,8 +156,8 @@ create_3.3.8_15.3.4.3.8_15_tiling <- function(xyi, gp, spacing, angle) {
     scale <- star_scale(8, 60, external = TRUE)
     stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
                          shape = "star8", density = 1.082, rot = 22.5,
-                        spacing = spacing, angle = angle, gp = gp_star,
-                        name = "stars")
+                         spacing = spacing, angle = angle, gp = gp_star,
+                         scale = scale, name = "stars")
     gList(bg, octagons, stars)
 }
 
@@ -179,9 +181,25 @@ create_3.4.8.3.8_15_tiling <- function(xyi, gp, spacing, angle) {
     scale <- star_scale(8, 60, external = TRUE)
     stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
                          shape = c("null", "star8"), density = 1.082, rot = 22.5,
-                        spacing = spacing, angle = angle, gp = gp_star,
-                        name = "stars")
+                         spacing = spacing, angle = angle, gp = gp_star,
+                         scale = scale, name = "stars")
     gList(bg, octagons, stars)
+}
+
+create_4.6_30.4.6_30.4.6_30_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_star <- gp_bg <- gp
+    gp_bg$fill <- gp$fill[1L]
+    if (n_col > 1L)
+        gp_star$fill <- rev(gp$fill[-1L])
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    scale <- star_scale(6, 30)
+    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "star6", density = 1, grid = "hex",
+                        spacing = spacing, angle = angle, gp = gp_star,
+                        scale = scale, name = "stars")
+    gList(bg, stars)
 }
 
 create_herringbone_tiling <- function(xyi, gp, spacing, angle) {

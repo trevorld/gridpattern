@@ -25,6 +25,7 @@ New Features
     squares, and eight-pointed stars.
   - `"3.4.8.3.8*15"` which implements a regular (star) polygon tiling of triangles,
     squares, octagons, and eight-pointed stars.
+  - `"4.6*30.4.6*30.4.6*30"` which implements a regular (star) polygon of squares and six-pointed stars.
 
 * `grid.pattern_regular_polygon()` now supports a `"tetrakis_left"` `shape` and `"tetrakis_right"` `shape` 
   which both draw an isosceles right triangle (one oriented left and one oriented right) as well as a
