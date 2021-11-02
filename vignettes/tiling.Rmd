@@ -506,7 +506,7 @@ Some additional [uniform tilings with star polygons](https://en.wikipedia.org/wi
 pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
 gp <- gpar(fill = c(yellow, blue), col = "black")
-grid.pattern_regular_polygon(shape="convex12", rot=15, density=1.04, 
+grid.pattern_regular_polygon(shape="convex12", rot=15, density=1.035, 
                              angle=0, gp = gp, spacing=0.3)
 popViewport()
 
