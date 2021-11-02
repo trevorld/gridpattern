@@ -26,6 +26,7 @@
 #' \item{`3.3*30.3.3*30`}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
 #' \item{`3.3.3.12*30.3.3.12*30`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
 #' \item{`3.3.8*15.3.4.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
+#' \item{`3.4.6.3.12*30`}{Creates a regular (star) polygon tiling made of triangles, squares, hexagons, and twelve-pointed stars.}
 #' \item{`3.4.8.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
 #' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
 #' \item{`6.6*60.6.6*60`}{Creates a regular (star) polygon tiling made of hexagons and six-pointed stars.}
@@ -101,6 +102,7 @@ names_polygon_tiling <- c("herringbone",
                           "3.3*30.3.3*30",
                           "3.3.3.12*30.3.3.12*30",
                           "3.3.8*15.3.4.3.8*15",
+                          "3.4.6.3.12*30",
                           "3.4.8.3.8*15",
                           "4.6*30.4.6*30.4.6*30",
                           "6.6*60.6.6*60")
@@ -137,6 +139,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  truncated_trihexagonal = create_trunc_trihex_tiling,
                  `3.3*30.3.3*30` = create_3.3_30.3.3_30_tiling,
                  `3.3.3.12*30.3.3.12*30` = create_3.3.3.12_30.3.3.12_30_tiling,
+                 `3.4.6.3.12*30` = create_3.4.6.3.12_30_tiling,
                  `3.3.8*15.3.4.3.8*15` = create_3.3.8_15.3.4.3.8_15_tiling,
                  `3.4.8.3.8*15` = create_3.4.8.3.8_15_tiling,
                  `4.6*30.4.6*30.4.6*30` = create_4.6_30.4.6_30.4.6_30_tiling,
@@ -335,7 +338,7 @@ create_rhombitrihexagonal_tiling <- function(xyi, gp, spacing, angle) {
         gp_sq$fill <- gp$fill[3L]
         gp_dd$fill <- gp$fill[1L]
     }
-    # triangles
+    # hexagons
     bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
                       name = "background_color")
     # squares
@@ -354,13 +357,60 @@ create_rhombitrihexagonal_tiling <- function(xyi, gp, spacing, angle) {
                            grid = "hex_circle", density = 0.25,
                            spacing = spacing,
                            gp = gp_sq, name = "square_stripes.3")
-    # hexagons
+    # dodecagons
     grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
                         shape = "convex12", density = 0.82, rot = 15,
                         grid = "hex_circle",
                         spacing = spacing, angle = angle, gp = gp_dd,
                         name = "dodecagons")
     gList(bg, stripe1, stripe2, stripe3, grob)
+}
+
+create_3.4.6.3.12_30_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_bg <- gp_sq <- gp_dd <- gp
+    if (n_col == 2L) {
+        gp_bg$fill <- gp$fill[1L]
+        gp_sq$fill <- gp_dd$fill <- gp$fill[2L]
+    }
+    else if (n_col == 3L) {
+        gp_bg$fill <- gp$fill[1L]
+        gp_dd$fill <- gp$fill[2L]
+        gp_sq$fill <- gp$fill[3L]
+    }
+    # hexagons
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    # squares
+    stripe1 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
+                           angle = angle,
+                           grid = "hex_circle", density = 0.25,
+                           spacing = spacing,
+                           gp = gp_sq, name = "square_stripes.1")
+    stripe2 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
+                           angle = angle + 60,
+                           grid = "hex_circle", density = 0.25,
+                           spacing = spacing,
+                           gp = gp_sq, name = "square_stripes.2")
+    stripe3 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
+                           angle = angle - 60,
+                           grid = "hex_circle", density = 0.25,
+                           spacing = spacing,
+                           gp = gp_sq, name = "square_stripes.3")
+    # triangles
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex12", density = 0.82, rot = 15,
+                        grid = "hex_circle",
+                        spacing = spacing, angle = angle, gp = gp_dd,
+                        name = "dodecagons")
+    # twelve-pointed stars
+    scale <- star_scale(12, 30)
+    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "star12", density = 0.82, rot = 15,
+                        grid = "hex_circle", scale = scale,
+                        spacing = spacing, angle = angle, gp = gp_bg,
+                        name = "stars")
+    gList(bg, stripe1, stripe2, stripe3, grob, stars)
 }
 
 create_snub_square_tiling <- function(xyi, gp, spacing, angle) {
