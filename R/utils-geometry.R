@@ -50,8 +50,7 @@ rhombus_xy <- function(theta = 90, radius_outer = 0.5) {
 # (x,y) coordinates of "left" Tetrakis triangle
 tetrakis_left_xy <- function(theta = 90, radius_outer = 0.5) {
     t <- c(90, 135)
-    # r <- c(1e-2, radius_outer - 1e-2)
-    r <- c(0.3, radius_outer)
+    r <- c(1e-6, radius_outer)
 
     x <- to_x(t, r)
     y <- to_y(t, r)
@@ -63,7 +62,7 @@ tetrakis_left_xy <- function(theta = 90, radius_outer = 0.5) {
 # (x,y) coordinates of "right" Tetrakis triangle
 tetrakis_right_xy <- function(theta = 90, radius_outer = 0.5) {
     t <- c(90, 45)
-    r <- c(1e-2, radius_outer - 1e-2)
+    r <- c(1e-6, radius_outer)
 
     x <- to_x(t, r)
     y <- to_y(t, r)
