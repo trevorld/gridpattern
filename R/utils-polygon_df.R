@@ -116,7 +116,7 @@ convert_polygon_sf_to_polygon_df <- function(mp) {
 }
 
 get_poly_lengths <- function(sf_object) {
-    if (inherits(sf_object, 'POLYGON') || inherits(sf_object, 'LINESTRING')) {
+    if (inherits(sf_object, 'POLYGON') || inherits(sf_object, 'LINESTRING') || inherits(sf_object, 'POINT')) {
         nrow(as.matrix(sf_object))
     } else if (inherits(sf_object, 'MULTIPOLYGON')) {
         if (max(lengths(sf_object)) > 1L)
