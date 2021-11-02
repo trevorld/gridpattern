@@ -30,6 +30,7 @@
 #' \item{`3.4.8.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
 #' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
 #' \item{`6.6*60.6.6*60`}{Creates a regular (star) polygon tiling made of hexagons and six-pointed stars.}
+#' \item{`12.3*30.12.3*30`}{Creates a regular (star) polygon tiling made of dodecagons and three-pointed stars.}
 #' \item{`12.12.4*60`}{Creates a regular (star) polygon tiling made of dodecagons and four-pointed stars.}
 #' }
 #'
@@ -107,6 +108,7 @@ names_polygon_tiling <- c("herringbone",
                           "3.4.8.3.8*15",
                           "4.6*30.4.6*30.4.6*30",
                           "6.6*60.6.6*60",
+                          "12.3*30.12.3*30",
                           "12.12.4*60")
 
 create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
@@ -146,6 +148,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  `3.4.8.3.8*15` = create_3.4.8.3.8_15_tiling,
                  `4.6*30.4.6*30.4.6*30` = create_4.6_30.4.6_30.4.6_30_tiling,
                  `6.6*60.6.6*60` = create_6.6_60.6.6_60_tiling,
+                 `12.3*30.12.3*30` = create_12.3_30.12.3_30_tiling,
                  `12.12.4*60` = create_12.12.4_60_tiling,
                  abort(paste("Don't know how to do tiling", type)))
     gTree(children = fn(xyi, gp, spacing, angle), name = "polygon_tiling")
@@ -244,6 +247,20 @@ create_4.6_30.4.6_30.4.6_30_tiling <- function(xyi, gp, spacing, angle) {
     gList(bg, stars)
 }
 
+create_12.3_30.12.3_30_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_dod <- gp_bg <- gp
+    gp_bg$fill <- gp$fill[n_col]
+    if (n_col > 1L)
+        gp_dod$fill <- gp$fill[-n_col]
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    dodecagons <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex12", density = 1,
+                        spacing = spacing, angle = angle, gp = gp_dod,
+                        scale = scale, name = "dodecagons")
+    gList(bg, dodecagons)
+}
 create_12.12.4_60_tiling <- function(xyi, gp, spacing, angle) {
     n_col <- length(gp$fill)
     gp_dod <- gp_bg <- gp
