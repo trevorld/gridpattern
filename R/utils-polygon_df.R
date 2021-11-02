@@ -102,21 +102,32 @@ convert_polygon_df_to_polygon_sf <- function(polygon_df, buffer_dist = 0) {
 #' @noRd
 convert_polygon_sf_to_polygon_df <- function(mp) {
   mat <- as.matrix(mp)
-
-  if (inherits(mp, 'POLYGON')) {
-    poly_lengths <- nrow(mat)
-  } else if (inherits(mp, 'MULTIPOLYGON')) {
-    if (max(lengths(mp)) > 1L) abort("There is a MULTIPOLYGON with length greater than 1")
-    poly_lengths <- vapply(mp, function(x) {nrow(x[[1]])}, integer(1))
-  } else if (sf::st_is_empty(mp)) {
+  if (sf::st_is_empty(mp))
     return(mat)
-  } else {
+  if (!inherits(mp, 'POLYGON') && !inherits(mp, 'MULTIPOLYGON') && !inherits(mp, 'GEOMETRYCOLLECTION')) {
     warn(paste0("convert_polygon_sf_to_polygon_df(): Not POLYGON or MULTIPOLYGON: ", deparse(class(mp))))
     return(NULL)
   }
+
+  poly_lengths <- get_poly_lengths(mp)
   id  <- rep.int(seq_along(poly_lengths), times = poly_lengths)
 
   create_polygon_df(x=mat[,1], y=mat[,2], id=id)
+}
+
+get_poly_lengths <- function(sf_object) {
+    if (inherits(sf_object, 'POLYGON') || inherits(sf_object, 'LINESTRING')) {
+        nrow(as.matrix(sf_object))
+    } else if (inherits(sf_object, 'MULTIPOLYGON')) {
+        if (max(lengths(sf_object)) > 1L)
+            abort("There is a MULTIPOLYGON with length greater than 1")
+        vapply(sf_object, function(x) {nrow(x[[1]])}, integer(1))
+    } else if (inherits(sf_object, 'GEOMETRYCOLLECTION')) {
+        vapply(sf_object, get_poly_lengths, integer(1))
+    } else {
+        abort(paste0("convert_polygon_sf_to_polygon_df(): Not POLYGON or MULTIPOLYGON: ",
+                     deparse(class(sf_object))))
+    }
 }
 
 #' Convert a polygon to an alpha mask

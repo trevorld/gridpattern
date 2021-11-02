@@ -6,7 +6,7 @@
 \alias{names_polygon_tiling}
 \title{Polygon tiling patterned grobs}
 \format{
-An object of class \code{character} of length 12.
+An object of class \code{character} of length 14.
 }
 \usage{
 grid.pattern_polygon_tiling(
@@ -99,6 +99,7 @@ dodecagons, hexagons, and squares.}
 \item{snub_square}{Creates a snub square tiling made of squares and triangles.}
 \item{snub_trihexagonal}{Creates a snub trihexagonal tiling made of hexagons and triangles.}
 \item{square}{Creates a square tiling made of squares.}
+\item{tetrakis_square}{Creates a tetrakis square tiling made of isosceles right triangles.}
 \item{triangular}{Creates a triangular tiling made of equilateral triangles.}
 \item{trihexagonal}{Creates a trihexagonal tiling made of hexagons and triangles.}
 \item{truncated_square}{Creates a truncated square tiling made of octagons and squares.}

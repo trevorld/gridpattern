@@ -60,12 +60,17 @@ All locations within the same \code{id} belong to the same boundary.}
 applied to exterior radius to get interior radius.}
 
 \item{shape}{Either "convex" or "star" followed by the number of exterior vertices
-or alternatively "circle", "null", or "square".
-For example \code{"convex5"} corresponds to a pentagon
-and \code{"star6"} corresponds to a six-pointed star.
-The \code{"square"} shape is larger than the \code{"convex4"} shape and is rotated an extra 45 degrees,
-it can be used to generate a multi-colored "checkers" effect when density is 1.
-The \code{"null"} shape is not drawn, it can be used to create holes within multiple-element patterns.}
+or alternatively "circle", "square", "null", "rhombille_rhombus",
+"tetrakis_left", or "tetrakis_right".
+For example "convex5" corresponds to a pentagon
+and "star6" corresponds to a six-pointed star.
+The "square" shape is larger than the "convex4" shape and is rotated an extra 45 degrees,
+it can be used to generate a multi-colored \dQuote{checkers} effect when density is 1.
+The "null" shape is not drawn, it can be used to create holes within multiple-element patterns.
+The "rhombille_rhombus" shape draws a rhombus while the
+"tetrakis_left" or "tetrakis_right" shapes draw an isosceles right triangle.
+These latter three non-regular-polygon shapes are
+intended to help generate rhombille and tetrakis square tilings.}
 
 \item{grid}{Adjusts placement and density of certain graphical elements.
 \code{"square"} (default) is a square grid.
@@ -156,6 +161,6 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \seealso{
 \code{\link[=grid.pattern_circle]{grid.pattern_circle()}} for a special case of this pattern.
-The tiling vignette features more examples of regular poylgon tiling using
+The tiling vignette features more examples of regular polygon tiling using
 this function \code{vignette("tiling", package = "gridpattern")}.
 }

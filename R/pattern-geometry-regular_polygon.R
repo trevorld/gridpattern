@@ -7,15 +7,20 @@
 #' @param scale For star polygons, multiplier (between 0 and 1)
 #'              applied to exterior radius to get interior radius.
 #' @param shape Either "convex" or "star" followed by the number of exterior vertices
-#'              or alternatively "circle", "null", or "square".
-#'              For example `"convex5"` corresponds to a pentagon
-#'              and `"star6"` corresponds to a six-pointed star.
-#'              The `"square"` shape is larger than the `"convex4"` shape and is rotated an extra 45 degrees,
-#'              it can be used to generate a multi-colored "checkers" effect when density is 1.
-#'              The `"null"` shape is not drawn, it can be used to create holes within multiple-element patterns.
+#'              or alternatively "circle", "square", "null", "rhombille_rhombus",
+#'              "tetrakis_left", or "tetrakis_right".
+#'              For example "convex5" corresponds to a pentagon
+#'              and "star6" corresponds to a six-pointed star.
+#'              The "square" shape is larger than the "convex4" shape and is rotated an extra 45 degrees,
+#'              it can be used to generate a multi-colored \dQuote{checkers} effect when density is 1.
+#'              The "null" shape is not drawn, it can be used to create holes within multiple-element patterns.
+#'              The "rhombille_rhombus" shape draws a rhombus while the
+#'              "tetrakis_left" or "tetrakis_right" shapes draw an isosceles right triangle.
+#'              These latter three non-regular-polygon shapes are
+#'              intended to help generate rhombille and tetrakis square tilings.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @seealso [grid.pattern_circle()] for a special case of this pattern.
-#'          The tiling vignette features more examples of regular poylgon tiling using
+#'          The tiling vignette features more examples of regular polygon tiling using
 #'          this function `vignette("tiling", package = "gridpattern")`.
 #' @examples
 #'   if (require("grid")) {
@@ -118,7 +123,8 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     rot <- rep(rot, length.out = n_par)
     shape <- rep(shape, length.out = n_par)
 
-    density <- ifelse(shape == "square", 1.414 * density, density)
+    density <- ifelse(shape %in% c("square", "tetrakis_left", "tetrakis_right"),
+                      1.414 * density, density)
     # avoid overlap errors when density == 1 due to machine precision issues
     if (grid == "square")
         density <- ifelse(nigh(density, 1), 0.9999, density)
@@ -272,10 +278,11 @@ get_xy_grid <- function(params, vpm, wavelength = FALSE) {
 }
 
 get_xy_polygon <- function(shape, params, radius_outer, rot) {
-    if (shape == "square") {
-        shape <- "convex4"
+    if (shape %in% c("square", "tetrakis_left", "tetrakis_right")) {
         rot <- rot + 45
     }
+    if (shape == "square")
+        shape <- "convex4"
     polygon_angle <- 90 + rot + params$pattern_angle
     if (shape == "circle") {
         # grid::grobPoints.circle() defaults to regular polygon with 100 vertices
@@ -283,6 +290,12 @@ get_xy_polygon <- function(shape, params, radius_outer, rot) {
     } else if (grepl("convex", shape)) {
         n_vertices <- get_n_vertices(shape)
         convex_xy(n_vertices, polygon_angle, radius_outer)
+    } else if (shape == "rhombille_rhombus") {
+        rhombus_xy(polygon_angle, radius_outer)
+    } else if (shape == "tetrakis_left") {
+        tetrakis_left_xy(polygon_angle, radius_outer)
+    } else if (shape == "tetrakis_right") {
+        tetrakis_right_xy(polygon_angle, radius_outer)
     } else {
         n_vertices <- get_n_vertices(shape)
         radius_inner <- params$pattern_scale * radius_outer
@@ -291,7 +304,7 @@ get_xy_polygon <- function(shape, params, radius_outer, rot) {
 }
 
 assert_rp_shape <- function(shape) {
-    tf <- grepl("^convex[[:digit:]]+$|^star[[:digit:]]+$|^square$|^circle$|^null$", shape)
+    tf <- grepl("^convex[[:digit:]]+$|^star[[:digit:]]+$|^square$|^circle$|^null$|^tetrakis_left$|^tetrakis_right$|^rhombille_rhombus$", shape)
     if (all(tf)) {
         invisible(NULL)
     } else {

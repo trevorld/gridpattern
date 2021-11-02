@@ -665,30 +665,82 @@ add_borders()
 <a name="rhombille">Rhombille tiling</a>
 ----------------------------------------------
 
-We can get a single-color [Rhombille tiling](https://en.wikipedia.org/wiki/Rhombille_tiling) by using the "convex6" and a very narrow "star3" shape:
+We can get a [rhombille tiling](https://en.wikipedia.org/wiki/Rhombille_tiling) by using the "rhombille_rhombus" shape:
 
 ```{r}
-gp <- gpar(fill = yellow, col = "black")
-grid.pattern_regular_polygon(shape = "convex6", density = 1, angle = 0, 
-                             grid = "hex", gp = gp, spacing = 0.1)
-gp <- gpar(fill = NA, col = "black")
-grid.pattern_regular_polygon(shape = "star3", density = 1, angle = 0, rot = 60,
-                             grid = "hex", gp = gp, scale = 0.001, spacing = 0.1)
+grid.rhombille_tiling <- function(gp1, gp2 = gp1, gp3 = gp2) {
+    grid.pattern_regular_polygon(shape = "rhombille_rhombus", density = 1,
+                       angle = 0, rot = -120, spacing = 0.2,
+                       grid = "hex", gp = gp3)
+    grid.pattern_regular_polygon(shape = "rhombille_rhombus", density = 1,
+                       angle = 0, rot =  120, spacing = 0.2,
+                       grid = "hex", gp = gp2)
+    grid.pattern_regular_polygon(shape = "rhombille_rhombus", density = 1,
+                       angle = 0, rot = 0, spacing = 0.2,
+                       grid = "hex", gp = gp1)
+}
+gp1 <- gpar(fill = yellow, col = "black")
+gp2 <- gpar(fill = blue, col = "black")
+gp3 <- gpar(fill = red, col = "black")
+# 1 color rhombille tiling
+pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
+grid.rhombille_tiling(gp1)
+popViewport()
+# 2 color rhombille tiling
+pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
+grid.rhombille_tiling(gp1, gp2)
+popViewport()
+# 3 color rhombille tiling
+pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
+grid.rhombille_tiling(gp1, gp2, gp3)
+popViewport()
+add_borders()
 ```
 
-<a name="tetrakis">Tetrakis square tiling</a>
+<a name="tetrakis">tetrakis square tiling</a>
 ---------------------------------------------
 
-We can get a single-color [Tetrakis square tiling](https://en.wikipedia.org/wiki/Tetrakis_square_tiling) by using the "square" and a very narrow "star4" shape:
+We can get a [tetrakis square tiling](https://en.wikipedia.org/wiki/Tetrakis_square_tiling) by using the "tetrakis_left" and "tetrakis_right" shapes:
 
 ```{r}
-gp <- gpar(fill = yellow, col = "black")
-grid.pattern_regular_polygon(shape = "square", density = 1, angle = 0, 
-                             gp = gp, spacing = 0.1)
-gp <- gpar(fill = NA, col = "black")
-grid.pattern_regular_polygon(shape = "star4", density = 1.37, angle = 0, rot = 45,
-                             gp = gp, scale = 0.001, spacing = 0.2,
-                             xoffset = 0.05, yoffset = 0.05)
+grid.tetrakis_tiling <- function(gp1, gp2 = gp1, gp3 = gp2, gp4 = gp1) {
+    grid.pattern_regular_polygon(shape = "tetrakis_left", density = 1, 
+                                 angle = 0, rot=0, gp = gp1, spacing = 0.25)
+    grid.pattern_regular_polygon(shape = "tetrakis_left", density = 1, 
+                                 angle = 0, rot=90, gp = gp4, spacing = 0.25)
+    grid.pattern_regular_polygon(shape = "tetrakis_left", density = 1,
+                                 angle = 0, rot=180, gp = gp1, spacing = 0.25)
+    grid.pattern_regular_polygon(shape = "tetrakis_left", density = 1,
+                                 angle = 0, rot=270, gp = gp4, spacing = 0.25)
+    grid.pattern_regular_polygon(shape = "tetrakis_right", density = 1,
+                                 angle = 0, rot=0, gp = gp2, spacing = 0.25)
+    grid.pattern_regular_polygon(shape = "tetrakis_right", density = 1,
+                                 angle = 0, rot=90, gp = gp3, spacing = 0.25)
+    grid.pattern_regular_polygon(shape = "tetrakis_right", density = 1,
+                                 angle = 0, rot=180, gp = gp2, spacing = 0.25)
+    grid.pattern_regular_polygon(shape = "tetrakis_right", density = 1,
+                                 angle = 0, rot=270, gp = gp3, spacing = 0.25)
+
+}
+gp1 <- gpar(fill = yellow, col = "black")
+gp2 <- gpar(fill = blue, col = "black")
+gp3 <- gpar(fill = red, col = "black")
+gp4 <- gpar(fill = green, col = "black")
+# 1 color tetrakis square tiling
+pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
+grid.tetrakis_tiling(gp1)
+popViewport()
+# 2 color tetrakis square tiling
+pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
+grid.tetrakis_tiling(gp1, gp2)
+popViewport()
+# 3 color tetrakis square tiling
+pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
+grid.tetrakis_tiling(gp1, gp2, gp3)
+popViewport()
+# 4 color tetrakis square tiling
+pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
+grid.tetrakis_tiling(gp1, gp2, gp3, gp4)
+popViewport()
+add_borders()
 ```
-
-

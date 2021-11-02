@@ -38,6 +38,40 @@ convex_xy <- function(n_vertices, theta = 90, radius_outer = 0.5) {
          y = head(y, -1))
 }
 
+# (x,y)coordinates of rhombus quadrilateral
+rhombus_xy <- function(theta = 90, radius_outer = 0.5) {
+    t <- theta + c(0, -60, 0, 60)
+    r <- c(0, rep(radius_outer, 3))
+    x <- to_x(t, r)
+    y <- to_y(t, r)
+    list(x = x, y = y)
+}
+
+# (x,y) coordinates of "left" Tetrakis triangle
+tetrakis_left_xy <- function(theta = 90, radius_outer = 0.5) {
+    t <- c(90, 135)
+    # r <- c(1e-2, radius_outer - 1e-2)
+    r <- c(0.3, radius_outer)
+
+    x <- to_x(t, r)
+    y <- to_y(t, r)
+    x <- c(x, x[1])
+    y <- c(y, y[2])
+    rotate_xy(x, y, theta - 135, 0, 0)
+}
+
+# (x,y) coordinates of "right" Tetrakis triangle
+tetrakis_right_xy <- function(theta = 90, radius_outer = 0.5) {
+    t <- c(90, 45)
+    r <- c(1e-2, radius_outer - 1e-2)
+
+    x <- to_x(t, r)
+    y <- to_y(t, r)
+    x <- c(x, x[1])
+    y <- c(y, y[2])
+    rotate_xy(x, y, theta - 135, 0, 0)
+}
+
 # (x,y) coordinates of concave (star) regular polygon centered at (0, 0)
 concave_xy <- function(n_vertices, theta = 90, radius_outer = 0.5,
                        radius_inner = 0.5 * radius_outer) {

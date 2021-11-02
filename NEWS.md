@@ -4,7 +4,7 @@ gridpattern v0.3.0
 Breaking Changes
 ----------------
 
-* The package `{magick}` has been downgraded from "Imports" to "Suggests".
+* The package `{magick}` has been downgraded from "Imports" to "Suggests" (#44).
   You'll need to manually install `{magick}` with `install.packages("magick")` 
   in order to use the following "array" patterns:
 
@@ -13,6 +13,17 @@ Breaking Changes
   - "magick"
   - "placeholder"
   - "plasma"
+
+New Features
+------------
+
+* `grid.pattern_polygon_tiling()` now supports a "rhombille" `type` which implements
+  a rhombille tiling and a "tetrakis" `type` which implements
+  a tetrakis square tiling (#37, #38).
+* `grid.pattern_regular_polygon()` now supports a "tetrakis_left" `shape` and "tetrakis_right" `shape` 
+  which both draw an isosceles right triangle (one oriented left and one oriented right) as well as a
+ "rhombille_rhombus" shape which draws a rhombus.
+  These are non-regular polygons intended to help produce tetrakis square and rhombille polygon tilings.
 
 gridpattern v0.2.1
 ==================

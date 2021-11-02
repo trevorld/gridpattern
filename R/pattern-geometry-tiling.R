@@ -16,6 +16,7 @@
 #' \item{snub_square}{Creates a snub square tiling made of squares and triangles.}
 #' \item{snub_trihexagonal}{Creates a snub trihexagonal tiling made of hexagons and triangles.}
 #' \item{square}{Creates a square tiling made of squares.}
+#' \item{tetrakis_square}{Creates a tetrakis square tiling made of isosceles right triangles.}
 #' \item{triangular}{Creates a triangular tiling made of equilateral triangles.}
 #' \item{trihexagonal}{Creates a trihexagonal tiling made of hexagons and triangles.}
 #' \item{truncated_square}{Creates a truncated square tiling made of octagons and squares.}
@@ -74,8 +75,9 @@ grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id
 #' @rdname grid.pattern_polygon_tiling
 #' @export
 names_polygon_tiling <- c("herringbone", "hexagonal", "pythagorean",
-                          "rhombitrihexagonal",
+                          "rhombitrihexagonal", "rhombille",
                           "snub_square", "snub_trihexagonal", "square",
+                          "tetrakis_square",
                           "triangular", "trihexagonal",
                           "truncated_square", "truncated_hexagonal",
                           "truncated_trihexagonal")
@@ -92,7 +94,7 @@ names_polygon_tiling <- c("herringbone", "hexagonal", "pythagorean",
 # Lots of stars...
 
 create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
-    type <- params$pattern_type
+    type <- tolower(params$pattern_type)
 
     xyi <- boundary_df
 
@@ -113,7 +115,9 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  snub_square = create_snub_square_tiling(xyi, gp, spacing, angle),
                  snub_trihexagonal = create_snub_trihex_tiling(xyi, gp, spacing, angle),
                  square = create_square_tiling(xyi, gp, spacing, angle),
+                 rhombille = create_rhombille_tiling(xyi, gp, spacing, angle),
                  rhombitrihexagonal = create_rhombitrihexagonal_tiling(xyi, gp, spacing, angle),
+                 tetrakis_square = create_tetrakis_tiling(xyi, gp, spacing, angle),
                  triangular = create_triangular_tiling(xyi, gp, spacing, angle),
                  trihexagonal = create_trihexagonal_tiling(xyi, gp, spacing, angle),
                  truncated_hexagonal = create_trunc_hex_tiling(xyi, gp, spacing, angle),
@@ -264,6 +268,84 @@ create_square_tiling <- function(xyi, gp, spacing, angle) {
                         spacing = spacing, angle = angle, gp = gp,
                         name = "squares")
     gList(grob)
+}
+create_rhombille_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_rh1 <- gp_rh2 <- gp_rh3 <- gp
+    if (n_col == 2) {
+        gp_rh1$fill <- gp_rh2$fill <- gp$fill[1L]
+        gp_rh3$fill <- gp$fill[2L]
+    } else if (n_col == 3) {
+        gp_rh1$fill <- gp$fill[1L]
+        gp_rh2$fill <- gp$fill[2L]
+        gp_rh3$fill <- gp$fill[3L]
+    }
+    rh1 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                       shape = "rhombille_rhombus", grid = "hex",
+                       angle = angle, rot = -120, spacing = spacing, density = 1,
+                       gp = gp_rh1, name = "rhombi.1")
+    rh2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                       shape = "rhombille_rhombus", grid = "hex",
+                       angle = angle, rot = 120, spacing = spacing, density = 1,
+                       gp = gp_rh2, name = "rhombi.2")
+    rh3 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                       shape = "rhombille_rhombus", grid = "hex",
+                       angle = angle, rot = 0, spacing = spacing, density = 1,
+                       gp = gp_rh3, name = "rhombi.3")
+    gList(rh1, rh2, rh3)
+}
+create_tetrakis_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_tri1 <- gp_tri2 <- gp_tri3 <- gp
+    if (n_col == 2) {
+        gp_tri1$fill <- gp$fill[1L]
+        gp_tri2$fill <- gp_tri3$fill <- gp$fill[2L]
+    } else if (n_col == 3) {
+        gp_tri1$fill <- gp$fill[1L]
+        gp_tri2$fill <- gp$fill[2L]
+        gp_tri3$fill <- gp$fill[3L]
+    }
+    tri1.a <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "tetrakis_left",
+                        angle = angle, rot = 0,
+                        spacing = spacing, density = 1,
+                        gp = gp_tri1, name = "triangles.1.a")
+    tri1.b <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "tetrakis_left",
+                        angle = angle, rot = 90,
+                        spacing = spacing, density = 1,
+                        gp = gp_tri1, name = "triangles.1.b")
+    tri1.c <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "tetrakis_left",
+                        angle = angle, rot = 180,
+                        spacing = spacing, density = 1,
+                        gp = gp_tri1, name = "triangles.1.c")
+    tri1.d <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "tetrakis_left",
+                        angle = angle, rot = 270,
+                        spacing = spacing, density = 1,
+                        gp = gp_tri1, name = "triangles.1.d")
+    tri2.a <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "tetrakis_right",
+                        angle = angle, rot = 0,
+                        spacing = spacing, density = 1,
+                        gp = gp_tri2, name = "triangles.2.a")
+    tri2.b <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "tetrakis_right",
+                        angle = angle, rot = 180,
+                        spacing = spacing, density = 1,
+                        gp = gp_tri2, name = "triangles.2.b")
+    tri3.a <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "tetrakis_right",
+                        angle = angle, rot = 90,
+                        spacing = spacing, density = 1,
+                        gp = gp_tri3, name = "triangles.3.a")
+    tri3.b <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "tetrakis_right",
+                        angle = angle, rot = 270,
+                        spacing = spacing, density = 1,
+                        gp = gp_tri3, name = "triangles.3.b")
+    gList(tri1.a, tri1.b, tri1.c, tri1.d, tri2.a, tri2.b, tri3.a, tri3.b)
 }
 
 create_triangular_tiling <- function(xyi, gp, spacing, angle) {
