@@ -23,7 +23,8 @@
 #' \item{truncated_square}{Creates a truncated square tiling made of octagons and squares.}
 #' \item{truncated_hexagonal}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
 #' \item{truncated_trihexagonal}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
-#' \item{`3.3.3.12*30.3.3.12*30`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed starts.}
+#' \item{`3.3*30.3.3*30`}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
+#' \item{`3.3.3.12*30.3.3.12*30`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
 #' \item{`3.3.8*15.3.4.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
 #' \item{`3.4.8.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
 #' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
@@ -97,6 +98,7 @@ names_polygon_tiling <- c("herringbone",
                           "truncated_square",
                           "truncated_hexagonal",
                           "truncated_trihexagonal",
+                          "3.3*30.3.3*30",
                           "3.3.3.12*30.3.3.12*30",
                           "3.3.8*15.3.4.3.8*15",
                           "3.4.8.3.8*15",
@@ -133,6 +135,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  truncated_hexagonal = create_trunc_hex_tiling,
                  truncated_square = create_trunc_square_tiling,
                  truncated_trihexagonal = create_trunc_trihex_tiling,
+                 `3.3*30.3.3*30` = create_3.3_30.3.3_30_tiling,
                  `3.3.3.12*30.3.3.12*30` = create_3.3.3.12_30.3.3.12_30_tiling,
                  `3.3.8*15.3.4.3.8*15` = create_3.3.8_15.3.4.3.8_15_tiling,
                  `3.4.8.3.8*15` = create_3.4.8.3.8_15_tiling,
@@ -235,6 +238,26 @@ create_4.6_30.4.6_30.4.6_30_tiling <- function(xyi, gp, spacing, angle) {
     gList(bg, stars)
 }
 
+create_3.3_30.3.3_30_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_star <- gp_bg <- gp
+    if (n_col == 2L) {
+        gp_star$fill <- gp$fill[1L]
+        gp_bg$fill <- gp$fill[2L]
+    } else if (n_col == 3L) {
+        gp_star$fill <- gp$fill[c(3L, 1L)]
+        gp_bg$fill <- gp$fill[2L]
+    }
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    scale <- star_scale(3, 30)
+    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "star3", density = 1.57,
+                        grid = "hex_circle", rot = 30,
+                        spacing = spacing, angle = angle, gp = gp_star,
+                        scale = scale, name = "stars")
+    gList(bg, stars)
+}
 create_6.6_60.6.6_60_tiling <- function(xyi, gp, spacing, angle) {
     n_col <- length(gp$fill)
     gp_star <- gp_bg <- gp

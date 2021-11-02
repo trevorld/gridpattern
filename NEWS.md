@@ -21,6 +21,7 @@ New Features
 
   - `"rhombille"` implements a rhombille tiling of rhombi (#37)
   - `"tetrakis_square"` implements a tetrakis square tiling of isosceles right triangles (#38)
+  - `"3.3*30.3.3*30"` implements a regular (star) polygon tiling made of triangles and three-pointed stars.
   - `"3.3.3.12*30.3.3.12*30"` implements a regular (star) polygon tiling made of triangles and twelve-pointed starts.
   - `"3.3.8*15.3.4.3.8*15"` implements a regular (star) polygon tiling of triangles,
     squares, and eight-pointed stars.

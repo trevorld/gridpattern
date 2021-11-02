@@ -337,7 +337,8 @@ popViewport()
 # 'star3' trihexagonal tiling
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
-grid.trihexagonal_tiling(shape = "star3", scale = 0.2, density=1.65, gp = gp)
+scale <- star_scale(3, 30)
+grid.trihexagonal_tiling(shape = "star3", scale = scale, density=1.57, gp = gp)
 popViewport()
 
 # 'convex3' trihexagonal tiling
