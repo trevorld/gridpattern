@@ -19,13 +19,14 @@ New Features
 
 * `grid.pattern_polygon_tiling()` now supports the following additional polygon tiling `type`'s:
 
-  - `"rhombille"` which implements a rhombille tiling of rhombi (#37)
-  - `"tetrakis_square"` which implements a tetrakis square tiling of isosceles right triangles (#38)
-  - `"3.3.8*15.3.4.3.8*15"` which implements a regular (star) polygon tiling of triangles,
+  - `"rhombille"` implements a rhombille tiling of rhombi (#37)
+  - `"tetrakis_square"` implements a tetrakis square tiling of isosceles right triangles (#38)
+  - `"3.3.3.12*30.3.3.12*30"` implements a regular (star) polygon tiling made of triangles and twelve-pointed starts.
+  - `"3.3.8*15.3.4.3.8*15"` implements a regular (star) polygon tiling of triangles,
     squares, and eight-pointed stars.
-  - `"3.4.8.3.8*15"` which implements a regular (star) polygon tiling of triangles,
+  - `"3.4.8.3.8*15"` implements a regular (star) polygon tiling of triangles,
     squares, octagons, and eight-pointed stars.
-  - `"4.6*30.4.6*30.4.6*30"` which implements a regular (star) polygon of squares and six-pointed stars.
+  - `"4.6*30.4.6*30.4.6*30"` implements a regular (star) polygon of squares and six-pointed stars.
 
 * `grid.pattern_regular_polygon()` now supports a `"tetrakis_left"` `shape` and `"tetrakis_right"` `shape` 
   which both draw an isosceles right triangle (one oriented left and one oriented right) as well as a

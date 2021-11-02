@@ -23,6 +23,7 @@
 #' \item{truncated_square}{Creates a truncated square tiling made of octagons and squares.}
 #' \item{truncated_hexagonal}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
 #' \item{truncated_trihexagonal}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
+#' \item{`3.3.3.12*30.3.3.12*30`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed starts.}
 #' \item{`3.3.8*15.3.4.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
 #' \item{`3.4.8.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
 #' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
@@ -95,6 +96,7 @@ names_polygon_tiling <- c("herringbone",
                           "truncated_square",
                           "truncated_hexagonal",
                           "truncated_trihexagonal",
+                          "3.3.3.12*30.3.3.12*30",
                           "3.3.8*15.3.4.3.8*15",
                           "3.4.8.3.8*15",
                           "4.6*30.4.6*30.4.6*30")
@@ -114,26 +116,54 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
     angle <- params$pattern_angle
     spacing <- params$pattern_spacing
 
-    gl <- switch(type,
-                 herringbone = create_herringbone_tiling(xyi, gp, spacing, angle),
-                 hexagonal = create_hexagonal_tiling(xyi, gp, spacing, angle),
-                 pythagorean = create_pythagorean_tiling(xyi, gp, spacing, angle),
-                 snub_square = create_snub_square_tiling(xyi, gp, spacing, angle),
-                 snub_trihexagonal = create_snub_trihex_tiling(xyi, gp, spacing, angle),
-                 square = create_square_tiling(xyi, gp, spacing, angle),
-                 rhombille = create_rhombille_tiling(xyi, gp, spacing, angle),
-                 rhombitrihexagonal = create_rhombitrihexagonal_tiling(xyi, gp, spacing, angle),
-                 tetrakis_square = create_tetrakis_tiling(xyi, gp, spacing, angle),
-                 triangular = create_triangular_tiling(xyi, gp, spacing, angle),
-                 trihexagonal = create_trihexagonal_tiling(xyi, gp, spacing, angle),
-                 truncated_hexagonal = create_trunc_hex_tiling(xyi, gp, spacing, angle),
-                 truncated_square = create_trunc_square_tiling(xyi, gp, spacing, angle),
-                 truncated_trihexagonal = create_trunc_trihex_tiling(xyi, gp, spacing, angle),
-                 `3.3.8*15.3.4.3.8*15` = create_3.3.8_15.3.4.3.8_15_tiling(xyi, gp, spacing, angle),
-                 `3.4.8.3.8*15` = create_3.4.8.3.8_15_tiling(xyi, gp, spacing, angle),
-                 `4.6*30.4.6*30.4.6*30` = create_4.6_30.4.6_30.4.6_30_tiling(xyi, gp, spacing, angle),
+    fn <- switch(type,
+                 herringbone = create_herringbone_tiling,
+                 hexagonal = create_hexagonal_tiling,
+                 pythagorean = create_pythagorean_tiling,
+                 snub_square = create_snub_square_tiling,
+                 snub_trihexagonal = create_snub_trihex_tiling,
+                 square = create_square_tiling,
+                 rhombille = create_rhombille_tiling,
+                 rhombitrihexagonal = create_rhombitrihexagonal_tiling,
+                 tetrakis_square = create_tetrakis_tiling,
+                 triangular = create_triangular_tiling,
+                 trihexagonal = create_trihexagonal_tiling,
+                 truncated_hexagonal = create_trunc_hex_tiling,
+                 truncated_square = create_trunc_square_tiling,
+                 truncated_trihexagonal = create_trunc_trihex_tiling,
+                 `3.3.3.12*30.3.3.12*30` = create_3.3.3.12_30.3.3.12_30_tiling,
+                 `3.3.8*15.3.4.3.8*15` = create_3.3.8_15.3.4.3.8_15_tiling,
+                 `3.4.8.3.8*15` = create_3.4.8.3.8_15_tiling,
+                 `4.6*30.4.6*30.4.6*30` = create_4.6_30.4.6_30.4.6_30_tiling,
                  abort(paste("Don't know how to do tiling", type)))
-    gTree(children = gl, name = "polygon_tiling")
+    gTree(children = fn(xyi, gp, spacing, angle), name = "polygon_tiling")
+}
+
+create_3.3.3.12_30.3.3.12_30_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_star <- gp_dod <- gp_bg <- gp
+    if (n_col == 2L) {
+        gp_bg$fill <- gp_star$fill <- gp$fill[1L]
+        gp_dod$fill <- gp$fill[2L]
+    } else if (n_col == 3L) {
+        gp_bg$fill <- gp$fill[3]
+        gp_dod$fill <- gp$fill[2]
+        gp_star$fill <- gp$fill[1]
+    }
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    dodecagons <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                              grid = "hex_circle",
+                              shape = "convex12", density = 1.034, rot = 15,
+                              spacing = spacing, angle = angle, gp = gp_dod,
+                              name = "dodecagons")
+    scale <- star_scale(12, 60, external = TRUE)
+    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                         grid = "hex_circle",
+                         shape = "star12", density = 1.034, rot = 15,
+                         spacing = spacing, angle = angle, gp = gp_star,
+                         scale = scale, name = "stars")
+    gList(bg, dodecagons, stars)
 }
 
 create_3.3.8_15.3.4.3.8_15_tiling <- function(xyi, gp, spacing, angle) {
