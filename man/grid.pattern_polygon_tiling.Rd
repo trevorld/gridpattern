@@ -6,7 +6,7 @@
 \alias{names_polygon_tiling}
 \title{Polygon tiling patterned grobs}
 \format{
-An object of class \code{character} of length 14.
+An object of class \code{character} of length 15.
 }
 \usage{
 grid.pattern_polygon_tiling(
@@ -94,6 +94,7 @@ We support the following polygon tiling \code{type}s:
 \item{herringbone}{Creates a herringbone tiling made of rectangles.}
 \item{hexagonal}{Creates a hexagonal tiling made of hexagons.}
 \item{pythagorean}{Creates a Pythagorean tiling made of squares of two different sizes.}
+\item{rhombille}{Creates a rhombille tiling made of rhombi.}
 \item{rhombitrihexagonal}{Creates a rhombitrihexagonal tiling made out of
 dodecagons, hexagons, and squares.}
 \item{snub_square}{Creates a snub square tiling made of squares and triangles.}
@@ -105,6 +106,7 @@ dodecagons, hexagons, and squares.}
 \item{truncated_square}{Creates a truncated square tiling made of octagons and squares.}
 \item{truncated_hexagonal}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
 \item{truncated_trihexagonal}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
+\item{\verb{3.3.8*15.3.4.3.8*15}}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
 }
 }
 \examples{
@@ -126,6 +128,9 @@ dodecagons, hexagons, and squares.}
 
    grid.newpage()
    grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_square", gp = gp3)
+
+   grid.newpage()
+   grid.pattern_polygon_tiling(x_hex, y_hex, type = "rhombille", gp = gp3)
  }
 
 }

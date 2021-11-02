@@ -43,4 +43,6 @@ test_that("tiling patterns work as expected", {
         g.ppt("truncated_trihexagonal", gp = gp2))
     expect_doppelganger("trunc_square_tiling", function()
         g.ppt("truncated_square", gp = gp3))
+    expect_doppelganger("3.3.8*15.3.4.3.8*15", function()
+        g.ppt("3.3.8*15.3.4.3.8*15", gp = gp3))
 })

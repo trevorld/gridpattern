@@ -11,6 +11,7 @@
 #' \item{herringbone}{Creates a herringbone tiling made of rectangles.}
 #' \item{hexagonal}{Creates a hexagonal tiling made of hexagons.}
 #' \item{pythagorean}{Creates a Pythagorean tiling made of squares of two different sizes.}
+#' \item{rhombille}{Creates a rhombille tiling made of rhombi.}
 #' \item{rhombitrihexagonal}{Creates a rhombitrihexagonal tiling made out of
 #'                           dodecagons, hexagons, and squares.}
 #' \item{snub_square}{Creates a snub square tiling made of squares and triangles.}
@@ -22,6 +23,7 @@
 #' \item{truncated_square}{Creates a truncated square tiling made of octagons and squares.}
 #' \item{truncated_hexagonal}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
 #' \item{truncated_trihexagonal}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
+#' \item{`3.3.8*15.3.4.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
 #' }
 #'
 #' @inheritParams grid.pattern_circle
@@ -51,6 +53,9 @@
 #'
 #'    grid.newpage()
 #'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_square", gp = gp3)
+#'
+#'    grid.newpage()
+#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "rhombille", gp = gp3)
 #'  }
 #'
 #' @export
@@ -74,14 +79,23 @@ grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id
 
 #' @rdname grid.pattern_polygon_tiling
 #' @export
-names_polygon_tiling <- c("herringbone", "hexagonal", "pythagorean",
-                          "rhombitrihexagonal", "rhombille",
-                          "snub_square", "snub_trihexagonal", "square",
+names_polygon_tiling <- c("herringbone",
+                          "hexagonal",
+                          "pythagorean",
+                          "rhombitrihexagonal",
+                          "rhombille",
+                          "snub_square",
+                          "snub_trihexagonal",
+                          "square",
                           "tetrakis_square",
-                          "triangular", "trihexagonal",
-                          "truncated_square", "truncated_hexagonal",
-                          "truncated_trihexagonal")
+                          "triangular",
+                          "trihexagonal",
+                          "truncated_square",
+                          "truncated_hexagonal",
+                          "truncated_trihexagonal",
+                          "3.3.8*15.3.4.3.8*15")
 
+# 3.3.8*15.3.4.3.8*15
 
 # More tilings we could do
 # What should their names be
@@ -123,8 +137,36 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  truncated_hexagonal = create_trunc_hex_tiling(xyi, gp, spacing, angle),
                  truncated_square = create_trunc_square_tiling(xyi, gp, spacing, angle),
                  truncated_trihexagonal = create_trunc_trihex_tiling(xyi, gp, spacing, angle),
+                 `3.3.8*15.3.4.3.8*15` = create_3.3.8_15.3.4.3.8_15_tiling(xyi, gp, spacing, angle),
                  abort(paste("Don't know how to do tiling", type)))
     gTree(children = gl, name = "polygon_tiling")
+}
+
+create_3.3.8_15.3.4.3.8_15_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_star <- gp_oct <- gp_bg <- gp
+    if (n_col == 2L) {
+        gp_bg$fill <- gp_star$fill <- gp$fill[1L]
+        gp_oct$fill <- gp$fill[2L]
+    } else if (n_col == 3L) {
+        gp_bg$fill <- gp$fill[3]
+        gp_oct$fill <- gp$fill[2]
+        gp_star$fill <- gp$fill[1]
+    }
+
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    octagons <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                            shape = "convex8", density = 1.082, rot = 22.5,
+                            spacing = spacing, angle = angle, gp = gp_oct,
+                            name = "octagons")
+    scale <- star_scale(8, 60, external = TRUE)
+    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                         shape = "star8", density = 1.082, rot = 22.5,
+                        spacing = spacing, angle = angle, gp = gp_star,
+                        name = "stars")
+    gList(bg, octagons, stars)
+
 }
 
 create_herringbone_tiling <- function(xyi, gp, spacing, angle) {
