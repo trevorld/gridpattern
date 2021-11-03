@@ -31,6 +31,7 @@
 #' \item{`3.4.8.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
 #' \item{`3.6*30.6**30`}{Creates a regular (star) polygon tiling made of triangles and six-pointed stars.}
 #' \item{`4.4*30.4**30`}{Creates a regular (star) polygon tiling made of squares and four-pointed stars.}
+#' \item{`4.6.4*30.6`}{Creates a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.}
 #' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
 #' \item{`6.6*60.6.6*60`}{Creates a regular (star) polygon tiling made of hexagons and six-pointed stars.}
 #' \item{`12.3*30.12.3*30`}{Creates a regular (star) polygon tiling made of dodecagons and three-pointed stars.}
@@ -112,6 +113,7 @@ names_polygon_tiling <- c("herringbone",
                           "3.4.8.3.8*15",
                           "3.6*30.6**30",
                           "4.4*30.4**30",
+                          "4.6.4*30.6",
                           "4.6*30.4.6*30.4.6*30",
                           "6.6*60.6.6*60",
                           "12.3*30.12.3*30",
@@ -155,6 +157,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  `3.4.8.3.8*15` = create_3.4.8.3.8_15_tiling,
                  `3.6*30.6**30` = create_3.6_30.6__30_tiling,
                  `4.4*30.4**30` = create_4.4_30.4__30_tiling,
+                 `4.6.4*30.6` = create_4.6.4_30.6_tiling,
                  `4.6*30.4.6*30.4.6*30` = create_4.6_30.4.6_30.4.6_30_tiling,
                  `6.6*60.6.6*60` = create_6.6_60.6.6_60_tiling,
                  `12.3*30.12.3*30` = create_12.3_30.12.3_30_tiling,
@@ -710,6 +713,25 @@ create_trunc_square_tiling <- function(xyi, gp, spacing, angle) {
                         shape = "convex8", density = 1.082, rot = 22.5,
                         spacing = spacing, angle = angle, gp = gp,
                         name = "octagons")
+    gList(bg, grob)
+}
+
+create_4.6.4_30.6_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_bg <- gp
+    gp_bg$fill <- gp$fill[1L]
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    if (n_col == 2L)
+        gp$fill <- gp$fill[2L]
+    else if (n_col == 3L)
+        gp$fill <- gp$fill[2:3]
+
+    scale <- star_scale(4, 120, external = TRUE)
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = c("star4", "convex4"), density = c(1.2, 0.8),
+                        spacing = spacing, angle = angle, gp = gp,
+                        name = "stars_and_squares", scale = scale)
     gList(bg, grob)
 }
 
