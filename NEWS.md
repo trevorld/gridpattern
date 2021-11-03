@@ -46,6 +46,12 @@ New Features
  `"rhombille_rhombus"` shape which draws a rhombus.
   These are non-regular polygons intended to help produce tetrakis square and rhombille polygon tilings.
 
+Bug fixes and minor improvements
+--------------------------------
+
+* `star_angle()` and `star_scale()` now handle the `n_vertices == 2` case 
+  (a "two-pointed star" polygon is a rhombus).
+
 gridpattern v0.2.1
 ==================
 

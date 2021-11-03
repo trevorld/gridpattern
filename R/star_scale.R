@@ -34,6 +34,8 @@
 star_scale <- function(n_vertices, angle, external = FALSE) {
     if (external)
         angle <- external_to_internal(n_vertices, angle)
+    if (n_vertices == 2)
+        return(star_scale2(angle))
     stopifnot(angle >= 0, angle <= 180 * (1 - 2/n_vertices))
     # we'll work with external degree
     angle <- internal_to_external(n_vertices, angle)
@@ -51,10 +53,21 @@ star_scale <- function(n_vertices, angle, external = FALSE) {
     r
 }
 
+star_scale2 <- function(angle) {
+    stopifnot(angle >= 0, angle <= 90)
+    a1 <- angle / 2
+    a2 <- 180 - 90 - a1
+    r <- sin(to_radians(a1)) / sin(to_radians(a2))
+    stopifnot(r >= 0)
+    r
+}
+
 #' @rdname star_scale
 #' @export
 star_angle <- function(n_vertices, scale, external = FALSE) {
     stopifnot(scale >= 0, scale <= 1)
+    if (n_vertices == 2)
+        return(star_angle2(scale, external))
     t <- 360 / n_vertices
     xy1 <- list(x = 1, y = 0)
     xy2 <- list(x = to_x(t, 1), y = to_y(t, 1))
@@ -65,6 +78,14 @@ star_angle <- function(n_vertices, scale, external = FALSE) {
     d <- to_degrees(2 * asin(a2 / c))
     if (!external)
         d <- external_to_internal(n_vertices, d)
+    d
+}
+
+star_angle2 <- function(scale, external = FALSE) {
+    d <- sqrt(1 + scale^2)
+    d <- 2 * to_degrees(asin(scale / d))
+    if (external)
+        d <- internal_to_external(2, d)
     d
 }
 

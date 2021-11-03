@@ -41,6 +41,8 @@ test_that("star_scale() works as expected", {
    expect_equal(scale, scale2)
    expect_equal(star_angle(8, scale), 45)
    expect_equal(star_angle(8, scale, external = TRUE), 90)
+   expect_equal(star_angle(2, star_scale(2, 30)), 30)
+   expect_equal(star_angle(2, star_scale(2, 210, T), T), 210)
 })
 
 test_that("assert_patterns_unique() works as expected", {
@@ -56,4 +58,9 @@ test_that("assert_patterns_unique() works as expected", {
                  'There is a custom "geometry" pattern and builtin \\{gridpattern\\} pattern both named "circle"')
     expect_error(assert_patterns_unique(list(), list(image = 2)),
                  'There is a custom "array" pattern and builtin \\{gridpattern\\} pattern both named "image"')
+})
+
+test_that("assert_suggested() works as expected", {
+    expect_error(assert_suggested("doesnotexist", "blueberry"),
+                 "The suggested package \\{doesnotexist\\} must be installed")
 })
