@@ -34,6 +34,7 @@
 #' \item{`4.6.4*30.6`}{Creates a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.}
 #' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
 #' \item{`6.6*60.6.6*60`}{Creates a regular (star) polygon tiling made of hexagons and six-pointed stars.}
+#' \item{`9.3.9.3*40`}{Creates a regular (star) polygon tiling made of triangles, nonagons and three-pointed stars.}
 #' \item{`12.3*30.12.3*30`}{Creates a regular (star) polygon tiling made of dodecagons and three-pointed stars.}
 #' \item{`12.12.4*60`}{Creates a regular (star) polygon tiling made of dodecagons and four-pointed stars.}
 #' }
@@ -116,6 +117,7 @@ names_polygon_tiling <- c("herringbone",
                           "4.6.4*30.6",
                           "4.6*30.4.6*30.4.6*30",
                           "6.6*60.6.6*60",
+                          "9.3.9.3*40",
                           "12.3*30.12.3*30",
                           "12.12.4*60")
 
@@ -160,6 +162,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  `4.6.4*30.6` = create_4.6.4_30.6_tiling,
                  `4.6*30.4.6*30.4.6*30` = create_4.6_30.4.6_30.4.6_30_tiling,
                  `6.6*60.6.6*60` = create_6.6_60.6.6_60_tiling,
+                 `9.3.9.3*40` = create_9.3.9.3_40_tiling,
                  `12.3*30.12.3*30` = create_12.3_30.12.3_30_tiling,
                  `12.12.4*60` = create_12.12.4_60_tiling,
                  abort(paste("Don't know how to do tiling", type)))
@@ -607,6 +610,29 @@ create_rhombille_tiling <- function(xyi, gp, spacing, angle) {
                        angle = angle, rot = 0, spacing = spacing, density = 1,
                        gp = gp_rh3, name = "rhombi.3")
     gList(rh1, rh2, rh3)
+}
+create_9.3.9.3_40_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_non <- gp_tri <- gp_star3 <- gp
+    if (n_col == 2) {
+        gp_non$fill <- gp$fill[1L]
+        gp_star3$fill <- gp_tri$fill <- gp$fill[2L]
+    } else if (n_col == 3) {
+        gp_non$fill <- gp$fill[1L]
+        gp_star3$fill <- gp$fill[2L]
+        gp_tri$fill <- gp$fill[3L]
+    }
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_star3,
+                      name = "background_color")
+    stripe <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
+                          grid = "hex_circle", yoffset = 0.24 * spacing,
+                          angle = angle, spacing = spacing, density = 0.35,
+                          gp = gp_tri, name = "stripes")
+    non <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                       shape = "convex9", grid = "hex_circle",
+                       angle = angle, rot = 0, spacing = spacing, density = 1.01,
+                       gp = gp_non, name = "nonagons")
+    gList(bg, stripe, non)
 }
 create_tetrakis_tiling <- function(xyi, gp, spacing, angle) {
     n_col <- length(gp$fill)
