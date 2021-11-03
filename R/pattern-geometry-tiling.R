@@ -29,6 +29,7 @@
 #' \item{`3.3.8*15.4**60.8*15`}{Creates a regular (star) polygon tiling made of triangles, four-pointed stars, and eight-pointed stars.}
 #' \item{`3.4.6.3.12*30`}{Creates a regular (star) polygon tiling made of triangles, squares, hexagons, and twelve-pointed stars.}
 #' \item{`3.4.8.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
+#' \item{`3.6*30.6**30`}{Creates a regular (star) polygon tiling made of triangles and six-pointed stars.}
 #' \item{`4.4*30.4**30`}{Creates a regular (star) polygon tiling made of squares and four-pointed stars.}
 #' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
 #' \item{`6.6*60.6.6*60`}{Creates a regular (star) polygon tiling made of hexagons and six-pointed stars.}
@@ -109,6 +110,7 @@ names_polygon_tiling <- c("herringbone",
                           "3.3.8*15.4**60.8*15",
                           "3.4.6.3.12*30",
                           "3.4.8.3.8*15",
+                          "3.6*30.6**30",
                           "4.4*30.4**30",
                           "4.6*30.4.6*30.4.6*30",
                           "6.6*60.6.6*60",
@@ -151,6 +153,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  `3.3.8*15.3.4.3.8*15` = create_3.3.8_15.3.4.3.8_15_tiling,
                  `3.3.8*15.4**60.8*15` = create_3.3.8_15.4__60.8_15_tiling,
                  `3.4.8.3.8*15` = create_3.4.8.3.8_15_tiling,
+                 `3.6*30.6**30` = create_3.6_30.6__30_tiling,
                  `4.4*30.4**30` = create_4.4_30.4__30_tiling,
                  `4.6*30.4.6*30.4.6*30` = create_4.6_30.4.6_30.4.6_30_tiling,
                  `6.6*60.6.6*60` = create_6.6_60.6.6_60_tiling,
@@ -307,6 +310,25 @@ create_12.12.4_60_tiling <- function(xyi, gp, spacing, angle) {
                         spacing = spacing, angle = angle, gp = gp_dod,
                         scale = scale, name = "dodecagons")
     gList(bg, dodecagons)
+}
+create_3.6_30.6__30_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_star <- gp_bg <- gp
+    if (n_col == 2L) {
+        gp_bg$fill <- gp$fill[2L]
+        gp_star$fill <- rev(gp$fill[1L])
+    } else if (n_col == 3L) {
+        gp_bg$fill <- gp$fill[2L]
+        gp_star$fill <- gp$fill[c(3, 1)]
+    }
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    scale <- star_scale(6, 30)
+    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "star6", density = 1.30, rot = -22.0,
+                        spacing = spacing, angle = angle, gp = gp_star,
+                        scale = scale, grid = "hex", name = "stars")
+    gList(bg, stars)
 }
 create_4.4_30.4__30_tiling <- function(xyi, gp, spacing, angle) {
     n_col <- length(gp$fill)

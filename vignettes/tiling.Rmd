@@ -548,11 +548,13 @@ add_borders()
 ```
 
 ```{r}
-# 3.6*.6*
+# 3.6*.6**
 pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
+grid.newpage()
 grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
 gp <- gpar(fill = yellow, col = "black")
-grid.pattern_regular_polygon(shape="star6", density=1.25, angle=0, scale=0.4, rot=-21.9, 
+scale <- star_scale(6, 30)
+grid.pattern_regular_polygon(shape="star6", density=1.30, angle=0, scale=scale, rot=-22.0, 
                              spacing=0.3, grid="hex", gp=gp)
 popViewport()
 
