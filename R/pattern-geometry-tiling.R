@@ -23,6 +23,7 @@
 #' \item{`truncated_square`}{Creates a truncated square tiling made of octagons and squares.}
 #' \item{`truncated_hexagonal`}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
 #' \item{`truncated_trihexagonal`}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
+#' \item{`2*53.2**233.2*53.2**233`}{Creates a polygon tiling made of rhombi.}
 #' \item{`3.3*30.3.3*30`}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
 #' \item{`3.3.3.12*30.3.3.12*30`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
 #' \item{`3.3.8*15.3.4.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
@@ -30,7 +31,7 @@
 #' \item{`3.4.6.3.12*30`}{Creates a regular (star) polygon tiling made of triangles, squares, hexagons, and twelve-pointed stars.}
 #' \item{`3.4.8.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
 #' \item{`3.6*30.6**30`}{Creates a regular (star) polygon tiling made of triangles and six-pointed stars.}
-#' \item{`4.2*60.4.2**240`}{Creates a regular (star) polygon tiling made of squares and rhombi (two-pointed stars).}
+#' \item{`4.2*60.4.2**240`}{Creates a polygon tiling made of squares and rhombi.}
 #' \item{`4.4*30.4**30`}{Creates a regular (star) polygon tiling made of squares and four-pointed stars.}
 #' \item{`4.6.4*30.6`}{Creates a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.}
 #' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
@@ -112,6 +113,7 @@ names_polygon_tiling <- c("herringbone",
                           "truncated_square",
                           "truncated_hexagonal",
                           "truncated_trihexagonal",
+                          "2*53.2**233.2*53.2**233",
                           "3.3*30.3.3*30",
                           "3.3.3.12*30.3.3.12*30",
                           "3.3.8*15.3.4.3.8*15",
@@ -159,6 +161,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  truncated_hexagonal = create_trunc_hex_tiling,
                  truncated_square = create_trunc_square_tiling,
                  truncated_trihexagonal = create_trunc_trihex_tiling,
+                 `2*53.2**233.2*53.2**233` = create_2_53.2__233.2_53.2__233_tiling,
                  `3.3*30.3.3*30` = create_3.3_30.3.3_30_tiling,
                  `3.3.3.12*30.3.3.12*30` = create_3.3.3.12_30.3.3.12_30_tiling,
                  `3.4.6.3.12*30` = create_3.4.6.3.12_30_tiling,
@@ -316,6 +319,39 @@ create_4.2_60.4.2__240_tiling <- function(xyi, gp, spacing, angle) {
                          yoffset = 0.5 * spacing,
                          scale = scale, name = "rhombi.2")
     gList(squares.1, squares.2, rhombi.1, rhombi.2)
+}
+create_2_53.2__233.2_53.2__233_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_rh1 <- gp_rh2 <- gp_rh3 <- gp_rh4 <- gp
+    if (n_col == 2L) {
+        gp_rh1$fill <- gp_rh2$fill <- gp$fill[1L]
+        gp_rh3$fill <- gp_rh4$fill <- gp$fill[2L]
+    } else if (n_col == 3L) {
+        gp_rh1$fill <- gp$fill[2:3]
+        gp_rh2$fill <- gp$fill[3:2]
+        gp_rh3$fill <- gp$fill[1]
+        gp_rh4$fill <- gp$fill[1]
+    }
+    rhombi.1 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                             shape = "star2", density = 1, scale = 0.5,
+                             spacing = spacing, angle = angle, gp = gp_rh1,
+                             name = "rhombi.1", type = "horizontal")
+    rhombi.2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                             shape = "star2", density = 1, scale = 0.5,
+                             xoffset = 0.5 * spacing,
+                             spacing = spacing, angle = angle, gp = gp_rh2,
+                             name = "rhombi.2", type = "horizontal")
+    rhombi.3 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                         shape = "star2", density = 1, scale = 0.5,
+                         spacing = spacing, angle = angle, gp = gp_rh3,
+                         xoffset = 0.25 * spacing, yoffset = 0.5 * spacing,
+                         scale = scale, name = "rhombi.3")
+    rhombi.4 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                         shape = "star2", density = 1, scale = 0.5,
+                         spacing = spacing, angle = angle, gp = gp_rh4,
+                         xoffset = 0.75 * spacing, yoffset = 0.5 * spacing,
+                         scale = scale, name = "rhombi.4")
+    gList(rhombi.1, rhombi.2, rhombi.3, rhombi.4)
 }
 
 create_4.6_30.4.6_30.4.6_30_tiling <- function(xyi, gp, spacing, angle) {
