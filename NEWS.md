@@ -32,6 +32,7 @@ New Features
   - `"3.4.8.3.8*15"` implements a regular (star) polygon tiling of triangles,
     squares, octagons, and eight-pointed stars.
   - `"3.6*30.6**30"` implements a regular (star) polygon tiling made of triangles and six-pointed stars.
+  - `"4.2*60.4.2**240"` implements a regular (star) polygon tiling made of squares and rhombi (two-pointed stars).
   - `"4.4*30.4**30"` implements a regular (star) polygon tiling made of squares and four-pointed stars.
   - `"4.6.4*30.6"` implements a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.
   - `"4.6*30.4.6*30.4.6*30"` implements a regular (star) polygon of squares and six-pointed stars.

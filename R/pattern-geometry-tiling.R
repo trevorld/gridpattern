@@ -30,6 +30,7 @@
 #' \item{`3.4.6.3.12*30`}{Creates a regular (star) polygon tiling made of triangles, squares, hexagons, and twelve-pointed stars.}
 #' \item{`3.4.8.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
 #' \item{`3.6*30.6**30`}{Creates a regular (star) polygon tiling made of triangles and six-pointed stars.}
+#' \item{`4.2*60.4.2**240`}{Creates a regular (star) polygon tiling made of squares and rhombi (two-pointed stars).}
 #' \item{`4.4*30.4**30`}{Creates a regular (star) polygon tiling made of squares and four-pointed stars.}
 #' \item{`4.6.4*30.6`}{Creates a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.}
 #' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
@@ -118,6 +119,7 @@ names_polygon_tiling <- c("herringbone",
                           "3.4.6.3.12*30",
                           "3.4.8.3.8*15",
                           "3.6*30.6**30",
+                          "4.2*60.4.2**240",
                           "4.4*30.4**30",
                           "4.6.4*30.6",
                           "4.6*30.4.6*30.4.6*30",
@@ -164,6 +166,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  `3.3.8*15.4**60.8*15` = create_3.3.8_15.4__60.8_15_tiling,
                  `3.4.8.3.8*15` = create_3.4.8.3.8_15_tiling,
                  `3.6*30.6**30` = create_3.6_30.6__30_tiling,
+                 `4.2*60.4.2**240` = create_4.2_60.4.2__240_tiling,
                  `4.4*30.4**30` = create_4.4_30.4__30_tiling,
                  `4.6.4*30.6` = create_4.6.4_30.6_tiling,
                  `4.6*30.4.6*30.4.6*30` = create_4.6_30.4.6_30.4.6_30_tiling,
@@ -278,6 +281,41 @@ create_3.4.8.3.8_15_tiling <- function(xyi, gp, spacing, angle) {
                          spacing = spacing, angle = angle, gp = gp_star,
                          scale = scale, name = "stars")
     gList(bg, octagons, stars)
+}
+create_4.2_60.4.2__240_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_rh <- gp_sq1 <- gp_sq2 <- gp
+    if (n_col == 2L) {
+        gp_sq1$fill <- gp_sq2$fill <- gp$fill[1L]
+        gp_rh$fill <- gp$fill[2L]
+    } else if (n_col == 3L) {
+        gp_sq2$fill <- gp$fill[3]
+        gp_sq1$fill <- gp$fill[2]
+        gp_rh$fill <- gp$fill[1]
+    }
+    dens_sq <- 0.73
+    squares.1 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                             shape = "convex4", density = dens_sq, rot = 60,
+                             spacing = spacing, angle = angle, gp = gp_sq1,
+                             name = "squares.1")
+    squares.2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                             shape = "convex4", density = dens_sq, rot = -60,
+                             xoffset = 0.5 * spacing, yoffset = 0.5 * spacing,
+                             spacing = spacing, angle = angle, gp = gp_sq2,
+                             name = "squares.2")
+    scale <- star_scale(2, 60)
+    dens_rh <- 0.88
+    rhombi.1 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                         shape = "star2", density = dens_rh, rot = 45,
+                         spacing = spacing, angle = angle, gp = gp_rh,
+                         xoffset = 0.5 * spacing,
+                         scale = scale, name = "rhombi.1")
+    rhombi.2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                         shape = "star2", density = dens_rh, rot = -45,
+                         spacing = spacing, angle = angle, gp = gp_rh,
+                         yoffset = 0.5 * spacing,
+                         scale = scale, name = "rhombi.2")
+    gList(squares.1, squares.2, rhombi.1, rhombi.2)
 }
 
 create_4.6_30.4.6_30.4.6_30_tiling <- function(xyi, gp, spacing, angle) {

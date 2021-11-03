@@ -6,7 +6,7 @@
 \alias{names_polygon_tiling}
 \title{Polygon tiling patterned grobs}
 \format{
-An object of class \code{character} of length 29.
+An object of class \code{character} of length 30.
 }
 \usage{
 grid.pattern_polygon_tiling(
@@ -113,6 +113,7 @@ dodecagons, hexagons, and squares.}
 \item{\verb{3.4.6.3.12*30}}{Creates a regular (star) polygon tiling made of triangles, squares, hexagons, and twelve-pointed stars.}
 \item{\verb{3.4.8.3.8*15}}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
 \item{\code{3.6*30.6**30}}{Creates a regular (star) polygon tiling made of triangles and six-pointed stars.}
+\item{\verb{4.2*60.4.2**240}}{Creates a regular (star) polygon tiling made of squares and rhombi (two-pointed stars).}
 \item{\code{4.4*30.4**30}}{Creates a regular (star) polygon tiling made of squares and four-pointed stars.}
 \item{\verb{4.6.4*30.6}}{Creates a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.}
 \item{\verb{4.6*30.4.6*30.4.6*30}}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}

@@ -29,6 +29,7 @@ vignette: >
 * [Pythagorean tiling](#pythagorean)
 * [Rhombille tiling](#rhombille)
 * [Tetrakis square tiling](#tetrakis)
+* [Additional tilings using rhombi](#rhombi)
 
 Several [uniform regular polygon tiling patterns](https://en.wikipedia.org/wiki/Uniform_tiling) can be achieved by use of `grid.pattern_regular_polygon()` plus occasionally `grid.polygon()` to set a background color.  This vignette highlights several such tiling patterns plus a couple notable non-uniform tiling patterns.
 
@@ -748,4 +749,55 @@ pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
 grid.tetrakis_tiling(gp1, gp2, gp3, gp4)
 popViewport()
 add_borders()
+```
+
+<a name="rhombi">Additional tilings using rhombi</a>
+----------------------------------------------------
+
+A rhombi may be produced by the "star2" shape:
+
+```{r}
+# 2*.2**.2*.2**
+pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
+sp <- 0.3
+ang <- 63.5
+scale <- 0.5
+gpy <- gpar(fill = yellow, col = "black")
+grid.pattern_regular_polygon(shape = "star2", scale = scale, angle = ang,
+                             density = 1, spacing = sp, gp = gpy)
+grid.pattern_regular_polygon(shape = "star2", scale = scale, angle = ang,
+                             density = 1, spacing = sp, gp = gpy,
+                             xoffset = 0.5 * sp)
+gpr <- gpar(fill = red, col = "black")
+grid.pattern_regular_polygon(shape = "star2", scale = scale, angle = ang,
+                             density = 1, spacing = sp, gp = gpr,
+                             xoffset = 0.25 * sp, yoffset = 0.5 * sp)
+grid.pattern_regular_polygon(shape = "star2", scale = scale, angle = ang,
+                             density = 1, spacing = sp, gp = gpr,
+                             xoffset = 0.75 * sp, yoffset = 0.5 * sp)
+popViewport()
+
+# 4.2*.4.2**
+pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
+dens_sq <- 0.73
+scale <- star_scale(2, 60)
+dens_rh <- 0.88
+gpy <- gpar(fill = yellow, col = "black")
+gpb <- gpar(fill = blue, col = "black")
+gpr <- gpar(fill = red, col = "black")
+grid.pattern_regular_polygon(shape = "convex4", scale = scale, angle = 0,
+                             rot = 60,
+                             density = dens_sq, spacing = sp, gp = gpb)
+grid.pattern_regular_polygon(shape = "star2", scale = scale, angle = 0,
+                             density = dens_rh, spacing = sp, gp = gpy,
+                             rot = 45, xoffset = 0.5 * sp)
+grid.pattern_regular_polygon(shape = "convex4", scale = scale, angle = 0,
+                             rot = -60, yoffset = 0.5 * sp, xoffset = 0.5 * sp,
+                             density = dens_sq, spacing = sp, gp = gpr)
+grid.pattern_regular_polygon(shape = "star2", scale = scale, angle = 0,
+                             density = dens_rh, spacing = sp, gp = gpy,
+                             rot = -45, yoffset = 0.5 * sp)
+popViewport()
+add_borders()
+
 ```
