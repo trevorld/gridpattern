@@ -522,8 +522,10 @@ popViewport()
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
 gp <- gpar(fill = c(yellow, blue), col = "black")
-grid.pattern_regular_polygon(shape="star4", density=1.64, angle=0, scale=0.27, 
-                             rot=-9.0, spacing=0.3, gp = gp)
+gp <- gpar(fill=yellow)
+scale <- star_scale(4, 30)
+grid.pattern_regular_polygon(shape="star4", density=1.60, angle=0, scale=scale, 
+                             rot=-9.5, spacing=0.3, gp = gp)
 popViewport()
 
 # 3.3.8*.4**.8*
@@ -533,9 +535,10 @@ gp <- gpar(fill = red, col = "black")
 grid.pattern_regular_polygon(shape = "square", density = 1, angle = 0, 
                              spacing = sp, gp = gp)
 gp <- gpar(fill = yellow, col = "black")
-grid.pattern_regular_polygon(shape = "star4", density = 1.08, rot = 45, 
+scale <- star_scale(4, 60)
+grid.pattern_regular_polygon(shape = "star4", density = 1.14, rot = 45, 
                              xoffset = sp / 2, yoffset = sp / 2,
-                             angle = 0, scale = 0.56, spacing = sp, gp = gp)
+                             angle = 0, scale = scale, spacing = sp, gp = gp)
 gp <- gpar(fill = blue, col = "black")
 scale <- star_scale(8, 15)
 grid.pattern_regular_polygon(shape = "star8", density = 1.082, rot = 22.5, 
@@ -698,7 +701,7 @@ popViewport()
 add_borders()
 ```
 
-<a name="tetrakis">tetrakis square tiling</a>
+<a name="tetrakis">Tetrakis square tiling</a>
 ---------------------------------------------
 
 We can get a [tetrakis square tiling](https://en.wikipedia.org/wiki/Tetrakis_square_tiling) by using the "tetrakis_left" and "tetrakis_right" shapes:

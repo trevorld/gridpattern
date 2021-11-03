@@ -25,10 +25,13 @@ New Features
   - `"3.3.3.12*30.3.3.12*30"` implements a regular (star) polygon tiling made of triangles and twelve-pointed starts.
   - `"3.3.8*15.3.4.3.8*15"` implements a regular (star) polygon tiling of triangles,
     squares, and eight-pointed stars.
+  - `"3.3.8*15.4**60.8*15"` implements a regular (star) polygon tiling made of triangles, four-pointed stars,
+    and eight-pointed stars.
   - `"3.4.6.3.12*30"` implements a regular (star) polygon tiling made of triangles, squares,
-     hexagons, and twelve-pointed stars.
+    hexagons, and twelve-pointed stars.
   - `"3.4.8.3.8*15"` implements a regular (star) polygon tiling of triangles,
     squares, octagons, and eight-pointed stars.
+  - `"4.4*30.4**30"` implements a regular (star) polygon tiling made of squares and four-pointed stars.
   - `"4.6*30.4.6*30.4.6*30"` implements a regular (star) polygon of squares and six-pointed stars.
   - `"6.6*60.6.6*60"` implements a regular (star) polygon of hexagons and six-pointed stars.
   - `"12.3*30.12.3*30"` implements a regular (star) polygon tiling made of dodecagons and three-pointed stars.
