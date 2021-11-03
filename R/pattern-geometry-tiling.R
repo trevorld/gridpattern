@@ -8,21 +8,21 @@
 #'  We support the following polygon tiling `type`s:
 #'
 #' \describe{
-#' \item{herringbone}{Creates a herringbone tiling made of rectangles.}
-#' \item{hexagonal}{Creates a hexagonal tiling made of hexagons.}
-#' \item{pythagorean}{Creates a Pythagorean tiling made of squares of two different sizes.}
-#' \item{rhombille}{Creates a rhombille tiling made of rhombi.}
-#' \item{rhombitrihexagonal}{Creates a rhombitrihexagonal tiling made out of
-#'                           dodecagons, hexagons, and squares.}
-#' \item{snub_square}{Creates a snub square tiling made of squares and triangles.}
-#' \item{snub_trihexagonal}{Creates a snub trihexagonal tiling made of hexagons and triangles.}
-#' \item{square}{Creates a square tiling made of squares.}
-#' \item{tetrakis_square}{Creates a tetrakis square tiling made of isosceles right triangles.}
-#' \item{triangular}{Creates a triangular tiling made of equilateral triangles.}
-#' \item{trihexagonal}{Creates a trihexagonal tiling made of hexagons and triangles.}
-#' \item{truncated_square}{Creates a truncated square tiling made of octagons and squares.}
-#' \item{truncated_hexagonal}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
-#' \item{truncated_trihexagonal}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
+#' \item{`herringbone`}{Creates a herringbone tiling made of rectangles.}
+#' \item{`hexagonal`}{Creates a hexagonal tiling made of hexagons.}
+#' \item{`pythagorean`}{Creates a Pythagorean tiling made of squares of two different sizes.}
+#' \item{`rhombille`}{Creates a rhombille tiling made of rhombi.}
+#' \item{`rhombitrihexagonal`}{Creates a rhombitrihexagonal tiling made out of
+#'                            dodecagons, hexagons, and squares.}
+#' \item{`snub_square`}{Creates a snub square tiling made of squares and triangles.}
+#' \item{`snub_trihexagonal`}{Creates a snub trihexagonal tiling made of hexagons and triangles.}
+#' \item{`square`}{Creates a square tiling made of squares.}
+#' \item{`tetrakis_square`}{Creates a tetrakis square tiling made of isosceles right triangles.}
+#' \item{`triangular`}{Creates a triangular tiling made of equilateral triangles.}
+#' \item{`trihexagonal`}{Creates a trihexagonal tiling made of hexagons and triangles.}
+#' \item{`truncated_square`}{Creates a truncated square tiling made of octagons and squares.}
+#' \item{`truncated_hexagonal`}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
+#' \item{`truncated_trihexagonal`}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
 #' \item{`3.3*30.3.3*30`}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
 #' \item{`3.3.3.12*30.3.3.12*30`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
 #' \item{`3.3.8*15.3.4.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
@@ -35,7 +35,7 @@
 #' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
 #' \item{`6.6*60.6.6*60`}{Creates a regular (star) polygon tiling made of hexagons and six-pointed stars.}
 #' \item{`8.4*45.8.4*45`}{Creates a regular (star) polygon tiling made of octagons and four-pointed stars.}
-#' \item{`9.3.9.3*40`}{Creates a regular (star) polygon tiling made of triangles, nonagons and three-pointed stars.}
+#' \item{`9.3.9.3*40`}{Creates a regular (star) polygon tiling made of triangles, nonagons, and three-pointed stars.}
 #' \item{`12.3*30.12.3*30`}{Creates a regular (star) polygon tiling made of dodecagons and three-pointed stars.}
 #' \item{`12.12.4*60`}{Creates a regular (star) polygon tiling made of dodecagons and four-pointed stars.}
 #' }
@@ -60,16 +60,20 @@
 #'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "herringbone", gp = gp1)
 #'
 #'    grid.newpage()
-#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "hexagonal", gp = gp3)
+#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "hexagonal",
+#'                                spacing = 0.2, gp = gp3)
 #'
 #'    grid.newpage()
-#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "pythagorean", gp = gp2)
+#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "pythagorean",
+#'                                spacing = 0.2, gp = gp2)
 #'
 #'    grid.newpage()
-#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_square", gp = gp3)
+#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "snub_trihexagonal",
+#'                                spacing = 0.2, gp = gp3)
 #'
 #'    grid.newpage()
-#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "rhombille", gp = gp3)
+#'    grid.pattern_polygon_tiling(x_hex, y_hex, type = "rhombille",
+#'                                spacing = 0.2, gp = gp3)
 #'  }
 #'
 #' @export
