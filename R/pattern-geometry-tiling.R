@@ -25,6 +25,7 @@
 #' \item{`truncated_trihexagonal`}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
 #' \item{`2*.2**.2*.2**`}{Creates a polygon tiling made of rhombi.}
 #' \item{`2**.3**.12*`}{Creates a polygon tiling made of rhombi, triangles, and twelve-pointed stars.}
+#' \item{`3.3.3.3**`}{Creates a polygon tiling made of triangles.}
 #' \item{`3.3*.3.3**`}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
 #' \item{`3.3.3.12*.3.3.12*`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
 #' \item{`3.3.8*.3.4.3.8*`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
@@ -118,6 +119,7 @@ names_polygon_tiling <- c("herringbone",
                           "truncated_trihexagonal",
                           "2*.2**.2*.2**",
                           "2**.3**.12*",
+                          "3.3.3.3**",
                           "3.3*.3.3**",
                           "3.3.3.12*.3.3.12*",
                           "3.3.8*.3.4.3.8*",
@@ -169,6 +171,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  truncated_trihexagonal = create_trunc_trihex_tiling,
                  `2*.2**.2*.2**` = create_2_53.2__233.2_53.2__233_tiling,
                  `2**.3**.12*` = create_2__.3__.12__tiling,
+                 `3.3.3.3**` = create_3.3.3.3___tiling,
                  `3.3*.3.3**` = create_3.3_30.3.3_30_tiling,
                  `3.3.3.12*.3.3.12*` = create_3.3.3.12_30.3.3.12_30_tiling,
                  `3.4.6.3.12*` = create_3.4.6.3.12_30_tiling,
@@ -514,6 +517,25 @@ create_3.3_30.3.3_30_tiling <- function(xyi, gp, spacing, angle) {
                         spacing = spacing, angle = angle, gp = gp_star,
                         scale = scale, name = "stars")
     gList(bg, stars)
+}
+create_3.3.3.3___tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_tri <- gp_bg <- gp
+    if (n_col == 2L) {
+        gp_tri$fill <- gp$fill[1L]
+        gp_bg$fill <- gp$fill[2L]
+    } else if (n_col == 3L) {
+        gp_tri$fill <- gp$fill[c(3L, 1L)]
+        gp_bg$fill <- gp$fill[2L]
+    }
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    triangles <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex3", density = 1.33,
+                        grid = "hex_circle", rot = 30,
+                        spacing = spacing, angle = angle, gp = gp_tri,
+                        scale = scale, name = "triangles")
+    gList(bg, triangles)
 }
 create_6.6_60.6.6_60_tiling <- function(xyi, gp, spacing, angle) {
     n_col <- length(gp$fill)
