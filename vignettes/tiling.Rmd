@@ -297,16 +297,7 @@ grid.truncated_hexagonal_tiling(gp = gp)
 gp <- gpar(fill = blue, col = "black")
 grid.truncated_hexagonal_tiling(gp = gp, shape = "star12")
 popViewport()
-
-# Use a "star12" instead of a "convex12"
-pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
-gp <- gpar(fill = yellow, col = NA)
-grid.polygon(x_sq, y_sq, gp = gp)
-gp <- gpar(fill = blue, col = "black")
-grid.truncated_hexagonal_tiling(gp = gp, shape = "star12")
-popViewport()
 add_borders()
-
 ```
 
 <a name="trihexagon">Trihexagonal tiling</a>
@@ -820,6 +811,13 @@ grid.pattern_regular_polygon(shape = "star2", scale = scale, angle = 0,
                              density = dens_rh, spacing = sp, gp = gpy,
                              rot = -45, yoffset = 0.5 * sp)
 popViewport()
-add_borders()
 
+# Use a "star12" instead of a "convex12" in truncated hexagonal tiling
+pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
+gp <- gpar(fill = yellow, col = NA)
+grid.polygon(x_sq, y_sq, gp = gp)
+gp <- gpar(fill = blue, col = "black")
+grid.truncated_hexagonal_tiling(gp = gp, shape = "star12")
+popViewport()
+add_borders()
 ```

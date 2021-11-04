@@ -24,6 +24,7 @@
 #' \item{`truncated_hexagonal`}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
 #' \item{`truncated_trihexagonal`}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
 #' \item{`2*.2**.2*.2**`}{Creates a polygon tiling made of rhombi.}
+#' \item{`2**.3**.12*`}{Creates a polygon tiling made of rhombi, triangles, and twelve-pointed stars.}
 #' \item{`3.3*.3.3*`}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
 #' \item{`3.3.3.12*.3.3.12*`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
 #' \item{`3.3.8*.3.4.3.8*`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
@@ -116,6 +117,7 @@ names_polygon_tiling <- c("herringbone",
                           "truncated_hexagonal",
                           "truncated_trihexagonal",
                           "2*.2**.2*.2**",
+                          "2**.3**.12*",
                           "3.3*.3.3*",
                           "3.3.3.12*.3.3.12*",
                           "3.3.8*.3.4.3.8*",
@@ -166,6 +168,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  truncated_square = create_trunc_square_tiling,
                  truncated_trihexagonal = create_trunc_trihex_tiling,
                  `2*.2**.2*.2**` = create_2_53.2__233.2_53.2__233_tiling,
+                 `2**.3**.12*` = create_2__.3__.12__tiling,
                  `3.3*.3.3*` = create_3.3_30.3.3_30_tiling,
                  `3.3.3.12*.3.3.12*` = create_3.3.3.12_30.3.3.12_30_tiling,
                  `3.4.6.3.12*` = create_3.4.6.3.12_30_tiling,
@@ -841,6 +844,22 @@ create_triangular_tiling <- function(xyi, gp, spacing, angle) {
     gList(bg, grob)
 }
 
+create_2__.3__.12__tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_bg <- gp
+    gp_bg$fill <- gp$fill[1]
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    if (n_col > 1L)
+        gp$fill <- rev(gp$fill[-1L])
+    scale <- star_scale(12, 60, external = TRUE)
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "star12", density = 1.034, rot = 15,
+                        grid = "hex_circle", scale = scale,
+                        spacing = spacing, angle = angle, gp = gp,
+                        name = "dodecagons")
+    gList(bg, grob)
+}
 create_trunc_hex_tiling <- function(xyi, gp, spacing, angle) {
     n_col <- length(gp$fill)
     gp_bg <- gp
