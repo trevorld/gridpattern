@@ -42,6 +42,7 @@ New Features
   - `"9.3.9.3*"` implements a regular (star) polygon of triangles, nonagons, and three-pointed stars.
   - `"12.3*.12.3*"` implements a regular (star) polygon tiling made of dodecagons and three-pointed stars.
   - `"12.12.4*"` implements a regular (star) polygon tiling made of dodecagons and four-pointed stars.
+  - `"18.18.3*"` implements a regular (star) polygon tiling made of eighteen-sided polygons and three-pointed stars.
 
 * `grid.pattern_regular_polygon()` now supports a `"tetrakis_left"` `shape` and `"tetrakis_right"` `shape` 
   which both draw an isosceles right triangle (one oriented left and one oriented right) as well as a

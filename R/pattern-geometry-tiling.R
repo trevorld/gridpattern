@@ -40,6 +40,7 @@
 #' \item{`9.3.9.3*`}{Creates a regular (star) polygon tiling made of triangles, nonagons, and three-pointed stars.}
 #' \item{`12.3*.12.3*`}{Creates a regular (star) polygon tiling made of dodecagons and three-pointed stars.}
 #' \item{`12.12.4*`}{Creates a regular (star) polygon tiling made of dodecagons and four-pointed stars.}
+#' \item{`18.18.3*`}{Creates a regular (star) polygon tiling made of eighteen-sided polygons and three-pointed stars.}
 #' }
 #'
 #' @inheritParams grid.pattern_circle
@@ -129,7 +130,8 @@ names_polygon_tiling <- c("herringbone",
                           "8.4*.8.4*",
                           "9.3.9.3*",
                           "12.3*.12.3*",
-                          "12.12.4*")
+                          "12.12.4*",
+                          "18.18.3*")
 
 create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
     type <- tolower(params$pattern_type)
@@ -178,6 +180,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  `9.3.9.3*` = create_9.3.9.3_40_tiling,
                  `12.3*.12.3*` = create_12.3_30.12.3_30_tiling,
                  `12.12.4*` = create_12.12.4_60_tiling,
+                 `18.18.3*` = create_18.18.3__tiling,
                  abort(paste("Don't know how to do tiling", type)))
     gTree(children = fn(xyi, gp, spacing, angle), name = "polygon_tiling")
 }
@@ -416,6 +419,20 @@ create_12.12.4_60_tiling <- function(xyi, gp, spacing, angle) {
                         spacing = spacing, angle = angle, gp = gp_dod,
                         scale = scale, name = "dodecagons")
     gList(bg, dodecagons)
+}
+create_18.18.3__tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_dod <- gp_bg <- gp
+    gp_bg$fill <- gp$fill[n_col]
+    if (n_col > 1L)
+        gp_dod$fill <- rev(gp$fill[-n_col])
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    eighteen <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = "convex18", density = 1, grid = "hex_circle",
+                        spacing = spacing, angle = angle, gp = gp_dod,
+                        scale = scale, name = "eighteen-sided")
+    gList(bg, eighteen)
 }
 create_3.6_30.6__30_tiling <- function(xyi, gp, spacing, angle) {
     n_col <- length(gp$fill)

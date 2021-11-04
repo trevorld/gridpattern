@@ -472,7 +472,7 @@ grid.pattern_regular_polygon(shape = "convex12", grid = "hex_circle", rot = 15,
                              density = 0.82, spacing = 0.3, angle = 0, gp = gp)
 popViewport()
 
-# 3.4.6.3.12*_{π/6} (rhombitrihexagonal plus star)
+# 3.4.6.3.12* rhombitrihexagonal plus star
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
 gp <- gpar(fill = red, col = "black")
@@ -503,7 +503,7 @@ add_borders()
 Some additional [uniform tilings with star polygons](https://en.wikipedia.org/wiki/Uniform_tiling#Uniform_tilings_using_star_polygons) not shown above.
 
 ```{r}
-# 12.12.4_{π/3}
+# 12.12.4*
 pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
 gp <- gpar(fill = c(yellow, blue), col = "black")
@@ -511,7 +511,7 @@ grid.pattern_regular_polygon(shape="convex12", rot=15, density=1.035,
                              angle=0, gp = gp, spacing=0.3)
 popViewport()
 
-# (12.3_{π/6})^2
+# 12.3*.12.3*
 pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
 gp <- gpar(fill = c(yellow), col = "black")
@@ -519,7 +519,7 @@ grid.pattern_regular_polygon(shape="convex12", density=1, grid = "hex_circle",
                              angle=0, gp = gp, spacing=0.4)
 popViewport()
 
-# 4.4*_α.4**_α 
+# 4.4*.4**
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
 gp <- gpar(fill = c(yellow, blue), col = "black")
@@ -568,7 +568,7 @@ grid.pattern_regular_polygon(shape=c("star4", "convex4"), density=c(1.2, 0.8),
                              spacing = 0.2, gp = gp, angle=45)
 popViewport()
 
-# 9.3.9.3*_{π/9}
+# 9.3.9.3*
 pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = red, col = NA))
 gp <- gpar(fill = blue, col = NA)
@@ -588,6 +588,17 @@ grid.pattern_regular_polygon(shape = c("convex8", "null"), density = 1.41,
 popViewport()
 add_borders()
 ```
+
+```{r}
+# 18.18.3*
+pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
+grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
+gp <- gpar(fill = c(red, yellow), col = "black")
+grid.pattern_regular_polygon(shape = "convex18", density = 1, 
+                             grid = "hex_circle", angle = 0,
+                             spacing = 0.2, gp = gp)
+popViewport()
+add_borders()
 
 <a name=non>Non-uniform tilings</a>
 ===================================
