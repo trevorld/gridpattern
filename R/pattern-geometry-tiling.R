@@ -25,7 +25,7 @@
 #' \item{`truncated_trihexagonal`}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
 #' \item{`2*.2**.2*.2**`}{Creates a polygon tiling made of rhombi.}
 #' \item{`2**.3**.12*`}{Creates a polygon tiling made of rhombi, triangles, and twelve-pointed stars.}
-#' \item{`3.3*.3.3*`}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
+#' \item{`3.3*.3.3**`}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
 #' \item{`3.3.3.12*.3.3.12*`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
 #' \item{`3.3.8*.3.4.3.8*`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
 #' \item{`3.3.8*.4**.8*`}{Creates a regular (star) polygon tiling made of triangles, four-pointed stars, and eight-pointed stars.}
@@ -118,7 +118,7 @@ names_polygon_tiling <- c("herringbone",
                           "truncated_trihexagonal",
                           "2*.2**.2*.2**",
                           "2**.3**.12*",
-                          "3.3*.3.3*",
+                          "3.3*.3.3**",
                           "3.3.3.12*.3.3.12*",
                           "3.3.8*.3.4.3.8*",
                           "3.3.8*.4**.8*",
@@ -169,7 +169,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  truncated_trihexagonal = create_trunc_trihex_tiling,
                  `2*.2**.2*.2**` = create_2_53.2__233.2_53.2__233_tiling,
                  `2**.3**.12*` = create_2__.3__.12__tiling,
-                 `3.3*.3.3*` = create_3.3_30.3.3_30_tiling,
+                 `3.3*.3.3**` = create_3.3_30.3.3_30_tiling,
                  `3.3.3.12*.3.3.12*` = create_3.3.3.12_30.3.3.12_30_tiling,
                  `3.4.6.3.12*` = create_3.4.6.3.12_30_tiling,
                  `3.3.8*.3.4.3.8*` = create_3.3.8_15.3.4.3.8_15_tiling,

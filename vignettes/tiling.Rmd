@@ -601,6 +601,7 @@ grid.pattern_regular_polygon(shape = c("star8", "convex4"), scale = scale,
                              angle = 0, spacing = 0.2, gp = gp)
 popViewport()
 add_borders()
+```
 
 <a name=non>Non-uniform tilings</a>
 ===================================
