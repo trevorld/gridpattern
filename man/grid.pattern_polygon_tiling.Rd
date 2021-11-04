@@ -106,23 +106,23 @@ dodecagons, hexagons, and squares.}
 \item{\code{truncated_square}}{Creates a truncated square tiling made of octagons and squares.}
 \item{\code{truncated_hexagonal}}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
 \item{\code{truncated_trihexagonal}}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
-\item{\code{2*53.2**233.2*53.2**233}}{Creates a polygon tiling made of rhombi.}
-\item{\verb{3.3*30.3.3*30}}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
-\item{\verb{3.3.3.12*30.3.3.12*30}}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
-\item{\verb{3.3.8*15.3.4.3.8*15}}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
-\item{\verb{3.3.8*15.4**60.8*15}}{Creates a regular (star) polygon tiling made of triangles, four-pointed stars, and eight-pointed stars.}
-\item{\verb{3.4.6.3.12*30}}{Creates a regular (star) polygon tiling made of triangles, squares, hexagons, and twelve-pointed stars.}
-\item{\verb{3.4.8.3.8*15}}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
-\item{\code{3.6*30.6**30}}{Creates a regular (star) polygon tiling made of triangles and six-pointed stars.}
-\item{\verb{4.2*60.4.2**240}}{Creates a polygon tiling made of squares and rhombi.}
-\item{\code{4.4*30.4**30}}{Creates a regular (star) polygon tiling made of squares and four-pointed stars.}
-\item{\verb{4.6.4*30.6}}{Creates a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.}
-\item{\verb{4.6*30.4.6*30.4.6*30}}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
-\item{\verb{6.6*60.6.6*60}}{Creates a regular (star) polygon tiling made of hexagons and six-pointed stars.}
-\item{\verb{8.4*45.8.4*45}}{Creates a regular (star) polygon tiling made of octagons and four-pointed stars.}
-\item{\verb{9.3.9.3*40}}{Creates a regular (star) polygon tiling made of triangles, nonagons, and three-pointed stars.}
-\item{\verb{12.3*30.12.3*30}}{Creates a regular (star) polygon tiling made of dodecagons and three-pointed stars.}
-\item{\verb{12.12.4*60}}{Creates a regular (star) polygon tiling made of dodecagons and four-pointed stars.}
+\item{\verb{2*.2**.2*.2**}}{Creates a polygon tiling made of rhombi.}
+\item{\verb{3.3*.3.3*}}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
+\item{\verb{3.3.3.12*.3.3.12*}}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
+\item{\verb{3.3.8*.3.4.3.8*}}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
+\item{\verb{3.3.8*.4**.8*}}{Creates a regular (star) polygon tiling made of triangles, four-pointed stars, and eight-pointed stars.}
+\item{\verb{3.4.6.3.12*}}{Creates a regular (star) polygon tiling made of triangles, squares, hexagons, and twelve-pointed stars.}
+\item{\verb{3.4.8.3.8*}}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
+\item{\verb{3.6*.6**}}{Creates a regular (star) polygon tiling made of triangles and six-pointed stars.}
+\item{\verb{4.2*.4.2**}}{Creates a polygon tiling made of squares and rhombi.}
+\item{\verb{4.4*.4**}}{Creates a regular (star) polygon tiling made of squares and four-pointed stars.}
+\item{\verb{4.6.4*.6}}{Creates a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.}
+\item{\verb{4.6*.4.6*.4.6*}}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
+\item{\verb{6.6*.6.6*}}{Creates a regular (star) polygon tiling made of hexagons and six-pointed stars.}
+\item{\verb{8.4*.8.4*}}{Creates a regular (star) polygon tiling made of octagons and four-pointed stars.}
+\item{\verb{9.3.9.3*}}{Creates a regular (star) polygon tiling made of triangles, nonagons, and three-pointed stars.}
+\item{\verb{12.3*.12.3*}}{Creates a regular (star) polygon tiling made of dodecagons and three-pointed stars.}
+\item{\verb{12.12.4*}}{Creates a regular (star) polygon tiling made of dodecagons and four-pointed stars.}
 }
 }
 \examples{

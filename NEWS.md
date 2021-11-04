@@ -21,27 +21,27 @@ New Features
 
   - `"rhombille"` implements a rhombille tiling of rhombi (#37)
   - `"tetrakis_square"` implements a tetrakis square tiling of isosceles right triangles (#38)
-  - `"2*53.2**233.2*53.2**233"` implements a polygon tiling made of rhombi.
-  - `"3.3*30.3.3*30"` implements a regular (star) polygon tiling made of triangles and three-pointed stars.
-  - `"3.3.3.12*30.3.3.12*30"` implements a regular (star) polygon tiling made of triangles and twelve-pointed starts.
-  - `"3.3.8*15.3.4.3.8*15"` implements a regular (star) polygon tiling of triangles,
+  - `"2*.2**.2*.2**"` implements a polygon tiling made of rhombi.
+  - `"3.3*.3.3*"` implements a regular (star) polygon tiling made of triangles and three-pointed stars.
+  - `"3.3.3.12*.3.3.12*"` implements a regular (star) polygon tiling made of triangles and twelve-pointed starts.
+  - `"3.3.8*.3.4.3.8*"` implements a regular (star) polygon tiling of triangles,
     squares, and eight-pointed stars.
-  - `"3.3.8*15.4**60.8*15"` implements a regular (star) polygon tiling made of triangles, four-pointed stars,
+  - `"3.3.8*.4**.8*"` implements a regular (star) polygon tiling made of triangles, four-pointed stars,
     and eight-pointed stars.
-  - `"3.4.6.3.12*30"` implements a regular (star) polygon tiling made of triangles, squares,
+  - `"3.4.6.3.12*"` implements a regular (star) polygon tiling made of triangles, squares,
     hexagons, and twelve-pointed stars.
-  - `"3.4.8.3.8*15"` implements a regular (star) polygon tiling of triangles,
+  - `"3.4.8.3.8*"` implements a regular (star) polygon tiling of triangles,
     squares, octagons, and eight-pointed stars.
-  - `"3.6*30.6**30"` implements a regular (star) polygon tiling made of triangles and six-pointed stars.
-  - `"4.2*60.4.2**240"` implements a polygon tiling made of squares and rhombi.
-  - `"4.4*30.4**30"` implements a regular (star) polygon tiling made of squares and four-pointed stars.
-  - `"4.6.4*30.6"` implements a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.
-  - `"4.6*30.4.6*30.4.6*30"` implements a regular (star) polygon of squares and six-pointed stars.
-  - `"6.6*60.6.6*60"` implements a regular (star) polygon of hexagons and six-pointed stars.
-  - `"8.4*45.8.4*45"` implements a regular (star) polygon of octagons and four-pointed stars.
-  - `"9.3.9.3*40"` implements a regular (star) polygon of triangles, nonagons, and three-pointed stars.
-  - `"12.3*30.12.3*30"` implements a regular (star) polygon tiling made of dodecagons and three-pointed stars.
-  - `"12.12.4*60"` implements a regular (star) polygon tiling made of dodecagons and four-pointed stars.
+  - `"3.6*.6**"` implements a regular (star) polygon tiling made of triangles and six-pointed stars.
+  - `"4.2*.4.2**"` implements a polygon tiling made of squares and rhombi.
+  - `"4.4*.4**"` implements a regular (star) polygon tiling made of squares and four-pointed stars.
+  - `"4.6.4*.6"` implements a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.
+  - `"4.6*.4.6*.4.6*"` implements a regular (star) polygon of squares and six-pointed stars.
+  - `"6.6*.6.6*"` implements a regular (star) polygon of hexagons and six-pointed stars.
+  - `"8.4*.8.4*"` implements a regular (star) polygon of octagons and four-pointed stars.
+  - `"9.3.9.3*"` implements a regular (star) polygon of triangles, nonagons, and three-pointed stars.
+  - `"12.3*.12.3*"` implements a regular (star) polygon tiling made of dodecagons and three-pointed stars.
+  - `"12.12.4*"` implements a regular (star) polygon tiling made of dodecagons and four-pointed stars.
 
 * `grid.pattern_regular_polygon()` now supports a `"tetrakis_left"` `shape` and `"tetrakis_right"` `shape` 
   which both draw an isosceles right triangle (one oriented left and one oriented right) as well as a

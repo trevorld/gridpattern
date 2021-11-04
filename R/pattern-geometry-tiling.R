@@ -23,23 +23,23 @@
 #' \item{`truncated_square`}{Creates a truncated square tiling made of octagons and squares.}
 #' \item{`truncated_hexagonal`}{Creates a truncated hexagonal tiling made of dodecagons and triangles.}
 #' \item{`truncated_trihexagonal`}{Creates a truncated trihexagonal tiling made of hexagons, squares, and triangles.}
-#' \item{`2*53.2**233.2*53.2**233`}{Creates a polygon tiling made of rhombi.}
-#' \item{`3.3*30.3.3*30`}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
-#' \item{`3.3.3.12*30.3.3.12*30`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
-#' \item{`3.3.8*15.3.4.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
-#' \item{`3.3.8*15.4**60.8*15`}{Creates a regular (star) polygon tiling made of triangles, four-pointed stars, and eight-pointed stars.}
-#' \item{`3.4.6.3.12*30`}{Creates a regular (star) polygon tiling made of triangles, squares, hexagons, and twelve-pointed stars.}
-#' \item{`3.4.8.3.8*15`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
-#' \item{`3.6*30.6**30`}{Creates a regular (star) polygon tiling made of triangles and six-pointed stars.}
-#' \item{`4.2*60.4.2**240`}{Creates a polygon tiling made of squares and rhombi.}
-#' \item{`4.4*30.4**30`}{Creates a regular (star) polygon tiling made of squares and four-pointed stars.}
-#' \item{`4.6.4*30.6`}{Creates a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.}
-#' \item{`4.6*30.4.6*30.4.6*30`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
-#' \item{`6.6*60.6.6*60`}{Creates a regular (star) polygon tiling made of hexagons and six-pointed stars.}
-#' \item{`8.4*45.8.4*45`}{Creates a regular (star) polygon tiling made of octagons and four-pointed stars.}
-#' \item{`9.3.9.3*40`}{Creates a regular (star) polygon tiling made of triangles, nonagons, and three-pointed stars.}
-#' \item{`12.3*30.12.3*30`}{Creates a regular (star) polygon tiling made of dodecagons and three-pointed stars.}
-#' \item{`12.12.4*60`}{Creates a regular (star) polygon tiling made of dodecagons and four-pointed stars.}
+#' \item{`2*.2**.2*.2**`}{Creates a polygon tiling made of rhombi.}
+#' \item{`3.3*.3.3*`}{Creates a regular (star) polygon tiling made of triangles and three-pointed stars.}
+#' \item{`3.3.3.12*.3.3.12*`}{Creates a regular (star) polygon tiling made of triangles and twelve-pointed stars.}
+#' \item{`3.3.8*.3.4.3.8*`}{Creates a regular (star) polygon tiling made of triangles, squares, and eight-pointed stars.}
+#' \item{`3.3.8*.4**.8*`}{Creates a regular (star) polygon tiling made of triangles, four-pointed stars, and eight-pointed stars.}
+#' \item{`3.4.6.3.12*`}{Creates a regular (star) polygon tiling made of triangles, squares, hexagons, and twelve-pointed stars.}
+#' \item{`3.4.8.3.8*`}{Creates a regular (star) polygon tiling made of triangles, squares, octagons, and eight-pointed stars.}
+#' \item{`3.6*.6**`}{Creates a regular (star) polygon tiling made of triangles and six-pointed stars.}
+#' \item{`4.2*.4.2**`}{Creates a polygon tiling made of squares and rhombi.}
+#' \item{`4.4*.4**`}{Creates a regular (star) polygon tiling made of squares and four-pointed stars.}
+#' \item{`4.6.4*.6`}{Creates a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.}
+#' \item{`4.6*.4.6*.4.6*`}{Creates a regular (star) polygon tiling made of squares and six-pointed stars.}
+#' \item{`6.6*.6.6*`}{Creates a regular (star) polygon tiling made of hexagons and six-pointed stars.}
+#' \item{`8.4*.8.4*`}{Creates a regular (star) polygon tiling made of octagons and four-pointed stars.}
+#' \item{`9.3.9.3*`}{Creates a regular (star) polygon tiling made of triangles, nonagons, and three-pointed stars.}
+#' \item{`12.3*.12.3*`}{Creates a regular (star) polygon tiling made of dodecagons and three-pointed stars.}
+#' \item{`12.12.4*`}{Creates a regular (star) polygon tiling made of dodecagons and four-pointed stars.}
 #' }
 #'
 #' @inheritParams grid.pattern_circle
@@ -113,23 +113,23 @@ names_polygon_tiling <- c("herringbone",
                           "truncated_square",
                           "truncated_hexagonal",
                           "truncated_trihexagonal",
-                          "2*53.2**233.2*53.2**233",
-                          "3.3*30.3.3*30",
-                          "3.3.3.12*30.3.3.12*30",
-                          "3.3.8*15.3.4.3.8*15",
-                          "3.3.8*15.4**60.8*15",
-                          "3.4.6.3.12*30",
-                          "3.4.8.3.8*15",
-                          "3.6*30.6**30",
-                          "4.2*60.4.2**240",
-                          "4.4*30.4**30",
-                          "4.6.4*30.6",
-                          "4.6*30.4.6*30.4.6*30",
-                          "6.6*60.6.6*60",
-                          "8.4*45.8.4*45",
-                          "9.3.9.3*40",
-                          "12.3*30.12.3*30",
-                          "12.12.4*60")
+                          "2*.2**.2*.2**",
+                          "3.3*.3.3*",
+                          "3.3.3.12*.3.3.12*",
+                          "3.3.8*.3.4.3.8*",
+                          "3.3.8*.4**.8*",
+                          "3.4.6.3.12*",
+                          "3.4.8.3.8*",
+                          "3.6*.6**",
+                          "4.2*.4.2**",
+                          "4.4*.4**",
+                          "4.6.4*.6",
+                          "4.6*.4.6*.4.6*",
+                          "6.6*.6.6*",
+                          "8.4*.8.4*",
+                          "9.3.9.3*",
+                          "12.3*.12.3*",
+                          "12.12.4*")
 
 create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
     type <- tolower(params$pattern_type)
@@ -161,23 +161,23 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
                  truncated_hexagonal = create_trunc_hex_tiling,
                  truncated_square = create_trunc_square_tiling,
                  truncated_trihexagonal = create_trunc_trihex_tiling,
-                 `2*53.2**233.2*53.2**233` = create_2_53.2__233.2_53.2__233_tiling,
-                 `3.3*30.3.3*30` = create_3.3_30.3.3_30_tiling,
-                 `3.3.3.12*30.3.3.12*30` = create_3.3.3.12_30.3.3.12_30_tiling,
-                 `3.4.6.3.12*30` = create_3.4.6.3.12_30_tiling,
-                 `3.3.8*15.3.4.3.8*15` = create_3.3.8_15.3.4.3.8_15_tiling,
-                 `3.3.8*15.4**60.8*15` = create_3.3.8_15.4__60.8_15_tiling,
-                 `3.4.8.3.8*15` = create_3.4.8.3.8_15_tiling,
-                 `3.6*30.6**30` = create_3.6_30.6__30_tiling,
-                 `4.2*60.4.2**240` = create_4.2_60.4.2__240_tiling,
-                 `4.4*30.4**30` = create_4.4_30.4__30_tiling,
-                 `4.6.4*30.6` = create_4.6.4_30.6_tiling,
-                 `4.6*30.4.6*30.4.6*30` = create_4.6_30.4.6_30.4.6_30_tiling,
-                 `6.6*60.6.6*60` = create_6.6_60.6.6_60_tiling,
-                 `8.4*45.8.4*45` = create_8.4_45.8.4_45_tiling,
-                 `9.3.9.3*40` = create_9.3.9.3_40_tiling,
-                 `12.3*30.12.3*30` = create_12.3_30.12.3_30_tiling,
-                 `12.12.4*60` = create_12.12.4_60_tiling,
+                 `2*.2**.2*.2**` = create_2_53.2__233.2_53.2__233_tiling,
+                 `3.3*.3.3*` = create_3.3_30.3.3_30_tiling,
+                 `3.3.3.12*.3.3.12*` = create_3.3.3.12_30.3.3.12_30_tiling,
+                 `3.4.6.3.12*` = create_3.4.6.3.12_30_tiling,
+                 `3.3.8*.3.4.3.8*` = create_3.3.8_15.3.4.3.8_15_tiling,
+                 `3.3.8*.4**.8*` = create_3.3.8_15.4__60.8_15_tiling,
+                 `3.4.8.3.8*` = create_3.4.8.3.8_15_tiling,
+                 `3.6*.6**` = create_3.6_30.6__30_tiling,
+                 `4.2*.4.2**` = create_4.2_60.4.2__240_tiling,
+                 `4.4*.4**` = create_4.4_30.4__30_tiling,
+                 `4.6.4*.6` = create_4.6.4_30.6_tiling,
+                 `4.6*.4.6*.4.6*` = create_4.6_30.4.6_30.4.6_30_tiling,
+                 `6.6*.6.6*` = create_6.6_60.6.6_60_tiling,
+                 `8.4*.8.4*` = create_8.4_45.8.4_45_tiling,
+                 `9.3.9.3*` = create_9.3.9.3_40_tiling,
+                 `12.3*.12.3*` = create_12.3_30.12.3_30_tiling,
+                 `12.12.4*` = create_12.12.4_60_tiling,
                  abort(paste("Don't know how to do tiling", type)))
     gTree(children = fn(xyi, gp, spacing, angle), name = "polygon_tiling")
 }
