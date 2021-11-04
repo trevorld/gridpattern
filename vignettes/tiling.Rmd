@@ -598,6 +598,17 @@ grid.pattern_regular_polygon(shape = "convex18", density = 1,
                              grid = "hex_circle", angle = 0,
                              spacing = 0.2, gp = gp)
 popViewport()
+
+# Only uniform if you consider the larger squares to be four-pointed stars...
+# 4.8*.4**.8*
+pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
+grid.polygon(x_sq, y_sq, gp = gpar(fill = blue, col = NA))
+gp <- gpar(fill = c(yellow, red), col = "black")
+scale <- star_scale(8, 90, external = TRUE)
+grid.pattern_regular_polygon(shape = c("star8", "convex4"), scale = scale,
+                             density = c(1.53, 1.2), rot = c(22.5, 0), 
+                             angle = 0, spacing = 0.2, gp = gp)
+popViewport()
 add_borders()
 
 <a name=non>Non-uniform tilings</a>

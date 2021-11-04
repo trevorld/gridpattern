@@ -37,6 +37,7 @@ New Features
   - `"4.4*.4**"` implements a regular (star) polygon tiling made of squares and four-pointed stars.
   - `"4.6.4*.6"` implements a regular (star) polygon tiling made of squares, hexagons, and four-pointed stars.
   - `"4.6*.4.6*.4.6*"` implements a regular (star) polygon of squares and six-pointed stars.
+  - `"4.8*.4**.8*"` implements a polygon tiling of squares and eight-pointed stars.
   - `"6.6*.6.6*"` implements a regular (star) polygon of hexagons and six-pointed stars.
   - `"8.4*.8.4*"` implements a regular (star) polygon of octagons and four-pointed stars.
   - `"9.3.9.3*"` implements a regular (star) polygon of triangles, nonagons, and three-pointed stars.

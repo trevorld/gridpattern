@@ -67,6 +67,8 @@ test_that("tiling patterns work as expected", {
         g.ppt("4.6.4*.6", gp = gp3))
     expect_doppelganger("4.6*.4.6*.4.6*", function()
         g.ppt("4.6*.4.6*.4.6*", gp = gp2))
+    expect_doppelganger("4.8*.4**.8*", function()
+        g.ppt("4.8*.4**.8*", gp = gp2))
     expect_doppelganger("6.6*.6.6*", function()
         g.ppt("6.6*.6.6*", gp = gp2))
     expect_doppelganger("8.4*.8.4*", function()
