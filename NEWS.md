@@ -57,6 +57,8 @@ Bug fixes and minor improvements
 
 * `star_angle()` and `star_scale()` now handle the `n_vertices == 2` case 
   (a "two-pointed star" polygon is a rhombus).
+* Fixes `grid.pattern_gradient()` when `use_R4.1_gradients=TRUE` to better
+  match behavior when `use_R4.1_gradients=FALSE`.
 
 gridpattern v0.2.1
 ==================

@@ -90,27 +90,27 @@ create_gradient_as_geometry <- function(params, boundary_df, aspect_ratio, legen
 
   x_min <- min(boundary_df$x)
   x_max <- max(boundary_df$x)
-  x_med <- 0.5 * (x_min + x_max)
   y_min <- min(boundary_df$y)
   y_max <- max(boundary_df$y)
-  y_med <- 0.5 * (y_min + y_max)
-  x_range <- convertX(unit(x_max - x_min, "npc"), "in")
-  y_range <- convertY(unit(y_max - y_min, "npc"), "in")
-  gradient <- switch(orientation,
-     horizontal = linearGradient(c(colour1, colour2),
-                                 x1 = x_min, y1 = y_med,
-                                 x2 = x_max, y2 = y_med),
-     radial = radialGradient(c(colour1, colour2),
-                             cx1 = x_med, cy1 = y_med,
-                             cx2 = x_med, cy2 = y_med,
-                             r2 = 0.5 * max(x_range, y_range),
-                             extend = "none"
-                             ),
-     vertical = linearGradient(c(colour1, colour2),
-                               x1 = x_med, y1 = y_min,
-                               x2 = x_med, y2 = y_max)
-  )
+  x_range <- convertX(unit(x_max - x_min, "npc"), "in", valueOnly = TRUE)
+  y_range <- convertY(unit(y_max - y_min, "npc"), "in", valueOnly = TRUE)
+  if (x_range == 0 || y_range == 0)
+      return(nullGrob())
 
+  if (x_range > y_range)
+      r2 <- 0.5 * x_range / y_range
+  else
+      r2 <- 0.5 * y_range / x_range
+
+  gradient <- switch(orientation,
+     horizontal = linearGradient(c(colour1, colour2), extend = "pad",
+                                 x1 = 0, y1 = 0.5, x2 = 1, y2 = 0.5),
+     radial = radialGradient(c(colour1, colour2), extend = "pad",
+                             cx1 = 0.5, cy1 = 0.5, cx2 = 0.5, cy2 = 0.5,
+                             r1 = 0, r2 = r2),
+     vertical = linearGradient(c(colour1, colour2), extend = "pad",
+                               x1 = 0.5, y1 = 0, x2 = 0.5, y2 = 1)
+  )
   gp <- gpar(col = NA, fill = gradient)
 
   convert_polygon_df_to_polygon_grob(boundary_df, gp = gp)
