@@ -129,5 +129,6 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \seealso{
 For more information about the noise types please see the relevant \code{ambient} documentation:
 \code{\link[ambient:noise_cubic]{ambient::noise_cubic()}}, \code{\link[ambient:noise_perlin]{ambient::noise_perlin()}}, \code{\link[ambient:noise_simplex]{ambient::noise_simplex()}},
-\code{\link[ambient:noise_value]{ambient::noise_value()}}, \code{\link[ambient:noise_white]{ambient::noise_white()}}, and \code{\link[ambient:noise_worley]{ambient::noise_worley()}}
+\code{\link[ambient:noise_value]{ambient::noise_value()}}, \code{\link[ambient:noise_white]{ambient::noise_white()}}, and \code{\link[ambient:noise_worley]{ambient::noise_worley()}}.
+\code{\link[=grid.pattern_plasma]{grid.pattern_plasma()}} provides an alternative noise pattern that depends on \code{magick}.
 }

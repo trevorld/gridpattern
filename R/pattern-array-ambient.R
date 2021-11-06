@@ -17,7 +17,8 @@
 #'  }
 #' @seealso For more information about the noise types please see the relevant `ambient` documentation:
 #'   [ambient::noise_cubic()], [ambient::noise_perlin()], [ambient::noise_simplex()],
-#'   [ambient::noise_value()], [ambient::noise_white()], and [ambient::noise_worley()]
+#'   [ambient::noise_value()], [ambient::noise_white()], and [ambient::noise_worley()].
+#'  [grid.pattern_plasma()] provides an alternative noise pattern that depends on `magick`.
 #' @export
 grid.pattern_ambient <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                  type = "simplex", fill = gp$fill %||% "grey80", fill2 = "#4169E1",

@@ -101,5 +101,6 @@ Affected by \code{scale} and \code{gravity}.}
   }
 }
 \seealso{
-The \code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html}
+\code{\link[=grid.pattern_placeholder]{grid.pattern_placeholder()}} is an image pattern that uses images
+downloaded from the internet.
 }

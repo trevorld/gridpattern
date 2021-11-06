@@ -96,7 +96,5 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
   }
 }
 \seealso{
-\verb{[grid.pattern_crosshatch()]} and \verb{[grid.pattern_weave()]} for overlaying stripes
-as well as the \code{ggpattern} documentation:
-\url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html}
+\verb{[grid.pattern_crosshatch()]} and \verb{[grid.pattern_weave()]} for overlaying stripes.
 }

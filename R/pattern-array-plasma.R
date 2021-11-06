@@ -11,7 +11,7 @@
 #'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     grid.pattern_plasma(x_hex, y_hex, fill = "green")
 #'   }
-#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html>
+#' @seealso [grid.pattern_ambient()] provides a noise pattern using the `ambient` package.
 #' @export
 grid.pattern_plasma <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 fill = gp$fill %||% "grey80", scale = 1, alpha = gp$alpha %||% NA_real_,

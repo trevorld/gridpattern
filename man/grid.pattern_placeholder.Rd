@@ -80,7 +80,4 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 
   print(names_placeholder)
 }
-\seealso{
-The \code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html}
-}
 \keyword{datasets}

@@ -16,9 +16,7 @@
 #'     grid.pattern_stripe(x_hex, y_hex, density = 0.3,
 #'                         gp = gpar(col = "blue", fill = "yellow"))
 #'   }
-#' @seealso `[grid.pattern_crosshatch()]` and `[grid.pattern_weave()]` for overlaying stripes
-#'  as well as the `ggpattern` documentation:
-#'  <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-stripe.html>
+#' @seealso `[grid.pattern_crosshatch()]` and `[grid.pattern_weave()]` for overlaying stripes.
 #' @export
 grid.pattern_stripe <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,

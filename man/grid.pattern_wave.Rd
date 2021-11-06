@@ -109,3 +109,6 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 
   }
 }
+\seealso{
+Use \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for straight lines instead of waves.
+}

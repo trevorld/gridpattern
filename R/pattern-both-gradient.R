@@ -20,7 +20,6 @@
 #'    grid.newpage()
 #'    grid.pattern_gradient(x_hex, y_hex, fill = "green", orientation = "radial")
 #'  }
-#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html>
 #' @export
 grid.pattern_gradient <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                   fill = gp$fill %||% "grey80", fill2 = "#4169E1",

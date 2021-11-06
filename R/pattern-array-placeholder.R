@@ -16,7 +16,6 @@
 #'   }
 #'
 #'   print(names_placeholder)
-#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-placeholder.html>
 #' @export
 grid.pattern_placeholder <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                      type = "kitten", alpha = gp$alpha %||% NA_real_,

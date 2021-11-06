@@ -87,7 +87,7 @@ are only given as numeric vectors.}
 A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to the graphic device as a side effect.
 }
 \description{
-\code{grid.pattern_image()} draws a \code{imagemagick} pattern onto the graphic device.
+\code{grid.pattern_magick()} draws a \code{imagemagick} pattern onto the graphic device.
 \code{names_magick}, \code{names_magick_intensity}, and
 \code{names_magick_stripe} are character vectors of supported \code{type} values
 plus subsets for shaded intensity and stripes.
@@ -103,7 +103,6 @@ plus subsets for shaded intensity and stripes.
   print(names_magick)
 }
 \seealso{
-The \code{ggpattern} documentation \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html}
-and \code{imagemagick} documentation \url{http://www.imagemagick.org/script/formats.php} for more information.
+The \code{imagemagick} documentation \url{http://www.imagemagick.org/script/formats.php} for more information.
 }
 \keyword{datasets}

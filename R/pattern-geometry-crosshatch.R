@@ -15,9 +15,8 @@
 #'     grid.pattern_crosshatch(x_hex, y_hex, density = 0.3,
 #'                             gp = gpar(col = "blue", fill = "yellow"))
 #'   }
-#' @seealso [grid.pattern_weave()] which interweaves two sets of lines
-#'   as well as the `ggpattern` documentation:
-#'   <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html>
+#' @seealso [grid.pattern_weave()] which interweaves two sets of lines.
+#'        For a single set of lines use [grid.pattern_stripe()].
 #' @export
 grid.pattern_crosshatch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                     colour = gp$col %||% "grey20",

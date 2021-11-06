@@ -24,6 +24,7 @@
 #'                         spacing = 0.15, angle = 0, amplitude = 0.075)
 #'
 #'   }
+#' @seealso Use [grid.pattern_stripe()] for straight lines instead of waves.
 #' @export
 grid.pattern_wave <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,

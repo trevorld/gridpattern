@@ -33,7 +33,8 @@
 #'     try(grid.pattern_image(x_hex, y_hex, filename = logo_filename,
 #'                            type = "tile"))
 #'   }
-#' @seealso The `ggpattern` documentation: <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-image.html>
+#' @seealso [grid.pattern_placeholder()] is an image pattern that uses images
+#'          downloaded from the internet.
 #' @export
 grid.pattern_image <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                filename = "", type = "fit", scale = 1,

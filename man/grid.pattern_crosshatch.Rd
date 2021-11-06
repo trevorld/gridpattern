@@ -97,7 +97,6 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
   }
 }
 \seealso{
-\code{\link[=grid.pattern_weave]{grid.pattern_weave()}} which interweaves two sets of lines
-as well as the \code{ggpattern} documentation:
-\url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-crosshatch.html}
+\code{\link[=grid.pattern_weave]{grid.pattern_weave()}} which interweaves two sets of lines.
+For a single set of lines use \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}}.
 }

@@ -82,6 +82,3 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
    grid.pattern_gradient(x_hex, y_hex, fill = "green", orientation = "radial")
  }
 }
-\seealso{
-The \code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-gradient.html}
-}

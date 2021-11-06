@@ -1,6 +1,6 @@
 #' Magick patterned grobs
 #'
-#' `grid.pattern_image()` draws a `imagemagick` pattern onto the graphic device.
+#' `grid.pattern_magick()` draws a `imagemagick` pattern onto the graphic device.
 #' `names_magick`, `names_magick_intensity`, and
 #' `names_magick_stripe` are character vectors of supported `type` values
 #' plus subsets for shaded intensity and stripes.
@@ -20,8 +20,7 @@
 #'
 #'   # supported magick pattern names
 #'   print(names_magick)
-#' @seealso The `ggpattern` documentation <https://coolbutuseless.github.io/package/ggpattern/articles/pattern-magick.html>
-#'          and `imagemagick` documentation <http://www.imagemagick.org/script/formats.php> for more information.
+#' @seealso The `imagemagick` documentation <http://www.imagemagick.org/script/formats.php> for more information.
 #' @export
 grid.pattern_magick <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 type = "hexagons", fill = "grey20", scale = 1, filter = "box",

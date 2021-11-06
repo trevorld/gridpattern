@@ -110,6 +110,5 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
   }
 }
 \seealso{
-See \code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}} for a more general case of this pattern and
-\code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-circle.html}
+See \code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}} for a more general case of this pattern.
 }

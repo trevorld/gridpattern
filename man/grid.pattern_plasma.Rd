@@ -72,5 +72,5 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
   }
 }
 \seealso{
-The \code{ggpattern} documentation: \url{https://coolbutuseless.github.io/package/ggpattern/articles/pattern-plasma.html}
+\code{\link[=grid.pattern_ambient]{grid.pattern_ambient()}} provides a noise pattern using the \code{ambient} package.
 }
