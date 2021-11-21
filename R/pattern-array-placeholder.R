@@ -19,7 +19,8 @@
 #' @export
 grid.pattern_placeholder <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                      type = "kitten", alpha = gp$alpha %||% NA_real_,
-                                     aspect_ratio = 1, key_scale_factor = 1, res = 72,
+                                     aspect_ratio = 1, key_scale_factor = 1,
+                                     res = getOption("ggpattern_res", 72),
                                      default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     grid.pattern("placeholder", x, y, id,
                  type = type, alpha = alpha,

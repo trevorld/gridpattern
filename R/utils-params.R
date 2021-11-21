@@ -42,7 +42,7 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_xoffset <- l$pattern_xoffset %||% 0
     l$pattern_yoffset <- l$pattern_yoffset %||% 0
 
-    l$pattern_res <- l$pattern_res %||% 72 # in PPI
+    l$pattern_res <- l$pattern_res %||% getOption("ggpattern_res", 72) # in PPI
 
     # Additional ambient defaults
     l$pattern_frequency <- l$pattern_frequency %||%

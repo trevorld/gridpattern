@@ -23,7 +23,7 @@ grid.pattern_ambient(
   value = "cell",
   distance_ind = c(1, 2),
   jitter = 0.45,
-  res = 72,
+  res = getOption("ggpattern_res", 72),
   alpha = NA_real_,
   default.units = "npc",
   name = NULL,

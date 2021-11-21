@@ -27,7 +27,7 @@ grid.pattern_ambient <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, 
                                  octaves = 3, lacunarity = 2, gain = 0.5,
                                  pertubation = "none", pertubation_amplitude = 1,
                                  value = "cell", distance_ind = c(1, 2), jitter = 0.45,
-                                 res = 72, alpha = NA_real_,
+                                 res = getOption("ggpattern_res", 72), alpha = NA_real_,
                                  default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     grid.pattern("ambient", x, y, id,
                  type = type, fill = fill, fill2 = fill2,

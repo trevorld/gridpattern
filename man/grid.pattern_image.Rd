@@ -17,7 +17,7 @@ grid.pattern_image(
   alpha = gp$alpha \%||\% NA_real_,
   aspect_ratio = 1,
   key_scale_factor = 1,
-  res = 72,
+  res = getOption("ggpattern_res", 72),
   default.units = "npc",
   name = NULL,
   gp = gpar(),

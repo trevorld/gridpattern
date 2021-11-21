@@ -27,7 +27,7 @@ grid.pattern_text(
   use_R4.1_clipping = getOption("ggpattern_use_R4.1_clipping",
     getOption("ggpattern_use_R4.1_features")),
   png_device = NULL,
-  res = 72,
+  res = getOption("ggpattern_res", 72),
   default.units = "npc",
   name = NULL,
   gp = gpar(),

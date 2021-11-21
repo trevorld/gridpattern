@@ -17,6 +17,10 @@ Breaking Changes
 New Features
 ------------
 
+* The following package option ``ggpattern_res`` can now be set by `options()`.
+  It controls default "raster" image pattern resolution (pixels per inch).
+  Defaults to 72 (pixels per inch).
+
 * `grid.pattern_polygon_tiling()` now supports the following additional polygon tiling `type`'s (#42):
 
   - `"rhombille"` implements a rhombille tiling of rhombi (#37)

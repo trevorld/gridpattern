@@ -35,7 +35,7 @@
 clippingPathGrob <- function(clippee, clipper,
          use_R4.1_clipping = getOption("ggpattern_use_R4.1_clipping",
                                        getOption("ggpattern_use_R4.1_features")),
-         png_device = NULL, res = 72,
+         png_device = NULL, res = getOption("ggpattern_res", 72),
          name = NULL, gp = gpar(), vp = NULL) {
     gTree(clippee = clippee, clipper = clipper,
           use_R4.1_clipping = use_R4.1_clipping,

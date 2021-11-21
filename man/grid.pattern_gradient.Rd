@@ -17,7 +17,7 @@ grid.pattern_gradient(
     getOption("ggpattern_use_R4.1_features")),
   aspect_ratio = 1,
   key_scale_factor = 1,
-  res = 72,
+  res = getOption("ggpattern_res", 72),
   default.units = "npc",
   name = NULL,
   gp = gpar(),

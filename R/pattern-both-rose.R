@@ -40,7 +40,7 @@ grid.pattern_rose <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                               size = gp$lwd %||% 1,
                               use_R4.1_clipping = getOption("ggpattern_use_R4.1_clipping",
                                                             getOption("ggpattern_use_R4.1_features")),
-                              png_device = NULL, res = 72,
+                              png_device = NULL, res = getOption("ggpattern_res", 72),
                               default.units = "npc", name = NULL,
                                          gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
