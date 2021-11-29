@@ -159,7 +159,7 @@ See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information
    grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
                                 fill = c("white", "grey", "black"),
                                 density = 1.0, spacing = 0.1,
-                                shape = "convex6", type = "hex")
+                                shape = "convex6", grid = "hex")
    if (require("magick")) {
      # array-based patterns
      # 'image' pattern
