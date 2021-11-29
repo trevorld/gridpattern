@@ -66,6 +66,8 @@ Bug fixes and minor improvements
 * Now allows alpha values to be specified
   within the `fill` (and `fill2`) colour strings for
   `gridpattern_plasma()` and `gridpattern_gradient()` (when `use_R4.1_gradients=FALSE`).
+* In `pattern_square()` for the "horizontal" and "vertical" types the value `1L` is
+  now guaranteed to be in the center of the pattern (#46).
 
 gridpattern v0.2.1
 ==================

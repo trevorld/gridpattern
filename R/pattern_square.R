@@ -123,9 +123,15 @@ pattern_horizontal <- function(subtype = NULL, nrow = 5L, ncol = 5L) {
     if (is.null(subtype) || is.na(subtype)) subtype <- 3L
     stopifnot(is_integer(subtype))
     n <- as.integer(subtype)
-    s <- seq.int(n)
-    v <- rep(s, length.out = ncol)
-    v <- rep(v, length.out = nrow)
+    if (nrow > 2L && n > 1L) {
+        v1 <- rev(rep(c(seq.int(n, 2L, -1L), 1L), length.out = nrow %/% 2))
+        v2 <- rep(seq.int(n), length.out = (nrow %/% 2) + (nrow %% 2))
+        v <- c(v1, v2)
+    } else {
+        s <- seq.int(n)
+        v <- rep(s, length.out = nrow)
+    }
+    v <- rep.int(v, ncol)
     matrix(v, nrow = nrow, ncol = ncol)
 }
 
@@ -170,9 +176,15 @@ pattern_vertical <- function(subtype = NULL, nrow = 5L, ncol = 5L) {
     if (is.null(subtype) || is.na(subtype)) subtype <- 3L
     stopifnot(is_integer(subtype))
     n <- as.integer(subtype)
-    s <- seq.int(n)
-    v <- rep(s, length.out = nrow)
-    v <- rep(v, length.out = ncol)
+    if (ncol > 2L && n > 1L) {
+        v1 <- rev(rep(c(seq.int(n, 2L, -1L), 1L), length.out = ncol %/% 2))
+        v2 <- rep(seq.int(n), length.out = (ncol %/% 2) + (ncol %% 2))
+        v <- c(v1, v2)
+    } else {
+        s <- seq.int(n)
+        v <- rep(s, length.out = ncol)
+    }
+    v <- rep.int(v, nrow)
     matrix(v, nrow = nrow, ncol = ncol, byrow = TRUE)
 }
 
