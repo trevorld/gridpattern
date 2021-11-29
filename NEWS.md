@@ -63,6 +63,9 @@ Bug fixes and minor improvements
   (a "two-pointed star" polygon is a rhombus).
 * Fixes `grid.pattern_gradient()` when `use_R4.1_gradients=TRUE` to better
   match behavior when `use_R4.1_gradients=FALSE`.
+* Now allows alpha values to be specified
+  within the `fill` (and `fill2`) colour strings for
+  `gridpattern_plasma()` and `gridpattern_gradient()` (when `use_R4.1_gradients=FALSE`).
 
 gridpattern v0.2.1
 ==================

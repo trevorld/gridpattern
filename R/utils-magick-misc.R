@@ -2,15 +2,16 @@
 #'
 #' @param col may be a built in colour, like 'tomato' or a hex colour
 #'
-#' @return always returns a hex colour, except if col is NA when it retuns a special
+#' @return always returns a hex colour, except if col is NA when it returns a special
 #' magick colour 'none', which means transparent
 #'
 #' @noRd
 convert_r_colour_to_magick_colour <- function(col) {
-  if (is.null(col) || is.na(col) || length(col) == 0) {
+  if (is.null(col) || is.na(col) || length(col) == 0 || col == "transparent") {
     return('none')
   }
-  rgb(t(col2rgb(col)), maxColorValue = 255)
+  col_rgb <- col2rgb(col, alpha = TRUE)
+  rgb(col_rgb[1], col_rgb[2], col_rgb[3], col_rgb[4], maxColorValue = 255)
 }
 
 #' Convert a magick image to an RGBA array.
