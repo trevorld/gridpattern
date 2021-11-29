@@ -11,7 +11,7 @@ convert_r_colour_to_magick_colour <- function(col) {
     return('none')
   }
   col_rgb <- col2rgb(col, alpha = TRUE)
-  rgb(col_rgb[1], col_rgb[2], col_rgb[3], col_rgb[4], maxColorValue = 255)
+  rgb(col_rgb[1,], col_rgb[2,], col_rgb[3,], col_rgb[4,], maxColorValue = 255)
 }
 
 #' Convert a magick image to an RGBA array.
