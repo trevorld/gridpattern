@@ -41,8 +41,8 @@
 #'               See [grid.pattern_wave()] for more information.}
 #' \item{weave}{Weave geometry patterns.
 #'               See [grid.pattern_weave()] for more information.}
-#' \item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html} for more information.}
-#' \item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html} for more information.}
+#' \item{Custom geometry-based patterns}{See \url{https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html} for more information.}
+#' \item{Custom array-based patterns}{See \url{https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html} for more information.}
 #' }
 #'
 #' @inheritParams grid::polygonGrob
@@ -108,7 +108,7 @@
 #'    }
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
-#'          for more details on the `ggpattern` patterns and their parameters.
+#'          for more details on the `ggpattern` package.
 #' @export
 grid.pattern <- function(pattern = "stripe",
                          x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,

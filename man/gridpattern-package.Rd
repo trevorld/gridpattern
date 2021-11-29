@@ -49,7 +49,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Mike FC (Patterns extracted from ggpattern)
+  \item Mike FC (Code/docs adapted from ggpattern)
 }
 
 Other contributors:

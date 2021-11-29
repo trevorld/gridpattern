@@ -120,8 +120,8 @@ See \code{\link[=grid.pattern_text]{grid.pattern_text()}} for more information.}
 See \code{\link[=grid.pattern_wave]{grid.pattern_wave()}} for more information.}
 \item{weave}{Weave geometry patterns.
 See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information.}
-\item{Custom geometry-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html} for more information.}
-\item{Custom array-based patterns}{See \url{https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html} for more information.}
+\item{Custom geometry-based patterns}{See \url{https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html} for more information.}
+\item{Custom array-based patterns}{See \url{https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html} for more information.}
 }
 }
 \examples{
@@ -175,6 +175,6 @@ See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information
 }
 \seealso{
 \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
-for more details on the \code{ggpattern} patterns and their parameters.
+for more details on the \code{ggpattern} package.
 }
 \keyword{datasets}
