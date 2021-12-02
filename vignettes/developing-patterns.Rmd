@@ -38,9 +38,10 @@ This vignette shows how to:
 * [Aesthetic use by `{ggpattern}` patterns](#aes-by-pattern)
 * [Geometry-based pattern functions](#geometry-based)
 * [Array-based pattern functions](#array-based)
-* [Geometry-based example #1 (recreate polygon)](#geometry-example-2)
+* [Geometry-based example #1 (recreate polygon)](#geometry-example-1)
 * [Geometry-based example #2 (using other patterns)](#geometry-example-2)
 * [Array-based example](#array-example)
+* [Other examples](#other-example)
 
 ## <a name="classes"></a> Pattern Classification - geometry-based and array-based
 
@@ -372,3 +373,10 @@ grid.pattern("simple", type = "b",
 grid.pattern("simple", type = "c",
              x = c(0.7, 0.7, 1.0, 1.0), y = c(0.7, 1.0, 1.0, 0.7))
 ```
+
+<a name="other-example"></a> Other examples
+-------------------------------------------
+
+The `{ggpattern}` package contains a vignette on developing `{gridpattern}` / `{ggpattern}` patterns with a few more examples.  Use [`vignette("developing-patterns", package="ggpattern")`](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns.html) to see it.
+
+Also the `{gridpattern}` source contains the full source code for seventeen patterns: https://github.com/trevorld/gridpattern/tree/main/R
