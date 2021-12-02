@@ -65,11 +65,17 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
 }
 
 guess_has_R4.1_features <- function() {
+    if (getRversion() < '4.1.0')
+        return (FALSE)
+
     device <- names(grDevices::dev.cur())
-    if (device %in% c("cairo_pdf", "pdf", "png", "svg", "X11cairo"))
-        getRversion() >= '4.1.0'
-    else
+    if (device %in% c("cairo_pdf", "pdf", "png", "svg", "X11cairo")) {
+        TRUE
+    } else if (device == "agg_png") {
+        packageVersion("ragg") >= '1.2.0'
+    } else {
         FALSE
+    }
 }
 
 get_R4.1_params <- function(l) {

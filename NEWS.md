@@ -1,4 +1,12 @@
-gridpattern v0.3.0
+gridpattern v0.3.2
+==================
+
+Bug fixes and minor improvements
+--------------------------------
+
+* `guess_has_R4.1_features()` now returns true for the `ragg::agg_png()` device if `packageVersion("ragg") >= '1.2.0'`.
+
+gridpattern v0.3.1
 ==================
 
 Breaking Changes
