@@ -377,6 +377,6 @@ grid.pattern("simple", type = "c",
 <a name="other-example"></a> Other examples
 -------------------------------------------
 
-The `{ggpattern}` package contains a vignette on developing `{gridpattern}` / `{ggpattern}` patterns with a few more examples.  Use [`vignette("developing-patterns", package="ggpattern")`](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns.html) to see it.
+The `{ggpattern}` package contains a vignette on developing `{gridpattern}` / `{ggpattern}` patterns with a few more examples:  https://coolbutuseless.github.io/package/ggpattern/articles
 
 Also the `{gridpattern}` source contains the full source code for seventeen patterns: https://github.com/trevorld/gridpattern/tree/main/R
