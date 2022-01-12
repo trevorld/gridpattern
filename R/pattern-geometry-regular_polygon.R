@@ -133,7 +133,9 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     density_max <- max(density)
 
     # compute regular polygon relative coordinates which we will center on points
-    radius_mult <- switch(grid, hex = 0.578, 0.5)
+    radius_mult <- switch(grid,
+                          hex = 0.578,
+                          0.5)
     radius_max <- radius_mult * spacing * density_max
 
     #### add fudge factor?
@@ -212,10 +214,13 @@ get_pattern_matrix <- function(type, subtype, grid_xy, n_par) {
 }
 
 get_xy_par <- function(grid_xy, i_par, m_pat, grid, spacing) {
-    if (grid == "square")
+    if (grid == "square") {
         get_xy_par_square(grid_xy, i_par, m_pat)
-    else
+    } else if (grid == "elongated_triangle") {
+        get_xy_par_el_tri(grid_xy, i_par, m_pat, spacing)
+    } else {
         get_xy_par_hex(grid_xy, i_par, m_pat, spacing)
+    }
 }
 get_xy_par_square <- function(grid_xy, i_par, m_pat) {
     x <- numeric(0)
@@ -241,6 +246,20 @@ get_xy_par_hex <- function(grid_xy, i_par, m_pat, spacing = 1) {
     }
     list(x = x, y = y)
 }
+get_xy_par_el_tri <- function(grid_xy, i_par, m_pat, spacing = 1) {
+    x <- numeric(0)
+    y <- numeric(0)
+    for (i in seq_along(grid_xy$y)) {
+        indices_x <- which(m_pat[i,] == i_par)
+        if (i %% 4 == 3 || i %% 4 == 0)
+            x_offset <- 0
+        else
+            x_offset <- -0.5 * spacing
+        x <- c(x,  x_offset + grid_xy$x[indices_x])
+        y <- c(y, rep(grid_xy$y[i], length(indices_x)))
+    }
+    list(x = x, y = y)
+}
 
 # create grid of points large enough to cover viewport no matter the angle
 get_xy_grid <- function(params, vpm, wavelength = FALSE) {
@@ -252,22 +271,31 @@ get_xy_grid <- function(params, vpm, wavelength = FALSE) {
         h_spacing <- params$pattern_spacing
 
     gm <- 1.00 # seems to need to be this big so {ggpattern} legends render correctly
-    x_adjust <- switch(params$pattern_grid, hex = 0.5 * h_spacing, 0)
+    x_adjust <- switch(params$pattern_grid,
+                       hex = 0.5 * h_spacing,
+                       elongated_triangle = 0.5 * h_spacing,
+                       0)
     x_seq <- seq_robust(from = 0, to = gm * vpm$length + x_adjust, by = h_spacing)
     x <- xoffset + vpm$x + c(rev(tail(-x_seq, -1L)), x_seq)
     x_min <- min(x)
     x_max <- max(x)
 
     # adjust vertical spacing for "hex" pattern
-    if (params$pattern_grid == "square")
+    if (params$pattern_grid == "square") {
         v_spacing <- params$pattern_spacing
-    else
+    } else if (params$pattern_grid == "elongated_triangle") {
+        v_spacing <- (0.5 + 0.25 * sqrt(3)) * params$pattern_spacing
+    } else {
         v_spacing <- 0.5 * sqrt(3) * params$pattern_spacing
+    }
     y_seq <- seq_robust(from = 0, to = gm * vpm$length, by = v_spacing)
     # ensure middle y point in a hex grid is an odd number so we don't accidentally offset it
     if (params$pattern_grid != "square" && (length(y_seq) %% 2L == 0L))
         y_seq <- c(y_seq, y_seq[length(y_seq)] + v_spacing)
     y <- yoffset + vpm$y + c(rev(tail(-y_seq, -1L)), y_seq)
+    if (params$pattern_grid == "elongated_triangle") {
+        y <- y + rep(c(0, -0.15 * v_spacing), length.out = length(y))
+    }
     y_min <- min(y)
     y_max <- max(y)
 

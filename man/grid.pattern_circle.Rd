@@ -62,7 +62,8 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{grid}{Adjusts placement and density of certain graphical elements.
 \code{"square"} (default) is a square grid.
 \code{"hex"} is a hexagonal grid suitable for hexagonal and triangular tiling.
-\code{"hex_circle"} is a hexagonal grid suitable for circle packing.}
+\code{"hex_circle"} is a hexagonal grid suitable for circle packing.
+\code{"elongated_triangle"} is a grid used for the "elongated triangle" tiling.}
 
 \item{type}{Adjusts the repeating of certain aesthetics such as color.
 Can use any type in \code{names_hex}, \code{names_square}, or \code{names_weave}.

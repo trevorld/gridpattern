@@ -1,10 +1,21 @@
-gridpattern v0.3.2
+gridpattern v0.4.0
 ==================
+
+New Features
+------------
+
+* `guess_has_R4.1_features()` is now an exported function.
+  It guesses whether the "active" graphic devices supports the
+  new [R 4.1 graphics features](https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html) and returns
+  `TRUE` or `FALSE`.
 
 Bug fixes and minor improvements
 --------------------------------
 
-* `guess_has_R4.1_features()` now returns true for the `ragg::agg_png()` device if `packageVersion("ragg") >= '1.2.0'`.
+* `grid.pattern_polygon_tiling()` now supports the "elongated_triangular" `type` (#48).
+  "geometry" patterns now support a "elongated_triangle" `grid` value.
+* `guess_has_R4.1_features()` now returns `TRUE` for the `ragg::agg_png()` device if `packageVersion("ragg") >= '1.2.0'`.
+  It now also returns `TRUE` for the `grDevices::bmp(type = "cairo")`, `grDevices::cairo_ps()`, `grDevices::jpeg(type = "cairo")`, `grDevices::tiff(type = "cairo")`.
 
 gridpattern v0.3.1
 ==================

@@ -67,7 +67,8 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{grid}{Adjusts placement and density of certain graphical elements.
 \code{"square"} (default) is a square grid.
 \code{"hex"} is a hexagonal grid suitable for hexagonal and triangular tiling.
-\code{"hex_circle"} is a hexagonal grid suitable for circle packing.}
+\code{"hex_circle"} is a hexagonal grid suitable for circle packing.
+\code{"elongated_triangle"} is a grid used for the "elongated triangle" tiling.}
 
 \item{type}{Either \dQuote{sine} or \dQuote{triangle} (default).}
 

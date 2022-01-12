@@ -15,6 +15,8 @@ test_that("tiling patterns work as expected", {
     gp2 <- gpar(fill = c("yellow", "red"), col = "black")
     gp3 <- gpar(fill = c("yellow", "red", "blue"), col = "black")
 
+    expect_doppelganger("elongated_triangular", function()
+        g.ppt("elongated_triangular", gp = gp2))
     expect_doppelganger("herringbone", function()
         g.ppt("herringbone", gp = gp2))
     expect_doppelganger("hexagonal_tiling", function()

@@ -14,6 +14,7 @@ vignette: >
 * [Triangular tiling](#triangle)
 * [Square tiling](#square)
 * [Hexagonal tiling](#hexagon)
+* [Elongated triangular tiling](#elongatedtriangle)
 * [Snub square tiling](#snubsquare)
 * [Truncated square tiling](#truncatedsquare)
 * [Truncated hexagonal tiling](#truncatedhex)
@@ -171,6 +172,41 @@ pushViewport(viewport(x=0.75, y=0.25, width=0.5, height=0.5))
 grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
 gp <- gpar(fill = red, col = "black")
 grid.hexagonal_tiling(shape = "star6", spacing = 0.3, gp = gp)
+popViewport()
+add_borders()
+```
+
+<a name=elongatedtriangle>Elongated triangular tiling</a>
+---------------------------------------------------------
+
+We can achieve the [uniform colorings of a elongated triangular tiling](https://en.wikipedia.org/wiki/Elongated_triangular_tiling) using the "elongated_triangle" grid and the "convex4" and "convex3" shapes.
+
+```{r}
+grid.elongated_triangular_tiling <- function(...) {
+    grid.polygon(x_sq, y_sq, gp = gpar(fill = yellow, col = NA))
+    grid.pattern_regular_polygon(..., shape = rep(c("convex4", "convex3"), each = 2), 
+                                 density = rep(c(1.41, 1.15), each = 2), 
+                                 grid = "elongated_triangle",
+                                 type = "square_tiling", subtype = "3412",
+                                 spacing = 0.2, angle = 0, 
+                                 rot = rep(c(45, 0), each = 2))
+}
+# 1 color elongated triangular tiling
+pushViewport(viewport(x=0.25, y=0.75, width=0.5, height=0.5))
+gp <- gpar(fill = yellow, col = "black")
+grid.elongated_triangular_tiling(gp = gp)
+popViewport()
+
+# 2 color elongated triangular tiling
+pushViewport(viewport(x=0.75, y=0.75, width=0.5, height=0.5))
+gp <- gpar(fill = c(red, red, yellow, yellow), col = "black")
+grid.elongated_triangular_tiling(gp = gp)
+popViewport()
+
+# 3 color elongated triangular tiling
+pushViewport(viewport(x=0.25, y=0.25, width=0.5, height=0.5))
+gp <- gpar(fill = c(red, blue, yellow, yellow), col = "black")
+grid.elongated_triangular_tiling(gp = gp)
 popViewport()
 add_borders()
 ```

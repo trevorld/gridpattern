@@ -6,7 +6,7 @@
 \alias{names_polygon_tiling}
 \title{Polygon tiling patterned grobs}
 \format{
-An object of class \code{character} of length 35.
+An object of class \code{character} of length 36.
 }
 \usage{
 grid.pattern_polygon_tiling(
@@ -91,6 +91,7 @@ covering a larger area.  Size of the pattern is controlled by \code{spacing}.
 We support the following polygon tiling \code{type}s:
 
 \describe{
+\item{\code{elongated_triangular}}{Creates an elongated triangular tiling made of squares and triangles.}
 \item{\code{herringbone}}{Creates a herringbone tiling made of rectangles.}
 \item{\code{hexagonal}}{Creates a hexagonal tiling made of hexagons.}
 \item{\code{pythagorean}}{Creates a Pythagorean tiling made of squares of two different sizes.}

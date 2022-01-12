@@ -18,6 +18,7 @@
 #'             `"square"` (default) is a square grid.
 #'             `"hex"` is a hexagonal grid suitable for hexagonal and triangular tiling.
 #'             `"hex_circle"` is a hexagonal grid suitable for circle packing.
+#'             `"elongated_triangle"` is a grid used for the "elongated triangle" tiling.
 #' @param type Adjusts the repeating of certain aesthetics such as color.
 #'             Can use any type in `names_hex`, `names_square`, or `names_weave`.
 #'             See for [pattern_hex()], [pattern_square()], and [pattern_weave()] for

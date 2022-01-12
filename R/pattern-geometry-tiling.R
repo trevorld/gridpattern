@@ -8,6 +8,7 @@
 #'  We support the following polygon tiling `type`s:
 #'
 #' \describe{
+#' \item{`elongated_triangular`}{Creates an elongated triangular tiling made of squares and triangles.}
 #' \item{`herringbone`}{Creates a herringbone tiling made of rectangles.}
 #' \item{`hexagonal`}{Creates a hexagonal tiling made of hexagons.}
 #' \item{`pythagorean`}{Creates a Pythagorean tiling made of squares of two different sizes.}
@@ -103,7 +104,8 @@ grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id
 
 #' @rdname grid.pattern_polygon_tiling
 #' @export
-names_polygon_tiling <- c("herringbone",
+names_polygon_tiling <- c("elongated_triangular",
+                          "herringbone",
                           "hexagonal",
                           "pythagorean",
                           "rhombitrihexagonal",
@@ -155,6 +157,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
     spacing <- params$pattern_spacing
 
     fn <- switch(type,
+                 elongated_triangular = create_el_tri_tiling,
                  herringbone = create_herringbone_tiling,
                  hexagonal = create_hexagonal_tiling,
                  pythagorean = create_pythagorean_tiling,
@@ -580,6 +583,29 @@ create_hexagonal_tiling <- function(xyi, gp, spacing, angle) {
                         spacing = spacing, angle = angle, gp = gp,
                         name = "hexagons")
     gList(grob)
+}
+
+create_el_tri_tiling <- function(xyi, gp, spacing, angle) {
+    n_col <- length(gp$fill)
+    gp_bg <- gp
+    if (n_col == 2L) {
+        gp_bg$fill <- gp$fill[2L]
+        gp$fill <- rep(c(gp$fill[1L], gp$fill[2L]), each = 2)
+    } else if (n_col == 3L) {
+        gp_bg$fill <- gp$fill[1L]
+        gp$fill <- c(gp$fill[2L], gp$fill[3L], gp$fill[1L], gp$fill[1L])
+    }
+    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
+                      name = "background_color")
+    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
+                        shape = rep(c("convex4", "convex3"), each = 2),
+                        density = rep(c(1.41, 1.15), each = 2),
+                        grid = "elongated_triangle",
+                        type = "square_tiling", subtype = "3412",
+                        rot = rep(c(45, 0), each = 2),
+                        spacing = spacing, gp = gp, angle = angle,
+                        name = "squares_and_triangles")
+    gList(bg, grob)
 }
 
 create_pythagorean_tiling <- function(xyi, gp, spacing, angle) {
