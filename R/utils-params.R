@@ -64,12 +64,35 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l
 }
 
+#' Guess whether "active" graphics device supports
+#' the grid graphics features introduced in R v4.1.
+#'
+#' `guess_has_R_4.1_features()` guesses whether "active" graphics device supports
+#' the grid graphics features introduced in R v4.1.  If it guesses it does
+#' it returns `TRUE` else `FALSE`.
+#'
+#' @seealso \url{https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html} for more info about the new grid graphics
+#'         features introduced in R v4.1.
+#' @return `TRUE` or `FALSE`
+#' @examples
+#'   # If R version (weakly) greater than 4.1 should be TRUE
+#'   pdf(tempfile(fileext = ".pdf"))
+#'   print(guess_has_R4.1_features())
+#'   invisible(dev.off())
+#'
+#'   # Should be FALSE
+#'   postscript(tempfile(fileext = ".ps"))
+#'   print(guess_has_R4.1_features())
+#'   invisible(dev.off())
+#'
+#' @export
 guess_has_R4.1_features <- function() {
     if (getRversion() < '4.1.0')
         return (FALSE)
 
     device <- names(grDevices::dev.cur())
-    if (device %in% c("cairo_pdf", "pdf", "png", "svg", "X11cairo")) {
+    if (device %in% c("bmp", "cairo_pdf", "cairo_ps", "jpeg", "pdf", "png",
+                      "svg", "tiff", "X11cairo")) {
         TRUE
     } else if (device == "agg_png") {
         packageVersion("ragg") >= '1.2.0'

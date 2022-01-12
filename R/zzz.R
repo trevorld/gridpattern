@@ -16,5 +16,5 @@ img_read_memoised <- img_read
 #' @importFrom glue glue
 #' @importFrom grDevices col2rgb dev.off png rgb
 #' @importFrom rlang %||% abort inform warn
-#' @importFrom utils hasName head tail
+#' @importFrom utils hasName head packageVersion tail
 NULL
