@@ -1,3 +1,12 @@
+gridpattern v0.4.1
+==================
+
+Bug fixes and minor improvements
+--------------------------------
+
+* `guess_has_R4.1_features()` now returns `TRUE` for the `ragg::agg_jpeg()`,
+  `ragg::agg_ppm()`, and `ragg::agg_tiff()` devices if `packageVersion("ragg") >= '1.2.0'`.
+
 gridpattern v0.4.0
 ==================
 
@@ -14,8 +23,11 @@ Bug fixes and minor improvements
 
 * `grid.pattern_polygon_tiling()` now supports the "elongated_triangular" `type` (#48).
   "geometry" patterns now support a "elongated_triangle" `grid` value.
-* `guess_has_R4.1_features()` now returns `TRUE` for the `ragg::agg_png()` device if `packageVersion("ragg") >= '1.2.0'`.
-  It now also returns `TRUE` for the `grDevices::bmp(type = "cairo")`, `grDevices::cairo_ps()`, `grDevices::jpeg(type = "cairo")`, `grDevices::tiff(type = "cairo")`.
+* `guess_has_R4.1_features()` now returns `TRUE` for the `ragg::agg_png()` and
+  `ragg::agg_supertransparent()` devices if `packageVersion("ragg") >= '1.2.0'`.
+  It now also returns `TRUE` for the `grDevices::bmp(type = "cairo")`, 
+  `grDevices::cairo_ps()`, `grDevices::jpeg(type = "cairo")`, 
+  and `grDevices::tiff(type = "cairo")` devices if `getRversion() >= '4.1.0'`.
 
 gridpattern v0.3.1
 ==================

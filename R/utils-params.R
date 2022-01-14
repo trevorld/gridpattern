@@ -94,7 +94,7 @@ guess_has_R4.1_features <- function() {
     if (device %in% c("bmp", "cairo_pdf", "cairo_ps", "jpeg", "pdf", "png",
                       "svg", "tiff", "X11cairo")) {
         TRUE
-    } else if (device == "agg_png") {
+    } else if (device %in% c("agg_jpeg", "agg_ppm", "agg_png", "agg_tiff")) {
         packageVersion("ragg") >= '1.2.0'
     } else {
         FALSE
