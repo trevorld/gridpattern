@@ -58,6 +58,7 @@ A \code{grid} grob
     y_hex_inner <- 0.5 + 0.25 * sin(rev(angle))
     clipper <- grid::pathGrob(x = c(x_hex_outer, x_hex_inner),
                               y = c(y_hex_outer, y_hex_inner),
+                              id = rep(1:2, each = 7),
                               rule = "evenodd")
     clipped <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = FALSE)
     grid.newpage()

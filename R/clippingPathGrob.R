@@ -26,6 +26,7 @@
 #'     y_hex_inner <- 0.5 + 0.25 * sin(rev(angle))
 #'     clipper <- grid::pathGrob(x = c(x_hex_outer, x_hex_inner),
 #'                               y = c(y_hex_outer, y_hex_inner),
+#'                               id = rep(1:2, each = 7),
 #'                               rule = "evenodd")
 #'     clipped <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = FALSE)
 #'     grid.newpage()
@@ -48,7 +49,6 @@ makeContent.clipping_path <- function(x) {
     current_dev <- grDevices::dev.cur()
     on.exit(grDevices::dev.set(current_dev))
 
-    # maybe later try to guess if current device supports R 4.1 clipping
     use_R4.1_clipping <- x$use_R4.1_clipping
     if (is.null(use_R4.1_clipping))
         use_R4.1_clipping <- guess_has_R4.1_features()
@@ -70,17 +70,20 @@ makeContent.clipping_path <- function(x) {
 gridpattern_clip_raster <- function(x) {
     height <- x$res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
     width <- x$res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
-    png_clippee <- tempfile(fileext = ".png")
-    on.exit(unlink(png_clippee))
     png_device <- x$png_device
     if (is.null(png_device)) {
-        stopifnot(capabilities("png"))
-        png_device <- grDevices::png
+        if (requireNamespace("ragg", quietly = TRUE)) {
+            png_device <- ragg::agg_png
+        } else {
+            stopifnot(capabilities("png"))
+            png_device <- grDevices::png
+        }
     }
 
+    png_clippee <- tempfile(fileext = ".png")
+    on.exit(unlink(png_clippee))
     png_device(png_clippee, height = height, width = width,
                res = x$res, bg = "transparent")
-
     grid.draw(x$clippee)
     dev.off()
 

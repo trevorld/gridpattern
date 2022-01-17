@@ -14,7 +14,8 @@
 #'                          If `FALSE` do a `rasterGrob` approximation of the gradient pattern.
 #'                          If `NULL` try to guess an appropriate choice.}
 #'    \item{ggpattern_use_R4.1_masks}{If `TRUE` use the grid mask feature introduced in R v4.1.0.
-#'                          Currently unused by this package.}
+#'                          If `FALSE` do a `rasterGrob` approximation of the masked pattern.
+#'                          If `NULL` try to guess an appropriate choice.}
 #'    \item{ggpattern_use_R4.1_patterns}{If `TRUE` use the grid pattern feature introduced in R v4.1.0.
 #'                          Currently unused by this package.}
 #'  }

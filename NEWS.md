@@ -1,11 +1,23 @@
-gridpattern v0.4.1
+gridpattern v0.5.0
 ==================
+
+New Features
+------------
+
+* `alphaMaskGrob()` is a function that (alpha) masks one grob by using a second grob to specify the (alpha) mask.
+
+  * If `use_R4.1_masks` is `TRUE` we simply use the new R 4.1 (alpha) masks feature.
+  * If `use_R4.1_masks` is `FALSE` we generate a `grid::rasterGrob()` approximation.
+  * If `use_R4.1_masks` is `NULL` try to guess an appropriate choice.
+  * The default for `use_R4.1_masks` can be set by `options("ggpattern_use_R4.1_masks")`.
 
 Bug fixes and minor improvements
 --------------------------------
 
 * `guess_has_R4.1_features()` now returns `TRUE` for the `ragg::agg_jpeg()`,
   `ragg::agg_ppm()`, and `ragg::agg_tiff()` devices if `packageVersion("ragg") >= '1.2.0'`.
+* `clippingPathGrob()` will now consistently - as previously documented - use `ragg::agg_png()` 
+  as the default `png_device` graphics device if it is available and `use_R4.1_clipping` is `FALSE`.
 
 gridpattern v0.4.0
 ==================

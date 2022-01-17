@@ -24,8 +24,10 @@ my_png <- function(f, fn) {
 test_that("array patterns works as expected", {
     skip_on_ci()
     skip_on_cran()
-    skip_if_not_installed("magick")
     skip_if_not(capabilities("cairo"))
+    skip_if_not_installed("magick")
+    skip_if_not_installed("ragg")
+
     x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     test_raster("gradient.png",
@@ -63,7 +65,7 @@ test_that("array patterns works as expected", {
     test_raster("text.png",
                 function() grid.pattern_text(x, y, shape = playing_card_symbols,
                                              colour = c("black", "red", "red", "black"),
-                                             use_R4.1_clipping = FALSE,
+                                             use_R4.1_clipping = TRUE,
                                              size = 18, spacing = 0.1, angle = 0))
 
 
@@ -71,7 +73,7 @@ test_that("array patterns works as expected", {
     test_raster("rose.png",
              function() grid.pattern_rose(x, y,
                                           spacing = 0.15, density = 0.5, angle = 0,
-                                          use_R4.1_clipping = FALSE,
+                                          use_R4.1_clipping = NULL,
                                           frequency = 1:4, gp = gp))
 
     # plasma images are random and doesn't seem to be a way to set a seed
@@ -99,7 +101,7 @@ test_that("array patterns works as expected", {
     options(ggpattern_array_funcs = list(simple = create_pattern_simple))
     test_raster("simple.png", function() grid.pattern("simple", x, y, type = "b"))
 
-    # clipGrob
+    # clippingPathGrob()
     clippee <- patternGrob("circle", gp = gpar(col = "black", fill = "yellow"),
                            spacing = 0.1, density = 0.5)
     angle <- seq(2 * pi / 4, by = 2 * pi / 6, length.out = 7)
@@ -109,9 +111,25 @@ test_that("array patterns works as expected", {
     y_hex_inner <- 0.5 + 0.25 * sin(rev(angle))
     clipper <- grid::pathGrob(x = c(x_hex_outer, x_hex_inner),
                               y = c(y_hex_outer, y_hex_inner),
+                              id = rep(1:2, each = 7),
                               rule = "evenodd")
     clipped <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = FALSE)
     test_raster("clipGrob.png", function() grid.draw(clipped))
+
+    # alphaMaskGrob()
+    clipper <- editGrob(clipper, gp = gpar(col = NA, fill = "black"))
+    masked <- alphaMaskGrob(clippee, clipper, use_R4.1_masks = FALSE)
+    test_raster("alphaMaskGrob.png", function() grid.draw(masked))
+
+    clippee <- rectGrob(gp = gpar(fill = "blue", col = NA))
+    clipper <- editGrob(clipper, gp = gpar(col = "black", lwd=20, fill = rgb(0, 0, 0, 0.5)))
+    masked <- alphaMaskGrob(clippee, clipper, use_R4.1_masks = NULL)
+    test_raster("alphaMaskGrob_transparent.png", function() grid.draw(masked))
+
+    clippee <- rectGrob(gp = gpar(fill = "blue", col = NA))
+    clipper <- editGrob(clipper, gp = gpar(col = "black", lwd=20, fill = rgb(0, 0, 0, 0.5)))
+    masked <- alphaMaskGrob(clippee, clipper, use_R4.1_masks = FALSE, png_device = grDevices::png)
+    test_raster("alphaMaskGrob_cairo.png", function() grid.draw(masked))
 
     # ambient
     skip_if_not_installed("ambient")

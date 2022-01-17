@@ -27,7 +27,8 @@ If \code{FALSE} sets them to \code{FALSE}.}
 If \code{FALSE} do a \code{rasterGrob} approximation of the gradient pattern.
 If \code{NULL} try to guess an appropriate choice.}
 \item{ggpattern_use_R4.1_masks}{If \code{TRUE} use the grid mask feature introduced in R v4.1.0.
-Currently unused by this package.}
+If \code{FALSE} do a \code{rasterGrob} approximation of the masked pattern.
+If \code{NULL} try to guess an appropriate choice.}
 \item{ggpattern_use_R4.1_patterns}{If \code{TRUE} use the grid pattern feature introduced in R v4.1.0.
 Currently unused by this package.}
 }
