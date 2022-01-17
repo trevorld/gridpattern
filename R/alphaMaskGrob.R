@@ -8,9 +8,12 @@
 #'                       If `FALSE` do a `rasterGrob` approximation.
 #'                       If `NULL` try to guess an appropriate choice.
 #'                       Note not all graphic devices support the grid mask feature.
-#' @param png_device \dQuote{png} graphics device to use if `use_R4.1_masks` is `FALSE`.
-#'                   If `NULL` (default) will use `ragg::agg_png()` if the
-#'                   suggested package `ragg` is available else `grDevices::png()`.
+#' @param png_device \dQuote{png} graphics device to save intermediate raster data with if `use_R4.1_masks` is `FALSE`.
+#'                   If `NULL` and suggested package `ragg` is available
+#'                   and versions are high enough we directly capture masked raster via [ragg::agg_capture()].
+#'                   Otherwise we will use `png_device`
+#'                   (default [ragg::agg_png()] if available else [grDevices::png()]) and [png::readPNG()]
+#'                   to manually compute a masked raster.
 #' @param res Resolution of desired `rasterGrob` in pixels per inch if `use_R4.1_masks` is `FALSE`.
 #' @return A `grid` grob
 #' @inheritParams grid::polygonGrob
@@ -68,12 +71,29 @@ makeContent.alpha_mask <- function(x) {
         grob <- grobTree(x$maskee,
                          vp = viewport(mask = x$masker),
                          name = "alpha_mask")
+    } else if (is.null(x$png_device) &&
+               getRversion() >= '4.1.0' &&
+               requireNamespace("ragg", quietly = TRUE) &&
+               packageVersion("ragg") >= '1.2.0') {
+        grob <- gridpattern_mask_agg_capture(x)
     } else {
         grob <- gridpattern_mask_raster(x)
     }
 
     gl <- gList(grob)
     setChildren(x, gl)
+}
+
+gridpattern_mask_agg_capture <- function(x) {
+    height <- x$res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
+    width <- x$res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
+
+    f_masked <- ragg::agg_capture(height = height, width = width, res = x$res, bg = "transparent")
+    grob <- alphaMaskGrob(x$maskee, x$masker, use_R4.1_masks = TRUE)
+    grid.draw(grob)
+    raster_masked <- f_masked(native = FALSE)
+    dev.off()
+    grid::rasterGrob(raster_masked)
 }
 
 gridpattern_mask_raster <- function(x) {

@@ -26,9 +26,12 @@ If \code{FALSE} do a \code{rasterGrob} approximation.
 If \code{NULL} try to guess an appropriate choice.
 Note not all graphic devices support the grid mask feature.}
 
-\item{png_device}{\dQuote{png} graphics device to use if \code{use_R4.1_masks} is \code{FALSE}.
-If \code{NULL} (default) will use \code{ragg::agg_png()} if the
-suggested package \code{ragg} is available else \code{grDevices::png()}.}
+\item{png_device}{\dQuote{png} graphics device to save intermediate raster data with if \code{use_R4.1_masks} is \code{FALSE}.
+If \code{NULL} and suggested package \code{ragg} is available
+and versions are high enough we directly capture masked raster via \code{\link[ragg:agg_capture]{ragg::agg_capture()}}.
+Otherwise we will use \code{png_device}
+(default \code{\link[ragg:agg_png]{ragg::agg_png()}} if available else \code{\link[grDevices:png]{grDevices::png()}}) and \code{\link[png:readPNG]{png::readPNG()}}
+to manually compute a masked raster.}
 
 \item{res}{Resolution of desired \code{rasterGrob} in pixels per inch if \code{use_R4.1_masks} is \code{FALSE}.}
 
