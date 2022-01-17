@@ -24,7 +24,7 @@ grid.pattern_rose(
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
   size = gp$lwd \%||\% 1,
-  use_R4.1_clipping = getOption("ggpattern_use_R4.1_clipping",
+  use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
     getOption("ggpattern_use_R4.1_features")),
   png_device = NULL,
   res = getOption("ggpattern_res", 72),
@@ -83,17 +83,16 @@ more information about supported \code{subtype} arguments.}
 
 \item{size}{Stroke linewidth}
 
-\item{use_R4.1_clipping}{If \code{TRUE} use the grid clipping path feature introduced in R v4.1.0.
+\item{use_R4.1_masks}{If \code{TRUE} use the grid mask feature introduced in R v4.1.0.
 If \code{FALSE} do a \code{rasterGrob} approximation.
 If \code{NULL} try to guess an appropriate choice.
-Note not all graphic devices support the grid clipping path feature
-and the grid clipping path feature does not nest.}
+Note not all graphic devices support the grid mask feature.}
 
-\item{png_device}{\dQuote{png} graphics device to use if \code{use_R4.1_clipping} is \code{FALSE}.
+\item{png_device}{\dQuote{png} graphics device to use if \code{use_R4.1_masks} is \code{FALSE}.
 If \code{NULL} (default) will use \code{ragg::agg_png()} if the
 suggested package \code{ragg} is available else \code{grDevices::png()}.}
 
-\item{res}{Resolution of desired \code{rasterGrob} in pixels per inch if \code{use_R4.1_clipping} is \code{FALSE}.}
+\item{res}{Resolution of desired \code{rasterGrob} in pixels per inch if \code{use_R4.1_masks} is \code{FALSE}.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}

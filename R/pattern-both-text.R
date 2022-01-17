@@ -3,7 +3,7 @@
 #' `grid.pattern_text()` draws a text character pattern onto the graphic device.
 #'
 #' @inheritParams grid.pattern_regular_polygon
-#' @inheritParams clippingPathGrob
+#' @inheritParams alphaMaskGrob
 #' @param shape A character or expression vector.
 #'              See `label` argument of [grid::textGrob()] for more details.
 #' @param fontfamily The font family.  See [grid::gpar()] for more details.
@@ -34,8 +34,8 @@ grid.pattern_text <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                               size = gp$fontsize %||% 12,
                               fontfamily = gp$fontfamily %||% "sans",
                               fontface = gp$fontface %||% "plain",
-                              use_R4.1_clipping = getOption("ggpattern_use_R4.1_clipping",
-                                                            getOption("ggpattern_use_R4.1_features")),
+                              use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
+                                                         getOption("ggpattern_use_R4.1_features")),
                               png_device = NULL, res = getOption("ggpattern_res", 72),
                               default.units = "npc", name = NULL,
                               gp = gpar(), draw = TRUE, vp = NULL) {
@@ -46,7 +46,7 @@ grid.pattern_text <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                  scale = scale, shape = shape,
                  grid = grid, type = type, subtype = subtype, rot = rot,
                  alpha = alpha, size = size, fontfamily = fontfamily, fontface = fontface,
-                 use_R4.1_clipping = use_R4.1_clipping, png_device = png_device, res = res,
+                 use_R4.1_masks = use_R4.1_masks, png_device = png_device, res = res,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
@@ -107,13 +107,12 @@ create_pattern_text <- function(params, boundary_df, aspect_ratio, legend = FALS
 
         gl <- append_gList(gl, grob)
     }
-    clippee <- gTree(children = gl)
-    clipper <- convert_polygon_df_to_polygon_grob(boundary_df, default.units = "bigpts")
+    maskee <- gTree(children = gl)
+    masker <- convert_polygon_df_to_polygon_grob(boundary_df, default.units = "bigpts",
+                                                 gp = gpar(fill = "black", col = NA, lwd = 0))
     png_device <- params$pattern_png_device
-    if (is.null(png_device) && requireNamespace("ragg", quietly = TRUE))
-        png_device <- ragg::agg_png # more robust cross-platform Unicode support
-    clippingPathGrob(clippee, clipper,
-                     use_R4.1_clipping = params$pattern_use_R4.1_clipping,
-                     png_device = png_device,
-                     res = params$pattern_res, name = "text")
+    alphaMaskGrob(maskee, masker,
+                  use_R4.1_masks = params$pattern_use_R4.1_masks,
+                  png_device = png_device,
+                  res = params$pattern_res, name = "text")
 }

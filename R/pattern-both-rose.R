@@ -3,7 +3,7 @@
 #' `grid.pattern_rose()` draws a rose curve pattern onto the graphic device.
 #'
 #' @inheritParams grid.pattern_circle
-#' @inheritParams clippingPathGrob
+#' @inheritParams alphaMaskGrob
 #' @param rot Angle to rotate rose (degrees, counter-clockwise).
 #' @param frequency The \dQuote{angular frequency} parameter of the rose pattern.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
@@ -38,8 +38,8 @@ grid.pattern_rose <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                               rot = 0,
                               alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1,
                               size = gp$lwd %||% 1,
-                              use_R4.1_clipping = getOption("ggpattern_use_R4.1_clipping",
-                                                            getOption("ggpattern_use_R4.1_features")),
+                              use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
+                                                         getOption("ggpattern_use_R4.1_features")),
                               png_device = NULL, res = getOption("ggpattern_res", 72),
                               default.units = "npc", name = NULL,
                                          gp = gpar(), draw = TRUE, vp = NULL) {
@@ -49,7 +49,7 @@ grid.pattern_rose <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
                  scale = scale, frequency = frequency,
                  grid = grid, type = type, subtype = subtype, rot = rot,
-                 use_R4.1_clipping = use_R4.1_clipping, png_device = png_device, res = res,
+                 use_R4.1_masks = use_R4.1_masks, png_device = png_device, res = res,
                  alpha = alpha, linetype = linetype, size = size,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
@@ -114,12 +114,13 @@ create_pattern_rose <- function(params, boundary_df, aspect_ratio, legend = FALS
         grob <- points_to_rose_grob(xy_par, xy_rose, gp, default.units, name)
         gl <- append_gList(gl, grob)
     }
-    clippee <- gTree(children = gl)
-    clipper <- convert_polygon_df_to_polygon_grob(boundary_df, default.units = "bigpts")
-    clippingPathGrob(clippee, clipper,
-                     use_R4.1_clipping = params$pattern_use_R4.1_clipping,
-                     png_device = params$pattern_png_device,
-                     res = params$pattern_res, name = "rose")
+    maskee <- gTree(children = gl)
+    masker <- convert_polygon_df_to_polygon_grob(boundary_df, default.units = "bigpts",
+                                                 gp = gpar(fill = "black", col = NA, lwd = 0))
+    alphaMaskGrob(maskee, masker,
+                  use_R4.1_masks = params$pattern_use_R4.1_masks,
+                  png_device = params$pattern_png_device,
+                  res = params$pattern_res, name = "rose")
 }
 
 get_xy_rose <- function(frequency, params, radius_outer, rot) {
@@ -148,6 +149,6 @@ points_to_rose_grob <- function(xy_par, xy_rose, gp, default.units, name) {
     } else {
         df$id <- rep(seq(nrow(points_mat)), each = nrow(df_polygon))
         pathGrob(x = df$x, y = df$y, id = df$id,
-                    default.units = default.units, gp = gp, name = name)
+                 default.units = default.units, gp = gp, name = name)
     }
 }

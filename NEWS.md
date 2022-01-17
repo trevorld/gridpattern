@@ -1,6 +1,17 @@
 gridpattern v0.5.0
 ==================
 
+Breaking Changes
+----------------
+
+* `grid.pattern_rose()` and `grid.pattern_text()` now "clip" their boundary using an 
+  "alpha mask" rather than a "clipping path".  
+  Now use the argument `use_R4.1_masks`, the global option `ggpattern_use_R4.1_masks`, 
+  or the global option `ggpattern_use_R4.1_features` to toggle on/off the R 4.1 alpha mask 
+  feature instead of using the `use_R4.1_clipping` argument or 
+  the global option `ggpattern_use_R4.1_clipping` as before
+  (the latter continue to toggle on/off the R 4.1 clipping path feature in `clippingPathGrob()`.
+
 New Features
 ------------
 

@@ -65,15 +65,14 @@ test_that("array patterns works as expected", {
     test_raster("text.png",
                 function() grid.pattern_text(x, y, shape = playing_card_symbols,
                                              colour = c("black", "red", "red", "black"),
-                                             use_R4.1_clipping = TRUE,
+                                             use_R4.1_masks = TRUE,
                                              size = 18, spacing = 0.1, angle = 0))
-
 
     gp <- gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
     test_raster("rose.png",
              function() grid.pattern_rose(x, y,
                                           spacing = 0.15, density = 0.5, angle = 0,
-                                          use_R4.1_clipping = NULL,
+                                          use_R4.1_masks = NULL,
                                           frequency = 1:4, gp = gp))
 
     # plasma images are random and doesn't seem to be a way to set a seed
