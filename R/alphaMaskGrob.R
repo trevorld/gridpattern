@@ -56,6 +56,9 @@ alphaMaskGrob <- function(maskee, masker,
           name=name, gp=gp, vp=vp, cl="alpha_mask")
 }
 
+# Avoid R CMD check WARNING on R 4.0 which lacks `mask` argument
+vport <- function(...) viewport(...)
+
 #' @export
 makeContent.alpha_mask <- function(x) {
     current_dev <- grDevices::dev.cur()
@@ -67,9 +70,11 @@ makeContent.alpha_mask <- function(x) {
     else
         use_R4.1_masks <- as.logical(use_R4.1_masks)
 
+    stopifnot(getRversion() >= '4.1.0' || !use_R4.1_masks)
+
     if (use_R4.1_masks) {
         grob <- grobTree(x$maskee,
-                         vp = viewport(mask = x$masker),
+                         vp = vport(mask = x$masker),
                          name = "alpha_mask")
     } else if (is.null(x$png_device) &&
                getRversion() >= '4.1.0' &&

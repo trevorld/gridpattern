@@ -55,6 +55,8 @@ makeContent.clipping_path <- function(x) {
     else
         use_R4.1_clipping <- as.logical(use_R4.1_clipping)
 
+    stopifnot(getRversion() >= '4.1.0' || !use_R4.1_clipping)
+
     if (use_R4.1_clipping) {
         grob <- grobTree(x$clippee,
                          vp = viewport(clip = x$clipper),
