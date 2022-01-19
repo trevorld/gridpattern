@@ -96,6 +96,8 @@ guess_has_R4.1_features <- function() {
         TRUE
     } else if (device %in% c("agg_jpeg", "agg_ppm", "agg_png", "agg_tiff")) {
         packageVersion("ragg") >= '1.2.0'
+    } else if (device == "devSVG") {
+        packageVersion("svglite") >= '2.1.0'
     } else {
         FALSE
     }

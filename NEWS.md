@@ -27,6 +27,7 @@ Bug fixes and minor improvements
 
 * `guess_has_R4.1_features()` now returns `TRUE` for the `ragg::agg_jpeg()`,
   `ragg::agg_ppm()`, and `ragg::agg_tiff()` devices if `packageVersion("ragg") >= '1.2.0'`.
+  It also returns `TRUE` for `svglite::svglite()` if `packageVersion("svglite") >= '2.1.0'`.
 * `clippingPathGrob()` will now consistently - as previously documented - use `ragg::agg_png()` 
   as the default `png_device` graphics device if it is available and `use_R4.1_clipping` is `FALSE`.
 
