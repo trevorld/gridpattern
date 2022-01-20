@@ -109,7 +109,7 @@ create_pattern_text <- function(params, boundary_df, aspect_ratio, legend = FALS
     }
     maskee <- gTree(children = gl)
     masker <- convert_polygon_df_to_polygon_grob(boundary_df, default.units = "bigpts",
-                                                 gp = gpar(fill = "black", col = NA, lwd = 0))
+                                                 gp = gpar(fill = "white", col = NA, lwd = 0))
     png_device <- params$pattern_png_device
     alphaMaskGrob(maskee, masker,
                   use_R4.1_masks = params$pattern_use_R4.1_masks,
