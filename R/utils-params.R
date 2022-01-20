@@ -97,7 +97,10 @@ guess_has_R4.1_features <- function() {
     } else if (device %in% c("agg_jpeg", "agg_ppm", "agg_png", "agg_tiff")) {
         packageVersion("ragg") >= '1.2.0'
     } else if (device == "devSVG") {
-        packageVersion("svglite") >= '2.1.0'
+        # {vdiffr}'s embedded {svglite} graphics device is also called "devSGV"
+        # {svglite} isn't guaranteed to be available during tests that use {vdiffr}
+        tryCatch(packageVersion("svglite") >= '2.1.0',
+                 error = function(e) FALSE)
     } else {
         FALSE
     }
