@@ -98,12 +98,28 @@ guess_has_R4.1_features <- function() {
         packageVersion("ragg") >= '1.2.0'
     } else if (device == "devSVG") {
         # {vdiffr}'s embedded {svglite} graphics device is also called "devSGV"
-        # {svglite} isn't guaranteed to be available during tests that use {vdiffr}
-        tryCatch(packageVersion("svglite") >= '2.1.0',
-                 error = function(e) FALSE)
+        # but doesn't support R 4.1 features (yet)
+        if (likely_called_by_vdiffr()) {
+            FALSE
+        } else {
+            packageVersion("svglite") >= '2.1.0'
+        }
     } else {
         FALSE
     }
+}
+
+# `vdiffr::write_svg()` is the function that calls the embedded {svglite}
+# but when `vdiffr::expect_doppelganger()` calls it its call is "writer"
+likely_called_by_vdiffr <- function() {
+    n <- sys.nframe()
+    while(n > 0) {
+        call <- as.character(sys.call(n))
+        if (grepl("write_svg$|expect_doppelganger$", call[1]))
+            return(TRUE)
+        n <- n - 1L
+    }
+    FALSE
 }
 
 get_R4.1_params <- function(l) {
