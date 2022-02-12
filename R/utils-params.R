@@ -91,7 +91,7 @@ guess_has_R4.1_features <- function() {
         return (FALSE)
 
     device <- names(grDevices::dev.cur())
-    if (device %in% c("cairo_pdf", "cairo_ps", "pdf", "X11cairo")) {
+    if (device %in% c("cairo_pdf", "cairo_ps", "pdf", "svg", "X11cairo")) {
         TRUE
     } else if (device %in% c("bmp", "jpeg", "png", "tiff")) {
         switch(.Platform$OS.type,
