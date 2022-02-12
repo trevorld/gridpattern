@@ -91,9 +91,12 @@ guess_has_R4.1_features <- function() {
         return (FALSE)
 
     device <- names(grDevices::dev.cur())
-    if (device %in% c("bmp", "cairo_pdf", "cairo_ps", "jpeg", "pdf", "png",
-                      "svg", "tiff", "X11cairo")) {
+    if (device %in% c("cairo_pdf", "cairo_ps", "pdf", "X11cairo")) {
         TRUE
+    } else if (device %in% c("bmp", "jpeg", "png", "tiff")) {
+        switch(.Platform$OS.type,
+               windows = FALSE,
+               unix = isTRUE(capabilities("cairo")))
     } else if (device %in% c("agg_jpeg", "agg_ppm", "agg_png", "agg_tiff")) {
         packageVersion("ragg") >= '1.2.0'
     } else if (device == "devSVG") {
