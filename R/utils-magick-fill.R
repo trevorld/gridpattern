@@ -169,29 +169,30 @@ fill_area_with_img_tile <- function(img, width, height, filter = filter, scale =
   }
 
   img <- magick::image_flip(img)
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Save the source tile locally
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   tile_temp_filename <- tempfile(fileext = ".png")
   magick::image_write(img, path = tile_temp_filename)
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Tile the image using command line 'imagemagick'
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  tmp_filename <- tempfile(fileext = ".png")
-  command <- glue("convert -size {width}x{height} tile:'{tile_temp_filename}' ",
-                  "-background none {tmp_filename}")
-
-  system(command)
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Read in the tiled image and return
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  img <- magick::image_read(tmp_filename)
+  # Tile using command line 'imagemagick', seems to choke on Windows
+  img <- try(tile_image_via_convert(tile_temp_filename, width, height),
+             silent = TRUE)
+  if (inherits(img, "try-error")) {
+      # Tile using `image_blank()`, buggy on my Ubuntu system but not on Windows?
+      pseudo <- glue("tile:{tile_temp_filename}")
+      img <- magick::image_blank(width, height, pseudo_image = pseudo)
+  }
   img <- magick::image_flip(img)
 
   img
+}
+
+
+# requires `convert` command-line tool which tends to choke on Windows
+tile_image_via_convert <- function(tile_temp_filename, width, height) {
+    tmp_filename <- tempfile(fileext = ".png")
+    command <- glue("convert -size {width}x{height} tile:'{tile_temp_filename}' ",
+                  "-background none {tmp_filename}")
+    system(command)
+    magick::image_read(tmp_filename)
 }
 
 #' Fill an area with a magick image
