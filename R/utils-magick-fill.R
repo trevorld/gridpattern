@@ -189,9 +189,12 @@ fill_area_with_img_tile <- function(img, width, height, filter = filter, scale =
 # requires `convert` command-line tool which tends to choke on Windows
 tile_image_via_convert <- function(tile_temp_filename, width, height) {
     tmp_filename <- tempfile(fileext = ".png")
-    command <- glue("convert -size {width}x{height} tile:'{tile_temp_filename}' ",
-                  "-background none {tmp_filename}")
-    system(command)
+    command <- "convert"
+    args <- c("-size", glue("{width}x{height}"),
+              glue("tile:'{tile_temp_filename}'"),
+              "-background", "none",
+              tmp_filename)
+    system2(command, args, stdout = FALSE, stderr = FALSE)
     magick::image_read(tmp_filename)
 }
 
