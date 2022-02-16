@@ -1,4 +1,4 @@
-gridpattern v0.5.0
+gridpattern v0.5.1
 ==================
 
 Breaking Changes
@@ -10,7 +10,7 @@ Breaking Changes
   or the global option `ggpattern_use_R4.1_features` to toggle on/off the R 4.1 alpha mask 
   feature instead of using the `use_R4.1_clipping` argument or 
   the global option `ggpattern_use_R4.1_clipping` as before
-  (the latter continue to toggle on/off the R 4.1 clipping path feature in `clippingPathGrob()`.
+  (the latter continue to toggle on/off the R 4.1 clipping path feature in `clippingPathGrob()`).
 
 New Features
 ------------
@@ -30,7 +30,7 @@ Bug fixes and minor improvements
   It also returns `TRUE` for `svglite::svglite()` if `packageVersion("svglite") >= '2.1.0'`.
 * `clippingPathGrob()` will now consistently - as previously documented - use `ragg::agg_png()` 
   as the default `png_device` graphics device if it is available and `use_R4.1_clipping` is `FALSE`.
-* `grid.pattern_image()` should no longer throw an inscrutable `Error in magick_image_readpath`
+* `grid.pattern_image()` should no longer throw an inscrutable `Error in magick_image_readpath`...
   error on certain platforms such as Windows (#47).
 
 gridpattern v0.4.0
