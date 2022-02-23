@@ -143,59 +143,27 @@ update_scale <- function(scale, img, width, height) {
 
 #' Tile image to fill the specified area
 #'
-#' Unless the width and height are carefully chosen, this operation will distort
-#' the image to force it to fit the dimensions
-#'
-#' @inheritParams fill_area_with_img
-#'
 #' @return magick image of the required dimensions
-#'
-#' @examples
-#' try({
-#'   filename <- system.file("img", "Rlogo.png", package="png")
-#'   img <- magick::image_read(filename)
-#'   fill_area_with_img_none(img, 100, 400)
-#' })
 #' @noRd
-fill_area_with_img_tile <- function(img, width, height, filter = filter, scale = 1) {
+fill_area_with_img_tile <- function(img, width, height, gravity = "SouthWest", filter = filter, scale = 1) {
 
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # Scale if requested
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   scale <- update_scale(scale, img, width, height)
   if (scale != 1) {
     geometry <- magick::geometry_size_percent(width = scale * 100)
     img      <- magick::image_resize(img, geometry, filter = filter)
   }
 
-  img <- magick::image_flip(img)
-  # Save the source tile locally
-  tile_temp_filename <- tempfile(fileext = ".png")
-  magick::image_write(img, path = tile_temp_filename)
-  # Tile using command line 'imagemagick', seems to choke on Windows
-  img <- try(tile_image_via_convert(tile_temp_filename, width, height),
-             silent = TRUE)
-  if (inherits(img, "try-error")) {
-      # Tile using `image_blank()`, buggy on my Ubuntu system but not on Windows?
-      pseudo <- glue("tile:{tile_temp_filename}")
-      img <- magick::image_blank(width, height, pseudo_image = pseudo)
-  }
-  img <- magick::image_flip(img)
+  img_info <- magick::image_info(img)
+  n_width <- width %/% img_info$width + as.integer(width %% img_info$width > 0)
+  n_height <- height %/% img_info$height + as.integer(height %% img_info$height > 0)
+  rows <- magick::image_append(rep(img, n_width))
+  tiled <- magick::image_append(rep(rows, n_height), stack=TRUE)
 
-  img
-}
+  geometry <- magick::geometry_size_pixels(width = width, height = height, preserve_aspect = FALSE)
 
+  cropped <- magick::image_crop(tiled, geometry = geometry, gravity = gravity)
 
-# requires `convert` command-line tool which tends to choke on Windows
-tile_image_via_convert <- function(tile_temp_filename, width, height) {
-    tmp_filename <- tempfile(fileext = ".png")
-    command <- "convert"
-    args <- c("-size", glue("{width}x{height}"),
-              glue("tile:'{tile_temp_filename}'"),
-              "-background", "none",
-              tmp_filename)
-    system2(command, args, stdout = FALSE, stderr = FALSE)
-    magick::image_read(tmp_filename)
+  cropped
 }
 
 #' Fill an area with a magick image
@@ -246,7 +214,7 @@ fill_area_with_img <- function(img, width, height, type='squish',
     expand = fill_area_with_img_expand(img, width, height, gravity = gravity, filter = filter),
     squish = fill_area_with_img_squish(img, width, height                   , filter = filter),
     none   = fill_area_with_img_none  (img, width, height, gravity = gravity, filter = filter, scale = scale),
-    tile   = fill_area_with_img_tile  (img, width, height,                    filter = filter, scale = scale),
+    tile   = fill_area_with_img_tile  (img, width, height, gravity = gravity, filter = filter, scale = scale),
     {
       warn("fill_area_with_img(): resize not understood: '", type,
            "', using 'squish'")

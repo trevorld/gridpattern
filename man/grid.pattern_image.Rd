@@ -12,7 +12,7 @@ grid.pattern_image(
   filename = "",
   type = "fit",
   scale = 1,
-  gravity = "center",
+  gravity = switch(type, tile = "southwest", "center"),
   filter = "lanczos",
   alpha = gp$alpha \%||\% NA_real_,
   aspect_ratio = 1,

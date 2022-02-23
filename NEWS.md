@@ -1,3 +1,12 @@
+gridpattern v0.5.2
+==================
+
+Bug Fixes and minor improvements
+--------------------------------
+
+* Fixes bug with `grid.pattern_image()` with `type = "tile"` (#47).
+  Additionally `grid.pattern_image()` now supports `gravity` argument when `type = "tile"`.
+
 gridpattern v0.5.1
 ==================
 

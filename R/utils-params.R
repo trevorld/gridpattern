@@ -25,7 +25,6 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
         switch(pattern, crosshatch = l$pattern_fill, "#4169E1")
     l$pattern_filter <- l$pattern_filter %||%
         switch(pattern, magick = "box", "lanczos")
-    l$pattern_gravity <- l$pattern_gravity %||% "center"
     l$pattern_grid <- l$pattern_grid %||% "square"
     l$pattern_key_scale_factor <- l$pattern_key_scale_factor %||% 1
     l$pattern_orientation <- l$pattern_orientation %||% "vertical"
@@ -41,6 +40,10 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
         l$pattern_type <- default_pattern_type(pattern)
     l$pattern_xoffset <- l$pattern_xoffset %||% 0
     l$pattern_yoffset <- l$pattern_yoffset %||% 0
+    l$pattern_gravity <- l$pattern_gravity %||%
+        switch(l$pattern_type, tile = "southwest", "center")
+    if (is.na(l$pattern_gravity))
+        l$pattern_gravity <- switch(l$pattern_type, tile = "southwest", "center")
 
     l$pattern_res <- l$pattern_res %||% getOption("ggpattern_res", 72) # in PPI
 
@@ -59,7 +62,6 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_value <- l$pattern_value %||% "cell"
     l$pattern_distance_ind <- l$pattern_distance_ind %||% c(1, 2)
     l$pattern_jitter <- l$pattern_jitter %||% 0.45
-
 
     l
 }

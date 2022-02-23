@@ -38,7 +38,8 @@
 #' @export
 grid.pattern_image <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                filename = "", type = "fit", scale = 1,
-                               gravity = "center", filter = "lanczos",
+                               gravity = switch(type, tile = "southwest", "center"),
+                               filter = "lanczos",
                                alpha = gp$alpha %||% NA_real_, aspect_ratio = 1, key_scale_factor = 1,
                                res = getOption("ggpattern_res", 72),
                                default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
