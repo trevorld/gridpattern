@@ -6,6 +6,23 @@ Bug Fixes and minor improvements
 
 * Fixes bug with `grid.pattern_image()` with `type = "tile"` (#47).
   Additionally `grid.pattern_image()` now supports `gravity` argument when `type = "tile"`.
+* If the active graphics device has also implemented the new R 4.2 `dev.capabilities()` support then
+  `guess_has_R4.1_features()` can now better guess R 4.1 graphic feature support when called within R 4.2.
+
+  + In particular `guess_has_R4.1_features()` can now better guess R 4.1 graphic feature support in the
+    `{grDevices}` bitmap devices (i.e. `bmp()`, `jpeg()`, `png()`, `tiff()`) 
+    when called within R 4.2 on Windows.
+    Previously it was not possible to easily distinguish on Windows if the device was called with 
+   `type = "windows"` or `type = "cairo"` and hence we had to conservatively guess no such support
+    even if `type = "cairo"` had been specified (and within R 4.1 we must still conservatively do so).
+  + Also if in the future any graphic devices add R 4.1 graphic feature support as well as 
+    R 4.2 `dev.capabilities()` support then we should now be able to correctly guess such support within R 4.2
+    without needing to manually update `guess_has_R4.1_features()`.
+
+* `guess_has_R4.1_features()` now supports an argument `features` which allows one to
+  limit the guessing of R4.1 feature support to a subset of `c("clippingPaths", "gradients", "masks", "patterns")`.
+  Although all known graphic devices either implements all or none of these features
+  this need not hold true in the future.
 
 gridpattern v0.5.1
 ==================

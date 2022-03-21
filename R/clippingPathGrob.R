@@ -51,7 +51,7 @@ makeContent.clipping_path <- function(x) {
 
     use_R4.1_clipping <- x$use_R4.1_clipping
     if (is.null(use_R4.1_clipping))
-        use_R4.1_clipping <- guess_has_R4.1_features()
+        use_R4.1_clipping <- guess_has_R4.1_features("clippingPaths")
     else
         use_R4.1_clipping <- as.logical(use_R4.1_clipping)
 

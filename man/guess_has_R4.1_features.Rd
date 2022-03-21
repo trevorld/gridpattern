@@ -5,10 +5,21 @@
 \title{Guess whether "active" graphics device supports
 the grid graphics features introduced in R v4.1.}
 \usage{
-guess_has_R4.1_features()
+guess_has_R4.1_features(
+  features = c("clippingPaths", "gradients", "masks", "patterns")
+)
+}
+\arguments{
+\item{features}{Character vector of features to guess support for.
+Will return \code{TRUE} only if guesses support for all requested features.\describe{
+\item{"clippingPaths"}{Supports clipping path feature}
+\item{"gradients"}{Supports (both linear and radial) gradient feature}
+\item{"masks"}{Supports (alpha) mask feature}
+\item{"patterns"}{Supports (tiling) pattern feature}
+}}
 }
 \value{
-\code{TRUE} or \code{FALSE}
+\code{TRUE} if we guess all \code{features} are supported else \code{FALSE}
 }
 \description{
 \code{guess_has_R_4.1_features()} guesses whether "active" graphics device supports

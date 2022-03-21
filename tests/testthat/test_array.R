@@ -9,7 +9,17 @@ test_raster <- function(ref_png, fn, update = FALSE) {
     unlink(tmpfile)
 
     diff <- magick::image_compare(image, ref, "AE")
-    expect_true(attr(diff, "distortion") < 0.01)
+    bool <- attr(diff, "distortion") < 0.01
+    if (!bool) {
+        grDevices::dev.new()
+        grid::pushViewport(grid::viewport(x = 0.25, width = 0.5))
+        grid::grid.raster(ref)
+        grid::popViewport()
+        grid::pushViewport(grid::viewport(x = 0.75, width = 0.5))
+        grid::grid.raster(image)
+        grid::popViewport()
+    }
+    expect_true(bool)
 }
 
 my_png <- function(f, fn) {
@@ -25,6 +35,7 @@ test_that("array patterns works as expected", {
     skip_on_ci()
     skip_on_cran()
     skip_if_not(capabilities("cairo"))
+    skip_if_not_installed("grid")
     skip_if_not_installed("magick")
     skip_if_not_installed("ragg")
 
@@ -127,8 +138,11 @@ test_that("array patterns works as expected", {
 
     clippee <- rectGrob(gp = gpar(fill = "blue", col = NA))
     clipper <- editGrob(clipper, gp = gpar(col = "black", lwd=20, fill = rgb(0, 0, 0, 0.5)))
+    bitmapType = getOption("bitmapType")
+    options(bitmapType = "cairo")
     masked <- alphaMaskGrob(clippee, clipper, use_R4.1_masks = FALSE, png_device = grDevices::png)
     test_raster("alphaMaskGrob_cairo.png", function() grid.draw(masked))
+    options(bitmapType = bitmapType)
 
     # ambient
     skip_if_not_installed("ambient")

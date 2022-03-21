@@ -66,7 +66,7 @@ makeContent.alpha_mask <- function(x) {
 
     use_R4.1_masks <- x$use_R4.1_masks
     if (is.null(use_R4.1_masks))
-        use_R4.1_masks <- guess_has_R4.1_features()
+        use_R4.1_masks <- guess_has_R4.1_features("masks")
     else
         use_R4.1_masks <- as.logical(use_R4.1_masks)
 
