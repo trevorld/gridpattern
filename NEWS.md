@@ -1,4 +1,4 @@
-gridpattern v0.5.2
+gridpattern v0.5.3
 ==================
 
 Bug Fixes and minor improvements
