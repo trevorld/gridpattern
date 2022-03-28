@@ -1,7 +1,16 @@
+gridpattern (development)
+=========================
+
+Bug fixes and minor improvements
+--------------------------------
+
+* `guess_has_R4.1_features()` can now also take advantage if `dev.capabilities()`
+  **explicitly** indicates that a feature is **not** supported in active graphics device.
+
 gridpattern v0.5.3
 ==================
 
-Bug Fixes and minor improvements
+Bug fixes and minor improvements
 --------------------------------
 
 * Fixes bug with `grid.pattern_image()` with `type = "tile"` (#47).
