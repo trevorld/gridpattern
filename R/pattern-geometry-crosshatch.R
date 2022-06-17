@@ -23,14 +23,17 @@ grid.pattern_crosshatch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1
                                     fill = gp$fill %||% "grey80", fill2 = fill,
                                     angle = 30, density = 0.2,
                                     spacing = 0.05, xoffset = 0, yoffset = 0,
-                                    alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
+                                    alpha = gp$alpha %||% NA_real_,
+                                    linetype = gp$lty %||% 1,
+                                    linewidth = size %||% gp$lwd %||% 1,
+                                    size = NULL,
                                     grid = "square",
                                     default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("crosshatch", x, y, id,
                  colour = colour, fill = fill, fill2 = fill2, angle = angle,
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
-                 alpha = alpha, linetype = linetype, size = size,
+                 alpha = alpha, linetype = linetype, linewidth = linewidth,
                  grid = grid,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
@@ -56,7 +59,7 @@ create_crosshatch_via_sf_helper <- function(params, boundary_df, add_top_hatch =
 
     fill <- alpha(params$pattern_fill, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
-    lwd  <- params$pattern_size * .pt
+    lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype
     gp <- gpar(col = col, fill = fill, lwd = lwd, lty = lty, lineend = 'square')
 

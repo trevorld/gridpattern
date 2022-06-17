@@ -23,7 +23,8 @@ grid.pattern_polygon_tiling(
   type = "square",
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
-  size = gp$lwd \%||\% 1,
+  linewidth = size \%||\% gp$lwd \%||\% 1,
+  size = NULL,
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -62,7 +63,9 @@ Not supported for all polygon tiling \code{type}.}
 
 \item{linetype}{Stroke linetype}
 
-\item{size}{Stroke linewidth}
+\item{linewidth}{Stroke linewidth}
+
+\item{size}{For backwards compatibility can be used to set \code{linewidth}}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}

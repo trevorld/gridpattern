@@ -6,6 +6,16 @@ Bug fixes and minor improvements
 
 * `guess_has_R4.1_features()` can now also take advantage if `dev.capabilities()`
   **explicitly** indicates that a feature is **not** supported in active graphics device.
+* To match aesthetic changes in `{ggplot2}` one may now use the parameter `linewidth` to 
+   set polygon/path line widths in
+  `grid.pattern_circle()`, `grid.pattern_crosshatch()`, `grid.pattern_pch()`, 
+  `grid.pattern_polygon_tiling()`, 
+  `grid.pattern_regular_polygon()`, `grid.pattern_stripe()`, `grid.pattern_rose()`, 
+  `grid.pattern_wave()`, and `grid.pattern_weave()`.
+  For backwards compatibility one may continue to use `size` as well.
+  Continue to use `size` (or `gp`) to set the fontsize in `grid.pattern_text()`.
+  Both `pattern_linewidth` and `pattern_size` will be available
+  for use in custom patterns (#57). 
 
 gridpattern v0.5.3
 ==================

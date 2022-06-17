@@ -75,8 +75,10 @@ grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), i
                                          spacing = 0.05, xoffset = 0, yoffset = 0,
                                          scale = 0.5, shape = "convex4",
                                          grid = "square", type = NULL, subtype = NULL, rot = 0,
-                                         alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1,
-                                         size = gp$lwd %||% 1,
+                                         alpha = gp$alpha %||% NA_real_,
+                                         linetype = gp$lty %||% 1,
+                                         linewidth = size %||% gp$lwd %||% 1,
+                                         size = NULL,
                                          default.units = "npc", name = NULL,
                                          gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
@@ -85,7 +87,7 @@ grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), i
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
                  scale = scale, shape = shape,
                  grid = grid, type = type, subtype = subtype, rot = rot,
-                 alpha = alpha, linetype = linetype, size = size,
+                 alpha = alpha, linetype = linetype, linewidth = linewidth,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
@@ -105,7 +107,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     # construct grobs using subsets if certain inputs are vectorized
     fill <- alpha(params$pattern_fill, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
-    lwd  <- params$pattern_size * .pt
+    lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype
 
     density <- params$pattern_density

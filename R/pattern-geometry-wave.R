@@ -30,7 +30,10 @@ grid.pattern_wave <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
                                 density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
                                 amplitude = 0.5 * spacing, frequency = 1 / spacing,
-                                alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
+                                alpha = gp$alpha %||% NA_real_,
+                                linetype = gp$lty %||% 1,
+                                linewidth = size %||% gp$lwd %||% 1,
+                                size = NULL,
                                 grid = "square", type = "triangle",
                                 default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
@@ -38,7 +41,7 @@ grid.pattern_wave <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                  colour = colour, fill = fill, angle = angle,
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
                  amplitude = amplitude, frequency = frequency,
-                 alpha = alpha, linetype = linetype, size = size,
+                 alpha = alpha, linetype = linetype, linewidth = linewidth,
                  grid = grid, type = type,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
@@ -61,7 +64,7 @@ create_pattern_wave_via_sf <- function(params, boundary_df, aspect_ratio,
 
     fill <- alpha(params$pattern_fill, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
-    lwd  <- params$pattern_size * .pt
+    lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype
     density <- params$pattern_density
 

@@ -82,6 +82,7 @@ so may make your pattern more useful for others:
 | `pattern_grid`             | Pattern grid type                             | 'square'   | 'square', 'hex', 'hex\_circle'     |
 | `pattern_key_scale_factor` | Scale factor for pattern in legend            | 1          |                                    |
 | `pattern_linetype`         | Stroke linetype                               | 1          | linetype                           |
+| `pattern_linewidth`        | Stroke linewidth                              | 1          | linewidth                          |
 | `pattern_option_1 - 5`     | Generic options for expansion                 | 0          |                                    |
 | `pattern_orientation`      | Orientation                                   | 'vertical' | 'vertical', 'horizontal', 'radial' |
 | `pattern_phase`            | Phase                                         | 0          |                                    |
@@ -89,7 +90,7 @@ so may make your pattern more useful for others:
 | `pattern_rot`              | Rotation angle (shape within pattern)         | 0          | angle in degrees                   |
 | `pattern_scale`            | Scale                                         | 1          | Multiplier                         |
 | `pattern_shape`            | Plotting shape                                | 1          | shapes                             |
-| `pattern_size`             | Stroke linewidth                              | 1          | linewidth                          |
+| `pattern_size`             | Size factor (e.g. fontsize)                   | 1          | fontsize                           |
 | `pattern_spacing`          | Spacing between repetitions of pattern        | 0.05       | value in range [0, 1] (snpc units) |
 | `pattern_subtype`          | Generic control option                        | NA         | pattern-dependent                  |
 | `pattern_type`             | Generic control option                        | NA         | pattern-dependent                  |
@@ -206,7 +207,7 @@ create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = F
                      col = params$pattern_colour,
                      fill = params$pattern_fill,
                      lty = params$pattern_linetype,
-                     lwd = params$pattern_size)
+                     lwd = params$pattern_linewidth)
 
     grid::polygonGrob(x = x, y = y, id = id, default.units = "npc", gp = gp)
 }

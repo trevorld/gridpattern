@@ -9,6 +9,7 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_colour <- l$pattern_colour %||% l$pattern_color %||% gp$col %||% "grey20"
     l$pattern_fill <- l[["pattern_fill"]] %||% gp$fill %||% "grey80"
     l$pattern_linetype <- l$pattern_linetype %||% gp$lty %||% 1
+    l$pattern_linewidth <- l$pattern_linewidth %||% l$pattern_size %||% gp$lwd %||% 1
     if (pattern == "text")
         l$pattern_size <- l$pattern_size %||% gp$fontsize %||% 12
     else

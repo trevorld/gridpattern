@@ -6,6 +6,7 @@
 #' @inheritParams alphaMaskGrob
 #' @param shape A character or expression vector.
 #'              See `label` argument of [grid::textGrob()] for more details.
+#' @param size Fontsize
 #' @param fontfamily The font family.  See [grid::gpar()] for more details.
 #' @param fontface The font face.  See [grid::gpar()] for more details.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.

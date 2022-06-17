@@ -47,7 +47,7 @@ guess_has_R4.1_features <- function(features = c("clippingPaths", "gradients", "
         if (.Platform$OS.type == "windows") # could be `type = "windows"` or `type = "cairo"`
             confirm_via_dev_capabilities(features)
         else # on unix non-"cairo" type have different device names from "cairo" type
-           TRUE
+            TRUE
     } else if (device %in% c("agg_jpeg", "agg_ppm", "agg_png", "agg_tiff")) {
         packageVersion("ragg") >= '1.2.0'
     } else if (device == "devSVG") {

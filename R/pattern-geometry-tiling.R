@@ -89,8 +89,10 @@ grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id
                                         fill = gp$fill %||% "grey80",
                                         angle = 30, spacing = 0.05, xoffset = 0, yoffset = 0,
                                         type = "square",
-                                        alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1,
-                                        size = gp$lwd %||% 1,
+                                        alpha = gp$alpha %||% NA_real_,
+                                        linetype = gp$lty %||% 1,
+                                        linewidth = size %||% gp$lwd %||% 1,
+                                        size = NULL,
                                         default.units = "npc", name = NULL,
                                         gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
@@ -98,7 +100,7 @@ grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id
                  colour = colour, fill = fill, angle = angle,
                  spacing = spacing, xoffset = xoffset, yoffset = yoffset,
                  type = type,
-                 alpha = alpha, linetype = linetype, size = size,
+                 alpha = alpha, linetype = linetype, linewidth = linewidth,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
@@ -148,7 +150,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
 
     fill <- alpha(params$pattern_fill, params$pattern_alpha)
     col <- alpha(params$pattern_colour, params$pattern_alpha)
-    lwd <- params$pattern_size
+    lwd <- params$pattern_linewidth
     lty <- params$pattern_linetype
     stopifnot(length(fill) < 4L, max(lengths(list(col, lwd, lty))) == 1L)
     gp <- gpar(fill = fill, col = col, lwd = lwd, lty = lty)

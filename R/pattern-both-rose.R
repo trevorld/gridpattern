@@ -36,8 +36,10 @@ grid.pattern_rose <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                               frequency = 0.1,
                               grid = "square", type = NULL, subtype = NULL,
                               rot = 0,
-                              alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1,
-                              size = gp$lwd %||% 1,
+                              alpha = gp$alpha %||% NA_real_,
+                              linetype = gp$lty %||% 1,
+                              linewidth = size %||% gp$lwd %||% 1,
+                              size = NULL,
                               use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
                                                          getOption("ggpattern_use_R4.1_features")),
                               png_device = NULL, res = getOption("ggpattern_res", 72),
@@ -50,7 +52,7 @@ grid.pattern_rose <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                  scale = scale, frequency = frequency,
                  grid = grid, type = type, subtype = subtype, rot = rot,
                  use_R4.1_masks = use_R4.1_masks, png_device = png_device, res = res,
-                 alpha = alpha, linetype = linetype, size = size,
+                 alpha = alpha, linetype = linetype, linewidth = linewidth,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
@@ -70,7 +72,7 @@ create_pattern_rose <- function(params, boundary_df, aspect_ratio, legend = FALS
     # construct grobs using subsets if certain inputs are vectorized
     fill <- alpha(params$pattern_fill, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
-    lwd  <- params$pattern_size * .pt
+    lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype
 
     density <- params$pattern_density

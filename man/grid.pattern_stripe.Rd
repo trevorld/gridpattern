@@ -18,7 +18,8 @@ grid.pattern_stripe(
   yoffset = 0,
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
-  size = gp$lwd \%||\% 1,
+  linewidth = size \%||\% gp$lwd \%||\% 1,
+  size = NULL,
   grid = "square",
   default.units = "npc",
   name = NULL,
@@ -55,7 +56,9 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{linetype}{Stroke linetype}
 
-\item{size}{Stroke linewidth}
+\item{linewidth}{Stroke linewidth}
+
+\item{size}{For backwards compatibility can be used to set \code{linewidth}}
 
 \item{grid}{Adjusts placement and density of certain graphical elements.
 \code{"square"} (default) is a square grid.

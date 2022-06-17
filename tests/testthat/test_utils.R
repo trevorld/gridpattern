@@ -22,7 +22,7 @@ test_that("get_params() works as expected", {
     expect_equal(params$pattern_yoffset, 0)
     expect_equal(params$pattern_alpha, NA_real_)
     expect_equal(params$pattern_linetype, 1)
-    expect_equal(params$pattern_size, 1)
+    expect_equal(params$pattern_linewidth, 1)
 
     params <- get_params(alpha = 0.5, spacing = 0.1)
     expect_equal(params$pattern_alpha, 0.5)

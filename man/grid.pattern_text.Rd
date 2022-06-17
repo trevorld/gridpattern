@@ -79,7 +79,7 @@ more information about supported \code{subtype} arguments.}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
-\item{size}{Stroke linewidth}
+\item{size}{Fontsize}
 
 \item{fontfamily}{The font family.  See \code{\link[grid:gpar]{grid::gpar()}} for more details.}
 

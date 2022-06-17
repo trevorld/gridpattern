@@ -23,7 +23,8 @@ grid.pattern_rose(
   rot = 0,
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
-  size = gp$lwd \%||\% 1,
+  linewidth = size \%||\% gp$lwd \%||\% 1,
+  size = NULL,
   use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
     getOption("ggpattern_use_R4.1_features")),
   png_device = NULL,
@@ -81,7 +82,9 @@ more information about supported \code{subtype} arguments.}
 
 \item{linetype}{Stroke linetype}
 
-\item{size}{Stroke linewidth}
+\item{linewidth}{Stroke linewidth}
+
+\item{size}{For backwards compatibility can be used to set \code{linewidth}}
 
 \item{use_R4.1_masks}{If \code{TRUE} use the grid mask feature introduced in R v4.1.0.
 If \code{FALSE} do a \code{rasterGrob} approximation.

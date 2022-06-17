@@ -13,7 +13,8 @@
 #' @param yoffset Shift pattern along y axis ('snpc' units between 0 and 1).
 #' @param alpha Alpha (between 0 and 1) or `NA` (default, preserves colors' alpha value).
 #' @param linetype Stroke linetype
-#' @param size Stroke linewidth
+#' @param linewidth Stroke linewidth
+#' @param size For backwards compatibility can be used to set `linewidth`
 #' @param grid Adjusts placement and density of certain graphical elements.
 #'             `"square"` (default) is a square grid.
 #'             `"hex"` is a hexagonal grid suitable for hexagonal and triangular tiling.
@@ -48,14 +49,17 @@
 grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
                                 density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
-                                alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1, size = gp$lwd %||% 1,
+                                alpha = gp$alpha %||% NA_real_,
+                                linetype = gp$lty %||% 1,
+                                linewidth = size %||% gp$lwd %||% 1,
+                                size = NULL,
                                 grid = "square", type = NULL, subtype = NULL,
                                 default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("circle", x, y, id,
                  colour = colour, fill = fill, angle = angle,
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
-                 alpha = alpha, linetype = linetype, size = size,
+                 alpha = alpha, linetype = linetype, linewidth = linewidth,
                  grid = grid, type = type, subtype = subtype,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }

@@ -48,8 +48,10 @@ grid.pattern_pch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                          spacing = 0.05, xoffset = 0, yoffset = 0,
                                          scale = 0.5, shape = 1L,
                                          grid = "square", type = NULL, subtype = NULL, rot = 0,
-                                         alpha = gp$alpha %||% NA_real_, linetype = gp$lty %||% 1,
-                                         size = gp$lwd %||% 1,
+                                         alpha = gp$alpha %||% NA_real_,
+                                         linetype = gp$lty %||% 1,
+                                         linewidth = size %||% gp$lwd %||% 1,
+                                         size = NULL,
                                          default.units = "npc", name = NULL,
                                          gp = gpar(), draw = TRUE, vp = NULL) {
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
@@ -58,7 +60,7 @@ grid.pattern_pch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                  density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
                  scale = scale, shape = shape,
                  grid = grid, type = type, subtype = subtype, rot = rot,
-                 alpha = alpha, linetype = linetype, size = size,
+                 alpha = alpha, linetype = linetype, linewidth = linewidth,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
 }
 
@@ -67,7 +69,7 @@ create_pattern_pch <- function(params, boundary_df, aspect_ratio, legend = FALSE
     # vectorize fill, col, lwd, lty, density, rot, and shape
     fill <- alpha(params$pattern_fill, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
-    lwd  <- params$pattern_size
+    lwd  <- params$pattern_linewidth
     lty  <- params$pattern_linetype
     params$pattern_alpha <- NA_real_
 
@@ -110,7 +112,7 @@ create_pattern_pch <- function(params, boundary_df, aspect_ratio, legend = FALSE
 
     params$pattern_fill <- fill
     params$pattern_col <- col
-    params$pattern_size <- lwd
+    params$pattern_linewidth <- lwd
     params$pattern_linetype <- lty
     params$pattern_scale <- 0.001
     params_base <- params_top <- params
