@@ -6,7 +6,7 @@
 \alias{gridpattern-package}
 \title{gridpattern: 'grid' Pattern Grobs}
 \description{
-\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
 Provides 'grid' grobs that fill in a user-defined area with various patterns. Includes enhanced versions of the geometric and image-based patterns originally contained in the 'ggpattern' package as well as original 'pch', 'polygon_tiling', 'regular_polygon', 'rose', 'text', 'wave', and 'weave' patterns plus support for custom user-defined patterns.
 }
@@ -46,7 +46,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Trevor L Davis \email{trevor.l.davis@gmail.com}
+\strong{Maintainer}: Trevor L Davis \email{trevor.l.davis@gmail.com} (\href{https://orcid.org/0000-0001-6341-4639}{ORCID})
 
 Authors:
 \itemize{
