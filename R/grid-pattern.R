@@ -61,6 +61,7 @@
 #'         If `draw` is `TRUE` then `grid.pattern()` also draws to the graphic device as a side effect.
 #' @examples
 #'  print(names_pattern)
+#'  \donttest{ # Once took more >10s on a CRAN autocheck
 #'  if (require("grid")) {
 #'    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -106,6 +107,7 @@
 #'      grid.newpage()
 #'      grid.pattern("plasma", x_hex, y_hex, fill="green")
 #'    }
+#'  }
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
 #'          for more details on the `ggpattern` package.

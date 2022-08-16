@@ -50,6 +50,7 @@ A \code{grid} grob
 \code{alphaMaskGrob()} masks a grob using another grob to specify the (alpha) mask.
 }
 \examples{
+  \donttest{ # Once took more >10s on a CRAN autocheck
   if (capabilities("png") && require("grid")) {
     maskee <- patternGrob("circle", gp = gpar(col = "black", fill = "yellow"),
                            spacing = 0.1, density = 0.5)
@@ -75,5 +76,6 @@ A \code{grid} grob
                                         use_R4.1_masks = FALSE)
     grid.newpage()
     grid.draw(masked_transparent)
+  }
   }
 }

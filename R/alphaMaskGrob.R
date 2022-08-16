@@ -18,6 +18,7 @@
 #' @return A `grid` grob
 #' @inheritParams grid::polygonGrob
 #' @examples
+#'   \donttest{ # Once took more >10s on a CRAN autocheck
 #'   if (capabilities("png") && require("grid")) {
 #'     maskee <- patternGrob("circle", gp = gpar(col = "black", fill = "yellow"),
 #'                            spacing = 0.1, density = 0.5)
@@ -43,6 +44,7 @@
 #'                                         use_R4.1_masks = FALSE)
 #'     grid.newpage()
 #'     grid.draw(masked_transparent)
+#'   }
 #'   }
 #' @export
 alphaMaskGrob <- function(maskee, masker,

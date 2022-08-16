@@ -126,6 +126,7 @@ See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information
 }
 \examples{
  print(names_pattern)
+ \donttest{ # Once took more >10s on a CRAN autocheck
  if (require("grid")) {
    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -171,6 +172,7 @@ See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information
      grid.newpage()
      grid.pattern("plasma", x_hex, y_hex, fill="green")
    }
+ }
  }
 }
 \seealso{

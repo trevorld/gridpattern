@@ -1,4 +1,4 @@
-gridpattern v1.0.0
+gridpattern v1.0.1
 ==================
 
 Bug fixes and minor improvements
