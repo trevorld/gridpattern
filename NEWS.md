@@ -1,5 +1,5 @@
-gridpattern (development)
-=========================
+gridpattern v1.0.0
+==================
 
 Bug fixes and minor improvements
 --------------------------------
