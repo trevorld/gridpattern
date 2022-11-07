@@ -1,3 +1,12 @@
+gridpattern v1.0.2
+==================
+
+Bug fixes and minor improvements
+--------------------------------
+
+* An internal function `convert_polygon_sf_to_polygon_df()` will now be a bit more
+  quiet (throw WARNINGs less often).
+
 gridpattern v1.0.1
 ==================
 

@@ -21,5 +21,4 @@
 #'  }
 #'  Note to use the R v4.1.0 features one needs R be (at least) version 4.1 and not all graphic devices
 #'  support any/all these features.  See \url{https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html} for more information on these features.
-#' @keywords internal
 "_PACKAGE"

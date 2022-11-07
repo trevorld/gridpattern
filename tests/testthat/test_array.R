@@ -35,7 +35,6 @@ test_that("array patterns works as expected", {
     skip_on_ci()
     skip_on_cran()
     skip_if_not(capabilities("cairo"))
-    skip_if_not_installed("grid")
     skip_if_not_installed("magick")
     skip_if_not_installed("ragg")
 
@@ -146,9 +145,14 @@ test_that("array patterns works as expected", {
 
     # ambient
     skip_if_not_installed("ambient")
-    set.seed(42)
-    test_raster("ambient.png", function() grid.pattern_ambient(x, y, fill = "green", fill2 = "blue"))
-    set.seed(42)
+    test_raster("ambient.png",
+                function() {
+                    set.seed(42)
+                    grid.pattern_ambient(x, y, fill = "green", fill2 = "blue")
+                })
     test_raster("ambient_worley.png",
-                function() grid.pattern_ambient(x, y, type = "worley", fill = "green", fill2 = "blue"))
+                function() {
+                    set.seed(42)
+                    grid.pattern_ambient(x, y, type = "worley", fill = "green", fill2 = "blue")
+                })
 })

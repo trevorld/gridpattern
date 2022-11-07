@@ -93,9 +93,9 @@ convert_polygon_df_to_polygon_sf <- function(polygon_df, buffer_dist = 0) {
   res
 }
 
-#' Convert a sf POLYGON/MULTIPOLYGON into a polygon_df
+#' Convert a sf GEOMETRYCOLLECTION/POLYGON/MULTIPOLYGON into a polygon_df
 #'
-#' @param mp sf POLYGON or MULTIPOLYGON object
+#' @param mp sf GEOMETRYCOLLECTION, POLYGON, or MULTIPOLYGON object
 #'
 #' @return polygon_df data.frame object
 #'
@@ -104,8 +104,13 @@ convert_polygon_sf_to_polygon_df <- function(mp) {
   mat <- as.matrix(mp)
   if (sf::st_is_empty(mp))
     return(mat)
-  if (!inherits(mp, 'POLYGON') && !inherits(mp, 'MULTIPOLYGON') && !inherits(mp, 'GEOMETRYCOLLECTION')) {
-    warn(paste0("convert_polygon_sf_to_polygon_df(): Not POLYGON or MULTIPOLYGON: ", deparse(class(mp))))
+  if (!inherits(mp, c('POLYGON', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION',
+                      'MULTILINESTRING', 'MULTIPOINT', 'LINESTRING', 'POINT'))) {
+    warn(paste("convert_polygon_sf_to_polygon_df():",
+               "Not GEOMETRYCOLLECTION, POLYGON, or MULTIPOLYGON:",
+               deparse(class(mp))))
+  }
+  if (!inherits(mp, c('POLYGON', 'MULTIPOLYGON', 'GEOMETRYCOLLECTION'))) {
     return(NULL)
   }
 
@@ -116,17 +121,18 @@ convert_polygon_sf_to_polygon_df <- function(mp) {
 }
 
 get_poly_lengths <- function(sf_object) {
-    if (inherits(sf_object, 'POLYGON') || inherits(sf_object, 'LINESTRING') || inherits(sf_object, 'POINT')) {
+    if (inherits(sf_object, c('POLYGON', 'LINESTRING', 'POINT'))) {
         nrow(as.matrix(sf_object))
-    } else if (inherits(sf_object, 'MULTIPOLYGON')) {
+    } else if (inherits(sf_object, c('MULTIPOLYGON', 'MULTILINESTRING', 'MULTIPOINT'))) {
         if (max(lengths(sf_object)) > 1L)
-            abort("There is a MULTIPOLYGON with length greater than 1")
-        vapply(sf_object, function(x) {nrow(x[[1]])}, integer(1))
+            abort("There is a MULTIPOLYGON/MULTILINESTRING/MULTIPOINT with length greater than 1")
+        vapply(sf_object, function(x) nrow(as.matrix(x[[1]])), integer(1))
     } else if (inherits(sf_object, 'GEOMETRYCOLLECTION')) {
         vapply(sf_object, get_poly_lengths, integer(1))
     } else {
-        abort(paste0("convert_polygon_sf_to_polygon_df(): Not POLYGON or MULTIPOLYGON: ",
-                     deparse(class(sf_object))))
+        abort(paste("convert_polygon_sf_to_polygon_df():",
+                    "Not GEOMETRYCOLLECTION, POLYGON, or MULTIPOLYGON:",
+                    deparse(class(sf_object))))
     }
 }
 
