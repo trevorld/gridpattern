@@ -2,7 +2,7 @@
 
 [![CRAN Status Badge](https://www.r-pkg.org/badges/version/gridpattern)](https://cran.r-project.org/package=gridpattern)
 [![R-CMD-check](https://github.com/trevorld/gridpattern/workflows/R-CMD-check/badge.svg)](https://github.com/trevorld/gridpattern/actions)
-[![Coverage Status](https://img.shields.io/codecov/c/github/trevorld/gridpattern.svg)](https://codecov.io/github/trevorld/gridpattern?branch=main)
+[![Coverage Status](https://codecov.io/github/trevorld/gridpattern/branch/main/graph/badge.svg)](https://app.codecov.io/github/trevorld/gridpattern?branch=main)
 
 ### Table of Contents
 

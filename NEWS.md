@@ -1,3 +1,15 @@
+gridpattern v1.0.3 (development)
+================================
+
+Minor improvements
+------------------
+
+* The function `guess_has_R4.1_features()` is now available as a "standalone" file.
+  You may copy its source under the permissive [Unlicense](https://unlicense.org) into your own R package
+  by either using `usethis::use_standalone("trevorld/gridpattern", "standalone-guess_has_R4.1_features.R")`
+  or simply copying `standalone-guess_has_R4.1_features.R` into your `R` directory and 
+  adding `grDevices` and `utils` to the `Imports` of your `DESCRIPTION` file.
+
 gridpattern v1.0.2
 ==================
 

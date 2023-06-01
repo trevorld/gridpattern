@@ -1,7 +1,7 @@
 Package: gridpattern
 Type: Package
 Title: 'grid' Pattern Grobs
-Version: 1.0.2
+Version: 1.0.3-0
 Authors@R: c(person("Mike", "FC", role = "aut", comment = "Code/docs adapted from ggpattern"),
         person("Trevor L", "Davis", role=c("aut", "cre"), email="trevor.l.davis@gmail.com",
                comment = c(ORCID = "0000-0001-6341-4639")),
@@ -12,7 +12,7 @@ BugReports: https://github.com/trevorld/gridpattern/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Depends:
     R (>= 3.4.0)
 Imports:
