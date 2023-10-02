@@ -1,7 +1,7 @@
 ## Test environments
 
+* local (linux, R 4.3.1)
 * win-builder (windows, R devel)
-* local (linux, R 4.2.1)
 * github actions (linux, R oldrel)
 * github actions (linux, R release)
 * github actions (linux, R devel)

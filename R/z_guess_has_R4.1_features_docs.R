@@ -10,9 +10,9 @@
 #' @section Usage in other packages:
 #'
 #' To avoid taking a dependency on `gridpattern` you may copy the source of `guess_has_R4.1_features()`
-#' into your own package under the permissive Unlicense.  Either use
+#' into your own package under the permissive MIT No Attribution (MIT-0) license.  Either use
 #' `usethis::use_standalone("trevorld/gridpattern", "standalone-guess_has_R4.1_features.R")`
-#' or copy the file `standalone-affine-settings.r` into your `R` directory and
+#' or copy the file `standalone-guess_has_R4.1_features.R` into your `R` directory and
 #' add `grDevices` and `utils` to the `Imports` of your `DESCRIPTION` file.
 #'
 #' @param features Character vector of features to guess support for.

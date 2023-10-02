@@ -22,7 +22,7 @@ Will return \code{TRUE} only if guesses support for all requested features.\desc
 \code{TRUE} if we guess all \code{features} are supported else \code{FALSE}
 }
 \description{
-\code{guess_has_R_4.1_features()} guesses whether "active" graphics device supports
+\code{guess_has_R4.1_features()} guesses whether "active" graphics device supports
 the grid graphics features introduced in R v4.1.  If it guesses it does
 it returns \code{TRUE} else \code{FALSE}.
 }
@@ -30,9 +30,9 @@ it returns \code{TRUE} else \code{FALSE}.
 
 
 To avoid taking a dependency on \code{gridpattern} you may copy the source of \code{guess_has_R4.1_features()}
-into your own package under the permissive Unlicense.  Either use
+into your own package under the permissive MIT No Attribution (MIT-0) license.  Either use
 \code{usethis::use_standalone("trevorld/gridpattern", "standalone-guess_has_R4.1_features.R")}
-or copy the file \code{standalone-affine-settings.r} into your \code{R} directory and
+or copy the file \code{standalone-guess_has_R4.1_features.R} into your \code{R} directory and
 add \code{grDevices} and \code{utils} to the \code{Imports} of your \code{DESCRIPTION} file.
 }
 

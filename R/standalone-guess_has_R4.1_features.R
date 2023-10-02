@@ -1,8 +1,8 @@
 # ---
 # repo: trevorld/gridpattern
 # file: standalone-guess_has_R4.1_features.R
-# last-updated: 2023-06-01
-# license: https://unlicense.org
+# last-updated: 2023-08-02
+# license: https://spdx.org/licenses/MIT-0.html
 # imports: [grDevices, utils]
 # ---
 #
@@ -10,7 +10,7 @@
 #
 # You may copy this source into your own R package
 # by either using `usethis::use_standalone("trevorld/gridpattern", "standalone-guess_has_R4.1_features.R")`
-# or simply copying this file into your `R` directory and addding `grDevices` and `utils` to the `Imports` of
+# or simply copying this file into your `R` directory and adding `grDevices` and `utils` to the `Imports` of
 # your `DESCRIPTION` file.
 
 #' Guess whether "active" graphics device supports
@@ -50,10 +50,10 @@ guess_has_R4.1_features <- function(features = c("clippingPaths", "gradients", "
     # In R 4.2 `dev.capabilities()` can confirm/deny R 4.1 graphic feature support
     # if active graphics device has implemented this feature
     if (getRversion() >= "4.2.0") {
-        capabilities <- grDevices::dev.capabilities()
-        if (confirm_via_dev_capabilities(features, capabilities))
+        dev_capabilities <- grDevices::dev.capabilities()
+        if (confirm_via_dev_capabilities(features, dev_capabilities))
             return(TRUE)
-        if (deny_via_dev_capabilities(features, capabilities))
+        if (deny_via_dev_capabilities(features, dev_capabilities))
             return(FALSE)
     }
 
@@ -67,13 +67,8 @@ guess_has_R4.1_features <- function(features = c("clippingPaths", "gradients", "
     } else if (device %in% c("agg_jpeg", "agg_ppm", "agg_png", "agg_tiff")) {
         utils::packageVersion("ragg") >= "1.2.0"
     } else if (device == "devSVG") {
-        # {vdiffr}'s embedded {svglite} graphics device is also called "devSGV"
-        # but doesn't support R 4.1 features (yet)
-        if (likely_called_by_vdiffr()) {
-            FALSE
-        } else {
-            utils::packageVersion("svglite") >= "2.1.0"
-        }
+        # `vdiffr:::svglite()` has name "devSVG_vdiffr" since v1.0.6
+        utils::packageVersion("svglite") >= "2.1.0"
     } else {
         FALSE
     }
@@ -83,63 +78,42 @@ guess_has_R4.1_features <- function(features = c("clippingPaths", "gradients", "
 # or if graphics device hasn't been updated to provide this information
 # even if the device had been updated to provide R 4.1 graphic feature support
 confirm_via_dev_capabilities <- function(features = c("clippingPaths", "gradients", "masks", "patterns"),
-                                         capabilities = grDevices::dev.capabilities()) {
-
+                                         dev_capabilities = grDevices::dev.capabilities()) {
     for (feature in features) {
-        if (!confirm_feature(feature, capabilities))
+        if (!confirm_feature(feature, dev_capabilities))
             return(FALSE)
     }
-
     TRUE
 }
 
-confirm_feature <- function(feature, capabilities) {
+confirm_feature <- function(feature, dev_capabilities) {
     switch(feature,
-           clippingPaths = isTRUE(capabilities$clippingPaths),
-           gradients = all(c("LinearGradient", "RadialGradient") %in% capabilities$patterns),
-           masks = "alpha" %in% capabilities$masks,
-           patterns = "TilingPattern" %in% capabilities$patterns
+           clippingPaths = isTRUE(dev_capabilities$clippingPaths),
+           gradients = all(c("LinearGradient", "RadialGradient") %in% dev_capabilities$patterns),
+           masks = "alpha" %in% dev_capabilities$masks,
+           patterns = "TilingPattern" %in% dev_capabilities$patterns
            )
 }
 
 # Will return `TRUE` if `dev.capabilities()` explicitly indicates
 # the given features are not supported (versus merely missing a positive indication)
 deny_via_dev_capabilities <- function(features = c("clippingPaths", "gradients", "masks", "patterns"),
-                                      capabilities = grDevices::dev.capabilities()) {
+                                      dev_capabilities = grDevices::dev.capabilities()) {
     for (feature in features) {
-        if (deny_feature(feature, capabilities))
+        if (deny_feature(feature, dev_capabilities))
             return(TRUE)
     }
-
     FALSE
 }
 
-deny_feature <- function(feature, capabilities) {
+deny_feature <- function(feature, dev_capabilities) {
     switch(feature,
-           clippingPaths = isFALSE(capabilities$clippingPaths),
-           gradients = !is.na(capabilities$patterns) &&
-               !all(c("LinearGradient", "RadialGradient") %in% capabilities$patterns),
-           masks = !is.na(capabilities$masks) && !("alpha" %in% capabilities$masks),
-           patterns = !is.na(capabilities$patterns) && !("TilingPattern" %in% capabilities$patterns)
+           clippingPaths = isFALSE(dev_capabilities$clippingPaths),
+           gradients = !is.na(dev_capabilities$patterns) &&
+               !all(c("LinearGradient", "RadialGradient") %in% dev_capabilities$patterns),
+           masks = !is.na(dev_capabilities$masks) && !("alpha" %in% dev_capabilities$masks),
+           patterns = !is.na(dev_capabilities$patterns) && !("TilingPattern" %in% dev_capabilities$patterns)
            )
-}
-
-# `vdiffr::write_svg()` is the function that calls the embedded {svglite}
-# but when `vdiffr::expect_doppelganger()` calls it its call is "writer"
-likely_called_by_vdiffr <- function() {
-    if (any(system.file(package = "vdiffr") == ""))
-        return(FALSE)
-    if (any(system.file(package = "svglite") == ""))
-        return(TRUE)
-
-    n <- sys.nframe()
-    while (n > 0) {
-        call <- as.character(sys.call(n))
-        if (grepl("write_svg$|expect_doppelganger$", call[1]))
-            return(TRUE)
-        n <- n - 1L
-    }
-    FALSE
 }
 
 # nocov end
