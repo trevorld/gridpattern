@@ -87,7 +87,8 @@ Affected by \code{scale} and \code{gravity}.}
 }
 }
 \examples{
-  if (require("magick")) {
+  \donttest{# May emit a "CPU time > 2.5 times elapsed time" NOTE in a CRAN check
+  if (requireNamespace("magick")) {
     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     logo_filename <- system.file("img", "Rlogo.png" , package = "png")
@@ -99,8 +100,11 @@ Affected by \code{scale} and \code{gravity}.}
     try(grid.pattern_image(x_hex, y_hex, filename = logo_filename,
                            type = "tile"))
   }
+  }
 }
 \seealso{
 \code{\link[=grid.pattern_placeholder]{grid.pattern_placeholder()}} is an image pattern that uses images
 downloaded from the internet.
+\code{\link[=reset_image_cache]{reset_image_cache()}} resets the image cache used by \code{grid.pattern_image()}
+and \code{\link[=grid.pattern_placeholder]{grid.pattern_placeholder()}}.
 }

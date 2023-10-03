@@ -6,12 +6,13 @@
 #' @param scale Extra scaling
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   if (require("magick")) {
+#'   if (requireNamespace("magick")) {
 #'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     grid.pattern_plasma(x_hex, y_hex, fill = "green")
 #'   }
 #' @seealso [grid.pattern_ambient()] provides a noise pattern using the `ambient` package.
+#'          Pseudorandom seeds for the plasma pattern may be set via [magick::magick_set_seed()].
 #' @export
 grid.pattern_plasma <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 fill = gp$fill %||% "grey80", scale = 1, alpha = gp$alpha %||% NA_real_,

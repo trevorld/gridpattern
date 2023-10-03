@@ -21,7 +21,8 @@
 #' @param filter Filter to use when scaling. `magick::filter_types()` returns a vector of supported values.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   if (require("magick")) {
+#'   \donttest{# May emit a "CPU time > 2.5 times elapsed time" NOTE in a CRAN check
+#'   if (requireNamespace("magick")) {
 #'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     logo_filename <- system.file("img", "Rlogo.png" , package = "png")
@@ -33,8 +34,11 @@
 #'     try(grid.pattern_image(x_hex, y_hex, filename = logo_filename,
 #'                            type = "tile"))
 #'   }
+#'   }
 #' @seealso [grid.pattern_placeholder()] is an image pattern that uses images
 #'          downloaded from the internet.
+#'          [reset_image_cache()] resets the image cache used by `grid.pattern_image()`
+#'          and [grid.pattern_placeholder()].
 #' @export
 grid.pattern_image <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                filename = "", type = "fit", scale = 1,

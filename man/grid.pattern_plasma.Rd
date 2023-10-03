@@ -65,7 +65,7 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{grid.pattern_plasma()} draws a plasma pattern onto the graphic device.
 }
 \examples{
-  if (require("magick")) {
+  if (requireNamespace("magick")) {
     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     grid.pattern_plasma(x_hex, y_hex, fill = "green")
@@ -73,4 +73,5 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \seealso{
 \code{\link[=grid.pattern_ambient]{grid.pattern_ambient()}} provides a noise pattern using the \code{ambient} package.
+Pseudorandom seeds for the plasma pattern may be set via \code{\link[magick:config]{magick::magick_set_seed()}}.
 }

@@ -1,3 +1,6 @@
+* Example that triggered a "Examples with CPU time > 2.5 times elapsed time" NOTE
+  is now wrapped in `\donttest{}`.
+
 ## Test environments
 
 * local (linux, R 4.3.1)

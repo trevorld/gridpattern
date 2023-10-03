@@ -1,8 +1,14 @@
-gridpattern v1.0.4
+gridpattern v1.1.0
 ==================
 
-Minor improvements
-------------------
+New Features
+------------
+
+* `reset_image_cache()` resets the image cache used by `grid.pattern_image()` 
+   and `grid.pattern_placeholder()` to store images (#63).
+
+Bug fixes and minor improvements
+--------------------------------
 
 * The function `guess_has_R4.1_features()` is now available as a "standalone" file.
   You may copy its source under the permissive [MIT No Attribution (MIT-0)](https://spdx.org/licenses/MIT-0.html) 

@@ -93,7 +93,7 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 plus subsets for shaded intensity and stripes.
 }
 \examples{
-  if (require("magick")) {
+  if (requireNamespace("magick")) {
     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     grid.pattern_magick(x_hex, y_hex, type="octagons", fill="blue", scale=2)

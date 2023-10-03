@@ -35,7 +35,7 @@ test_that("array patterns works as expected", {
     skip_on_ci()
     skip_on_cran()
     skip_if_not(capabilities("cairo"))
-    skip_if_not_installed("magick")
+    skip_if_not_installed("magick", "2.7.4")
     skip_if_not_installed("ragg")
 
     x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -71,6 +71,12 @@ test_that("array patterns works as expected", {
                 function() grid.pattern_plasma(x = c(0.5, 0.5, 0.5, 0.5),
                                                y = c(0, 1, 1, 0), fill = "green"))
 
+    test_raster("plasma.png",
+                function() {
+                    magick::magick_set_seed(42) # introduced in v2.7.4
+                    grid.pattern_plasma(x, y, fill = "green")
+                })
+
     playing_card_symbols <- c("\u2660", "\u2665", "\u2666", "\u2663")
     test_raster("text.png",
                 function() grid.pattern_text(x, y, shape = playing_card_symbols,
@@ -84,12 +90,6 @@ test_that("array patterns works as expected", {
                                           spacing = 0.15, density = 0.5, angle = 0,
                                           use_R4.1_masks = NULL,
                                           frequency = 1:4, gp = gp))
-
-    # plasma images are random and doesn't seem to be a way to set a seed
-    tmpfile <- tempfile(fileext = ".png")
-    grob <- my_png(tmpfile, function() grid.pattern_plasma(fill="green"))
-    unlink(tmpfile)
-    expect_true(inherits(grob, "pattern"))
 
     create_pattern_simple <- function(width, height, params, legend) {
       choice <- params$pattern_type

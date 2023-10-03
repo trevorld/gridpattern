@@ -8,7 +8,7 @@
 #'             If you would like only greyscale images append `bw` to the name.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   if (require("magick")) {
+#'   if (requireNamespace("magick")) {
 #'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     # requires internet connection to download from placeholder image websites
@@ -16,6 +16,7 @@
 #'   }
 #'
 #'   print(names_placeholder)
+#' @seealso [reset_image_cache()] resets the image cache used by [grid.pattern_image()] and `grid.pattern_placeholder()`.
 #' @export
 grid.pattern_placeholder <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                      type = "kitten", alpha = gp$alpha %||% NA_real_,
