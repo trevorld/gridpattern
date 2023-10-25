@@ -120,15 +120,17 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{grid.pattern_text()} draws a text character pattern onto the graphic device.
 }
 \examples{
-  if (require("grid") && capabilities("png")) {
-    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+if (require("grid") &&
+    capabilities("png") &&
+    gridpattern:::device_supports_unicode()) {
+  x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+  y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 
-    playing_card_symbols <- c("\u2660", "\u2665", "\u2666", "\u2663")
-    grid.newpage()
-    grid.pattern_text(x_hex, y_hex,
-                     shape = playing_card_symbols,
-                     colour = c("black", "red", "red", "black"),
-                     size = 18, spacing = 0.1, angle = 0)
-  }
+  playing_card_symbols <- c("\u2660", "\u2665", "\u2666", "\u2663")
+  grid.newpage()
+  grid.pattern_text(x_hex, y_hex,
+                   shape = playing_card_symbols,
+                   colour = c("black", "red", "red", "black"),
+                   size = 18, spacing = 0.1, angle = 0)
+}
 }

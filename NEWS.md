@@ -1,3 +1,9 @@
+gridpattern v1.1.1
+==================
+
+* "text" pattern example now skipped if ran within certain graphics devices like `pdf()`
+  that can't handle the playing cards Unicode glyphs (#68).
+
 gridpattern v1.1.0
 ==================
 
