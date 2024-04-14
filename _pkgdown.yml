@@ -2,3 +2,26 @@ destination: "../../websites/R/gridpattern/"
 url: "https://trevorldavis.com/R/gridpattern"
 development:
     mode: auto
+reference:
+    - title: "Patterned grobs"
+      desc: "Patterned grob functions"
+      contents:
+        - starts_with("grid.pattern")
+    - title: "Pattern matrices"
+    - desc: "Pattern matrix functions"
+      contents:
+        - starts_with("pattern_")
+    - title: "Miscellaneous helpers"
+      desc: "Miscellaneous helper functions"
+      contents:
+        - alphaMaskGrob
+        - clippingPathGrob
+        - guess_has_R4.1_features
+        - mean_col
+        - reset_image_cache
+        - star_scale
+        - update_alpha
+    - title: "Overall package description"
+      desc: "Overall package description including supported package options"
+      contents:
+        - gridpattern-package
