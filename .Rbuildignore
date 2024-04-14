@@ -10,5 +10,6 @@
 ^raw-data$
 ^codecov.yml$
 ^doc$
+^tmp$
 ^Meta$
 ^\.github$

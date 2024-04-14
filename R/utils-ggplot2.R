@@ -36,3 +36,104 @@ data_frame <- function(...) {
   new_data_frame(list(...))
 }
 .pt <- 2.845276 # ggplot2 constant
+
+# Pattern utilities mainly added to ggplot2 by Teun van den Brand
+
+#' Update fill colour and/or pattern transparency
+#'
+#' `update_alpha()` modifies the transparency of fill colours and/or patterns.
+#'
+#' * Like [ggplot2::fill_alpha()] but unlike [scales::alpha()] it also attempts
+#'   to set the transparency of `<GridPattern>` objects.
+#' * Unlike [ggplot2::fill_alpha()] it will work on a list of length one
+#'   with more than one color.
+#' * `update_alpha()` does not depend on `ggplot2` or `scales`.
+#'
+#' @param fill A fill colour given as a `character` or `integer` vector, or as a
+#'   (list of) `<GridPattern>` object(s) and/or colour(s).
+#' @param alpha A transparency value between 0 (transparent) and 1 (opaque),
+#'   parallel to `fill`.
+#'
+#' @return A `character` vector of colours or list of `<GridPattern>` objects.
+#' @export
+#'
+#' @examples
+#' # Typical colour input
+#' update_alpha("red", 0.5)
+#'
+#' if (utils::packageVersion("grid") > "4.1") {
+#'   # Pattern input
+#'   update_alpha(list(grid::linearGradient()), 0.5)
+#' }
+update_alpha <- function(fill, alpha) {
+  if (!is.list(fill)) {
+    # Happy path of no patterns
+    alpha(fill, alpha)
+  } else if (is_pattern(fill) || any(vapply(fill, is_pattern, logical(1)))) {
+    # Path with patterns
+    update_pattern_alpha(fill, alpha)
+  } else if (is.list(fill) && length(fill) == 1L && !any(vapply(fill, is_pattern, logical(1)))) {
+    # List of length one of (possibly multiple) colours
+    alpha(fill[[1L]], alpha)
+  } else {
+    # We are either dealing with faulty fill specification
+    stop("`fill` must be a vector of colours or list of <GridPattern> objects.")
+  }
+}
+
+# Similar to grid:::is.pattern
+is_pattern <- function(x) {
+  inherits(x, "GridPattern")
+}
+
+#' Modify transparency for patterns
+#'
+#' This generic allows you to add your own methods for adding transparency to
+#' pattern-like objects.
+#'
+#' @param x Object to be interpreted as pattern.
+#' @param alpha A `numeric` vector between 0 and 1. If `NA`, alpha values
+#'   are preserved.
+#'
+#' @return `x` with modified transparency
+#' @noRd
+update_pattern_alpha <- function(x, alpha, ...) {
+  UseMethod("update_pattern_alpha")
+}
+
+#' @export
+update_pattern_alpha.default <- function(x, alpha, ..., name = NULL) {
+  if (!is.atomic(x)) {
+    stop("Can't apply `update_pattern_alpha()` to this object.")
+  }
+  pattern(rectGrob(name = name), gp = gpar(fill = alpha(x, alpha)))
+}
+
+#' @export
+update_pattern_alpha.GridPattern <- function(x, alpha, ...) {
+  x$colours <- alpha(x$colours, alpha[1])
+  x
+}
+
+#' @export
+update_pattern_alpha.GridTilingPattern <- function(x, alpha, ...) {
+  if (all(is.na(alpha) | alpha == 1)) {
+    return(x)
+  }
+  grob <- rlang::env_get(environment(x$f), "grob")
+  mask <- as.mask(rectGrob(gp = gpar(fill = alpha("white", alpha))))
+  if (is.null(grob$vp)) {
+    grob$vp <- viewport(mask = mask)
+  } else {
+    grob$vp <- editViewport(grob$vp, mask = mask)
+  }
+  new_env <- new.env(parent = environment(x$f))
+  rlang::env_bind(new_env, grob = grob)
+  environment(x$f) <- new_env
+  x
+}
+
+#' @export
+update_pattern_alpha.list <- function(x, alpha, ...) {
+  Map(update_pattern_alpha, x = x, alpha = alpha)
+}

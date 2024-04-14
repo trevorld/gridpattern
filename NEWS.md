@@ -1,3 +1,12 @@
+gridpattern v1.2.0 (development)
+================================
+
+* `update_alpha()` updates fill colour and/or pattern transparency.
+
+  + It is a fork of `ggplot2::fill_alpha()` by @teunbrand.
+  + It does not depend on `{ggplot2}` or `{scales}`.
+  + It does not throw an error with a length one list of a vector of multiple colours.
+
 gridpattern v1.1.1
 ==================
 
