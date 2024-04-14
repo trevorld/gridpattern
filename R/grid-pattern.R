@@ -1,4 +1,4 @@
-#' Create patterned grobs
+#' Create patterned grobs by pattern name
 #'
 #' `grid.pattern()` draws patterned shapes onto the graphic device.
 #' `patternGrob()` returns the grid grob objects.
