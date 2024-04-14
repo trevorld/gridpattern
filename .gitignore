@@ -4,5 +4,6 @@ codecov.yml
 /doc/
 /Meta/
 /pkgdown/
+/tmp/
 vignettes/*.R
 vignettes/*.html

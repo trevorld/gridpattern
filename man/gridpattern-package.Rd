@@ -55,7 +55,7 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item Thomas Lin Pedersen (new_data_frame() copied from ggplot2) [contributor]
+  \item ggplot2 authors (some utility functions copied from ggplot2) [contributor]
 }
 
 }
