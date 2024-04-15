@@ -3,8 +3,12 @@ url: "https://trevorldavis.com/R/gridpattern"
 development:
     mode: auto
 reference:
-    - title: "Patterned grobs"
-      desc: "Patterned grob functions"
+    - title: "Pattern fills"
+      desc: "Pattern fill function"
+      contents:
+        - patternFill
+    - title: "Pattern grobs"
+      desc: "Pattern grob functions"
       contents:
         - starts_with("grid.pattern")
     - title: "Pattern matrices"
