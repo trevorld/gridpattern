@@ -1,6 +1,9 @@
 gridpattern v1.2.0 (development)
 ================================
 
+* `patternFill()` wraps `patternGrob()` to return a
+  `grid::pattern()` fill object (#70).
+
 * `update_alpha()` updates fill colour and/or pattern transparency.
 
   + It is a fork of `ggplot2::fill_alpha()` by @teunbrand.
