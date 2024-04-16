@@ -10,6 +10,9 @@ gridpattern v1.2.0 (development)
   + It does not depend on `{ggplot2}` or `{scales}`.
   + It does not throw an error with a length one list of a vector of multiple colours.
 
+* The "geometry" patterns (e.g. "circle", "stripe", etc.) now allow
+  the `fill` to be pattern fills (#67).
+
 gridpattern v1.1.1
 ==================
 

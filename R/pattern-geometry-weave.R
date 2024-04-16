@@ -86,7 +86,7 @@ create_warp_via_sf <- function(params, boundary_df) {
     # create grid of points large enough to cover viewport no matter the angle
     grid_xy <- get_xy_grid(params, vpm)
 
-    fill <- alpha(params$pattern_fill2, params$pattern_alpha)
+    fill <- update_alpha(params$pattern_fill2, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype

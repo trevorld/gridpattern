@@ -70,7 +70,7 @@ create_pattern_rose <- function(params, boundary_df, aspect_ratio, legend = FALS
     grid_xy <- get_xy_grid(params, vpm)
 
     # construct grobs using subsets if certain inputs are vectorized
-    fill <- alpha(params$pattern_fill, params$pattern_alpha)
+    fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype
@@ -81,13 +81,13 @@ create_pattern_rose <- function(params, boundary_df, aspect_ratio, legend = FALS
 
     n_par <- max(lengths(list(fill, col, lwd, lty, density, rot, frequency)))
 
-    fill <- rep(fill, length.out = n_par)
-    col <- rep(col, length.out = n_par)
-    lwd <- rep(lwd, length.out = n_par)
-    lty <- rep(lty, length.out = n_par)
-    density <- rep(density, length.out = n_par)
-    rot <- rep(rot, length.out = n_par)
-    frequency <- rep(frequency, length.out = n_par)
+    fill <- rep_len_fill(fill, n_par)
+    col <- rep_len(col, n_par)
+    lwd <- rep_len(lwd, n_par)
+    lty <- rep_len(lty, n_par)
+    density <- rep_len(density, n_par)
+    rot <- rep_len(rot, n_par)
+    frequency <- rep_len(frequency, n_par)
 
     density_max <- max(density)
 
@@ -110,7 +110,7 @@ create_pattern_rose <- function(params, boundary_df, aspect_ratio, legend = FALS
         # rotate by 'angle'
         xy_par <- rotate_xy(xy_par$x, xy_par$y, params$pattern_angle, vpm$x, vpm$y)
 
-        gp <- gpar(fill = fill[i_par], col = col[i_par], lwd = lwd[i_par], lty = lty[i_par])
+        gp <- gpar(fill = fill[[i_par]], col = col[i_par], lwd = lwd[i_par], lty = lty[i_par])
 
         name <- paste0("rose.", i_par)
         grob <- points_to_rose_grob(xy_par, xy_rose, gp, default.units, name)

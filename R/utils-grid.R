@@ -4,6 +4,13 @@ append_gList <- function(gl, grob) {
     gl
 }
 
+rep_len_fill <- function(x, length.out) {
+    if (inherits(x, "GridPattern"))
+        rep_len(list(x), length.out)
+    else
+        rep_len(x, length.out)
+}
+
 # get width, height, length, and center cooordinates of the viewport in `units` units
 get_vp_measurements <- function(units = "bigpts") {
     width <- convertWidth(unit(1, "npc"), units, valueOnly = TRUE)

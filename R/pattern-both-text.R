@@ -77,12 +77,12 @@ create_pattern_text <- function(params, boundary_df, aspect_ratio, legend = FALS
 
     n_par <- max(lengths(list(col, fontsize, fontfamily, fontface, rot, shape)))
 
-    col <- rep(col, length.out = n_par)
-    fontsize <- rep(fontsize, length.out = n_par)
-    fontfamily <- rep(fontfamily, length.out = n_par)
-    fontface <- rep(fontface, length.out = n_par)
-    rot <- rep(rot, length.out = n_par)
-    shape <- rep(shape, length.out = n_par)
+    col <- rep_len(col, n_par)
+    fontsize <- rep_len(fontsize, n_par)
+    fontfamily <- rep_len(fontfamily, n_par)
+    fontface <- rep_len(fontface, n_par)
+    rot <- rep_len(rot, n_par)
+    shape <- rep_len(shape, n_par)
 
     # compute pattern matrix of graphical elements (e.g. fill colors)
     if (is.null(params$pattern_type) || is.na(params$pattern_type))
