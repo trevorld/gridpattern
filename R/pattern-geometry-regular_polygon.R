@@ -105,7 +105,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
     grid_xy <- get_xy_grid(params, vpm)
 
     # construct grobs using subsets if certain inputs are vectorized
-    fill <- alpha(params$pattern_fill, params$pattern_alpha)
+    fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype
@@ -117,13 +117,13 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
 
     n_par <- max(lengths(list(fill, col, lwd, lty, density, rot, shape)))
 
-    fill <- rep(fill, length.out = n_par)
-    col <- rep(col, length.out = n_par)
-    lwd <- rep(lwd, length.out = n_par)
-    lty <- rep(lty, length.out = n_par)
-    density <- rep(density, length.out = n_par)
-    rot <- rep(rot, length.out = n_par)
-    shape <- rep(shape, length.out = n_par)
+    fill <- rep_len_fill(fill, n_par)
+    col <- rep_len(col, n_par)
+    lwd <- rep_len(lwd, n_par)
+    lty <- rep_len(lty, n_par)
+    density <- rep_len(density, n_par)
+    rot <- rep_len(rot, n_par)
+    shape <- rep_len(shape, n_par)
 
     density <- ifelse(shape %in% c("square", "tetrakis_left", "tetrakis_right"),
                       1.414 * density, density)
@@ -167,7 +167,7 @@ create_pattern_regular_polygon_via_sf <- function(params, boundary_df, aspect_ra
         interior_points_sf <- sf::st_intersection(all_points_sf, contracted_sf)
         exterior_points_sf <- sf::st_difference(all_points_sf, contracted_sf)
 
-        gp <- gpar(fill = fill[i_par], col = col[i_par], lwd = lwd[i_par], lty = lty[i_par])
+        gp <- gpar(fill = fill[[i_par]], col = col[i_par], lwd = lwd[i_par], lty = lty[i_par])
 
         # create grob for interior polygons
         name <- paste0("interior.", i_par)

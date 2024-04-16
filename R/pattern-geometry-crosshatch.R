@@ -57,7 +57,7 @@ create_crosshatch_via_sf_helper <- function(params, boundary_df, add_top_hatch =
     # create grid of points large enough to cover viewport no matter the angle
     grid_xy <- get_xy_grid(params, vpm)
 
-    fill <- alpha(params$pattern_fill, params$pattern_alpha)
+    fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype
@@ -71,7 +71,7 @@ create_crosshatch_via_sf_helper <- function(params, boundary_df, add_top_hatch =
                                             gp, default.units, "stripe")
 
     if (add_top_hatch) {
-        gp$fill <- alpha(params$pattern_fill2, params$pattern_alpha)
+        gp$fill <- update_alpha(params$pattern_fill2, params$pattern_alpha)
 
         stripes_sf_top <- create_v_stripes_sf(params, grid_xy, vpm)
         clipped_stripes_sf_top <- sf::st_intersection(stripes_sf_top, boundary_sf)

@@ -62,7 +62,7 @@ create_pattern_wave_via_sf <- function(params, boundary_df, aspect_ratio,
     # create grid of points large enough to cover viewport no matter the angle
     grid_xy <- get_xy_grid(params, vpm)
 
-    fill <- alpha(params$pattern_fill, params$pattern_alpha)
+    fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
     col  <- alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype
@@ -70,16 +70,16 @@ create_pattern_wave_via_sf <- function(params, boundary_df, aspect_ratio,
 
     n_par <- max(lengths(list(fill, col, lwd, lty, density)))
 
-    fill <- rep(fill, length.out = n_par)
-    col <- rep(col, length.out = n_par)
-    lwd <- rep(lwd, length.out = n_par)
-    lty <- rep(lty, length.out = n_par)
-    density <- rep(density, length.out = n_par)
+    fill <- rep_len_fill(fill, n_par)
+    col <- rep_len(col, n_par)
+    lwd <- rep_len(lwd, n_par)
+    lty <- rep_len(lty, n_par)
+    density <- rep_len(density, n_par)
 
     gl <- gList()
     for (i_par in seq_len(n_par)) {
 
-        gp <- gpar(col = col[i_par], fill = fill[i_par],
+        gp <- gpar(col = col[i_par], fill = fill[[i_par]],
                    lwd = lwd[i_par], lty = lty[i_par], lineend = 'square')
 
         boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
