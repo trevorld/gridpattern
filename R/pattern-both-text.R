@@ -67,7 +67,7 @@ create_pattern_text <- function(params, boundary_df, aspect_ratio, legend = FALS
     grid_xy <- get_xy_grid(params, vpm)
 
     # vectorize fill, col, lwd, lty, density, rot, and shape
-    col  <- alpha(params$pattern_colour, params$pattern_alpha)
+    col  <- update_alpha_col(params$pattern_colour, params$pattern_alpha)
     fontsize  <- params$pattern_size
     fontfamily <- params$pattern_fontfamily
     fontface <- params$pattern_fontface

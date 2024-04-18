@@ -149,7 +149,7 @@ create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, leg
     xyi <- boundary_df
 
     fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
-    col <- alpha(params$pattern_colour, params$pattern_alpha)
+    col <- update_alpha(params$pattern_colour, params$pattern_alpha)
     lwd <- params$pattern_linewidth
     lty <- params$pattern_linetype
     stopifnot(length(fill) < 4L, max(lengths(list(col, lwd, lty))) == 1L)

@@ -77,7 +77,7 @@ test_that("geometry patterns work as expected", {
                          pch  = params$pattern_shape,
                          size = unit(params$pattern_size, 'char'),
                          default.units = "npc",
-                         gp   = grid::gpar(col = alpha(params$pattern_fill, params$pattern_alpha))
+                         gp   = grid::gpar(col = update_alpha(params$pattern_fill, params$pattern_alpha))
         )
     }
     options(ggpattern_geometry_funcs = list(centroid = centroid_dot_pattern))

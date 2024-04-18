@@ -3,15 +3,18 @@ gridpattern v1.2.0 (development)
 
 * `patternFill()` wraps `patternGrob()` to return a
   `grid::pattern()` fill object (#70).
-
+* The "geometry" patterns (e.g. "circle", "stripe", etc.) now allow
+  the `fill` to be pattern fills (#67).
 * `update_alpha()` updates fill colour and/or pattern transparency.
 
   + It is a fork of `ggplot2::fill_alpha()` by @teunbrand.
   + It does not depend on `{ggplot2}` or `{scales}`.
   + It does not throw an error with a length one list of a vector of multiple colours.
-
-* The "geometry" patterns (e.g. "circle", "stripe", etc.) now allow
-  the `fill` to be pattern fills (#67).
+  + It is available as a "standalone" file. 
+    You may copy its source under the permissive MIT license into your own R package by either 
+    using `usethis::use_standalone("trevorld/gridpattern", "standalone-update_alpha.R")`
+    or simply copying `standalone-update_alpha.R` into your R directory and adding
+    `grDevices`, `grid`, and `rlang` to the `Imports` of your `DESCRIPTION` file.
 
 gridpattern v1.1.1
 ==================

@@ -68,7 +68,7 @@ grid.pattern_pch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
 create_pattern_pch <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
     # vectorize fill, col, lwd, lty, density, rot, and shape
     fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
-    col  <- alpha(params$pattern_colour, params$pattern_alpha)
+    col  <- update_alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_linewidth
     lty  <- params$pattern_linetype
     params$pattern_alpha <- NA_real_

@@ -87,7 +87,7 @@ create_warp_via_sf <- function(params, boundary_df) {
     grid_xy <- get_xy_grid(params, vpm)
 
     fill <- update_alpha(params$pattern_fill2, params$pattern_alpha)
-    col  <- alpha(params$pattern_colour, params$pattern_alpha)
+    col  <- update_alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype
     gp <- gpar(col = col, fill = fill, lwd = lwd, lty = lty, lineend = 'square')

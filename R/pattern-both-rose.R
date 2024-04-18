@@ -71,7 +71,7 @@ create_pattern_rose <- function(params, boundary_df, aspect_ratio, legend = FALS
 
     # construct grobs using subsets if certain inputs are vectorized
     fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
-    col  <- alpha(params$pattern_colour, params$pattern_alpha)
+    col  <- update_alpha(params$pattern_colour, params$pattern_alpha)
     lwd  <- params$pattern_linewidth * .pt
     lty  <- params$pattern_linetype
 
