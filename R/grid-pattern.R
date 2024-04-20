@@ -62,51 +62,51 @@
 #' @examples
 #'  print(names_pattern)
 #'  \donttest{ # Once took more >10s on a CRAN autocheck
-#'  if (require("grid")) {
-#'    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'  x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#'  y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'
-#'    # geometry-based patterns
-#'    # 'stripe' pattern
-#'    grid.newpage()
-#'    grid.pattern("stripe", x_hex, y_hex,
-#'                 colour="black", fill=c("yellow", "blue"), density = 0.5)
+#'  # geometry-based patterns
+#'  # 'stripe' pattern
+#'  grid::grid.newpage()
+#'  grid.pattern("stripe", x_hex, y_hex,
+#'               colour="black", fill=c("yellow", "blue"), density = 0.5)
 #'
-#'    # Can alternatively use "gpar()" to specify colour and line attributes
-#'    grid.newpage()
-#'    grid.pattern("stripe", x_hex, y_hex, gp = gpar(col="blue", fill="red", lwd=2))
+#'  # Can alternatively use "gpar()" to specify colour and line attributes
+#'  grid::grid.newpage()
+#'  grid.pattern("stripe", x_hex, y_hex, 
+#'               gp = grid::gpar(col="blue", fill="red", lwd=2))
 #'
-#'    # 'weave' pattern
-#'    grid.newpage()
-#'    grid.pattern("weave", x_hex, y_hex, type = "satin",
-#'                 colour = "black", fill = "lightblue", fill2 =  "yellow",
-#'                 density = 0.3)
+#'  # 'weave' pattern
+#'  grid::grid.newpage()
+#'  grid.pattern("weave", x_hex, y_hex, type = "satin",
+#'               colour = "black", fill = "lightblue", fill2 =  "yellow",
+#'               density = 0.3)
 #'
-#'    # 'regular_polygon' pattern
-#'    grid.newpage()
-#'    grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
-#'                                 fill = c("blue", "yellow", "red"),
-#'                                 shape = c("convex4", "star8", "circle"),
-#'                                 density = c(0.45, 0.42, 0.4),
-#'                                 spacing = 0.08, angle = 0)
+#'  # 'regular_polygon' pattern
+#'  grid::grid.newpage()
+#'  grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
+#'                               fill = c("blue", "yellow", "red"),
+#'                               shape = c("convex4", "star8", "circle"),
+#'                               density = c(0.45, 0.42, 0.4),
+#'                               spacing = 0.08, angle = 0)
 #'
-#'    # can be used to achieve a variety of 'tiling' effects
-#'    grid.newpage()
-#'    grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
-#'                                 fill = c("white", "grey", "black"),
-#'                                 density = 1.0, spacing = 0.1,
-#'                                 shape = "convex6", grid = "hex")
-#'    if (require("magick")) {
-#'      # array-based patterns
-#'      # 'image' pattern
-#'      logo_filename <- system.file("img", "Rlogo.png" , package="png")
-#'      grid.newpage()
-#'      grid.pattern("image", x_hex, y_hex, filename=logo_filename, type="fit")
-#'
-#'      # 'plasma' pattern
-#'      grid.newpage()
-#'      grid.pattern("plasma", x_hex, y_hex, fill="green")
-#'    }
+#'  # can be used to achieve a variety of 'tiling' effects
+#'  grid::grid.newpage()
+#'  grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
+#'                               fill = c("white", "grey", "black"),
+#'                               density = 1.0, spacing = 0.1,
+#'                               shape = "convex6", grid = "hex")
+#'  if (suppressPackageStartupMessages(requireNamespace("magick", quietly = TRUE))) {
+#'    # array-based patterns
+#'    # 'image' pattern
+#'    logo_filename <- system.file("img", "Rlogo.png" , package="png")
+#'    grid::grid.newpage()
+#'    grid.pattern("image", x_hex, y_hex, filename=logo_filename, type="fit")
+#'  }
+#'  if (suppressPackageStartupMessages(requireNamespace("magick", quietly = TRUE))) {
+#'    # 'plasma' pattern
+#'    grid::grid.newpage()
+#'    grid.pattern("plasma", x_hex, y_hex, fill="green")
 #'  }
 #'  }
 #' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}

@@ -23,50 +23,46 @@
 #'          The tiling vignette features more examples of regular polygon tiling using
 #'          this function `vignette("tiling", package = "gridpattern")`.
 #' @examples
-#'   if (require("grid")) {
-#'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#' x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#' y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'
-#'     # 'density', 'rot', and 'shape' are vectorized
-#'     grid.newpage()
-#'     grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
-#'                                  fill = c("blue", "yellow", "red"),
-#'                                  shape = c("convex4", "star8", "circle"),
-#'                                  density = c(0.45, 0.42, 0.4),
-#'                                  spacing = 0.08, angle = 0)
+#' # 'density', 'rot', and 'shape' are vectorized
+#' grid.pattern_regular_polygon(x_hex, y_hex, colour = "black",
+#'                              fill = c("blue", "yellow", "red"),
+#'                              shape = c("convex4", "star8", "circle"),
+#'                              density = c(0.45, 0.42, 0.4),
+#'                              spacing = 0.08, angle = 0)
 #'
-#'     # checker pattern using "square" shape
-#'     grid.newpage()
-#'     grid.pattern_regular_polygon(x_hex, y_hex, shape = "square",
-#'                                  colour = "transparent",
-#'                                  fill = c("black", "red", "blue", "yellow"),
-#'                                  angle = 0, density = 1.0, spacing = 0.2)
+#' # checker pattern using "square" shape
+#' grid::grid.newpage()
+#' grid.pattern_regular_polygon(x_hex, y_hex, shape = "square",
+#'                              colour = "transparent",
+#'                              fill = c("black", "red", "blue", "yellow"),
+#'                              angle = 0, density = 1.0, spacing = 0.2)
 #'
-#'     # checker pattern using the default "convex4" shape
-#'     grid.newpage()
-#'     grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
-#'                                  colour = "black", fill = "blue")
+#' # checker pattern using the default "convex4" shape
+#' grid::grid.newpage()
+#' grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
+#'                              colour = "black", fill = "blue")
 #'
-#'     # using a "twill_zigzag" 'weave' pattern
-#'     grid.newpage()
-#'     grid.pattern_regular_polygon(x_hex, y_hex, fill = c("blue", "yellow"),
-#'                                  shape = c("circle", "star8"),
-#'                                  density = c(0.5, 0.6), type = "twill_zigzag")
+#' # using a "twill_zigzag" 'weave' pattern
+#' grid::grid.newpage()
+#' grid.pattern_regular_polygon(x_hex, y_hex, fill = c("blue", "yellow"),
+#'                              shape = c("circle", "star8"),
+#'                              density = c(0.5, 0.6), type = "twill_zigzag")
 #'
-#'     # hexagon tiling
-#'     grid.newpage()
-#'     grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
-#'                                  fill = c("white", "grey", "black"),
-#'                                  density = 1.0, spacing = 0.1,
-#'                                  shape = "convex6", grid = "hex")
+#' # hexagon tiling
+#' grid::grid.newpage()
+#' grid.pattern_regular_polygon(x_hex, y_hex, color = "transparent",
+#'                              fill = c("white", "grey", "black"),
+#'                              density = 1.0, spacing = 0.1,
+#'                              shape = "convex6", grid = "hex")
 #'
-#'     # triangle tiling
-#'     grid.newpage()
-#'     grid.pattern_regular_polygon(x_hex, y_hex, fill = "green",
-#'                                  density = 1.0, spacing = 0.1,
-#'                                  shape = "convex3", grid = "hex")
-#'
-#'   }
+#' # triangle tiling
+#' grid::grid.newpage()
+#' grid.pattern_regular_polygon(x_hex, y_hex, fill = "green",
+#'                              density = 1.0, spacing = 0.1,
+#'                              shape = "convex3", grid = "hex")
 #' @export
 grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                          colour = gp$col %||% "grey20",

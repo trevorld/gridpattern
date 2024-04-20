@@ -8,22 +8,19 @@
 #' @param type Either \dQuote{sine} or \dQuote{triangle} (default).
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   if (require("grid")) {
-#'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     grid.newpage()
-#'     grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
-#'                       fill = c("red", "blue"), density = 0.4,
-#'                       spacing = 0.15, angle = 0,
-#'                       amplitude = 0.05, frequency = 1 / 0.20)
+#' x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#' y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#' grid::grid.newpage()
+#' grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
+#'                   fill = c("red", "blue"), density = 0.4,
+#'                   spacing = 0.15, angle = 0,
+#'                   amplitude = 0.05, frequency = 1 / 0.20)
 #'
-#'     # zig-zag pattern is a wave of `type` "triangle"
-#'     grid.newpage()
-#'     grid.pattern_wave(x_hex, y_hex, colour = "black", type = "triangle",
-#'                         fill = c("red", "blue"), density = 0.4,
-#'                         spacing = 0.15, angle = 0, amplitude = 0.075)
-#'
-#'   }
+#' # zig-zag pattern is a wave of `type` "triangle"
+#' grid::grid.newpage()
+#' grid.pattern_wave(x_hex, y_hex, colour = "black", type = "triangle",
+#'                     fill = c("red", "blue"), density = 0.4,
+#'                     spacing = 0.15, angle = 0, amplitude = 0.075)
 #' @seealso Use [grid.pattern_stripe()] for straight lines instead of waves.
 #' @export
 grid.pattern_wave <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,

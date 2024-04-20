@@ -25,11 +25,8 @@
 #'   star_angle(8, scale)
 #'   star_angle(8, scale, external = TRUE)
 #'
-#'   if (require("grid")) {
-#'     grid.pattern_regular_polygon(shape = "star8", scale = scale, angle = 0,
-#'                                  spacing = 0.2, density = 0.8)
-#'   }
-#'
+#'   grid.pattern_regular_polygon(shape = "star8", scale = scale, angle = 0,
+#'                                spacing = 0.2, density = 0.8)
 #' @export
 star_scale <- function(n_vertices, angle, external = FALSE) {
     if (external)

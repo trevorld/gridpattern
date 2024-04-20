@@ -8,10 +8,12 @@
 #' @inheritParams ambient::noise_worley
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'  if (requireNamespace("ambient")) {
+#'  if (requireNamespace("ambient", quietly = TRUE)) {
 #'    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'    grid.pattern_ambient(x_hex, y_hex, fill = "green", fill2 = "blue")
+#'  }
+#'  if (requireNamespace("ambient")) {
 #'    grid::grid.newpage()
 #'    grid.pattern_ambient(x_hex, y_hex, fill = "green", fill2 = "blue", type = "cubic")
 #'  }

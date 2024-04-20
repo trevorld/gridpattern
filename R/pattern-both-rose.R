@@ -9,20 +9,22 @@
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @seealso See \url{https://en.wikipedia.org/wiki/Rose_(mathematics)} for more information.
 #' @examples
-#'   if (require("grid") && capabilities("png")) {
+#'   if (capabilities("png") || guess_has_R4.1_features("masks")) {
 #'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     gp <- gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
-#'
-#'     grid.newpage()
+#'     gp <- grid::gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
 #'     grid.pattern_rose(x_hex, y_hex,
 #'                       spacing = 0.15, density = 0.5, angle = 0,
 #'                       frequency = 1:4, gp = gp)
-#'     grid.newpage()
+#'   }
+#'   if (capabilities("png") || guess_has_R4.1_features("masks")) {
+#'     grid::grid.newpage()
 #'     grid.pattern_rose(x_hex, y_hex,
 #'                       spacing = 0.15, density = 0.5, angle = 0,
 #'                       frequency = 1/1:4, gp = gp)
-#'     grid.newpage()
+#'   }
+#'   if (capabilities("png") || guess_has_R4.1_features("masks")) {
+#'     grid::grid.newpage()
 #'     grid.pattern_rose(x_hex, y_hex,
 #'                       spacing = 0.18, density = 0.5, angle = 0,
 #'                       frequency = c(3/2, 7/3, 5/4, 3/7), gp = gp)
