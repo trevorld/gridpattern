@@ -65,9 +65,9 @@ A \code{grid} grob
                              id = rep(1:2, each = 7),
                              rule = "evenodd", gp = gp)
     masked <- alphaMaskGrob(maskee, masker, use_R4.1_masks = FALSE)
-    grid.newpage()
     grid.draw(masked)
-
+  }
+  if (capabilities("png") && require("grid")) {
     maskee_transparent <- rectGrob(gp = gpar(col = NA, fill = "blue"))
     gp <- gpar(lwd = 20, col = "black", fill = grDevices::rgb(0, 0, 0, 0.5))
     masker_transparent <- editGrob(masker, gp = gp)

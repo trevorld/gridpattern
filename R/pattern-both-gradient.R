@@ -13,11 +13,13 @@
 #' @param res Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'  if (require("grid") && require("magick") && capabilities("png")) {
+#'  if (requireNamespace("magick") && capabilities("png")) {
 #'    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'    grid.pattern_gradient(x_hex, y_hex, fill = "green")
-#'    grid.newpage()
+#'  }
+#'  if (requireNamespace("magick") && capabilities("png")) {
+#'    grid::grid.newpage()
 #'    grid.pattern_gradient(x_hex, y_hex, fill = "green", orientation = "radial")
 #'  }
 #' @export

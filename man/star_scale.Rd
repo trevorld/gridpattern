@@ -44,9 +44,6 @@ and either the internal or external angle of the regular star polygon.
   star_angle(8, scale)
   star_angle(8, scale, external = TRUE)
 
-  if (require("grid")) {
-    grid.pattern_regular_polygon(shape = "star8", scale = scale, angle = 0,
-                                 spacing = 0.2, density = 0.8)
-  }
-
+  grid.pattern_regular_polygon(shape = "star8", scale = scale, angle = 0,
+                               spacing = 0.2, density = 0.8)
 }

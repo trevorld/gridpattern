@@ -11,14 +11,12 @@
 #' @param fontface The font face.  See [grid::gpar()] for more details.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#' if (require("grid") &&
-#'     capabilities("png") &&
+#' if (capabilities("png") &&
 #'     gridpattern:::device_supports_unicode()) {
 #'   x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'   y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'
 #'   playing_card_symbols <- c("\u2660", "\u2665", "\u2666", "\u2663")
-#'   grid.newpage()
 #'   grid.pattern_text(x_hex, y_hex,
 #'                    shape = playing_card_symbols,
 #'                    colour = c("black", "red", "red", "black"),

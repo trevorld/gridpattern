@@ -87,17 +87,15 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{grid.pattern_stripe()} draws a stripe pattern onto the graphic device.
 }
 \examples{
-  if (require("grid")) {
-    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-    grid.pattern_stripe(x_hex, y_hex, colour = "black",
-                        fill = c("red", "blue"), density = 0.4)
+x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+grid.pattern_stripe(x_hex, y_hex, colour = "black",
+                    fill = c("red", "blue"), density = 0.4)
 
-    # Can alternatively use "gpar()" to specify colour and line attributes
-    grid.newpage()
-    grid.pattern_stripe(x_hex, y_hex, density = 0.3,
-                        gp = gpar(col = "blue", fill = "yellow"))
-  }
+# Can alternatively use "gpar()" to specify colour and line attributes
+grid::grid.newpage()
+grid.pattern_stripe(x_hex, y_hex, density = 0.3,
+                    gp = grid::gpar(col = "blue", fill = "yellow"))
 }
 \seealso{
 \verb{[grid.pattern_crosshatch()]} and \verb{[grid.pattern_weave()]} for overlaying stripes.

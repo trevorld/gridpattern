@@ -110,36 +110,40 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{grid.pattern_pch()} draws a plotting character pattern onto the graphic device.
 }
 \examples{
-  if (require("grid")) {
-    x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-    y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-    gp <- gpar(col = "black", fill = "lightblue")
+x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+gp <- grid::gpar(col = "black", fill = "lightblue")
 
-    # pch 0-6 are simple shapes with no fill
-    grid.pattern_pch(x_hex, y_hex, shape = 0:6, gp = gp,
-                     spacing = 0.1, density = 0.4, angle = 0)
-
-    # pch 7-14 are compound shapes with no fill
-    grid.newpage()
-    grid.pattern_pch(x_hex, y_hex, shape = 7:14, gp = gp,
-                     spacing = 0.1, density = 0.4, angle = 0)
-
-    # pch 15-20 are filled with 'col'
-    grid.newpage()
-    grid.pattern_pch(x_hex, y_hex, shape = 15:20, gp = gp,
-                     spacing = 0.1, density = 0.4, angle = 0)
-
-    # pch 21-25 are filled with 'fill'
-    grid.newpage()
-    grid.pattern_pch(x_hex, y_hex, shape = 21:25, gp = gp,
-                     spacing = 0.1, density = 0.4, angle = 0)
-
-    # using a 'basket' weave `type` with two shapes
-    grid.newpage()
-    grid.pattern_pch(x_hex, y_hex, shape = c(1,4), gp = gp,
-                     type = "basket",
-                     spacing = 0.1, density = 0.4, angle = 0)
-  }
+if (capabilities("png") || guess_has_R4.1_features("masks")) {
+  # pch 0-6 are simple shapes with no fill
+  grid.pattern_pch(x_hex, y_hex, shape = 0:6, gp = gp,
+                   spacing = 0.1, density = 0.4, angle = 0)
+}
+if (capabilities("png") || guess_has_R4.1_features("masks")) {
+  # pch 7-14 are compound shapes with no fill
+  grid::grid.newpage()
+  grid.pattern_pch(x_hex, y_hex, shape = 7:14, gp = gp,
+                   spacing = 0.1, density = 0.4, angle = 0)
+}
+if (capabilities("png") || guess_has_R4.1_features("masks")) {
+  # pch 15-20 are filled with 'col'
+  grid::grid.newpage()
+  grid.pattern_pch(x_hex, y_hex, shape = 15:20, gp = gp,
+                   spacing = 0.1, density = 0.4, angle = 0)
+}
+if (capabilities("png") || guess_has_R4.1_features("masks")) {
+  # pch 21-25 are filled with 'fill'
+  grid::grid.newpage()
+  grid.pattern_pch(x_hex, y_hex, shape = 21:25, gp = gp,
+                   spacing = 0.1, density = 0.4, angle = 0)
+}
+if (capabilities("png") || guess_has_R4.1_features("masks")) {
+  # using a 'basket' weave `type` with two shapes
+  grid::grid.newpage()
+  grid.pattern_pch(x_hex, y_hex, shape = c(1,4), gp = gp,
+                   type = "basket",
+                   spacing = 0.1, density = 0.4, angle = 0)
+}
 }
 \seealso{
 \code{\link[=grid.pattern_regular_polygon]{grid.pattern_regular_polygon()}} which is used to implement this pattern.

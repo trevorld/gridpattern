@@ -6,15 +6,13 @@
 #' @param fill2 The fill colour for the \dQuote{top} crosshatch lines.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#'   if (require("grid")) {
-#'     x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#'     grid.pattern_crosshatch(x_hex, y_hex, colour = "black", fill = "blue",
-#'                             fill2 = "yellow", density = 0.5)
-#'     grid.newpage()
-#'     grid.pattern_crosshatch(x_hex, y_hex, density = 0.3,
-#'                             gp = gpar(col = "blue", fill = "yellow"))
-#'   }
+#' x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#' y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+#' grid.pattern_crosshatch(x_hex, y_hex, colour = "black", fill = "blue",
+#'                         fill2 = "yellow", density = 0.5)
+#' grid::grid.newpage()
+#' grid.pattern_crosshatch(x_hex, y_hex, density = 0.3,
+#'                         gp = grid::gpar(col = "blue", fill = "yellow"))
 #' @seealso [grid.pattern_weave()] which interweaves two sets of lines.
 #'        For a single set of lines use [grid.pattern_stripe()].
 #' @export

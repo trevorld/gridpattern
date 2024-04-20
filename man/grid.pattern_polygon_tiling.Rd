@@ -134,33 +134,31 @@ dodecagons, hexagons, and squares.}
 }
 }
 \examples{
- print(names_polygon_tiling)
- if (require("grid")) {
-   x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-   y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-   gp1 <- gpar(fill = "yellow", col = "black")
-   gp2 <- gpar(fill = c("yellow", "red"), col = "black")
-   gp3 <- gpar(fill = c("yellow", "red", "blue"), col = "black")
+print(names_polygon_tiling)
 
-   grid.pattern_polygon_tiling(x_hex, y_hex, type = "herringbone", gp = gp1)
+x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+gp1 <- grid::gpar(fill = "yellow", col = "black")
+gp2 <- grid::gpar(fill = c("yellow", "red"), col = "black")
+gp3 <- grid::gpar(fill = c("yellow", "red", "blue"), col = "black")
 
-   grid.newpage()
-   grid.pattern_polygon_tiling(x_hex, y_hex, type = "hexagonal",
-                               spacing = 0.2, gp = gp3)
+grid.pattern_polygon_tiling(x_hex, y_hex, type = "herringbone", gp = gp1)
 
-   grid.newpage()
-   grid.pattern_polygon_tiling(x_hex, y_hex, type = "pythagorean",
-                               spacing = 0.2, gp = gp2)
+grid::grid.newpage()
+grid.pattern_polygon_tiling(x_hex, y_hex, type = "hexagonal",
+                            spacing = 0.2, gp = gp3)
 
-   grid.newpage()
-   grid.pattern_polygon_tiling(x_hex, y_hex, type = "snub_trihexagonal",
-                               spacing = 0.2, gp = gp3)
+grid::grid.newpage()
+grid.pattern_polygon_tiling(x_hex, y_hex, type = "pythagorean",
+                            spacing = 0.2, gp = gp2)
 
-   grid.newpage()
-   grid.pattern_polygon_tiling(x_hex, y_hex, type = "rhombille",
-                               spacing = 0.2, gp = gp3)
- }
+grid::grid.newpage()
+grid.pattern_polygon_tiling(x_hex, y_hex, type = "snub_trihexagonal",
+                            spacing = 0.2, gp = gp3)
 
+grid::grid.newpage()
+grid.pattern_polygon_tiling(x_hex, y_hex, type = "rhombille",
+                              spacing = 0.2, gp = gp3)
 }
 \seealso{
 The tiling vignette \code{vignette("tiling", package = "gridpattern")} for more
