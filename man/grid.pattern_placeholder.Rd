@@ -14,7 +14,7 @@ grid.pattern_placeholder(
   y = c(1, 0, 0, 1),
   id = 1L,
   ...,
-  type = "kitten",
+  type = "bear",
   alpha = gp$alpha \%||\% NA_real_,
   aspect_ratio = 1,
   key_scale_factor = 1,

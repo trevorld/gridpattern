@@ -1,6 +1,19 @@
 gridpattern v1.2.0 (development)
 ================================
 
+Breaking Changes
+----------------
+
+* The default `type` for the "placeholder" pattern
+  is now "bear" instead of "kitten".
+  Explicitly set `type = "kitten"` to continue to use
+  the "kitten" placeholder but note that although
+  the "kitten" placeholder website isn't completely down
+  it has been buggy recently (#73).
+
+New Features
+------------
+
 * `patternFill()` wraps `patternGrob()` to return a
   `grid::pattern()` fill object (#70).
 * The "geometry" patterns (e.g. "circle", "stripe", etc.) now allow
