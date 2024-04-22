@@ -36,7 +36,8 @@ A \code{\link[grid:patterns]{grid::pattern()}} fill object.
 It is a wrapper around \code{\link[=patternGrob]{patternGrob()}}.
 }
 \examples{
-if (guess_has_R4.1_features("patterns") && require("grid")) {
+if (guess_has_R4.1_features("patterns") &&
+    require("grid", quietly = TRUE)) {
   grid.newpage()
   stripe_fill <- patternFill("stripe", fill = c("red", "blue"))
   grid.circle(gp = gpar(fill = stripe_fill))

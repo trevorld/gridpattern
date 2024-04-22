@@ -16,8 +16,10 @@ gridpattern v1.2.0 (development)
     or simply copying `standalone-update_alpha.R` into your R directory and adding
     `grDevices`, `grid`, and `rlang` to the `Imports` of your `DESCRIPTION` file.
 
-* For completeness there is now a `grid.pattern_none()` corresponding to the "none" pattern
-  which draws nothing.
+* For completeness there is now a new "fill" pattern with corresponding
+  `grid.pattern_fill()` which draws a simple fill pattern.
+* For completeness there is now a `grid.pattern_none()` corresponding to the previously
+  supported "none" pattern which draws nothing.
 
 gridpattern v1.1.1
 ==================

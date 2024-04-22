@@ -7,7 +7,7 @@
 \alias{patternGrob}
 \title{Create patterned grobs by pattern name}
 \format{
-An object of class \code{character} of length 17.
+An object of class \code{character} of length 18.
 }
 \usage{
 grid.pattern(

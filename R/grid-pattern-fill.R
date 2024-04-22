@@ -9,7 +9,8 @@
 #' @param just,hjust,vjust  The justification of the tile relative to its location.
 #' @param group A logical indicating whether the pattern is relative to the bounding box of the grob or whether it is relative to individual shapes within the grob.  Ignored if R is less than version 4.2.
 #' @examples
-#' if (guess_has_R4.1_features("patterns") && require("grid")) {
+#' if (guess_has_R4.1_features("patterns") &&
+#'     require("grid", quietly = TRUE)) {
 #'   grid.newpage()
 #'   stripe_fill <- patternFill("stripe", fill = c("red", "blue"))
 #'   grid.circle(gp = gpar(fill = stripe_fill))

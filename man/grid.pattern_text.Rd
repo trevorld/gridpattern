@@ -43,11 +43,11 @@ grid.pattern_text(
 \item{id}{A numeric vector used to separate locations in x, y into multiple boundaries.
 All locations within the same \code{id} belong to the same boundary.}
 
-\item{...}{Currently ignored}
+\item{...}{Currently ignored.}
 
-\item{colour}{Stroke colour}
+\item{colour}{Stroke colour(s).}
 
-\item{angle}{Rotation angle in degrees}
+\item{angle}{Rotation angle in degrees.}
 
 \item{spacing}{Spacing between repetitions of pattern ('snpc' units between 0 and 1).}
 

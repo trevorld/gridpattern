@@ -125,7 +125,7 @@ grid.pattern <- function(pattern = "stripe",
 
 #' @rdname grid.pattern
 #' @export
-names_pattern <- c("ambient", "circle", "crosshatch", "gradient", "image",
+names_pattern <- c("ambient", "circle", "crosshatch", "fill", "gradient", "image",
                    "magick", "none", "pch", "placeholder", "plasma", "polygon_tiling",
                    "regular_polygon", "rose", "stripe", "text", "wave", "weave")
 
@@ -177,6 +177,7 @@ get_pattern_fn <- function(pattern) {
     assert_patterns_unique(user_geometry_fns, user_array_fns)
     geometry_fns <- c(list(circle = create_pattern_circle_via_sf,
                            crosshatch = create_pattern_crosshatch_via_sf,
+                           fill = create_pattern_fill,
                            gradient = create_pattern_gradient,
                            none = create_pattern_none,
                            pch = create_pattern_pch,

@@ -3,13 +3,14 @@
 #' `grid.pattern_gradient()` draws a gradient pattern onto the graphic device.
 #'
 #' @inheritParams grid.pattern_circle
-#' @param fill2 Second colour
-#' @param orientation vertical, horizontal, or radial
-#' @param aspect_ratio Override aspect ratio
+#' @param fill Colour.
+#' @param fill2 Second colour.
+#' @param orientation vertical, horizontal, or radial.
+#' @param aspect_ratio Override aspect ratio.
 #' @param use_R4.1_gradients Whether to use the gradient feature introduced in R v4.1
 #'                           or use a `rasterGrob` approximation.
 #'                           Note not all graphic devices support the grid gradient feature.
-#' @param key_scale_factor Additional scale factor for legend
+#' @param key_scale_factor Additional scale factor for legend.
 #' @param res Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
