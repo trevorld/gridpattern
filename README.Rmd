@@ -10,6 +10,7 @@
 * [Installation](#installation)
 * [Examples](#examples)
 * [Using these patterns with the "ggpattern" package](#ggpattern)
+* [Using these patterns with the "ggplot2" package](#ggplot2)
 * [Using these patterns with the "piecepackr" package](#piecepackr)
 
 ## <a name="overview">Overview</a>
@@ -18,9 +19,9 @@
 [patternGrob()](http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html)
 functions to use with R's grid graphics system. They fill in a
 user-specified boundary path with a user-specified pattern. These pattern grobs include
-enhanced versions of the patterns originally contained within 
+enhanced versions of the patterns originally contained within
 [Mike FC](https://github.com/coolbutuseless)'s awesome
-[ggpattern](https://github.com/coolbutuseless/ggpattern) package 
+[ggpattern](https://github.com/trevorld/ggpattern) package
 as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", "wave", and "weave" patterns.
 
 `{gridpattern}` currently provides `{grid}` grob support for the following patterns:
@@ -29,22 +30,23 @@ as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", 
     noise array patterns powered by the [ambient](https://cran.r-project.org/package=ambient) package
 2.  [circle](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_circle.html): circle geometry patterns
 3.  [crosshatch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_crosshatch.html): crosshatch geometry patterns
-4.  [gradient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_gradient.html): gradient array/geometry patterns
-5.  [image](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_image.html): image array patterns
-6.  [magick](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_magick.html): imagemagick array patterns
-7.  none (equivalent to `grid::null()`)
-8.  [placeholder](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_placeholder.html): placeholder image array patterns
-9.  [plasma](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_plasma.html): plasma array patterns
-10. [pch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_pch.html): plotting character geometry patterns
-11. [polygon_tiling](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_polygon_tiling.html): polygon tiling patterns
-12. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
-13. [rose](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_rose.html): rose curve array/geometry patterns
-14. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
-15. [text](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_text.html): text array/geometry patterns
-16. [wave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_wave.html): wave geometry patterns
-17. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
-18. [custom geometry-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
-19. [custom array-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
+4.  [fill](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_fill.html): simple fill patterns
+5.  [gradient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_gradient.html): gradient array/geometry patterns
+6.  [image](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_image.html): image array patterns
+7.  [magick](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_magick.html): imagemagick array patterns
+8.  [none](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_none.html): draws nothing
+9.  [placeholder](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_placeholder.html): placeholder image array patterns
+10.  [plasma](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_plasma.html): plasma array patterns
+11. [pch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_pch.html): plotting character geometry patterns
+12. [polygon_tiling](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_polygon_tiling.html): polygon tiling patterns
+13. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
+14. [rose](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_rose.html): rose curve array/geometry patterns
+15. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
+16. [text](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_text.html): text array/geometry patterns
+17. [wave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_wave.html): wave geometry patterns
+18. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
+19. [custom geometry-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
+20. [custom array-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
 
 ## <a name="installation">Installation</a>
 
@@ -74,7 +76,7 @@ grid.pattern_circle(x_hex, y_hex, density = 0.5, grid = "hex_circle",
 ```
 ```{r regular_star}
 grid.pattern_regular_polygon(x_hex, y_hex, shape = c("convex4", "star8", "circle"),
-                             colour = "black", fill = c("blue", "yellow", "red"), 
+                             colour = "black", fill = c("blue", "yellow", "red"),
                              density = c(0.45, 0.42, 0.4), spacing = 0.08, angle = 0)
 ```
 ```{r regular_hex}
@@ -84,7 +86,7 @@ grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", grid = "hex",
 ```
 ```{r truncated_hexagonal}
 gp <- gpar(fill = c("yellow", "blue", "red"))
-grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_hexagonal", 
+grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_hexagonal",
                             spacing = 0.15, gp = gp)
 ```
 ```{r rhombitrihexagonal}
@@ -94,11 +96,11 @@ red <- grDevices::rgb(0.80, 0.40, 0.00)
 green <- grDevices::rgb(0.00, 0.60, 0.50)
 grid.rect(gp = gpar(fill = yellow, col = NA))
 gp <- gpar(fill = red, col = "black")
-grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
+grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3,
                     angle = 0, gp = gp)
-grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
+grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3,
                     angle = -60, gp = gp)
-grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3, 
+grid.pattern_stripe(grid = "hex_circle", density = 0.25, spacing = 0.3,
                     angle = 60, gp = gp)
 gp <- gpar(fill = blue, col = "black")
 grid.pattern_regular_polygon(shape = "convex12", grid = "hex_circle", rot = 15,
@@ -130,48 +132,29 @@ grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
                   amplitude = 0.05, frequency = 1 / 0.20)
 ```
 ```{r weave}
-grid.pattern_weave(x_hex, y_hex, type = "satin", 
+grid.pattern_weave(x_hex, y_hex, type = "satin",
              colour = "black", fill = "lightblue", fill2 =  "yellow",
              density = 0.3)
 ```
 
 ## <a name="ggpattern">Using these patterns with the "ggpattern" package</a>
 
-The patterns provided by ``gridpattern`` can be used to create [custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns.html).  
-
-Here is an example of creating a new  "multicolor_stripe" pattern that supports comma-separated ``pattern_fill`` and/or ``pattern_colour`` aesthetics:
+`ggpattern` automatically supports all patterns provided by ``gridpattern`` since `ggpattern` v0.2.0.
+Here is an example of using the "stripe" pattern:
 
 ```{r ggpattern}
-library("ggpattern") # remotes::install_github("coolbutuseless/ggpattern")
+library("ggpattern") # remotes::install_github("trevorld/ggpattern")
 library("ggplot2", warn.conflicts = FALSE)
 library("gridpattern")
-
-multicolor_stripe_pattern <- function(params, boundary_df, aspect_ratio, 
-                                      legend = FALSE) {
-    args <- as.list(params)
-    args <- args[grep("^pattern_", names(args))]
-
-    args$pattern_colour <- strsplit(args$pattern_colour, ",")[[1]]
-    args$pattern_fill <- strsplit(args$pattern_fill, ",")[[1]]
-
-    args$pattern <- "stripe"
-    args$x <- boundary_df$x
-    args$y <- boundary_df$y
-    args$id <- boundary_df$id
-    args$prefix <- ""
-
-    do.call(gridpattern::patternGrob, args)
-}
-
-options(ggpattern_geometry_funcs = list(multicolor_stripe = multicolor_stripe_pattern))
 df <- data.frame(trt = c("a", "b", "c"), outcome = c(2.3, 1.9, 3.2))
 ggplot(df, aes(trt, outcome)) +
-    geom_col_pattern(aes(fill = trt), colour = 'black', 
-                     pattern = 'multicolor_stripe',
-                     pattern_fill = "grey30,grey70,white,grey70")
+    geom_col_pattern(aes(fill = trt), colour = 'black',
+                     pattern = 'stripe',
+                     pattern_fill = list(c("grey30" , "grey70", "white", "grey70")))
 ```
 
-And here is an example of creating a "tiling3" pattern that creates
+One can also create [custom patterns](https://trevorldavis.com/R/ggpattern/dev/articles/developing-patterns.html) for use with `ggpattern`.
+Here is an example of creating a "tiling3" pattern that creates
 three-color polygon tilings using the ``fill`` colour, the ``pattern_fill`` colour,
 and their "average" color.
 
@@ -198,10 +181,27 @@ tiling3_pattern <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
 options(ggpattern_geometry_funcs = list(tiling3 = tiling3_pattern))
 df <- data.frame(trt = c("a", "b", "c"), outcome = c(2.3, 1.9, 3.2))
 ggplot(df, aes(trt, outcome)) +
-    geom_col_pattern(aes(fill = trt, pattern_type = trt), 
+    geom_col_pattern(aes(fill = trt, pattern_type = trt),
                      pattern = 'tiling3', pattern_angle = 45) +
     scale_pattern_type_manual(values = c("hexagonal", "tetrakis_square", "rhombille")) +
     theme(legend.key.size = unit(1.5, 'cm'))
+```
+
+## <a name="ggplot2">Using these patterns with the "ggplot2" package</a>
+
+Although use of the ["ggpattern" package](#ggpattern) package is still highly recommended one can directly use pattern/gradient fills in base `ggplot2` geoms since v3.5.0.
+[`patternFill()`](https://trevorldavis.com/R/gridpattern/dev/reference/patternFill.html) wraps `grid::pattern()` and [patternGrob()](http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html) and is one way to use `gridpattern` patterns directly with `ggplot2`:
+
+```{r ggplot2, fig.width=9, fig.height=9}
+library("ggplot2", warn.conflicts = FALSE)
+library("gridpattern")
+pal <- grDevices::palette()
+herringbone <- patternFill("polygon_tiling", type = "herringbone", fill = pal[2])
+truncated_hexagonal <- patternFill("polygon_tiling", type = "truncated_hexagonal", fill = pal[3])
+pythagorean <- patternFill("polygon_tiling", type = "pythagorean", fill = pal[4])
+df <- data.frame(trt = c("a", "b", "c"), outcome = c(2.3, 1.9, 3.2))
+ggplot(df, aes(trt, outcome)) +
+    geom_col(fill = list(herringbone, truncated_hexagonal, pythagorean))
 ```
 
 ## <a name="piecepackr">Using these patterns with the "piecepackr" package</a>
