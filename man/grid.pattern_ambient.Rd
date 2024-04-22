@@ -40,13 +40,13 @@ grid.pattern_ambient(
 \item{id}{A numeric vector used to separate locations in x, y into multiple boundaries.
 All locations within the same \code{id} belong to the same boundary.}
 
-\item{...}{Currently ignored}
+\item{...}{Currently ignored.}
 
 \item{type}{Either cubic, perlin, simplex, value, white, or worley}
 
-\item{fill}{Fill colour}
+\item{fill}{Colour.}
 
-\item{fill2}{Second colour}
+\item{fill2}{Second colour.}
 
 \item{frequency}{Determines the granularity of the features in the noise.}
 

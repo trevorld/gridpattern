@@ -27,6 +27,9 @@ test_that("geometry patterns work as expected", {
     expect_doppelganger("crosshatch", function()
         grid.pattern_crosshatch(x, y, color="black", fill="blue", fill2="yellow", density = 0.5))
 
+    expect_doppelganger("fill", function()
+        grid.pattern_fill(x, y, fill = "blue", alpha = 0.5))
+
     expect_doppelganger("none", function()
         grid.pattern_none(x, y))
 

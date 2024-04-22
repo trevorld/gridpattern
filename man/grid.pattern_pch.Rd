@@ -41,13 +41,13 @@ grid.pattern_pch(
 \item{id}{A numeric vector used to separate locations in x, y into multiple boundaries.
 All locations within the same \code{id} belong to the same boundary.}
 
-\item{...}{Currently ignored}
+\item{...}{Currently ignored.}
 
-\item{colour}{Stroke colour}
+\item{colour}{Stroke colour(s).}
 
-\item{fill}{Fill colour}
+\item{fill}{Fill colour(s) or \code{\link[grid:patterns]{grid::pattern()}} / gradient object(s).}
 
-\item{angle}{Rotation angle in degrees}
+\item{angle}{Rotation angle in degrees.}
 
 \item{density}{Approx. fraction of area the pattern fills.}
 
@@ -83,11 +83,11 @@ more information about supported \code{subtype} arguments.}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
-\item{linetype}{Stroke linetype}
+\item{linetype}{Stroke linetype.}
 
-\item{linewidth}{Stroke linewidth}
+\item{linewidth}{Stroke linewidth.}
 
-\item{size}{For backwards compatibility can be used to set \code{linewidth}}
+\item{size}{For backwards compatibility can be used to set \code{linewidth}.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}

@@ -380,4 +380,4 @@ grid.pattern("simple", type = "c",
 
 The `{ggpattern}` package contains a vignette on developing `{gridpattern}` / `{ggpattern}` patterns with a few more examples:  https://coolbutuseless.github.io/package/ggpattern/articles/
 
-Also the `{gridpattern}` source contains the full source code for seventeen patterns: https://github.com/trevorld/gridpattern/tree/main/R
+Also the `{gridpattern}` source contains the full source code for  `r length(names_pattern)` patterns: https://github.com/trevorld/gridpattern/tree/main/R

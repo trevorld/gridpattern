@@ -49,7 +49,7 @@ names_magick_stripe
 \item{id}{A numeric vector used to separate locations in x, y into multiple boundaries.
 All locations within the same \code{id} belong to the same boundary.}
 
-\item{...}{Currently ignored}
+\item{...}{Currently ignored.}
 
 \item{type}{Magick pattern types.  \code{names_magick}, \code{names_magick_intensity}, and
 \code{names_magick_stripe} are character vectors of supported \code{type} values
@@ -63,9 +63,9 @@ plus subsets for shaded intensity and stripes.}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
-\item{aspect_ratio}{Override aspect ratio}
+\item{aspect_ratio}{Override aspect ratio.}
 
-\item{key_scale_factor}{Additional scale factor for legend}
+\item{key_scale_factor}{Additional scale factor for legend.}
 
 \item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.}
 

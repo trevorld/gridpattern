@@ -36,16 +36,16 @@ names_placeholder
 \item{id}{A numeric vector used to separate locations in x, y into multiple boundaries.
 All locations within the same \code{id} belong to the same boundary.}
 
-\item{...}{Currently ignored}
+\item{...}{Currently ignored.}
 
 \item{type}{Image source.  \code{names_placeholder} is a vector of supported values.
 If you would like only greyscale images append \code{bw} to the name.}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
-\item{aspect_ratio}{Override aspect ratio}
+\item{aspect_ratio}{Override aspect ratio.}
 
-\item{key_scale_factor}{Additional scale factor for legend}
+\item{key_scale_factor}{Additional scale factor for legend.}
 
 \item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.}
 

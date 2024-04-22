@@ -3,18 +3,18 @@
 #' `grid.pattern_circle()` draws a circle pattern onto the graphic device.
 #'
 #' @inheritParams grid.pattern
-#' @param ... Currently ignored
-#' @param colour Stroke colour
-#' @param fill Fill colour
-#' @param angle Rotation angle in degrees
+#' @param ... Currently ignored.
+#' @param colour Stroke colour(s).
+#' @param fill Fill colour(s) or [grid::pattern()] / gradient object(s).
+#' @param angle Rotation angle in degrees.
 #' @param density Approx. fraction of area the pattern fills.
 #' @param spacing Spacing between repetitions of pattern ('snpc' units between 0 and 1).
 #' @param xoffset Shift pattern along x axis ('snpc' units between 0 and 1).
 #' @param yoffset Shift pattern along y axis ('snpc' units between 0 and 1).
 #' @param alpha Alpha (between 0 and 1) or `NA` (default, preserves colors' alpha value).
-#' @param linetype Stroke linetype
-#' @param linewidth Stroke linewidth
-#' @param size For backwards compatibility can be used to set `linewidth`
+#' @param linetype Stroke linetype.
+#' @param linewidth Stroke linewidth.
+#' @param size For backwards compatibility can be used to set `linewidth`.
 #' @param grid Adjusts placement and density of certain graphical elements.
 #'             `"square"` (default) is a square grid.
 #'             `"hex"` is a hexagonal grid suitable for hexagonal and triangular tiling.
