@@ -8,8 +8,8 @@ img_read <- function(filename) {
   if (identical(filename, '')) {
     return(magick::image_blank(100, 100, color = 'none'))
   }
-  if (is.null(filename) || length(filename)==0 || is.na(filename) || filename == '') {
-    abort(paste0("img_read(): bad filename: ", deparse(filename)))
+  if (is.null(filename) || length(filename)== 0 || is.na(filename) || filename == '') {
+    abort(paste0("bad filename: ", deparse(filename)))
   }
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,7 +18,7 @@ img_read <- function(filename) {
   img <- tryCatch(
     {magick::image_read(filename)},
     error = function(cond) {
-      msg <- c(glue("img_read() non-specific error with magick::image_read({shQuote(filename)})"),
+      msg <- c(glue("couldn't read {shQuote(filename)}"),
                i = cond$message)
       abort(msg)
     }
@@ -49,7 +49,7 @@ img_read_as_array <- function(filename, width = NULL, height = NULL,
   img <- img_read_memoised(filename)
 
   if (is.null(img)) {
-    abort(glue("img_read_as_array(): couldn't read '{filename}'"))
+    abort(glue("couldn't read {shQuote(filename)}"))
   }
 
   img <- fill_area_with_img(img, width, height, type = fill_type, gravity = gravity,
