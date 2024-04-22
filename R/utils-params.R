@@ -101,7 +101,7 @@ default_pattern_type <- function(pattern) {
     switch(pattern,
            ambient = "simplex",
            image = "fit",
-           placeholder = "kitten",
+           placeholder = "bear",
            polygon_tiling = "square",
            magick = "hexagons",
            wave = "triangle",
