@@ -16,7 +16,7 @@
 #' }
 #'  
 #' if (guess_has_R4.1_features("patterns") && 
-#'     require("ggplot2") && 
+#'     require("ggplot2", quietly = TRUE) &&
 #'     (getRversion() >= "4.2")) {
 #'   grid.newpage()
 #'   weave_fill <- patternFill("weave", fill = "red", fill2 = "blue", 
