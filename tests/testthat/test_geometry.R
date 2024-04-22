@@ -19,8 +19,6 @@ test_that("geometry patterns work as expected", {
 
     expect_doppelganger("default", grid.pattern)
 
-    expect_doppelganger("none", function() grid.pattern("none"))
-
     x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
     expect_doppelganger("circle", function()
@@ -28,6 +26,9 @@ test_that("geometry patterns work as expected", {
 
     expect_doppelganger("crosshatch", function()
         grid.pattern_crosshatch(x, y, color="black", fill="blue", fill2="yellow", density = 0.5))
+
+    expect_doppelganger("none", function()
+        grid.pattern_none(x, y))
 
     expect_error(assert_rp_shape(1), "Unknown shape 1")
     expect_null(assert_rp_shape(c("square", "convex4")))
