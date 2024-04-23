@@ -148,6 +148,8 @@ get_poly_lengths <- function(sf_object) {
 #'
 #' @noRd
 convert_polygon_df_to_alpha_channel <- function(polygon_df, width, height) {
+  current_dev <- grDevices::dev.cur()
+  if (current_dev > 1) on.exit(grDevices::dev.set(current_dev))
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Convert the polygon to an actual grob, coloured 'black'
@@ -155,6 +157,8 @@ convert_polygon_df_to_alpha_channel <- function(polygon_df, width, height) {
   gp <- gpar(fill = 'black')
   boundary_grob <- convert_polygon_df_to_polygon_grob(polygon_df, gp=gp)
 
+  # Note `ragg::agg_capture()`'s non-"native" format is a matrix of color strings
+  # while `png::readPNG()`'s non-"native" format is an array of numeric values
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Save the grob as an image of the given size
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -167,7 +171,7 @@ convert_polygon_df_to_alpha_channel <- function(polygon_df, width, height) {
   # Load the file and convert o a numeric matrix with values 0/1 depending
   # on whether the pixel is white or black.
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  alpha_channel <- png::readPNG(png_file)
+  alpha_channel <- png::readPNG(png_file, native = FALSE)
   alpha_channel <- alpha_channel[,,1] < 0.5
   storage.mode(alpha_channel) <- 'numeric'
 

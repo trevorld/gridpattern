@@ -30,7 +30,7 @@ If \code{NULL} try to guess an appropriate choice.}
 If \code{FALSE} do a \code{rasterGrob} approximation of the masked pattern.
 If \code{NULL} try to guess an appropriate choice.}
 \item{ggpattern_use_R4.1_patterns}{If \code{TRUE} use the grid pattern feature introduced in R v4.1.0.
-Currently unused by this package.}
+Currently only used by a couple of examples.}
 }
 Note to use the R v4.1.0 features one needs R be (at least) version 4.1 and not all graphic devices
 support any/all these features.  See \url{https://www.stat.auckland.ac.nz/~paul/Reports/GraphicsEngine/definitions/definitions.html} for more information on these features.

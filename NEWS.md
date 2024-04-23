@@ -34,6 +34,19 @@ New Features
 * For completeness there is now a `grid.pattern_none()` corresponding to the previously
   supported "none" pattern which draws nothing.
 
+Bug fixes and minor improvements
+--------------------------------
+
+* `clippingPathGrob()` can now more efficiently compute a `rasterGrob()` approximation
+  via `ragg::agg_capture()` and for `png_device` functions that support
+  the clipping path feature such as`png(type = "cairo")`(#74).
+* `alphaMaskGrob()` can now more efficiently compute a `rasterGrob()` approximation
+  for `png_device` functions that support
+  the alpha mask feature such as`png(type = "cairo")`(#75).
+* `alphaMaskGrob()` and `clippingPathGrob()` now 
+  switch back to the previously open graphics device if 
+  they open and close any new graphics devices.
+
 gridpattern v1.1.1
 ==================
 

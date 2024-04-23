@@ -48,14 +48,14 @@
 #'   }
 #' @export
 alphaMaskGrob <- function(maskee, masker,
-         use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
-                                    getOption("ggpattern_use_R4.1_features")),
-         png_device = NULL, res = getOption("ggpattern_res", 72),
-         name = NULL, gp = gpar(), vp = NULL) {
+                          use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
+                                                     getOption("ggpattern_use_R4.1_features")),
+                          png_device = NULL, res = getOption("ggpattern_res", 72),
+                          name = NULL, gp = gpar(), vp = NULL) {
     gTree(maskee = maskee, masker = masker,
           use_R4.1_masks = use_R4.1_masks,
           res = res, png_device = png_device,
-          name=name, gp=gp, vp=vp, cl="alpha_mask")
+          name = name, gp = gp, vp = vp, cl = "alpha_mask")
 }
 
 # Avoid R CMD check WARNING on R 4.0 which lacks `mask` argument
@@ -82,52 +82,90 @@ makeContent.alpha_mask <- function(x) {
                getRversion() >= '4.1.0' &&
                requireNamespace("ragg", quietly = TRUE) &&
                packageVersion("ragg") >= '1.2.0') {
-        grob <- gridpattern_mask_agg_capture(x)
+        grob <- gridpattern_mask_agg_capture(x$maskee, x$masker, x$res)
     } else {
-        grob <- gridpattern_mask_raster(x)
+        png_device <- x$png_device %||% default_png_device()
+        if (device_supports_masks(png_device)) {
+            grob <- gridpattern_mask_raster_straight(x$maskee, x$masker, x$res, png_device)
+        } else {
+            grob <- gridpattern_mask_raster_manual(x$maskee, x$masker, x$res, png_device)
+        }
     }
 
     gl <- gList(grob)
     setChildren(x, gl)
 }
 
-gridpattern_mask_agg_capture <- function(x) {
-    height <- x$res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
-    width <- x$res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
+device_supports_masks <- function(png_device) {
+    current_dev <- grDevices::dev.cur()
+    if (current_dev > 1) on.exit(grDevices::dev.set(current_dev))
+    png_file <- tempfile(fileext = ".png")
+    on.exit(unlink(png_file), add = TRUE)
+    png_device(png_file)
+    value <- guess_has_R4.1_features("masks")
+    dev.off()
+    value
+}
 
-    f_masked <- ragg::agg_capture(height = height, width = width, res = x$res, bg = "transparent")
-    grob <- alphaMaskGrob(x$maskee, x$masker, use_R4.1_masks = TRUE)
+gridpattern_mask_agg_capture <- function(maskee, masker, res) {
+    current_dev <- grDevices::dev.cur()
+    if (current_dev > 1) on.exit(grDevices::dev.set(current_dev))
+    height <- res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
+    width <- res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
+
+    ragg::agg_capture(height = height, width = width, res = res, bg = "transparent")
+    grob <- alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE)
     grid.draw(grob)
-    raster_masked <- f_masked(native = FALSE)
+    raster_masked <- dev.capture(native = FALSE)
     dev.off()
     grid::rasterGrob(raster_masked)
 }
 
-gridpattern_mask_raster <- function(x) {
-    height <- x$res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
-    width <- x$res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
-    png_device <- x$png_device
-    if (is.null(png_device)) {
-        if (requireNamespace("ragg", quietly = TRUE)) {
-            png_device <- ragg::agg_png
-        } else {
-            stopifnot(capabilities("png"))
-            png_device <- grDevices::png
-        }
+default_png_device <- function() {
+    if (requireNamespace("ragg", quietly = TRUE)) {
+        ragg::agg_png
+    } else {
+        stopifnot(capabilities("png"))
+        grDevices::png
     }
+}
+
+gridpattern_mask_raster_straight <- function(maskee, masker, res, png_device) {
+    current_dev <- grDevices::dev.cur()
+    if (current_dev > 1) on.exit(grDevices::dev.set(current_dev))
+    height <- res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
+    width <- res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
+
+    png_masked <- tempfile(fileext = ".png")
+    on.exit(unlink(png_masked), add = TRUE)
+    png_device(png_masked, height = height, width = width,
+               res = res, bg = "transparent")
+    grob <- alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE)
+    grid.draw(grob)
+    dev.off()
+
+    raster_masked <- png::readPNG(png_masked, native = FALSE)
+    grid::rasterGrob(raster_masked)
+}
+
+gridpattern_mask_raster_manual <- function(maskee, masker, res, png_device) {
+    current_dev <- grDevices::dev.cur()
+    if (current_dev > 1) on.exit(grDevices::dev.set(current_dev))
+    height <- res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
+    width <- res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
 
     png_maskee <- tempfile(fileext = ".png")
-    on.exit(unlink(png_maskee))
+    on.exit(unlink(png_maskee), add = TRUE)
     png_device(png_maskee, height = height, width = width,
-               res = x$res, bg = "transparent")
-    grid.draw(x$maskee)
+               res = res, bg = "transparent")
+    grid.draw(maskee)
     dev.off()
 
     png_masker <- tempfile(fileext = ".png")
-    on.exit(unlink(png_masker))
+    on.exit(unlink(png_masker), add = TRUE)
     png_device(png_masker, height = height, width = width,
-               res = x$res, bg = "transparent")
-    grid.draw(x$masker)
+               res = res, bg = "transparent")
+    grid.draw(masker)
     dev.off()
 
     raster_maskee <- png::readPNG(png_maskee, native = FALSE)
