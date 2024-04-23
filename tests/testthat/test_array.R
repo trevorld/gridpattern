@@ -24,11 +24,10 @@ test_raster <- function(ref_png, fn, update = FALSE) {
 
 my_png <- function(f, fn) {
     current_dev <- grDevices::dev.cur()
+    if (current_dev > 1) on.exit(grDevices::dev.set(current_dev))
     grDevices::png(f, type = "cairo", width = 240, height = 240)
-    val <- fn()
+    fn()
     grDevices::dev.off()
-    if (current_dev > 1) grDevices::dev.set(current_dev)
-    invisible(val)
 }
 
 test_that("array patterns works as expected", {
@@ -122,26 +121,43 @@ test_that("array patterns works as expected", {
                               y = c(y_hex_outer, y_hex_inner),
                               id = rep(1:2, each = 7),
                               rule = "evenodd")
+
+    clipped <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = FALSE,
+                                png_device = grDevices::png)
+    test_raster("clipGrob_cairo.png", function() grid.draw(clipped))
+
+    clipped <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = NULL)
+    test_raster("clipGrob_feature.png", function() grid.draw(clipped))
+
+    png_device <- default_png_device()
+    test_raster("clipGrob_manual.png", function() {
+        clipped <- gridpattern_clip_raster_manual(clippee, clipper, 72, png_device)
+        grid.draw(clipped)
+    })
+
     clipped <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = FALSE)
-    test_raster("clipGrob.png", function() grid.draw(clipped))
+    test_raster("clipGrob_ragg.png", function() grid.draw(clipped))
 
     # alphaMaskGrob()
-    clipper <- editGrob(clipper, gp = gpar(col = NA, fill = "black"))
-    masked <- alphaMaskGrob(clippee, clipper, use_R4.1_masks = FALSE)
-    test_raster("alphaMaskGrob.png", function() grid.draw(masked))
+    clippee2 <- rectGrob(gp = gpar(fill = "blue", col = NA))
+    clipper2 <- editGrob(clipper, gp = gpar(col = NA, fill = "black"))
+    clipper3 <- editGrob(clipper2, gp = gpar(col = "black", lwd=20, fill = rgb(0, 0, 0, 0.5)))
 
-    clippee <- rectGrob(gp = gpar(fill = "blue", col = NA))
-    clipper <- editGrob(clipper, gp = gpar(col = "black", lwd=20, fill = rgb(0, 0, 0, 0.5)))
-    masked <- alphaMaskGrob(clippee, clipper, use_R4.1_masks = NULL)
-    test_raster("alphaMaskGrob_transparent.png", function() grid.draw(masked))
+    masked <- alphaMaskGrob(clippee2, clipper3, use_R4.1_masks = FALSE, png_device = grDevices::png)
+    test_raster("alphaMaskGrob_cairo.png", function() {
+        grid.draw(masked)
+    })
 
-    clippee <- rectGrob(gp = gpar(fill = "blue", col = NA))
-    clipper <- editGrob(clipper, gp = gpar(col = "black", lwd=20, fill = rgb(0, 0, 0, 0.5)))
-    bitmapType = getOption("bitmapType")
-    options(bitmapType = "cairo")
-    masked <- alphaMaskGrob(clippee, clipper, use_R4.1_masks = FALSE, png_device = grDevices::png)
-    test_raster("alphaMaskGrob_cairo.png", function() grid.draw(masked))
-    options(bitmapType = bitmapType)
+    masked <- alphaMaskGrob(clippee2, clipper3, use_R4.1_masks = NULL)
+    test_raster("alphaMaskGrob_feature.png", function() grid.draw(masked))
+
+    test_raster("alphaMaskGrob_manual.png", function() {
+        masked <- gridpattern_mask_raster_manual(clippee2, clipper3, 72, png_device)
+        grid.draw(masked)
+    })
+
+    masked <- alphaMaskGrob(clippee, clipper2, use_R4.1_masks = FALSE)
+    test_raster("alphaMaskGrob_ragg.png", function() grid.draw(masked))
 
     # ambient
     skip_if_not_installed("ambient")

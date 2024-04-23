@@ -9,9 +9,12 @@
 #'                          If `NULL` try to guess an appropriate choice.
 #'                          Note not all graphic devices support the grid clipping path feature
 #'                          and the grid clipping path feature does not nest.
-#' @param png_device \dQuote{png} graphics device to use if `use_R4.1_clipping` is `FALSE`.
-#'                   If `NULL` (default) will use `ragg::agg_png()` if the
-#'                   suggested package `ragg` is available else `grDevices::png()`.
+#' @param png_device \dQuote{png} graphics device to save intermediate raster data with if `use_R4.1_clipping` is `FALSE`.
+#'                   If `NULL` and suggested package `ragg` is available
+#'                   and versions are high enough we directly capture clipped raster via [ragg::agg_capture()].
+#'                   Otherwise we will use `png_device`
+#'                   (default [ragg::agg_png()] if available else [grDevices::png()]) and [png::readPNG()]
+#'                   to manually compute a clipped raster.
 #' @param res Resolution of desired `rasterGrob` in pixels per inch if `use_R4.1_clipping` is `FALSE`.
 #' @return A `grid` grob
 #' @inheritParams grid::polygonGrob
@@ -41,7 +44,7 @@ clippingPathGrob <- function(clippee, clipper,
     gTree(clippee = clippee, clipper = clipper,
           use_R4.1_clipping = use_R4.1_clipping,
           res = res, png_device = png_device,
-          name=name, gp=gp, vp=vp, cl="clipping_path")
+          name = name, gp = gp, vp = vp, cl = "clipping_path")
 }
 
 #' @export
@@ -61,40 +64,86 @@ makeContent.clipping_path <- function(x) {
         grob <- grobTree(x$clippee,
                          vp = viewport(clip = x$clipper),
                          name = "clip")
+    } else if (is.null(x$png_device) &&
+               getRversion() >= '4.1.0' &&
+               requireNamespace("ragg", quietly = TRUE) &&
+               packageVersion("ragg") >= '1.2.0') {
+        grob <- gridpattern_clip_agg_capture(x$clippee, x$clipper, x$res)
     } else {
-        grob <- gridpattern_clip_raster(x)
+        png_device <- x$png_device %||% default_png_device()
+        if (device_supports_clipping(png_device)) {
+            grob <- gridpattern_clip_raster_straight(x$clippee, x$clipper, x$res, png_device)
+        } else {
+            grob <- gridpattern_clip_raster_manual(x$clippee, x$clipper, x$res, png_device)
+        }
     }
 
     gl <- gList(grob)
     setChildren(x, gl)
 }
 
-gridpattern_clip_raster <- function(x) {
-    height <- x$res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
-    width <- x$res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
-    png_device <- x$png_device
-    if (is.null(png_device)) {
-        if (requireNamespace("ragg", quietly = TRUE)) {
-            png_device <- ragg::agg_png
-        } else {
-            stopifnot(capabilities("png"))
-            png_device <- grDevices::png
-        }
-    }
+device_supports_clipping <- function(png_device) {
+    current_dev <- grDevices::dev.cur()
+    if (current_dev > 1) on.exit(grDevices::dev.set(current_dev))
+    png_file <- tempfile(fileext = ".png")
+    on.exit(unlink(png_file), add = TRUE)
+    png_device(png_file)
+    value <- guess_has_R4.1_features("clippingPaths")
+    dev.off()
+    value
+}
+
+gridpattern_clip_agg_capture <- function(clippee, clipper, res) {
+    current_dev <- grDevices::dev.cur()
+    if (current_dev > 1) on.exit(grDevices::dev.set(current_dev))
+    height <- res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
+    width <- res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
+
+    ragg::agg_capture(height = height, width = width, res = res, bg = "transparent")
+    grob <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = TRUE)
+    grid.draw(grob)
+    raster_clipped <- dev.capture(native = FALSE)
+    dev.off()
+    grid::rasterGrob(raster_clipped)
+}
+
+gridpattern_clip_raster_straight <- function(clippee, clipper, res, png_device) {
+    current_dev <- grDevices::dev.cur()
+    if (current_dev > 1) on.exit(grDevices::dev.set(current_dev))
+    height <- res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
+    width <- res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
+
+    png_clipped <- tempfile(fileext = ".png")
+    on.exit(unlink(png_clipped), add = TRUE)
+    png_device(png_clipped, height = height, width = width,
+               res = res, bg = "transparent")
+    grob <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = TRUE)
+    grid.draw(grob)
+    dev.off()
+
+    raster_clipped <- png::readPNG(png_clipped, native = FALSE)
+    grid::rasterGrob(raster_clipped)
+}
+
+gridpattern_clip_raster_manual <- function(clippee, clipper, res, png_device) {
+    current_dev <- grDevices::dev.cur()
+    if (current_dev > 1) on.exit(grDevices::dev.set(current_dev))
+    height <- res * convertHeight(unit(1, "npc"), "in",  valueOnly = TRUE)
+    width <- res * convertWidth(unit(1, "npc"),  "in", valueOnly = TRUE)
 
     png_clippee <- tempfile(fileext = ".png")
-    on.exit(unlink(png_clippee))
+    on.exit(unlink(png_clippee), add = TRUE)
     png_device(png_clippee, height = height, width = width,
-               res = x$res, bg = "transparent")
-    grid.draw(x$clippee)
+               res = res, bg = "transparent")
+    grid.draw(clippee)
     dev.off()
 
     png_clipper <- tempfile(fileext = ".png")
-    on.exit(unlink(png_clipper))
+    on.exit(unlink(png_clipper), add = TRUE)
     png_device(png_clipper, height = height, width = width,
-               res = x$res, bg = "transparent")
+               res = res, bg = "transparent")
     pushViewport(viewport(gp = gpar(lwd = 0, col = NA, fill = "black")))
-    grid.draw(x$clipper)
+    grid.draw(clipper)
     popViewport()
     dev.off()
 
