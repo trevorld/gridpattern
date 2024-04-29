@@ -27,7 +27,7 @@ grid.pattern_text <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                               colour = gp$col %||% "grey20",
                               angle = 30,
                               spacing = 0.05,
-                              xoffset = 0, yoffset = 0,
+                              xoffset = 0, yoffset = 0, units = "snpc",
                               scale = 0.5,
                               shape = "X",
                               grid = "square", type = NULL, subtype = NULL, rot = 0,
@@ -43,7 +43,7 @@ grid.pattern_text <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("text", x, y, id,
                  colour = colour, angle = angle,
-                 spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 spacing = spacing, xoffset = xoffset, yoffset = yoffset, units = units,
                  scale = scale, shape = shape,
                  grid = grid, type = type, subtype = subtype, rot = rot,
                  alpha = alpha, size = size, fontfamily = fontfamily, fontface = fontface,

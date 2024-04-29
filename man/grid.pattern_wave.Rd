@@ -16,6 +16,7 @@ grid.pattern_wave(
   spacing = 0.05,
   xoffset = 0,
   yoffset = 0,
+  units = "snpc",
   amplitude = 0.5 * spacing,
   frequency = 1/spacing,
   alpha = gp$alpha \%||\% NA_real_,
@@ -49,15 +50,17 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{density}{Approx. fraction of area the pattern fills.}
 
-\item{spacing}{Spacing between repetitions of pattern ('snpc' units between 0 and 1).}
+\item{spacing}{Spacing between repetitions of pattern (in \code{units} units).}
 
-\item{xoffset}{Shift pattern along x axis ('snpc' units between 0 and 1).}
+\item{xoffset}{Shift pattern along x axis (in \code{units} units).}
 
-\item{yoffset}{Shift pattern along y axis ('snpc' units between 0 and 1).}
+\item{yoffset}{Shift pattern along y axis (in \code{units} units).}
 
-\item{amplitude}{Wave amplitude (\dQuote{snpc} units)}
+\item{units}{\code{\link[grid:unit]{grid::unit()}} units for \code{amplitude}, \code{frequency}, \code{spacing}, \code{xoffset}, and \code{yoffset} parameters.}
 
-\item{frequency}{Linear frequency (inverse \dQuote{snpc} units)}
+\item{amplitude}{Wave amplitude (in \code{units} units)}
+
+\item{frequency}{Linear frequency (in inverse \code{units} units)}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 

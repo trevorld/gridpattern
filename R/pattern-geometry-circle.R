@@ -8,9 +8,10 @@
 #' @param fill Fill colour(s) or [grid::pattern()] / gradient object(s).
 #' @param angle Rotation angle in degrees.
 #' @param density Approx. fraction of area the pattern fills.
-#' @param spacing Spacing between repetitions of pattern ('snpc' units between 0 and 1).
-#' @param xoffset Shift pattern along x axis ('snpc' units between 0 and 1).
-#' @param yoffset Shift pattern along y axis ('snpc' units between 0 and 1).
+#' @param spacing Spacing between repetitions of pattern (in `units` units).
+#' @param xoffset Shift pattern along x axis (in `units` units).
+#' @param yoffset Shift pattern along y axis (in `units` units).
+#' @param units [grid::unit()] units for `spacing`, `xoffset`, and `yoffset` parameters.
 #' @param alpha Alpha (between 0 and 1) or `NA` (default, preserves colors' alpha value).
 #' @param linetype Stroke linetype.
 #' @param linewidth Stroke linewidth.
@@ -45,7 +46,7 @@
 #' @export
 grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
-                                density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
+                                density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0, units = "snpc",
                                 alpha = gp$alpha %||% NA_real_,
                                 linetype = gp$lty %||% 1,
                                 linewidth = size %||% gp$lwd %||% 1,
@@ -55,7 +56,7 @@ grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, .
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("circle", x, y, id,
                  colour = colour, fill = fill, angle = angle,
-                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset, units = units,
                  alpha = alpha, linetype = linetype, linewidth = linewidth,
                  grid = grid, type = type, subtype = subtype,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)

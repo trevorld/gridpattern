@@ -20,6 +20,7 @@ grid.pattern_polygon_tiling(
   spacing = 0.05,
   xoffset = 0,
   yoffset = 0,
+  units = "snpc",
   type = "square",
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
@@ -50,11 +51,13 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{angle}{Rotation angle in degrees.}
 
-\item{spacing}{Spacing between repetitions of pattern ('snpc' units between 0 and 1).}
+\item{spacing}{Spacing between repetitions of pattern (in \code{units} units).}
 
-\item{xoffset}{Shift pattern along x axis ('snpc' units between 0 and 1).}
+\item{xoffset}{Shift pattern along x axis (in \code{units} units).}
 
-\item{yoffset}{Shift pattern along y axis ('snpc' units between 0 and 1).}
+\item{yoffset}{Shift pattern along y axis (in \code{units} units).}
+
+\item{units}{\code{\link[grid:unit]{grid::unit()}} units for \code{spacing}, \code{xoffset}, and \code{yoffset} parameters.}
 
 \item{type}{Name of polygon tiling to draw.  See Details.}
 

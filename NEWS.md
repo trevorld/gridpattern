@@ -18,6 +18,11 @@ New Features
   `grid::pattern()` fill object (#70).
 * The "geometry" patterns (e.g. "circle", "stripe", etc.) now allow
   the `fill` to be pattern fills (#67).
+* The "geometry" patterns (e.g. "circle", "stripe", etc.) now allow
+  the new `units` parameter to set which `grid::unit()` to use for the
+  the `spacing`, `xoffset`, and `yoffset` parameters
+  (and for the "wave" pattern also the `amplitude` and `frequency` parameters) (#58).
+  By default it will continue to be "snpc" units but can now be changed to "cm", "in", etc.
 * `update_alpha()` updates fill colour and/or pattern transparency.
 
   + It is a fork of `ggplot2::fill_alpha()` by @teunbrand.
@@ -37,6 +42,9 @@ New Features
 Bug fixes and minor improvements
 --------------------------------
 
+* The `wave` pattern no longer quietly and incorrectly ignores the `frequency` parameter.
+  The effective wavelength of the wave pattern is now `1 / frequency` instead of `spacing`.
+  However `frequency` will continue to default to `1 / spacing`.
 * `clippingPathGrob()` can now more efficiently compute a `rasterGrob()` approximation
   via `ragg::agg_capture()` and for `png_device` functions that support
   the clipping path feature such as`png(type = "cairo")`(#74).

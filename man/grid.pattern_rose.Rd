@@ -16,6 +16,7 @@ grid.pattern_rose(
   spacing = 0.05,
   xoffset = 0,
   yoffset = 0,
+  units = "snpc",
   frequency = 0.1,
   grid = "square",
   type = NULL,
@@ -54,11 +55,13 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{density}{Approx. fraction of area the pattern fills.}
 
-\item{spacing}{Spacing between repetitions of pattern ('snpc' units between 0 and 1).}
+\item{spacing}{Spacing between repetitions of pattern (in \code{units} units).}
 
-\item{xoffset}{Shift pattern along x axis ('snpc' units between 0 and 1).}
+\item{xoffset}{Shift pattern along x axis (in \code{units} units).}
 
-\item{yoffset}{Shift pattern along y axis ('snpc' units between 0 and 1).}
+\item{yoffset}{Shift pattern along y axis (in \code{units} units).}
+
+\item{units}{\code{\link[grid:unit]{grid::unit()}} units for \code{spacing}, \code{xoffset}, and \code{yoffset} parameters.}
 
 \item{frequency}{The \dQuote{angular frequency} parameter of the rose pattern.}
 
