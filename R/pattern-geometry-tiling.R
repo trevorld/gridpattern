@@ -85,7 +85,7 @@
 grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                         colour = gp$col %||% "grey20",
                                         fill = gp$fill %||% "grey80",
-                                        angle = 30, spacing = 0.05, xoffset = 0, yoffset = 0,
+                                        angle = 30, spacing = 0.05, xoffset = 0, yoffset = 0, units = "snpc",
                                         type = "square",
                                         alpha = gp$alpha %||% NA_real_,
                                         linetype = gp$lty %||% 1,
@@ -96,7 +96,7 @@ grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("polygon_tiling", x, y, id,
                  colour = colour, fill = fill, angle = angle,
-                 spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 spacing = spacing, xoffset = xoffset, yoffset = yoffset, units = units,
                  type = type,
                  alpha = alpha, linetype = linetype, linewidth = linewidth,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)

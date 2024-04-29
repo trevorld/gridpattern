@@ -151,7 +151,7 @@ grid.pattern_text(x_hex, y_hex,
 grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
                   fill = c("red", "blue"), density = 0.4,
                   spacing = 0.15, angle = 0,
-                  amplitude = 0.05, frequency = 1 / 0.20)
+                  amplitude = 0.05, frequency = 1 / 0.15)
 ```
 
 ![](man/figures/README-wave-1.png)

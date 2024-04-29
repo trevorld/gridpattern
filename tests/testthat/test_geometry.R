@@ -63,7 +63,7 @@ test_that("geometry patterns work as expected", {
         grid.pattern_wave(x, y, colour = "black", type = "sine",
                           fill = c("red", "blue"), density = 0.4,
                           spacing = 0.15, angle = 0,
-                          amplitude = 0.05, frequency = 1 / 0.20))
+                          amplitude = 0.05, frequency = 1 / 0.15))
 
     expect_doppelganger("wave_triangle", function()
         grid.pattern_wave(x, y, color="black", fill="yellow",

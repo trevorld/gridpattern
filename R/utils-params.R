@@ -39,8 +39,10 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
     l$pattern_type <- l$pattern_type %||% default_pattern_type(pattern)
     if (is.na(l$pattern_type))
         l$pattern_type <- default_pattern_type(pattern)
+    l$pattern_units <- l$pattern_units %||% "snpc"
     l$pattern_xoffset <- l$pattern_xoffset %||% 0
     l$pattern_yoffset <- l$pattern_yoffset %||% 0
+
     l$pattern_gravity <- l$pattern_gravity %||%
         switch(l$pattern_type, tile = "southwest", "center")
     if (is.na(l$pattern_gravity))
@@ -89,11 +91,12 @@ get_R4.1_params <- function(l) {
 }
 
 convert_params_units <- function(params, units = "bigpts") {
-    params$pattern_amplitude <- convertX(unit(params$pattern_amplitude, "snpc"), units, valueOnly = TRUE)
-    params$pattern_spacing <- convertX(unit(params$pattern_spacing, "snpc"), units, valueOnly = TRUE)
-    params$pattern_xoffset <- convertX(unit(params$pattern_xoffset, "snpc"), units, valueOnly = TRUE)
-    params$pattern_yoffset <- convertX(unit(params$pattern_yoffset, "snpc"), units, valueOnly = TRUE)
-    params$pattern_wavelength <- convertX(unit(1/params$pattern_frequency, "snpc"), units, valueOnly = TRUE)
+    p_units <- params$pattern_units
+    params$pattern_amplitude <- convertX(unit(params$pattern_amplitude, p_units), units, valueOnly = TRUE)
+    params$pattern_spacing <- convertX(unit(params$pattern_spacing, p_units), units, valueOnly = TRUE)
+    params$pattern_xoffset <- convertX(unit(params$pattern_xoffset, p_units), units, valueOnly = TRUE)
+    params$pattern_yoffset <- convertX(unit(params$pattern_yoffset, p_units), units, valueOnly = TRUE)
+    params$pattern_wavelength <- convertX(unit(1/params$pattern_frequency, p_units), units, valueOnly = TRUE)
     params
 }
 

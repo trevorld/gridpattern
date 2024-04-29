@@ -34,7 +34,7 @@ grid.pattern_rose <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
                               colour = gp$col %||% "grey20",
                               fill = gp$fill %||% "grey80",
                               angle = 30, density = 0.2,
-                              spacing = 0.05, xoffset = 0, yoffset = 0,
+                              spacing = 0.05, xoffset = 0, yoffset = 0, units = "snpc",
                               frequency = 0.1,
                               grid = "square", type = NULL, subtype = NULL,
                               rot = 0,
@@ -50,7 +50,7 @@ grid.pattern_rose <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("rose", x, y, id,
                  colour = colour, fill = fill, angle = angle,
-                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset, units = units,
                  scale = scale, frequency = frequency,
                  grid = grid, type = type, subtype = subtype, rot = rot,
                  use_R4.1_masks = use_R4.1_masks, png_device = png_device, res = res,

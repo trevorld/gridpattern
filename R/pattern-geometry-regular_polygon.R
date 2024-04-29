@@ -68,7 +68,7 @@ grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), i
                                          colour = gp$col %||% "grey20",
                                          fill = gp$fill %||% "grey80",
                                          angle = 30, density = 0.2,
-                                         spacing = 0.05, xoffset = 0, yoffset = 0,
+                                         spacing = 0.05, xoffset = 0, yoffset = 0, units = "snpc",
                                          scale = 0.5, shape = "convex4",
                                          grid = "square", type = NULL, subtype = NULL, rot = 0,
                                          alpha = gp$alpha %||% NA_real_,
@@ -80,7 +80,7 @@ grid.pattern_regular_polygon <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), i
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("regular_polygon", x, y, id,
                  colour = colour, fill = fill, angle = angle,
-                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset, units = units,
                  scale = scale, shape = shape,
                  grid = grid, type = type, subtype = subtype, rot = rot,
                  alpha = alpha, linetype = linetype, linewidth = linewidth,

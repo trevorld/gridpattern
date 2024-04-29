@@ -3,8 +3,9 @@
 #' `grid.pattern_wave()` draws a wave pattern onto the graphic device.
 #'
 #' @inheritParams grid.pattern_circle
-#' @param amplitude Wave amplitude (\dQuote{snpc} units)
-#' @param frequency Linear frequency (inverse \dQuote{snpc} units)
+#' @param units [grid::unit()] units for `amplitude`, `frequency`, `spacing`, `xoffset`, and `yoffset` parameters.
+#' @param amplitude Wave amplitude (in `units` units)
+#' @param frequency Linear frequency (in inverse `units` units)
 #' @param type Either \dQuote{sine} or \dQuote{triangle} (default).
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
@@ -25,7 +26,7 @@
 #' @export
 grid.pattern_wave <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
                                 colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
-                                density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0,
+                                density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0, units = "snpc",
                                 amplitude = 0.5 * spacing, frequency = 1 / spacing,
                                 alpha = gp$alpha %||% NA_real_,
                                 linetype = gp$lty %||% 1,
@@ -36,7 +37,7 @@ grid.pattern_wave <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("wave", x, y, id,
                  colour = colour, fill = fill, angle = angle,
-                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset, units = units,
                  amplitude = amplitude, frequency = frequency,
                  alpha = alpha, linetype = linetype, linewidth = linewidth,
                  grid = grid, type = type,
@@ -57,7 +58,7 @@ create_pattern_wave_via_sf <- function(params, boundary_df, aspect_ratio,
     vpm <- get_vp_measurements(default.units)
 
     # create grid of points large enough to cover viewport no matter the angle
-    grid_xy <- get_xy_grid(params, vpm)
+    grid_xy <- get_xy_grid(params, vpm, wavelength = TRUE)
 
     fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
     col  <- update_alpha(params$pattern_colour, params$pattern_alpha)

@@ -20,7 +20,7 @@ grid.pattern_crosshatch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1
                                     colour = gp$col %||% "grey20",
                                     fill = gp$fill %||% "grey80", fill2 = fill,
                                     angle = 30, density = 0.2,
-                                    spacing = 0.05, xoffset = 0, yoffset = 0,
+                                    spacing = 0.05, xoffset = 0, yoffset = 0, units = "snpc",
                                     alpha = gp$alpha %||% NA_real_,
                                     linetype = gp$lty %||% 1,
                                     linewidth = size %||% gp$lwd %||% 1,
@@ -30,7 +30,7 @@ grid.pattern_crosshatch <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1
     if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
     grid.pattern("crosshatch", x, y, id,
                  colour = colour, fill = fill, fill2 = fill2, angle = angle,
-                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset,
+                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset, units = units,
                  alpha = alpha, linetype = linetype, linewidth = linewidth,
                  grid = grid,
                  default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
