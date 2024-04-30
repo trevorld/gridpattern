@@ -1,5 +1,5 @@
-gridpattern v1.2.0 (development)
-================================
+gridpattern v1.2.1
+==================
 
 Breaking Changes
 ----------------
@@ -337,7 +337,7 @@ gridpattern v0.1.2
   * "regular_polygon" ``grid.pattern_regular_polygon()`` (#20)
   * "weave" ``grid.pattern_weave()`` (#12)
 
-* Supports the following patterns from [ggpattern](https://github.com/coolbutuseless/ggpattern):
+* Supports the following patterns from [ggpattern](https://github.com/trevorld/ggpattern):
 
   * "ambient" ``grid.pattern_ambient()``  
   * "circle" ``grid.pattern_circle()`` (#5)
@@ -349,8 +349,8 @@ gridpattern v0.1.2
   * "placeholder" ``grid.pattern_placeholder()`` (#10)
   * "plasma" ``grid.pattern_plasma()`` (#7)
   * "stripe" ``grid.pattern_stripe()`` (#3)
-  * [Custom ggpattern geometry-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-2.html) (#1)
-  * [Custom ggpattern array-based patterns](https://coolbutuseless.github.io/package/ggpattern/articles/developing-patterns-3.html) (#2)
+  * [Custom ggpattern geometry-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html) (#1)
+  * [Custom ggpattern array-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html) (#2)
 
   Enhancements made to the ``{ggpattern}`` patterns provided by this package:
 
