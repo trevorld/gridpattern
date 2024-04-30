@@ -1,8 +1,8 @@
 The MIT License (MIT)
 =====================
 
-Copyright © 2024 Trevor L. Davis
-Copyright © 2020 mikefc@coolbutuseless.com
+Copyright © 2024 Trevor L. Davis  
+Copyright © 2020 mikefc@coolbutuseless.com  
 Copyright © 2023 ggplot2 authors
 
 Permission is hereby granted, free of charge, to any person

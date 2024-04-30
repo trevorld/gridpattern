@@ -1,10 +1,6 @@
-* "text" pattern example now skipped if ran within certain graphics devices like `pdf()`
-  that can't handle the playing cards Unicode glyphs (#68).
-
 ## Test environments
 
-* local (linux, R 4.3.1)
-* local (linux, R devel)
+* local (linux, R 4.4.0)
 * win-builder (windows, R devel)
 * github actions (linux, R oldrel)
 * github actions (linux, R release)
