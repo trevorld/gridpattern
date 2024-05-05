@@ -6,6 +6,11 @@ Bug fixes and minor improvements
 
 * `grid.pattern_weave()` adds the new `units` parameter
   that most other "geometry" pattern functions received in gridpattern v1.2.1.
+* The "polygon\_tiling" pattern should now respect the `units` parameter
+  if set to a value different from the "snpc" default (#82).
+* For the "polygon\_tiling" pattern `type = "18.18.3*"` the size of the
+  eighteen-sided polygons have been increased a teeny bit and
+  this polygon tiling should look a bit cleaner.
 
 gridpattern v1.2.1
 ==================
