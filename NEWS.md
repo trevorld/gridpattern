@@ -1,3 +1,12 @@
+gridpattern v1.2.2 (development)
+================================
+
+Bug fixes and minor improvements
+--------------------------------
+
+* `grid.pattern_weave()` adds the new `units` parameter
+  that most other "geometry" pattern functions received in gridpattern v1.2.1.
+
 gridpattern v1.2.1
 ==================
 

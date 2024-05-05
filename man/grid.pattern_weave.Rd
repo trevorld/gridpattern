@@ -17,6 +17,7 @@ grid.pattern_weave(
   spacing = 0.05,
   xoffset = 0,
   yoffset = 0,
+  units = "snpc",
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
   linewidth = size \%||\% gp$lwd \%||\% 1,
@@ -56,6 +57,8 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{xoffset}{Shift pattern along x axis (in \code{units} units).}
 
 \item{yoffset}{Shift pattern along y axis (in \code{units} units).}
+
+\item{units}{\code{\link[grid:unit]{grid::unit()}} units for \code{spacing}, \code{xoffset}, and \code{yoffset} parameters.}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
