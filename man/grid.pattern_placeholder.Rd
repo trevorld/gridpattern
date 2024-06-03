@@ -6,7 +6,7 @@
 \alias{names_placeholder}
 \title{Placeholder image patterned grobs}
 \format{
-An object of class \code{character} of length 26.
+An object of class \code{character} of length 22.
 }
 \usage{
 grid.pattern_placeholder(

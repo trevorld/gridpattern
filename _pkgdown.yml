@@ -2,6 +2,8 @@ destination: "../../websites/R/gridpattern/"
 url: "https://trevorldavis.com/R/gridpattern"
 development:
     mode: auto
+template:
+  bootstrap: 5
 reference:
     - title: "Pattern fills"
       desc: "Pattern fill function"
