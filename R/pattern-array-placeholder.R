@@ -37,15 +37,13 @@ names_placeholder <- c(
   "bear", "bearbw",
   "beard", "beardbw",
   "cage", "cagebw",
-  "dummybw", "dummy",
+  "dummy", "dummybw",
   "flickr", "flickrbw",
   "keanu", "keanubw",
   "kitten", "kittenbw",
-  "lorempixel", "lorempixelbw",
   "murray", "murraybw",
   "picsum", "picsumbw",
   "placeholder", "placeholderbw",
-  "placeimg", "placeimgbw",
   "seagal", "seagalbw"
 )
 
@@ -55,24 +53,22 @@ names_placeholder <- c(
 #' 'bw' to the name to fetch greyscale images instead of colour.
 #'
 #' \describe{
-#'   \item{\code{kitten}}{ - Kittens from \url{https://placekitten.com/}}
-#'   \item{\code{picsum}}{ - Random images from \url{https://picsum.photos/}}
-#'   \item{\code{murray}}{ - Bill Murrary images from \url{http://www.fillmurray.com}}
-#'   \item{\code{cage}}{ - Nicholas Cage images from \url{https://www.placecage.com/}}
+#'   \item{\code{beard}}{ - Beards! \url{https://placebeard.it/}}
 #'   \item{\code{bear}}{ - Bears from \url{https://placebear.com/}}
-#'   \item{\code{seagal}}{ - Steven Seagal images from \url{https://www.stevensegallery.com/}}
-#'   \item{\code{flickr}}{ - Images from Flickr \url{https://loremflickr.com/}}
-#'   \item{\code{beard}}{ - Beards! \url{http://placebeard.it/}}
-#'   \item{\code{lorempixel}}{ - Random images from \url{http://lorempixel.com/}}
-#'   \item{\code{placeimg}}{ - Random images from \url{http://placeimg.com/}}
+#'   \item{\code{cage}}{ - Nicholas Cage images from \url{https://placecage.lucidinternets.com}}
 #'   \item{\code{dummy}}{ - Numeric placeholder images from \url{https://dummyimage.com}}
+#'   \item{\code{flickr}}{ - Images from Flickr \url{https://loremflickr.com/}}
+#'   \item{\code{kitten}}{ - Kittens from \url{https://placekitten.com/}}
+#'   \item{\code{murray}}{ - Bill Murrary images from \url{https://fillmurray.lucidinternets.com}}
+#'   \item{\code{picsum}}{ - Random images from \url{https://picsum.photos/}}
+#'   \item{\code{seagal}}{ - Steven Seagal images from \url{https://stevensegallery.lucidinternets.com/}}
 #' }
 #'
 #' @param width,height image dimensions
 #' @param type specify the server from which to fetch images. default: 'kitten'
 #'
 #' @noRd
-fetch_placeholder_img <- function(width = 100, height = 100, type = 'kitten') {
+fetch_placeholder_img <- function(width = 100, height = 100, type = 'dummy') {
 
   width  <- as.integer(width)
   height <- as.integer(height)
@@ -81,34 +77,29 @@ fetch_placeholder_img <- function(width = 100, height = 100, type = 'kitten') {
     type,
     bear           = glue("https://placebear.com/{width}/{height}"),
     bearbw         = glue("https://placebear.com/g/{width}/{height}"),
-    beard          = glue("http://placebeard.it/{width}/{height}"),
-    beardbw        = glue("http://placebeard.it/g/{width}/{height}"),
-    cage           = glue("https://www.placecage.com/{width}/{height}"),
-    cagebw         = glue("https://www.placecage.com/g/{width}/{height}"),
+    beard          = glue("https://placebeard.it/{width}/{height}"),
+    beardbw        = glue("https://placebeard.it/g/{width}/{height}"),
+    cage           = glue("https://placecage.lucidinternets.com/{width}/{height}"),
+    cagebw         = glue("https://placecage.lucidinternets.com/g/{width}/{height}"),
     dummy          = glue("https://dummyimage.com/{width}x{height}"),
-    dummybw        = ,
+    dummybw        = glue("https://dummyimage.com/{width}x{height}/fff/000"),
     flickr         = glue("https://loremflickr.com/{width}/{height}"),
     flickrbw       = glue("https://loremflickr.com/g/{width}/{height}/all"),
     keanu          = glue("https://placekeanu.com/{width}/{height}"),
     keanubw        = glue("https://placekeanu.com/{width}/{height}/g"),
     kitten         = glue("https://placekitten.com/{width}/{height}"),
     kittenbw       = glue("https://placekitten.com/g/{width}/{height}"),
-    lorempixel     = glue("http://lorempixel.com/{width}/{height}"),
-    lorempixelbw   = glue("http://lorempixel.com/g/{width}/{height}"),
-    murray         = glue("http://www.fillmurray.com/{width}/{height}"),
-    murraybw       = glue("http://www.fillmurray.com/g/{width}/{height}"),
+    murray         = glue("https://fillmurray.lucidinternets.com/{width}/{height}"),
+    murraybw       = glue("https://fillmurray.lucidinternets.com/g/{width}/{height}"),
     picsum         = glue("https://picsum.photos/{width}/{height}"),
     picsumbw       = glue("https://picsum.photos/{width}/{height}?grayscale"),
-    placeholder    = glue("https://via.placeholder.com/{width}x{height}.png"),
     placeholderbw  = ,
-    placeimg       = glue("http://placeimg.com/{width}/{height}/any"),
-    placeimgbw     = glue("http://placeimg.com/{width}/{height}/any/grayscale"),
-    seagal         = glue("https://www.stevensegallery.com/{width}/{height}"),
-    seagalbw       = glue("https://www.stevensegallery.com/g/{width}/{height}"),
+    placeholder    = glue("https://via.placeholder.com/{width}x{height}.png"),
+    seagal         = glue("https://www.stevensegallery.lucidinternets.com/{width}/{height}"),
+    seagalbw       = glue("https://www.stevensegallery.lucidinternets.com/g/{width}/{height}"),
     {
-      # warn("fetch_placeholder_image_as_array(): Unknown pattern_type (", type, ") ",
-      #         "using 'kitten'")
-      glue("https://placekitten.com/{width}/{height}")
+      warn(glue("Unknown placeholder type '{type}' using 'bear' instead"))
+      glue("https://dummyimage.com/{width}x{height}")
     }
   )
 

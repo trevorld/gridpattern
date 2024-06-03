@@ -1,5 +1,5 @@
-gridpattern v1.2.2 (development)
-================================
+gridpattern v1.2.2
+==================
 
 Bug fixes and minor improvements
 --------------------------------
@@ -11,6 +11,21 @@ Bug fixes and minor improvements
 * For the "polygon\_tiling" pattern `type = "18.18.3*"` the size of the
   eighteen-sided polygons have been increased a teeny bit and
   this polygon tiling should look a bit cleaner.
+* The following "placeholder" pattern updates (#83):
+
+  + The following placeholder pattern names are now serviced by lucidinternets.com:
+
+    - "cage" and "cagebw"
+    - "murray" and "murraybw"
+    - "seagal" and "seagalbw"
+
+  + The following placeholder pattern names have been removed since their associated web service no longer works:
+
+    - "lorempixel" and "lorempixelbw" (service unavailable since 2022)
+    - "placeimg" and "placeimgbw" ([support officially ended July 2023](https://www.gomasuga.com/placeimg?souce=placeimg))
+
+  + The "dummybw" name now provides a pure black-and-white image (i.e. no grey).
+  + Fixes a regression for the "placeholderbw" name where it redirected to the "segal" name instead of "placeholder".
 
 gridpattern v1.2.1
 ==================
