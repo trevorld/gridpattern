@@ -27,6 +27,7 @@ Imports:
     utils
 Suggests:
     ambient,
+    aRtsy,
     ggplot2 (>= 3.5.0),
     gtable,
     knitr,

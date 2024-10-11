@@ -41,7 +41,9 @@ create_pattern_aRtsy <- function(params, boundary_df, aspect_ratio,
 #' @param ... Currently ignored
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
-#' print(names_aRtsy())
+#' if (requireNamespace("aRtsy", quietly = TRUE)) {
+#'   print(names_aRtsy())
+#' }
 #'
 #' \donttest{# Make take more than 5 seconds on CRAN servers
 #' x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))

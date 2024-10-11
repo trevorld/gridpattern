@@ -10,7 +10,7 @@ grid.pattern_aRtsy(
   y = c(1, 0, 0, 1),
   id = 1L,
   ...,
-  type = "forest",
+  type = "strokes",
   fill = gp$fill \%||\% "grey80",
   alpha = gp$alpha \%||\% NA_real_,
   default.units = "npc",
@@ -60,7 +60,9 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 \code{names_aRtsy()} returns character vector of supported types.
 }
 \examples{
-print(names_aRtsy())
+if (requireNamespace("aRtsy", quietly = TRUE)) {
+  print(names_aRtsy())
+}
 
 \donttest{# Make take more than 5 seconds on CRAN servers
 x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -68,7 +70,7 @@ y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 if (requireNamespace("aRtsy", quietly = TRUE) &&
     guess_has_R4.1_features("patterns")) {
   grid::grid.newpage()
-  grid.pattern_aRtsy(x_hex, y_hex, type = "forest", 
+  grid.pattern_aRtsy(x_hex, y_hex, type = "forest",
                      fill = c("black", "white", "grey"))
 }
 }
