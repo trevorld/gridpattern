@@ -26,27 +26,29 @@ as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", 
 
 `{gridpattern}` currently provides `{grid}` grob support for the following patterns:
 
-1.  [ambient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_ambient.html):
+1. [ambient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_ambient.html):
     noise array patterns powered by the [ambient](https://cran.r-project.org/package=ambient) package
-2.  [circle](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_circle.html): circle geometry patterns
-3.  [crosshatch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_crosshatch.html): crosshatch geometry patterns
-4.  [fill](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_fill.html): simple fill patterns
-5.  [gradient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_gradient.html): gradient array/geometry patterns
-6.  [image](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_image.html): image array patterns
-7.  [magick](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_magick.html): imagemagick array patterns
-8.  [none](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_none.html): draws nothing
-9.  [placeholder](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_placeholder.html): placeholder image array patterns
-10.  [plasma](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_plasma.html): plasma array patterns
-11. [pch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_pch.html): plotting character geometry patterns
-12. [polygon_tiling](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_polygon_tiling.html): polygon tiling patterns
-13. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
-14. [rose](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_rose.html): rose curve array/geometry patterns
-15. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
-16. [text](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_text.html): text array/geometry patterns
-17. [wave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_wave.html): wave geometry patterns
-18. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
-19. [custom geometry-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
-20. [custom array-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
+1. [aRtsy](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_aRtsy.html):
+    patterns powered by the [aRtsy](https://cran.r-project.org/package=aRtsy) package
+1. [circle](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_circle.html): circle geometry patterns
+1. [crosshatch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_crosshatch.html): crosshatch geometry patterns
+1. [fill](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_fill.html): simple fill patterns
+1. [gradient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_gradient.html): gradient array/geometry patterns
+1. [image](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_image.html): image array patterns
+1. [magick](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_magick.html): imagemagick array patterns
+1. [none](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_none.html): draws nothing
+1. [placeholder](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_placeholder.html): placeholder image array patterns
+1. [plasma](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_plasma.html): plasma array patterns
+1. [pch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_pch.html): plotting character geometry patterns
+1. [polygon_tiling](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_polygon_tiling.html): polygon tiling patterns
+1. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
+1. [rose](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_rose.html): rose curve array/geometry patterns
+1. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
+1. [text](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_text.html): text array/geometry patterns
+1. [wave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_wave.html): wave geometry patterns
+1. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
+1. [custom geometry-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
+1. [custom array-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
 
 ## <a name="installation">Installation</a>
 

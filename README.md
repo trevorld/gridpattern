@@ -26,27 +26,29 @@ as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", 
 
 `{gridpattern}` currently provides `{grid}` grob support for the following patterns:
 
-1.  [ambient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_ambient.html):
+1. [ambient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_ambient.html):
     noise array patterns powered by the [ambient](https://cran.r-project.org/package=ambient) package
-2.  [circle](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_circle.html): circle geometry patterns
-3.  [crosshatch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_crosshatch.html): crosshatch geometry patterns
-4.  [fill](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_fill.html): simple fill patterns
-5.  [gradient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_gradient.html): gradient array/geometry patterns
-6.  [image](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_image.html): image array patterns
-7.  [magick](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_magick.html): imagemagick array patterns
-8.  [none](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_none.html): draws nothing
-9.  [placeholder](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_placeholder.html): placeholder image array patterns
-10.  [plasma](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_plasma.html): plasma array patterns
-11. [pch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_pch.html): plotting character geometry patterns
-12. [polygon_tiling](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_polygon_tiling.html): polygon tiling patterns
-13. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
-14. [rose](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_rose.html): rose curve array/geometry patterns
-15. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
-16. [text](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_text.html): text array/geometry patterns
-17. [wave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_wave.html): wave geometry patterns
-18. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
-19. [custom geometry-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
-20. [custom array-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
+1. [aRtsy](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_aRtsy.html):
+    patterns powered by the [aRtsy](https://cran.r-project.org/package=aRtsy) package
+1. [circle](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_circle.html): circle geometry patterns
+1. [crosshatch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_crosshatch.html): crosshatch geometry patterns
+1. [fill](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_fill.html): simple fill patterns
+1. [gradient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_gradient.html): gradient array/geometry patterns
+1. [image](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_image.html): image array patterns
+1. [magick](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_magick.html): imagemagick array patterns
+1. [none](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_none.html): draws nothing
+1. [placeholder](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_placeholder.html): placeholder image array patterns
+1. [plasma](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_plasma.html): plasma array patterns
+1. [pch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_pch.html): plotting character geometry patterns
+1. [polygon_tiling](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_polygon_tiling.html): polygon tiling patterns
+1. [regular_polygon](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_regular_polygon.html): regular polygon geometry patterns
+1. [rose](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_rose.html): rose curve array/geometry patterns
+1. [stripe](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_stripe.html): stripe geometry patterns
+1. [text](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_text.html): text array/geometry patterns
+1. [wave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_wave.html): wave geometry patterns
+1. [weave](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_weave.html): weave geometry patterns
+1. [custom geometry-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
+1. [custom array-based patterns](https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html)
 
 ## <a name="installation">Installation</a>
 
@@ -54,7 +56,7 @@ To install the development version use the following command in R:
 
 
 
-```r
+``` r
 remotes::install_github("trevorld/gridpattern")
 ```
 
@@ -63,7 +65,7 @@ remotes::install_github("trevorld/gridpattern")
 
 
 
-```r
+``` r
 library("grid")
 library("gridpattern")
 x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -71,14 +73,14 @@ y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 ```
 
 
-```r
+``` r
 grid.pattern_circle(x_hex, y_hex, density = 0.5, grid = "hex_circle",
                     fill = c("blue", "yellow", "red"))
 ```
 
 ![](man/figures/README-circle-1.png)
 
-```r
+``` r
 grid.pattern_regular_polygon(x_hex, y_hex, shape = c("convex4", "star8", "circle"),
                              colour = "black", fill = c("blue", "yellow", "red"),
                              density = c(0.45, 0.42, 0.4), spacing = 0.08, angle = 0)
@@ -86,7 +88,7 @@ grid.pattern_regular_polygon(x_hex, y_hex, shape = c("convex4", "star8", "circle
 
 ![](man/figures/README-regular_star-1.png)
 
-```r
+``` r
 grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", grid = "hex",
                              color = "transparent", fill = c("white", "grey", "black"),
                              density = 1.0, spacing = 0.1)
@@ -94,7 +96,7 @@ grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", grid = "hex",
 
 ![](man/figures/README-regular_hex-1.png)
 
-```r
+``` r
 gp <- gpar(fill = c("yellow", "blue", "red"))
 grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_hexagonal",
                             spacing = 0.15, gp = gp)
@@ -102,7 +104,7 @@ grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_hexagonal",
 
 ![](man/figures/README-truncated_hexagonal-1.png)
 
-```r
+``` r
 blue <- grDevices::rgb(0.35, 0.70, 0.90)
 yellow <- grDevices::rgb(0.95, 0.90, 0.25)
 red <- grDevices::rgb(0.80, 0.40, 0.00)
@@ -127,7 +129,7 @@ grid.pattern_regular_polygon(shape = "star12", grid = "hex_circle", rot = 15,
 
 ![](man/figures/README-rhombitrihexagonal-1.png)
 
-```r
+``` r
 gp <- gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
 grid.newpage()
 grid.pattern_rose(x_hex, y_hex,
@@ -137,7 +139,7 @@ grid.pattern_rose(x_hex, y_hex,
 
 ![](man/figures/README-rose-1.png)
 
-```r
+``` r
 playing_card_symbols <- c("\u2660", "\u2665", "\u2666", "\u2663")
 grid.pattern_text(x_hex, y_hex,
                  shape = playing_card_symbols,
@@ -147,7 +149,7 @@ grid.pattern_text(x_hex, y_hex,
 
 ![](man/figures/README-text-1.png)
 
-```r
+``` r
 grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
                   fill = c("red", "blue"), density = 0.4,
                   spacing = 0.15, angle = 0,
@@ -156,7 +158,7 @@ grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
 
 ![](man/figures/README-wave-1.png)
 
-```r
+``` r
 grid.pattern_weave(x_hex, y_hex, type = "satin",
              colour = "black", fill = "lightblue", fill2 =  "yellow",
              density = 0.3)
@@ -170,7 +172,7 @@ grid.pattern_weave(x_hex, y_hex, type = "satin",
 Here is an example of using the "stripe" pattern:
 
 
-```r
+``` r
 library("ggpattern") # remotes::install_github("trevorld/ggpattern")
 library("ggplot2", warn.conflicts = FALSE)
 library("gridpattern")
@@ -189,7 +191,7 @@ three-color polygon tilings using the ``fill`` colour, the ``pattern_fill`` colo
 and their "average" color.
 
 
-```r
+``` r
 tiling3_pattern <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
     args <- as.list(params)
     args <- args[grep("^pattern_", names(args))]
@@ -226,7 +228,7 @@ Although use of the ["ggpattern" package](#ggpattern) package is still highly re
 [`patternFill()`](https://trevorldavis.com/R/gridpattern/dev/reference/patternFill.html) wraps `grid::pattern()` and [patternGrob()](http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html) and is one way to use `gridpattern` patterns directly with `ggplot2`:
 
 
-```r
+``` r
 library("ggplot2", warn.conflicts = FALSE)
 library("gridpattern")
 pal <- grDevices::palette()
@@ -245,7 +247,7 @@ ggplot(df, aes(trt, outcome)) +
 [piecepackr](https://github.com/piecepackr/piecepackr) allows the use of [custom grob functions](https://trevorldavis.com/piecepackr/custom-grob-functions.html) to completely customize the appearance of one's game pieces.  `{piecepackr}` comes with a variety of convenience functions such as `pp_shape()` to facilitate creating custom game pieces using custom grob functions.  Here is an example of creating "patterned" checkers filled with uniform polygon tilings by using ``pp_shape()`` objects' `pattern()` method powered by `{gridpattern}`:
 
 
-```r
+``` r
 library("grid")
 library("gridpattern")
 library("piecepackr")

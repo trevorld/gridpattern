@@ -1,3 +1,9 @@
+gridpattern v1.3.0 (development)
+================================
+
+* New pattern "aRtsy" with corresponding `grid.pattern_aRtsy()` with
+  patterns powered by the `{aRtsy}` package (#87).
+
 gridpattern v1.2.2
 ==================
 
@@ -25,7 +31,7 @@ Bug fixes and minor improvements
     - "placeimg" and "placeimgbw" ([support officially ended July 2023](https://www.gomasuga.com/placeimg?souce=placeimg))
 
   + The "dummybw" name now provides a pure black-and-white image (i.e. no grey).
-  + Fixes a regression for the "placeholderbw" name where it redirected to the "segal" name instead of "placeholder".
+  + Fixes a regression for the "placeholderbw" name where it redirected to the "seagal" name instead of "placeholder".
 
 gridpattern v1.2.1
 ==================

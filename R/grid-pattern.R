@@ -9,6 +9,8 @@
 #' \describe{
 #' \item{ambient}{Noise array patterns onto the graphic device powered by the `ambient` package.
 #'                See [grid.pattern_ambient()] for more information.}
+#' \item{aRtsy}{Patterns powered by the `aRtsy` package.
+#'              See [grid.pattern_aRtsy()] for more information.}
 #' \item{circle}{Circle geometry patterns.
 #'               See [grid.pattern_circle()] for more information.}
 #' \item{crosshatch}{Crosshatch geometry patterns.
@@ -61,7 +63,7 @@
 #'         If `draw` is `TRUE` then `grid.pattern()` also draws to the graphic device as a side effect.
 #' @examples
 #'  print(names_pattern)
-#'  \donttest{ # Once took more >10s on a CRAN autocheck
+#'  \donttest{# May take more than 5 seconds on CRAN servers
 #'  x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'  y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #'
@@ -125,7 +127,7 @@ grid.pattern <- function(pattern = "stripe",
 
 #' @rdname grid.pattern
 #' @export
-names_pattern <- c("ambient", "circle", "crosshatch", "fill", "gradient", "image",
+names_pattern <- c("ambient", "aRtsy", "circle", "crosshatch", "fill", "gradient", "image",
                    "magick", "none", "pch", "placeholder", "plasma", "polygon_tiling",
                    "regular_polygon", "rose", "stripe", "text", "wave", "weave")
 
@@ -175,7 +177,8 @@ get_pattern_fn <- function(pattern) {
     user_geometry_fns <- getOption("ggpattern_geometry_funcs")
     user_array_fns <- getOption("ggpattern_array_funcs")
     assert_patterns_unique(user_geometry_fns, user_array_fns)
-    geometry_fns <- c(list(circle = create_pattern_circle_via_sf,
+    geometry_fns <- c(list(aRtsy = create_pattern_aRtsy,
+                           circle = create_pattern_circle_via_sf,
                            crosshatch = create_pattern_crosshatch_via_sf,
                            fill = create_pattern_fill,
                            gradient = create_pattern_gradient,
