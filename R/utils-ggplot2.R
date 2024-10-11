@@ -26,3 +26,15 @@ data_frame <- function(...) {
   new_data_frame(list(...))
 }
 .pt <- 2.845276 # ggplot2 constant
+
+ggplot2pat <- function(gg) {
+    stopifnot(getRversion() >= "4.1.0",
+              requireNamespace("ggplot2", quietly = TRUE),
+              requireNamespace("gtable", quietly = TRUE))
+    gg <- suppressMessages(gg +
+                           ggplot2::scale_x_continuous(expand=c(0, 0)) +
+                           ggplot2::scale_y_continuous(expand=c(0, 0)))
+    grob <- gtable::gtable_filter(ggplot2::ggplotGrob(gg), "panel")
+    pat <- grid::pattern(grob)
+    pat
+}

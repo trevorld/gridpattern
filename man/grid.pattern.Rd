@@ -7,7 +7,7 @@
 \alias{patternGrob}
 \title{Create patterned grobs by pattern name}
 \format{
-An object of class \code{character} of length 18.
+An object of class \code{character} of length 19.
 }
 \usage{
 grid.pattern(
@@ -88,6 +88,8 @@ Here is a list of the various patterns supported:
 \describe{
 \item{ambient}{Noise array patterns onto the graphic device powered by the \code{ambient} package.
 See \code{\link[=grid.pattern_ambient]{grid.pattern_ambient()}} for more information.}
+\item{aRtsy}{Patterns powered by the \code{aRtsy} package.
+See \code{\link[=grid.pattern_aRtsy]{grid.pattern_aRtsy()}} for more information.}
 \item{circle}{Circle geometry patterns.
 See \code{\link[=grid.pattern_circle]{grid.pattern_circle()}} for more information.}
 \item{crosshatch}{Crosshatch geometry patterns.
@@ -126,7 +128,7 @@ See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information
 }
 \examples{
  print(names_pattern)
- \donttest{ # Once took more >10s on a CRAN autocheck
+ \donttest{# May take more than 5 seconds on CRAN servers
  x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
  y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 

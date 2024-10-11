@@ -103,6 +103,7 @@ convert_params_units <- function(params, units = "bigpts") {
 default_pattern_type <- function(pattern) {
     switch(pattern,
            ambient = "simplex",
+           aRtsy = "strokes",
            image = "fit",
            placeholder = "bear",
            polygon_tiling = "square",
