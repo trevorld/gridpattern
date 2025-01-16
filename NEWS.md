@@ -1,5 +1,5 @@
-gridpattern v1.3.0 (development)
-================================
+gridpattern v1.3.1
+==================
 
 * New pattern "aRtsy" with corresponding `grid.pattern_aRtsy()` with
   patterns powered by the `{aRtsy}` package (#87).

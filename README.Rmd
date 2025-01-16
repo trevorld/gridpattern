@@ -1,7 +1,7 @@
 # gridpattern <img src="man/figures/logo.png" align="right" width="200px" alt="gridpattern hex sticker">
 
 [![CRAN Status Badge](https://www.r-pkg.org/badges/version/gridpattern)](https://cran.r-project.org/package=gridpattern)
-[![R-CMD-check](https://github.com/trevorld/gridpattern/workflows/R-CMD-check/badge.svg)](https://github.com/trevorld/gridpattern/actions)
+[![R-CMD-check](https://github.com/trevorld/gridpattern/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/trevorld/gridpattern/actions)
 [![Coverage Status](https://codecov.io/github/trevorld/gridpattern/branch/main/graph/badge.svg)](https://app.codecov.io/github/trevorld/gridpattern?branch=main)
 
 ### Table of Contents
@@ -72,26 +72,26 @@ x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 ```
 
-```{r circle}
+```{r circle, fig.alt = "The 'circle' pattern"}
 grid.pattern_circle(x_hex, y_hex, density = 0.5, grid = "hex_circle",
                     fill = c("blue", "yellow", "red"))
 ```
-```{r regular_star}
+```{r regular_star, fig.alt = "The 'regular_polygon' pattern"}
 grid.pattern_regular_polygon(x_hex, y_hex, shape = c("convex4", "star8", "circle"),
                              colour = "black", fill = c("blue", "yellow", "red"),
                              density = c(0.45, 0.42, 0.4), spacing = 0.08, angle = 0)
 ```
-```{r regular_hex}
+```{r regular_hex, fig.alt = "The 'regular_polygon' pattern used to create a hexagonal tiling"}
 grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", grid = "hex",
                              color = "transparent", fill = c("white", "grey", "black"),
                              density = 1.0, spacing = 0.1)
 ```
-```{r truncated_hexagonal}
+```{r truncated_hexagonal, fig.alt = "The 'polygon_tiling' pattern used to create a truncated hexagonal tiling"}
 gp <- gpar(fill = c("yellow", "blue", "red"))
 grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_hexagonal",
                             spacing = 0.15, gp = gp)
 ```
-```{r rhombitrihexagonal}
+```{r rhombitrihexagonal, fig.alt = "Using several patterns to create a rhombitrihexgonal tiling variation"}
 blue <- grDevices::rgb(0.35, 0.70, 0.90)
 yellow <- grDevices::rgb(0.95, 0.90, 0.25)
 red <- grDevices::rgb(0.80, 0.40, 0.00)
@@ -113,27 +113,27 @@ grid.pattern_regular_polygon(shape = "star12", grid = "hex_circle", rot = 15,
                              density = 0.82, spacing = 0.3, angle = 0, gp = gp,
                              scale = scale)
 ```
-```{r rose}
+```{r rose, fig.alt = "The 'rose' pattern"}
 gp <- gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
 grid.newpage()
 grid.pattern_rose(x_hex, y_hex,
                   spacing = 0.18, density = 0.5, angle = 0,
                   frequency = c(2, 6/4, 5/4, 3/7), gp = gp)
 ```
-```{r text}
+```{r text, fig.alt = "The 'text' pattern with playing card suits"}
 playing_card_symbols <- c("\u2660", "\u2665", "\u2666", "\u2663")
 grid.pattern_text(x_hex, y_hex,
                  shape = playing_card_symbols,
                  colour = c("black", "red", "red", "black"),
                  size = 24, spacing = 0.12, angle = 0)
 ```
-```{r wave}
+```{r wave, fig.alt = "The 'wave' pattern"}
 grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
                   fill = c("red", "blue"), density = 0.4,
                   spacing = 0.15, angle = 0,
                   amplitude = 0.05, frequency = 1 / 0.15)
 ```
-```{r weave}
+```{r weave, fig.alt = "Using the 'weave' pattern to make a 'satin' weave"}
 grid.pattern_weave(x_hex, y_hex, type = "satin",
              colour = "black", fill = "lightblue", fill2 =  "yellow",
              density = 0.3)
@@ -144,7 +144,7 @@ grid.pattern_weave(x_hex, y_hex, type = "satin",
 `ggpattern` automatically supports all patterns provided by ``gridpattern`` since `ggpattern` v0.2.0.
 Here is an example of using the "stripe" pattern:
 
-```{r ggpattern}
+```{r ggpattern, fig.alt = "A bar chart using 'ggpattern' with builtin patterned fills"}
 library("ggpattern") # remotes::install_github("trevorld/ggpattern")
 library("ggplot2", warn.conflicts = FALSE)
 library("gridpattern")
@@ -160,7 +160,7 @@ Here is an example of creating a "tiling3" pattern that creates
 three-color polygon tilings using the ``fill`` colour, the ``pattern_fill`` colour,
 and their "average" color.
 
-```{r hex_ggpattern}
+```{r hex_ggpattern, fig.alt = "A bar chart using 'ggpattern' with custom patterned fills"}
 tiling3_pattern <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
     args <- as.list(params)
     args <- args[grep("^pattern_", names(args))]
@@ -194,7 +194,7 @@ ggplot(df, aes(trt, outcome)) +
 Although use of the ["ggpattern" package](#ggpattern) package is still highly recommended one can directly use pattern/gradient fills in base `ggplot2` geoms since v3.5.0.
 [`patternFill()`](https://trevorldavis.com/R/gridpattern/dev/reference/patternFill.html) wraps `grid::pattern()` and [patternGrob()](http://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern.html) and is one way to use `gridpattern` patterns directly with `ggplot2`:
 
-```{r ggplot2, fig.width=9, fig.height=9}
+```{r ggplot2, fig.width=9, fig.height=9, fig.alt = "A bar chart using 'ggplot2' with 'patternFill()' 'fill' values"}
 library("ggplot2", warn.conflicts = FALSE)
 library("gridpattern")
 pal <- grDevices::palette()
@@ -210,7 +210,7 @@ ggplot(df, aes(trt, outcome)) +
 
 [piecepackr](https://github.com/piecepackr/piecepackr) allows the use of [custom grob functions](https://trevorldavis.com/piecepackr/custom-grob-functions.html) to completely customize the appearance of one's game pieces.  `{piecepackr}` comes with a variety of convenience functions such as `pp_shape()` to facilitate creating custom game pieces using custom grob functions.  Here is an example of creating "patterned" checkers filled with uniform polygon tilings by using ``pp_shape()`` objects' `pattern()` method powered by `{gridpattern}`:
 
-```{r piecepackr, fig.width=9, fig.height=9}
+```{r piecepackr, fig.width=9, fig.height=9, fig.alt = "A board game diagram using 'piecepackr' with custom patterned game pieces"}
 library("grid")
 library("gridpattern")
 library("piecepackr")

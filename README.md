@@ -1,7 +1,7 @@
 # gridpattern <img src="man/figures/logo.png" align="right" width="200px" alt="gridpattern hex sticker">
 
 [![CRAN Status Badge](https://www.r-pkg.org/badges/version/gridpattern)](https://cran.r-project.org/package=gridpattern)
-[![R-CMD-check](https://github.com/trevorld/gridpattern/workflows/R-CMD-check/badge.svg)](https://github.com/trevorld/gridpattern/actions)
+[![R-CMD-check](https://github.com/trevorld/gridpattern/actions/workflows/R-CMD-check.yaml/badge.svg?branch=main)](https://github.com/trevorld/gridpattern/actions)
 [![Coverage Status](https://codecov.io/github/trevorld/gridpattern/branch/main/graph/badge.svg)](https://app.codecov.io/github/trevorld/gridpattern?branch=main)
 
 ### Table of Contents
@@ -78,7 +78,7 @@ grid.pattern_circle(x_hex, y_hex, density = 0.5, grid = "hex_circle",
                     fill = c("blue", "yellow", "red"))
 ```
 
-![](man/figures/README-circle-1.png)
+<img src="man/figures/README-circle-1.png" alt="The 'circle' pattern"  />
 
 ``` r
 grid.pattern_regular_polygon(x_hex, y_hex, shape = c("convex4", "star8", "circle"),
@@ -86,7 +86,7 @@ grid.pattern_regular_polygon(x_hex, y_hex, shape = c("convex4", "star8", "circle
                              density = c(0.45, 0.42, 0.4), spacing = 0.08, angle = 0)
 ```
 
-![](man/figures/README-regular_star-1.png)
+<img src="man/figures/README-regular_star-1.png" alt="The 'regular_polygon' pattern"  />
 
 ``` r
 grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", grid = "hex",
@@ -94,7 +94,7 @@ grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex6", grid = "hex",
                              density = 1.0, spacing = 0.1)
 ```
 
-![](man/figures/README-regular_hex-1.png)
+<img src="man/figures/README-regular_hex-1.png" alt="The 'regular_polygon' pattern used to create a hexagonal tiling"  />
 
 ``` r
 gp <- gpar(fill = c("yellow", "blue", "red"))
@@ -102,7 +102,7 @@ grid.pattern_polygon_tiling(x_hex, y_hex, type = "truncated_hexagonal",
                             spacing = 0.15, gp = gp)
 ```
 
-![](man/figures/README-truncated_hexagonal-1.png)
+<img src="man/figures/README-truncated_hexagonal-1.png" alt="The 'polygon_tiling' pattern used to create a truncated hexagonal tiling"  />
 
 ``` r
 blue <- grDevices::rgb(0.35, 0.70, 0.90)
@@ -127,7 +127,7 @@ grid.pattern_regular_polygon(shape = "star12", grid = "hex_circle", rot = 15,
                              scale = scale)
 ```
 
-![](man/figures/README-rhombitrihexagonal-1.png)
+<img src="man/figures/README-rhombitrihexagonal-1.png" alt="Using several patterns to create a rhombitrihexgonal tiling variation"  />
 
 ``` r
 gp <- gpar(fill = c("blue", "red", "yellow", "green"), col = "black")
@@ -137,7 +137,7 @@ grid.pattern_rose(x_hex, y_hex,
                   frequency = c(2, 6/4, 5/4, 3/7), gp = gp)
 ```
 
-![](man/figures/README-rose-1.png)
+<img src="man/figures/README-rose-1.png" alt="The 'rose' pattern"  />
 
 ``` r
 playing_card_symbols <- c("\u2660", "\u2665", "\u2666", "\u2663")
@@ -147,7 +147,7 @@ grid.pattern_text(x_hex, y_hex,
                  size = 24, spacing = 0.12, angle = 0)
 ```
 
-![](man/figures/README-text-1.png)
+<img src="man/figures/README-text-1.png" alt="The 'text' pattern with playing card suits"  />
 
 ``` r
 grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
@@ -156,7 +156,7 @@ grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
                   amplitude = 0.05, frequency = 1 / 0.15)
 ```
 
-![](man/figures/README-wave-1.png)
+<img src="man/figures/README-wave-1.png" alt="The 'wave' pattern"  />
 
 ``` r
 grid.pattern_weave(x_hex, y_hex, type = "satin",
@@ -164,7 +164,7 @@ grid.pattern_weave(x_hex, y_hex, type = "satin",
              density = 0.3)
 ```
 
-![](man/figures/README-weave-1.png)
+<img src="man/figures/README-weave-1.png" alt="Using the 'weave' pattern to make a 'satin' weave"  />
 
 ## <a name="ggpattern">Using these patterns with the "ggpattern" package</a>
 
@@ -183,7 +183,7 @@ ggplot(df, aes(trt, outcome)) +
                      pattern_fill = list(c("grey30" , "grey70", "white", "grey70")))
 ```
 
-![](man/figures/README-ggpattern-1.png)
+<img src="man/figures/README-ggpattern-1.png" alt="A bar chart using 'ggpattern' with builtin patterned fills"  />
 
 One can also create [custom patterns](https://trevorldavis.com/R/ggpattern/dev/articles/developing-patterns.html) for use with `ggpattern`.
 Here is an example of creating a "tiling3" pattern that creates
@@ -220,7 +220,7 @@ ggplot(df, aes(trt, outcome)) +
     theme(legend.key.size = unit(1.5, 'cm'))
 ```
 
-![](man/figures/README-hex_ggpattern-1.png)
+<img src="man/figures/README-hex_ggpattern-1.png" alt="A bar chart using 'ggpattern' with custom patterned fills"  />
 
 ## <a name="ggplot2">Using these patterns with the "ggplot2" package</a>
 
@@ -240,7 +240,7 @@ ggplot(df, aes(trt, outcome)) +
     geom_col(fill = list(herringbone, truncated_hexagonal, pythagorean))
 ```
 
-![](man/figures/README-ggplot2-1.png)
+<img src="man/figures/README-ggplot2-1.png" alt="A bar chart using 'ggplot2' with 'patternFill()' 'fill' values"  />
 
 ## <a name="piecepackr">Using these patterns with the "piecepackr" package</a>
 
@@ -280,4 +280,4 @@ df <- tibble::tibble(piece_side = c("board_face", rep_len("bit_back", 24L)),
 pmap_piece(df, cfg=checkers1, default.units="in")
 ```
 
-![](man/figures/README-piecepackr-1.png)
+<img src="man/figures/README-piecepackr-1.png" alt="A board game diagram using 'piecepackr' with custom patterned game pieces"  />

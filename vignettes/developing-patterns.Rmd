@@ -223,7 +223,7 @@ the geom - in this case we will be using `pattern = 'polygon'`.
 options(ggpattern_geometry_funcs = list(polygon = create_pattern_polygon))
 ```
 
-```{r}
+```{r, fig.alt = "Three rectangles each filled with a single color"}
 grid.pattern("polygon", fill = "red", size = 4, linetype = "dashed", 
              x = c(0.05, 0.05, 0.305, 0.305), y = c(0.05, 0.305, 0.305, 0.05))
 grid.pattern("polygon", fill = "green", alpha = 0.2, 
@@ -293,7 +293,7 @@ the geom - in this case we will be using `pattern = 'complex'`.
 options(ggpattern_geometry_funcs = list(complex = create_pattern_complex))
 ```
 
-```{r}
+```{r, fig.alt = "Three rectangles each with a 'stripe', 'circle', and 'gradient' pattern"}
 grid.pattern("complex", fill = "red", angle = 45, spacing = 0.05, density = 0.3,
              x = c(0.0, 0.0, 0.3, 0.3), y = c(0.0, 0.3, 0.3, 0.0))
 grid.pattern("complex", fill = "green", angle = 45, spacing = 0.2, density = 0.2,
@@ -364,7 +364,7 @@ the geom - in this case we will be using `pattern = 'simple'`.
 options(ggpattern_array_funcs = list(simple = create_pattern_simple))
 ```
 
-```{r}
+```{r, fig.alt = "Three rectangles each filled with an 'array' pattern"}
 grid::grid.polygon(x = c(0, 0, 1, 1), y = c(0, 1, 1, 0), 
                    gp = grid::gpar(col=NA, fill="grey"))
 grid.pattern("simple", type = "a",
