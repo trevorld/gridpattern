@@ -1,3 +1,21 @@
+gridpattern v1.3.2
+==================
+
+Bug fixes and minor improvements
+--------------------------------
+
+* The following "placeholder" pattern updates (#83):
+
+  + The following placeholder pattern names are now serviced by placecats.com
+
+    - "kitten" and "kittenbw"
+
+  + The following placeholder pattern names are now serviced by placehold.co
+
+    - "placeholder" and "placeholderbw"
+
+  + The "placeholderbw" name now provides a pure black-and-white image (i.e. no grey).
+
 gridpattern v1.3.1
 ==================
 
