@@ -1,6 +1,7 @@
-^.appveyor.yml$
-^.claude$
-^.travis.yml$
+^\.air.toml$
+^\.claude$
+^\.editorconfig$
+^\.pre-commit-config.yaml$
 ^cran-comments.md$
 ^LICENSE.md$
 ^README.Rmd$
@@ -13,4 +14,5 @@
 ^doc$
 ^tmp$
 ^Meta$
+^\.git$
 ^\.github$
