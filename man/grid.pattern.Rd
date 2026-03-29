@@ -140,7 +140,7 @@ See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information
 
  # Can alternatively use "gpar()" to specify colour and line attributes
  grid::grid.newpage()
- grid.pattern("stripe", x_hex, y_hex, 
+ grid.pattern("stripe", x_hex, y_hex,
               gp = grid::gpar(col="blue", fill="red", lwd=2))
 
  # 'weave' pattern

@@ -79,135 +79,155 @@
 #'           [pattern_weave()] for more information on "weave" patterns.
 #' @export
 pattern_square <- function(type = "diagonal", subtype = NULL, nrow = 5L, ncol = 5L) {
-    if (type %in% names_weave) {
-        v <- as.integer(!pattern_weave(type, subtype, nrow, ncol)) + 1L
-        m <- matrix(v, nrow = nrow, ncol = ncol)
-    } else {
-        m <- switch(type,
-                 diagonal = pattern_diagonal(subtype, nrow, ncol),
-                 diagonal_skew = pattern_diagonal(subtype, nrow, ncol, skew = TRUE),
-                 horizontal = pattern_horizontal(subtype, nrow, ncol),
-                 square = pattern_square_type(subtype, nrow, ncol),
-                 square_tiling = pattern_square_tiling(subtype, nrow, ncol),
-                 vertical = pattern_vertical(subtype, nrow, ncol),
-                 abort(paste("Don't recognize square pattern type", type))
-             )
-    }
-    class(m) <- c("pattern_square", "matrix", "array")
-    m
+	if (type %in% names_weave) {
+		v <- as.integer(!pattern_weave(type, subtype, nrow, ncol)) + 1L
+		m <- matrix(v, nrow = nrow, ncol = ncol)
+	} else {
+		m <- switch(
+			type,
+			diagonal = pattern_diagonal(subtype, nrow, ncol),
+			diagonal_skew = pattern_diagonal(subtype, nrow, ncol, skew = TRUE),
+			horizontal = pattern_horizontal(subtype, nrow, ncol),
+			square = pattern_square_type(subtype, nrow, ncol),
+			square_tiling = pattern_square_tiling(subtype, nrow, ncol),
+			vertical = pattern_vertical(subtype, nrow, ncol),
+			abort(paste("Don't recognize square pattern type", type))
+		)
+	}
+	class(m) <- c("pattern_square", "matrix", "array")
+	m
 }
 
 #' @rdname pattern_square
 #' @export
-names_square <- c("diagonal", "diagonal_skew", "horizontal",
-                  "square", "square_tiling", "vertical")
+names_square <- c("diagonal", "diagonal_skew", "horizontal", "square", "square_tiling", "vertical")
 
 pattern_diagonal <- function(subtype = NULL, nrow = 5L, ncol = 5L, skew = FALSE) {
-    if (is.null(subtype) || is.na(subtype)) subtype <- 3L
-    stopifnot(is_integer(subtype))
-    m <- matrix(1L, nrow = nrow, ncol = ncol)
-    n <- as.integer(subtype)
-    if (n == 1L) return(m)
-    s <- seq.int(n)
-    for (e in s) {
-        step <- ifelse(skew, -(e - 1L), e - 1L)
-        v <- rep(cycle_elements(s, step), length.out = ncol)
-        for (i in seq(e, nrow, n)) {
-            m[i, ] <- v
-        }
-    }
-    m
+	if (is.null(subtype) || is.na(subtype)) {
+		subtype <- 3L
+	}
+	stopifnot(is_integer(subtype))
+	m <- matrix(1L, nrow = nrow, ncol = ncol)
+	n <- as.integer(subtype)
+	if (n == 1L) {
+		return(m)
+	}
+	s <- seq.int(n)
+	for (e in s) {
+		step <- ifelse(skew, -(e - 1L), e - 1L)
+		v <- rep(cycle_elements(s, step), length.out = ncol)
+		for (i in seq(e, nrow, n)) {
+			m[i, ] <- v
+		}
+	}
+	m
 }
 
 pattern_horizontal <- function(subtype = NULL, nrow = 5L, ncol = 5L) {
-    if (is.null(subtype) || is.na(subtype)) subtype <- 3L
-    stopifnot(is_integer(subtype))
-    n <- as.integer(subtype)
-    if (nrow > 2L && n > 1L) {
-        v1 <- rev(rep(c(seq.int(n, 2L, -1L), 1L), length.out = nrow %/% 2))
-        v2 <- rep(seq.int(n), length.out = (nrow %/% 2) + (nrow %% 2))
-        v <- c(v1, v2)
-    } else {
-        s <- seq.int(n)
-        v <- rep(s, length.out = nrow)
-    }
-    v <- rep.int(v, ncol)
-    matrix(v, nrow = nrow, ncol = ncol)
+	if (is.null(subtype) || is.na(subtype)) {
+		subtype <- 3L
+	}
+	stopifnot(is_integer(subtype))
+	n <- as.integer(subtype)
+	if (nrow > 2L && n > 1L) {
+		v1 <- rev(rep(c(seq.int(n, 2L, -1L), 1L), length.out = nrow %/% 2))
+		v2 <- rep(seq.int(n), length.out = (nrow %/% 2) + (nrow %% 2))
+		v <- c(v1, v2)
+	} else {
+		s <- seq.int(n)
+		v <- rep(s, length.out = nrow)
+	}
+	v <- rep.int(v, ncol)
+	matrix(v, nrow = nrow, ncol = ncol)
 }
 
 pattern_square_type <- function(subtype, nrow, ncol) {
-    if (is.null(subtype) || is.na(subtype)) subtype <- 3L
-    stopifnot(is_integer(subtype))
-    n <- as.integer(subtype)
-    if (n <= 4)
-        pattern_square_tiling(n, nrow, ncol)
-    else
-        pattern_diagonal(n, nrow, ncol)
+	if (is.null(subtype) || is.na(subtype)) {
+		subtype <- 3L
+	}
+	stopifnot(is_integer(subtype))
+	n <- as.integer(subtype)
+	if (n <= 4) {
+		pattern_square_tiling(n, nrow, ncol)
+	} else {
+		pattern_diagonal(n, nrow, ncol)
+	}
 }
 
 pattern_square_tiling <- function(subtype, nrow, ncol) {
-    if (is.null(subtype) || is.na(subtype)) subtype <- 3L
-    stopifnot(is_integer(subtype))
-    if (is.character(subtype)) subtype <- strsplit(subtype, "")[[1]]
-    m <- matrix(1L, nrow = nrow, ncol = ncol)
-    n <- as.integer(subtype)
-    if (all(n == 1L)) return(m)
-    if (length(n) == 1L) {
-        n <- switch(as.character(subtype),
-                    `1` = c(1L, 1L, 1L, 1L),
-                    `2` = c(2L, 1L, 1L, 2L),
-                    `3` = c(1L, 2L, 3L, 1L),
-                    `4` = 1:4,
-                    n)
-    }
-    n <- rep_len(n, 4)
-    vt <- rep_len(n[1:2], ncol)
-    vb <- rep_len(n[3:4], ncol)
-    for (i in seq_len(nrow)) {
-        if (i %% 2 == 1)
-            m[i, ] <- vb
-        else
-            m[i, ] <- vt
-    }
-    m
+	if (is.null(subtype) || is.na(subtype)) {
+		subtype <- 3L
+	}
+	stopifnot(is_integer(subtype))
+	if (is.character(subtype)) {
+		subtype <- strsplit(subtype, "")[[1]]
+	}
+	m <- matrix(1L, nrow = nrow, ncol = ncol)
+	n <- as.integer(subtype)
+	if (all(n == 1L)) {
+		return(m)
+	}
+	if (length(n) == 1L) {
+		n <- switch(
+			as.character(subtype),
+			`1` = c(1L, 1L, 1L, 1L),
+			`2` = c(2L, 1L, 1L, 2L),
+			`3` = c(1L, 2L, 3L, 1L),
+			`4` = 1:4,
+			n
+		)
+	}
+	n <- rep_len(n, 4)
+	vt <- rep_len(n[1:2], ncol)
+	vb <- rep_len(n[3:4], ncol)
+	for (i in seq_len(nrow)) {
+		if (i %% 2 == 1) {
+			m[i, ] <- vb
+		} else {
+			m[i, ] <- vt
+		}
+	}
+	m
 }
 
 pattern_vertical <- function(subtype = NULL, nrow = 5L, ncol = 5L) {
-    if (is.null(subtype) || is.na(subtype)) subtype <- 3L
-    stopifnot(is_integer(subtype))
-    n <- as.integer(subtype)
-    if (ncol > 2L && n > 1L) {
-        v1 <- rev(rep(c(seq.int(n, 2L, -1L), 1L), length.out = ncol %/% 2))
-        v2 <- rep(seq.int(n), length.out = (ncol %/% 2) + (ncol %% 2))
-        v <- c(v1, v2)
-    } else {
-        s <- seq.int(n)
-        v <- rep(s, length.out = ncol)
-    }
-    v <- rep.int(v, nrow)
-    matrix(v, nrow = nrow, ncol = ncol, byrow = TRUE)
+	if (is.null(subtype) || is.na(subtype)) {
+		subtype <- 3L
+	}
+	stopifnot(is_integer(subtype))
+	n <- as.integer(subtype)
+	if (ncol > 2L && n > 1L) {
+		v1 <- rev(rep(c(seq.int(n, 2L, -1L), 1L), length.out = ncol %/% 2))
+		v2 <- rep(seq.int(n), length.out = (ncol %/% 2) + (ncol %% 2))
+		v <- c(v1, v2)
+	} else {
+		s <- seq.int(n)
+		v <- rep(s, length.out = ncol)
+	}
+	v <- rep.int(v, nrow)
+	matrix(v, nrow = nrow, ncol = ncol, byrow = TRUE)
 }
 
 #' @export
 print.pattern_square <- function(x, ...) {
-    d <- dim(x)
-    x <- matrix(int_to_char(x), nrow = d[1], ncol = d[2])
-    cat("/", rep("-", ncol(x)), "\\", "\n")
-    for (i in rev(seq_len(nrow(x)))) {
-        cat("|", x[i, ], "|", "\n")
-    }
-    cat("\\", rep("-", ncol(x)), "/", "\n")
-    invisible(NULL)
+	d <- dim(x)
+	x <- matrix(int_to_char(x), nrow = d[1], ncol = d[2])
+	cat("/", rep("-", ncol(x)), "\\", "\n")
+	for (i in rev(seq_len(nrow(x)))) {
+		cat("|", x[i, ], "|", "\n")
+	}
+	cat("\\", rep("-", ncol(x)), "/", "\n")
+	invisible(NULL)
 }
 
 is_pattern_square <- function(type) {
-    (type %in% names_weave) || (type %in% names_square)
+	(type %in% names_weave) || (type %in% names_square)
 }
 
 int_to_char <- function(x) {
-    stopifnot(max(x) < 36L)
-    char <- as.character(x)
-    indices <- which(x > 9L)
-    char[indices] <- LETTERS[x[indices] - 9L]
-    char
+	stopifnot(max(x) < 36L)
+	char <- as.character(x)
+	indices <- which(x > 9L)
+	char[indices] <- LETTERS[x[indices] - 9L]
+	char
 }

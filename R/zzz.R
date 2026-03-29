@@ -9,7 +9,7 @@ img_read_memoised <- img_read
 
 # Modify function at load time
 .onLoad <- function(libname, pkgname) {
-    img_read_memoised <<- memoise::memoise(img_read)
+	img_read_memoised <<- memoise::memoise(img_read)
 }
 
 #' @import grid

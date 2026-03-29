@@ -5,5 +5,5 @@
 #' `reset_image_cache()` resets this cache.
 #' @export
 reset_image_cache <- function() {
-    memoise::forget(img_read_memoised)
+	memoise::forget(img_read_memoised)
 }

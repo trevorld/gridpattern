@@ -18,39 +18,38 @@
 #'         if given, otherwise the first element in \code{options}.
 #' @noRd
 check_default <- function(x, options = NULL, default = NULL, type = NULL, prefix = "") {
+	stopifnot(is.null(options) || is.atomic(options))
 
-  stopifnot(is.null(options) || is.atomic(options))
+	default <- default %||% (options[1])
+	if (is.null(default) || length(default) != 1) {
+		abort("check_default(): Must specify 'default' or 'options'")
+	}
 
-  default <- default %||% (options[1])
-  if (is.null(default) || length(default) != 1) {
-    abort("check_default(): Must specify 'default' or 'options'")
-  }
+	if (length(x) != 1) {
+		res <- default
+	} else if (!is.null(options) && !x %in% options) {
+		res <- default
+	} else {
+		res <- x
+	}
 
-  if (length(x) != 1) {
-    res <- default
-  } else if (!is.null(options) && !x %in% options) {
-    res <- default
-  } else {
-    res <- x
-  }
+	if (!is.null(type)) {
+		res <- switch(
+			type,
+			numeric = ,
+			number = ,
+			float = ,
+			num = ifelse(is.numeric(res), res, default),
+			character = ,
+			chr = ,
+			char = ifelse(is.character(res), res, default),
+			{
+				abort(paste0("check_default(): Don't know how to check for type: ", type))
+			}
+		)
+	}
 
-  if (!is.null(type)) {
-    res <- switch(
-      type,
-      numeric   =,
-      number    =,
-      float     =,
-      num       = ifelse(is.numeric  (res), res, default),
-      character = ,
-      chr       = ,
-      char      = ifelse(is.character(res), res, default),
-      {
-        abort(paste0("check_default(): Don't know how to check for type: ", type))
-      }
-    )
-  }
-
-  res
+	res
 }
 
 #' abind clone for adding a matrix to an array
@@ -63,15 +62,14 @@ check_default <- function(x, options = NULL, default = NULL, type = NULL, prefix
 #' @return new array with matrix added as a new plane at the end of the array
 #' @noRd
 my_abind <- function(arr, mat) {
+	stopifnot(is.array(arr))
+	stopifnot(is.matrix(mat))
+	if (!identical(utils::head(dim(arr), -1), dim(mat))) {
+		abort(glue("Dimension missmatch. Array: {deparse(dim(arr))} Matrix: {deparse(dim(mat))}"))
+	}
 
-  stopifnot(is.array(arr))
-  stopifnot(is.matrix(mat))
-  if (!identical(utils::head(dim(arr), -1), dim(mat))) {
-    abort(glue("Dimension missmatch. Array: {deparse(dim(arr))} Matrix: {deparse(dim(mat))}"))
-  }
+	new_dim <- dim(arr)
+	new_dim[3] <- new_dim[3] + 1
 
-  new_dim    <- dim(arr)
-  new_dim[3] <- new_dim[3] + 1
-
-  array(c(arr, mat), dim = new_dim)
+	array(c(arr, mat), dim = new_dim)
 }

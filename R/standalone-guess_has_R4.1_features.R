@@ -43,77 +43,91 @@
 #'
 #' @keywords internal
 #' @noRd
-guess_has_R4.1_features <- function(features = c("clippingPaths", "gradients", "masks", "patterns")) {
-    if (getRversion() < "4.1.0")
-        return(FALSE)
+guess_has_R4.1_features <- function(
+	features = c("clippingPaths", "gradients", "masks", "patterns")
+) {
+	if (getRversion() < "4.1.0") {
+		return(FALSE)
+	}
 
-    # In R 4.2 `dev.capabilities()` can confirm/deny R 4.1 graphic feature support
-    # if active graphics device has implemented this feature
-    if (getRversion() >= "4.2.0") {
-        dev_capabilities <- grDevices::dev.capabilities()
-        if (confirm_via_dev_capabilities(features, dev_capabilities))
-            return(TRUE)
-        if (deny_via_dev_capabilities(features, dev_capabilities))
-            return(FALSE)
-    }
+	# In R 4.2 `dev.capabilities()` can confirm/deny R 4.1 graphic feature support
+	# if active graphics device has implemented this feature
+	if (getRversion() >= "4.2.0") {
+		dev_capabilities <- grDevices::dev.capabilities()
+		if (confirm_via_dev_capabilities(features, dev_capabilities)) {
+			return(TRUE)
+		}
+		if (deny_via_dev_capabilities(features, dev_capabilities)) {
+			return(FALSE)
+		}
+	}
 
-    device <- names(grDevices::dev.cur())
-    if (device %in% c("cairo_pdf", "cairo_ps", "pdf", "svg", "X11cairo")) {
-        TRUE
-    } else if (device %in% c("bmp", "jpeg", "png", "tiff")) {
-        # on unix non-"cairo" type have different device names from "cairo" type
-        # but on Windows can't distinguish between `type = "windows"` or `type = "cairo"`
-        .Platform$OS.type == "unix"
-    } else if (device %in% c("agg_jpeg", "agg_ppm", "agg_png", "agg_tiff")) {
-        utils::packageVersion("ragg") >= "1.2.0"
-    } else if (device == "devSVG") {
-        # `vdiffr:::svglite()` has name "devSVG_vdiffr" since v1.0.6
-        utils::packageVersion("svglite") >= "2.1.0"
-    } else {
-        FALSE
-    }
+	device <- names(grDevices::dev.cur())
+	if (device %in% c("cairo_pdf", "cairo_ps", "pdf", "svg", "X11cairo")) {
+		TRUE
+	} else if (device %in% c("bmp", "jpeg", "png", "tiff")) {
+		# on unix non-"cairo" type have different device names from "cairo" type
+		# but on Windows can't distinguish between `type = "windows"` or `type = "cairo"`
+		.Platform$OS.type == "unix"
+	} else if (device %in% c("agg_jpeg", "agg_ppm", "agg_png", "agg_tiff")) {
+		utils::packageVersion("ragg") >= "1.2.0"
+	} else if (device == "devSVG") {
+		# `vdiffr:::svglite()` has name "devSVG_vdiffr" since v1.0.6
+		utils::packageVersion("svglite") >= "2.1.0"
+	} else {
+		FALSE
+	}
 }
 
 # Will always return FALSE if called within R 4.1
 # or if graphics device hasn't been updated to provide this information
 # even if the device had been updated to provide R 4.1 graphic feature support
-confirm_via_dev_capabilities <- function(features = c("clippingPaths", "gradients", "masks", "patterns"),
-                                         dev_capabilities = grDevices::dev.capabilities()) {
-    for (feature in features) {
-        if (!confirm_feature(feature, dev_capabilities))
-            return(FALSE)
-    }
-    TRUE
+confirm_via_dev_capabilities <- function(
+	features = c("clippingPaths", "gradients", "masks", "patterns"),
+	dev_capabilities = grDevices::dev.capabilities()
+) {
+	for (feature in features) {
+		if (!confirm_feature(feature, dev_capabilities)) {
+			return(FALSE)
+		}
+	}
+	TRUE
 }
 
 confirm_feature <- function(feature, dev_capabilities) {
-    switch(feature,
-           clippingPaths = isTRUE(dev_capabilities$clippingPaths),
-           gradients = all(c("LinearGradient", "RadialGradient") %in% dev_capabilities$patterns),
-           masks = "alpha" %in% dev_capabilities$masks,
-           patterns = "TilingPattern" %in% dev_capabilities$patterns
-           )
+	switch(
+		feature,
+		clippingPaths = isTRUE(dev_capabilities$clippingPaths),
+		gradients = all(c("LinearGradient", "RadialGradient") %in% dev_capabilities$patterns),
+		masks = "alpha" %in% dev_capabilities$masks,
+		patterns = "TilingPattern" %in% dev_capabilities$patterns
+	)
 }
 
 # Will return `TRUE` if `dev.capabilities()` explicitly indicates
 # the given features are not supported (versus merely missing a positive indication)
-deny_via_dev_capabilities <- function(features = c("clippingPaths", "gradients", "masks", "patterns"),
-                                      dev_capabilities = grDevices::dev.capabilities()) {
-    for (feature in features) {
-        if (deny_feature(feature, dev_capabilities))
-            return(TRUE)
-    }
-    FALSE
+deny_via_dev_capabilities <- function(
+	features = c("clippingPaths", "gradients", "masks", "patterns"),
+	dev_capabilities = grDevices::dev.capabilities()
+) {
+	for (feature in features) {
+		if (deny_feature(feature, dev_capabilities)) {
+			return(TRUE)
+		}
+	}
+	FALSE
 }
 
 deny_feature <- function(feature, dev_capabilities) {
-    switch(feature,
-           clippingPaths = isFALSE(dev_capabilities$clippingPaths),
-           gradients = !is.na(dev_capabilities$patterns) &&
-               !all(c("LinearGradient", "RadialGradient") %in% dev_capabilities$patterns),
-           masks = !is.na(dev_capabilities$masks) && !("alpha" %in% dev_capabilities$masks),
-           patterns = !is.na(dev_capabilities$patterns) && !("TilingPattern" %in% dev_capabilities$patterns)
-           )
+	switch(
+		feature,
+		clippingPaths = isFALSE(dev_capabilities$clippingPaths),
+		gradients = !is.na(dev_capabilities$patterns) &&
+			!all(c("LinearGradient", "RadialGradient") %in% dev_capabilities$patterns),
+		masks = !is.na(dev_capabilities$masks) && !("alpha" %in% dev_capabilities$masks),
+		patterns = !is.na(dev_capabilities$patterns) &&
+			!("TilingPattern" %in% dev_capabilities$patterns)
+	)
 }
 
 # nocov end

@@ -29,77 +29,82 @@
 #'                                spacing = 0.2, density = 0.8)
 #' @export
 star_scale <- function(n_vertices, angle, external = FALSE) {
-    if (external)
-        angle <- external_to_internal(n_vertices, angle)
-    if (n_vertices == 2)
-        return(star_scale2(angle))
-    stopifnot(angle >= 0, angle <= 180 * (1 - 2/n_vertices))
-    # we'll work with external degree
-    angle <- internal_to_external(n_vertices, angle)
-    t <- 360 / n_vertices
-    xy1 <- list(x = 1, y = 0)
-    xy2 <- list(x = to_x(t, 1), y = to_y(t, 1))
-    xyc <- list(x = mean(c(xy1$x, xy2$x)), y = mean(c(xy1$y, xy2$y)))
-    xyf <- list(x = to_x(t/2, 1), y = to_y(t/2, 1))
-    dist_f <- dist(xyf, xyc)
-    a2 <- dist(xy1, xyc)
-    beta <- (180 - angle) / 2
-    b <- a2 * sin(to_radians(beta)) / sin(to_radians(angle/2))
-    r <- 1 - b - dist_f
-    stopifnot(r >= 0)
-    r
+	if (external) {
+		angle <- external_to_internal(n_vertices, angle)
+	}
+	if (n_vertices == 2) {
+		return(star_scale2(angle))
+	}
+	stopifnot(angle >= 0, angle <= 180 * (1 - 2 / n_vertices))
+	# we'll work with external degree
+	angle <- internal_to_external(n_vertices, angle)
+	t <- 360 / n_vertices
+	xy1 <- list(x = 1, y = 0)
+	xy2 <- list(x = to_x(t, 1), y = to_y(t, 1))
+	xyc <- list(x = mean(c(xy1$x, xy2$x)), y = mean(c(xy1$y, xy2$y)))
+	xyf <- list(x = to_x(t / 2, 1), y = to_y(t / 2, 1))
+	dist_f <- dist(xyf, xyc)
+	a2 <- dist(xy1, xyc)
+	beta <- (180 - angle) / 2
+	b <- a2 * sin(to_radians(beta)) / sin(to_radians(angle / 2))
+	r <- 1 - b - dist_f
+	stopifnot(r >= 0)
+	r
 }
 
 star_scale2 <- function(angle) {
-    stopifnot(angle >= 0, angle <= 90)
-    a1 <- angle / 2
-    a2 <- 180 - 90 - a1
-    r <- sin(to_radians(a1)) / sin(to_radians(a2))
-    stopifnot(r >= 0)
-    r
+	stopifnot(angle >= 0, angle <= 90)
+	a1 <- angle / 2
+	a2 <- 180 - 90 - a1
+	r <- sin(to_radians(a1)) / sin(to_radians(a2))
+	stopifnot(r >= 0)
+	r
 }
 
 #' @rdname star_scale
 #' @export
 star_angle <- function(n_vertices, scale, external = FALSE) {
-    stopifnot(scale >= 0, scale <= 1)
-    if (n_vertices == 2)
-        return(star_angle2(scale, external))
-    t <- 360 / n_vertices
-    xy1 <- list(x = 1, y = 0)
-    xy2 <- list(x = to_x(t, 1), y = to_y(t, 1))
-    xyv <- list(x = to_x(t/2, scale), y = to_y(t/2, scale))
-    xyc <- list(x = mean(c(xy1$x, xy2$x)), y = mean(c(xy1$y, xy2$y)))
-    a2 <- dist(xy1, xyc)
-    c <- dist(xyv, xy1)
-    d <- to_degrees(2 * asin(a2 / c))
-    if (!external)
-        d <- external_to_internal(n_vertices, d)
-    d
+	stopifnot(scale >= 0, scale <= 1)
+	if (n_vertices == 2) {
+		return(star_angle2(scale, external))
+	}
+	t <- 360 / n_vertices
+	xy1 <- list(x = 1, y = 0)
+	xy2 <- list(x = to_x(t, 1), y = to_y(t, 1))
+	xyv <- list(x = to_x(t / 2, scale), y = to_y(t / 2, scale))
+	xyc <- list(x = mean(c(xy1$x, xy2$x)), y = mean(c(xy1$y, xy2$y)))
+	a2 <- dist(xy1, xyc)
+	c <- dist(xyv, xy1)
+	d <- to_degrees(2 * asin(a2 / c))
+	if (!external) {
+		d <- external_to_internal(n_vertices, d)
+	}
+	d
 }
 
 star_angle2 <- function(scale, external = FALSE) {
-    d <- sqrt(1 + scale^2)
-    d <- 2 * to_degrees(asin(scale / d))
-    if (external)
-        d <- internal_to_external(2, d)
-    d
+	d <- sqrt(1 + scale^2)
+	d <- 2 * to_degrees(asin(scale / d))
+	if (external) {
+		d <- internal_to_external(2, d)
+	}
+	d
 }
 
 external_to_internal <- function(n_vertices, external) {
-    n <- 2 * n_vertices # exterior plus interior vertices
-    total <- (n - 2) * 180
-    inverse <- 360 - external
-    internal <- (total - n_vertices * inverse) / n_vertices
-    internal
+	n <- 2 * n_vertices # exterior plus interior vertices
+	total <- (n - 2) * 180
+	inverse <- 360 - external
+	internal <- (total - n_vertices * inverse) / n_vertices
+	internal
 }
 
 internal_to_external <- function(n_vertices, internal) {
-    n <- 2 * n_vertices # exterior plus interior vertices
-    total <- (n - 2) * 180
-    inverse <- (total - n_vertices * internal) / n_vertices
-    external <- 360 - inverse
-    external
+	n <- 2 * n_vertices # exterior plus interior vertices
+	total <- (n - 2) * 180
+	inverse <- (total - n_vertices * internal) / n_vertices
+	external <- 360 - inverse
+	external
 }
 
 dist <- function(p1, p2) sqrt((p2$x - p1$x)^2 + (p2$y - p1$y)^2)
