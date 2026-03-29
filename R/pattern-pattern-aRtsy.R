@@ -8,26 +8,27 @@
 #'
 #' @return grid grob objects.
 #' @noRd
-create_pattern_aRtsy <- function(params, boundary_df, aspect_ratio,
-                                 legend = FALSE) {
-    assert_suggested("aRtsy", "aRtsy")
-    requireNamespace("aRtsy", quietly = TRUE)
-    stopifnot(guess_has_R4.1_features("patterns"))
-    alpha <- ifelse(is.na(params$pattern_alpha), 1, params$pattern_alpha)
-    colors <- update_alpha(params$pattern_fill, alpha)
-    fn_name <- paste0("canvas_", params$pattern_type)
-    fn <- utils::getFromNamespace(fn_name, "aRtsy")
-    args <- list()
-    nformals <- names(formals(fn))
-    if ("color" %in% nformals) { # e.g. `canvas_maze()`
-        args$color <- colors
-    }
-    if ("colors" %in% nformals) { # e.g. most canvas functions
-        args$colors <- colors
-    }
-    pat <- ggplot2pat(do.call(fn, args))
-    gp <- grid::gpar(col = NA_character_, fill = pat)
-    convert_polygon_df_to_polygon_grob(boundary_df, gp = gp)
+create_pattern_aRtsy <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
+	assert_suggested("aRtsy", "aRtsy")
+	requireNamespace("aRtsy", quietly = TRUE)
+	stopifnot(guess_has_R4.1_features("patterns"))
+	alpha <- ifelse(is.na(params$pattern_alpha), 1, params$pattern_alpha)
+	colors <- update_alpha(params$pattern_fill, alpha)
+	fn_name <- paste0("canvas_", params$pattern_type)
+	fn <- utils::getFromNamespace(fn_name, "aRtsy")
+	args <- list()
+	nformals <- names(formals(fn))
+	if ("color" %in% nformals) {
+		# e.g. `canvas_maze()`
+		args$color <- colors
+	}
+	if ("colors" %in% nformals) {
+		# e.g. most canvas functions
+		args$colors <- colors
+	}
+	pat <- ggplot2pat(do.call(fn, args))
+	gp <- grid::gpar(col = NA_character_, fill = pat)
+	convert_polygon_df_to_polygon_grob(boundary_df, gp = gp)
 }
 
 #' Grobs with patterns powered by the aRtsy package
@@ -57,21 +58,41 @@ create_pattern_aRtsy <- function(params, boundary_df, aspect_ratio,
 #' }
 #' @seealso <https://koenderks.github.io/aRtsy/> for more information about the `aRtsy` package.
 #' @export
-grid.pattern_aRtsy <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
-                               type = "strokes",
-                               fill = gp$fill %||% "grey80",
-                               alpha = gp$alpha %||% NA_real_,
-                               default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    grid.pattern("aRtsy", x, y, id,
-                 type = type, fill = fill, alpha = alpha,
-                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+grid.pattern_aRtsy <- function(
+	x = c(0, 0, 1, 1),
+	y = c(1, 0, 0, 1),
+	id = 1L,
+	...,
+	type = "strokes",
+	fill = gp$fill %||% "grey80",
+	alpha = gp$alpha %||% NA_real_,
+	default.units = "npc",
+	name = NULL,
+	gp = gpar(),
+	draw = TRUE,
+	vp = NULL
+) {
+	grid.pattern(
+		"aRtsy",
+		x,
+		y,
+		id,
+		type = type,
+		fill = fill,
+		alpha = alpha,
+		default.units = default.units,
+		name = name,
+		gp = gp,
+		draw = draw,
+		vp = vp
+	)
 }
 
 #' @rdname grid.pattern_aRtsy
 #' @export
 names_aRtsy <- function() {
-    assert_suggested("aRtsy", "aRtsy")
-    requireNamespace("aRtsy", quietly = TRUE)
-    fns <- grep("^canvas", getNamespaceExports("aRtsy"), value = TRUE)
-    gsub("^canvas_", "", fns)
+	assert_suggested("aRtsy", "aRtsy")
+	requireNamespace("aRtsy", quietly = TRUE)
+	fns <- grep("^canvas", getNamespaceExports("aRtsy"), value = TRUE)
+	gsub("^canvas_", "", fns)
 }

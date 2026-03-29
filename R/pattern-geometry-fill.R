@@ -8,13 +8,12 @@
 #'
 #' @return grid grob objects.
 #' @noRd
-create_pattern_fill <- function(params, boundary_df, aspect_ratio,
-                                legend = FALSE) {
-    alpha <- ifelse(is.na(params$pattern_alpha), 1, params$pattern_alpha)
-    fill <- update_alpha(params$pattern_fill, alpha)
-    gp <- grid::gpar(col = NA_character_, fill = fill)
+create_pattern_fill <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
+	alpha <- ifelse(is.na(params$pattern_alpha), 1, params$pattern_alpha)
+	fill <- update_alpha(params$pattern_fill, alpha)
+	gp <- grid::gpar(col = NA_character_, fill = fill)
 
-    convert_polygon_df_to_polygon_grob(boundary_df, gp = gp)
+	convert_polygon_df_to_polygon_grob(boundary_df, gp = gp)
 }
 
 #' Grobs with a simple fill pattern
@@ -36,11 +35,30 @@ create_pattern_fill <- function(params, boundary_df, aspect_ratio,
 #' }
 #' @seealso [grid::grid.polygon()]
 #' @export
-grid.pattern_fill <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
-                              fill = gp$fill %||% "grey80", 
-                              alpha = gp$alpha %||% NA_real_,
-                              default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    grid.pattern("fill", x, y, id,
-                 fill = fill, alpha = alpha,
-                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+grid.pattern_fill <- function(
+	x = c(0, 0, 1, 1),
+	y = c(1, 0, 0, 1),
+	id = 1L,
+	...,
+	fill = gp$fill %||% "grey80",
+	alpha = gp$alpha %||% NA_real_,
+	default.units = "npc",
+	name = NULL,
+	gp = gpar(),
+	draw = TRUE,
+	vp = NULL
+) {
+	grid.pattern(
+		"fill",
+		x,
+		y,
+		id,
+		fill = fill,
+		alpha = alpha,
+		default.units = default.units,
+		name = name,
+		gp = gp,
+		draw = draw,
+		vp = vp
+	)
 }

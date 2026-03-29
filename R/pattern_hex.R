@@ -51,99 +51,106 @@
 #'          \url{https://en.wikipedia.org/wiki/Hexagonal_tiling#Uniform_colorings}.
 #' @export
 pattern_hex <- function(type = "hex", subtype = NULL, nrow = 5L, ncol = 5L) {
-    if (is.null(subtype) || is.na(subtype)) subtype <- 2L
-    stopifnot(is_integer(subtype))
-    n <- as.integer(subtype)
-    if (type == "hex") {
-        if (n < 4L) {
-            type <- "hex1"
-        } else if (n == 4L) {
-            type <- "hex2"
-        } else if (n == 7L) {
-            type <- "hex3"
-        } else {
-            type <- "hex_skew"
-        }
-    }
-    m <- switch(type,
-                hex_skew = pattern_hex_skew(n, nrow, ncol),
-                hex1 = pattern_hex1(n, nrow, ncol),
-                hex2 = pattern_hex2(n, nrow, ncol),
-                hex3 = pattern_hex3(n, nrow, ncol),
-                abort(paste("Don't know hex pattern type", type)))
-    class(m) <- c("pattern_hex", "matrix", "array")
-    m
+	if (is.null(subtype) || is.na(subtype)) {
+		subtype <- 2L
+	}
+	stopifnot(is_integer(subtype))
+	n <- as.integer(subtype)
+	if (type == "hex") {
+		if (n < 4L) {
+			type <- "hex1"
+		} else if (n == 4L) {
+			type <- "hex2"
+		} else if (n == 7L) {
+			type <- "hex3"
+		} else {
+			type <- "hex_skew"
+		}
+	}
+	m <- switch(
+		type,
+		hex_skew = pattern_hex_skew(n, nrow, ncol),
+		hex1 = pattern_hex1(n, nrow, ncol),
+		hex2 = pattern_hex2(n, nrow, ncol),
+		hex3 = pattern_hex3(n, nrow, ncol),
+		abort(paste("Don't know hex pattern type", type))
+	)
+	class(m) <- c("pattern_hex", "matrix", "array")
+	m
 }
 
 pattern_hex_skew <- function(n = NULL, nrow = 5L, ncol = 5L) {
-    m <- matrix(1L, nrow = nrow, ncol = ncol)
-    if (n == 1L) return(m)
-    s <- seq.int(n)
-    skip <- 0L
-    for (i in seq.int(nrow)) {
-        step <- skip + i - 1L
-        v <- rep_len(cycle_elements(s, step), ncol)
-        m[i, ] <- v
-        if (i %% 2 == 0) skip <- skip + 1L
-    }
-    m
+	m <- matrix(1L, nrow = nrow, ncol = ncol)
+	if (n == 1L) {
+		return(m)
+	}
+	s <- seq.int(n)
+	skip <- 0L
+	for (i in seq.int(nrow)) {
+		step <- skip + i - 1L
+		v <- rep_len(cycle_elements(s, step), ncol)
+		m[i, ] <- v
+		if (i %% 2 == 0) skip <- skip + 1L
+	}
+	m
 }
 
 pattern_hex1 <- function(n, nrow, ncol) {
-    stopifnot(n < 4L)
-    if (n == 2L) {
-        m <- pattern_hex_skew(3L, nrow, ncol)
-        indices <- which(m == 3L)
-        m[indices] <- 2L
-        m
-    } else {
-        pattern_hex_skew(n, nrow, ncol)
-    }
+	stopifnot(n < 4L)
+	if (n == 2L) {
+		m <- pattern_hex_skew(3L, nrow, ncol)
+		indices <- which(m == 3L)
+		m[indices] <- 2L
+		m
+	} else {
+		pattern_hex_skew(n, nrow, ncol)
+	}
 }
 
 pattern_hex2 <- function(n, nrow, ncol) {
-    stopifnot(n == 2L || n == 4L)
-    m <- matrix(2L, nrow = nrow, ncol = ncol)
-    v1 <- rep_len(1:2, ncol)
-    v3 <- rep_len(2:1, ncol)
-    for (i in seq.int(nrow)) {
-        im <- i %% 4L
-        if (im == 1L) {
-            m[i, ] <- v1
-        } else if (im == 3L) {
-            m[i, ] <- v3
-        }
-    }
-    if (n == 4L) {
-        v2 <- rep_len(3:4, ncol)
-        v4 <- rep_len(4:3, ncol)
-        for (i in seq.int(nrow)) {
-            im <- i %% 4L
-            if (im == 2L) {
-                m[i, ] <- v2
-            } else if (im == 0L) {
-                m[i, ] <- v4
-            }
-        }
-    }
-    m
+	stopifnot(n == 2L || n == 4L)
+	m <- matrix(2L, nrow = nrow, ncol = ncol)
+	v1 <- rep_len(1:2, ncol)
+	v3 <- rep_len(2:1, ncol)
+	for (i in seq.int(nrow)) {
+		im <- i %% 4L
+		if (im == 1L) {
+			m[i, ] <- v1
+		} else if (im == 3L) {
+			m[i, ] <- v3
+		}
+	}
+	if (n == 4L) {
+		v2 <- rep_len(3:4, ncol)
+		v4 <- rep_len(4:3, ncol)
+		for (i in seq.int(nrow)) {
+			im <- i %% 4L
+			if (im == 2L) {
+				m[i, ] <- v2
+			} else if (im == 0L) {
+				m[i, ] <- v4
+			}
+		}
+	}
+	m
 }
 
 pattern_hex3 <- function(n, nrow, ncol) {
-    stopifnot(n == 2L || n == 7L)
-    m <- matrix(1L, nrow = nrow, ncol = ncol)
-    if (n == 2L)
-        s <- c(1L, rep_len(2L, 6L))
-    else
-        s <- seq.int(7L)
-    skip <- 0L
-    for (i in seq.int(nrow)) {
-        step <- skip + 4 * (i - 1L)
-        v <- rep_len(cycle_elements(s, step), ncol)
-        m[i, ] <- v
-        if (i %% 2 == 0) skip <- skip + 1L
-    }
-    m
+	stopifnot(n == 2L || n == 7L)
+	m <- matrix(1L, nrow = nrow, ncol = ncol)
+	if (n == 2L) {
+		s <- c(1L, rep_len(2L, 6L))
+	} else {
+		s <- seq.int(7L)
+	}
+	skip <- 0L
+	for (i in seq.int(nrow)) {
+		step <- skip + 4 * (i - 1L)
+		v <- rep_len(cycle_elements(s, step), ncol)
+		m[i, ] <- v
+		if (i %% 2 == 0) skip <- skip + 1L
+	}
+	m
 }
 
 #' @rdname pattern_hex
@@ -152,15 +159,16 @@ names_hex <- c("hex", "hex1", "hex2", "hex3", "hex_skew")
 
 #' @export
 print.pattern_hex <- function(x, ...) {
-    d <- dim(x)
-    x <- matrix(int_to_char(x), nrow = d[1], ncol = d[2])
-    cat("/", rep("-", 2 * ncol(x)), "\\", "\n", sep = "")
-    for (i in rev(seq_len(nrow(x)))) {
-        if (i %% 2 == 1)
-            cat("|", paste0(" ", x[i, ]), "|", "\n", sep = "")
-        else
-            cat("|", paste0(x[i, ], " "), "|", "\n", sep = "")
-    }
-    cat("\\", rep("-", 2 * ncol(x)), "/", "\n", sep = "")
-    invisible(NULL)
+	d <- dim(x)
+	x <- matrix(int_to_char(x), nrow = d[1], ncol = d[2])
+	cat("/", rep("-", 2 * ncol(x)), "\\", "\n", sep = "")
+	for (i in rev(seq_len(nrow(x)))) {
+		if (i %% 2 == 1) {
+			cat("|", paste0(" ", x[i, ]), "|", "\n", sep = "")
+		} else {
+			cat("|", paste0(x[i, ], " "), "|", "\n", sep = "")
+		}
+	}
+	cat("\\", rep("-", 2 * ncol(x)), "/", "\n", sep = "")
+	invisible(NULL)
 }

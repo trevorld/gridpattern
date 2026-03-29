@@ -23,97 +23,160 @@
 #'                    size = 18, spacing = 0.1, angle = 0)
 #' }
 #' @export
-grid.pattern_text <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
-                              colour = gp$col %||% "grey20",
-                              angle = 30,
-                              spacing = 0.05,
-                              xoffset = 0, yoffset = 0, units = "snpc",
-                              scale = 0.5,
-                              shape = "X",
-                              grid = "square", type = NULL, subtype = NULL, rot = 0,
-                              alpha = gp$alpha %||% NA_real_,
-                              size = gp$fontsize %||% 12,
-                              fontfamily = gp$fontfamily %||% "sans",
-                              fontface = gp$fontface %||% "plain",
-                              use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
-                                                         getOption("ggpattern_use_R4.1_features")),
-                              png_device = NULL, res = getOption("ggpattern_res", 72),
-                              default.units = "npc", name = NULL,
-                              gp = gpar(), draw = TRUE, vp = NULL) {
-    if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
-    grid.pattern("text", x, y, id,
-                 colour = colour, angle = angle,
-                 spacing = spacing, xoffset = xoffset, yoffset = yoffset, units = units,
-                 scale = scale, shape = shape,
-                 grid = grid, type = type, subtype = subtype, rot = rot,
-                 alpha = alpha, size = size, fontfamily = fontfamily, fontface = fontface,
-                 use_R4.1_masks = use_R4.1_masks, png_device = png_device, res = res,
-                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+grid.pattern_text <- function(
+	x = c(0, 0, 1, 1),
+	y = c(1, 0, 0, 1),
+	id = 1L,
+	...,
+	colour = gp$col %||% "grey20",
+	angle = 30,
+	spacing = 0.05,
+	xoffset = 0,
+	yoffset = 0,
+	units = "snpc",
+	scale = 0.5,
+	shape = "X",
+	grid = "square",
+	type = NULL,
+	subtype = NULL,
+	rot = 0,
+	alpha = gp$alpha %||% NA_real_,
+	size = gp$fontsize %||% 12,
+	fontfamily = gp$fontfamily %||% "sans",
+	fontface = gp$fontface %||% "plain",
+	use_R4.1_masks = getOption(
+		"ggpattern_use_R4.1_masks",
+		getOption("ggpattern_use_R4.1_features")
+	),
+	png_device = NULL,
+	res = getOption("ggpattern_res", 72),
+	default.units = "npc",
+	name = NULL,
+	gp = gpar(),
+	draw = TRUE,
+	vp = NULL
+) {
+	if (missing(colour) && hasName(l <- list(...), "color")) {
+		colour <- l$color
+	}
+	grid.pattern(
+		"text",
+		x,
+		y,
+		id,
+		colour = colour,
+		angle = angle,
+		spacing = spacing,
+		xoffset = xoffset,
+		yoffset = yoffset,
+		units = units,
+		scale = scale,
+		shape = shape,
+		grid = grid,
+		type = type,
+		subtype = subtype,
+		rot = rot,
+		alpha = alpha,
+		size = size,
+		fontfamily = fontfamily,
+		fontface = fontface,
+		use_R4.1_masks = use_R4.1_masks,
+		png_device = png_device,
+		res = res,
+		default.units = default.units,
+		name = name,
+		gp = gp,
+		draw = draw,
+		vp = vp
+	)
 }
 
 create_pattern_text <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
-    # work in 'bigpts' instead 'npc' / 'snpc' units so we don't worry about the aspect ratio
-    default.units <- "bigpts"
-    boundary_df <- convert_polygon_df_units(boundary_df, default.units)
-    params <- convert_params_units(params, default.units)
-    vpm <- get_vp_measurements(default.units)
+	# work in 'bigpts' instead 'npc' / 'snpc' units so we don't worry about the aspect ratio
+	default.units <- "bigpts"
+	boundary_df <- convert_polygon_df_units(boundary_df, default.units)
+	params <- convert_params_units(params, default.units)
+	vpm <- get_vp_measurements(default.units)
 
-    spacing <- params$pattern_spacing
-    grid <- params$pattern_grid
+	spacing <- params$pattern_spacing
+	grid <- params$pattern_grid
 
-    # create grid of points large enough to cover viewport no matter the angle
-    grid_xy <- get_xy_grid(params, vpm)
+	# create grid of points large enough to cover viewport no matter the angle
+	grid_xy <- get_xy_grid(params, vpm)
 
-    # vectorize fill, col, lwd, lty, density, rot, and shape
-    col  <- update_alpha_col(params$pattern_colour, params$pattern_alpha)
-    fontsize  <- params$pattern_size
-    fontfamily <- params$pattern_fontfamily
-    fontface <- params$pattern_fontface
+	# vectorize fill, col, lwd, lty, density, rot, and shape
+	col <- update_alpha_col(params$pattern_colour, params$pattern_alpha)
+	fontsize <- params$pattern_size
+	fontfamily <- params$pattern_fontfamily
+	fontface <- params$pattern_fontface
 
-    rot <- params$pattern_rot + params$pattern_angle
-    shape <- params$pattern_shape
+	rot <- params$pattern_rot + params$pattern_angle
+	shape <- params$pattern_shape
 
-    n_par <- max(lengths(list(col, fontsize, fontfamily, fontface, rot, shape)))
+	n_par <- max(lengths(list(col, fontsize, fontfamily, fontface, rot, shape)))
 
-    col <- rep_len(col, n_par)
-    fontsize <- rep_len(fontsize, n_par)
-    fontfamily <- rep_len(fontfamily, n_par)
-    fontface <- rep_len(fontface, n_par)
-    rot <- rep_len(rot, n_par)
-    shape <- rep_len(shape, n_par)
+	col <- rep_len(col, n_par)
+	fontsize <- rep_len(fontsize, n_par)
+	fontfamily <- rep_len(fontfamily, n_par)
+	fontface <- rep_len(fontface, n_par)
+	rot <- rep_len(rot, n_par)
+	shape <- rep_len(shape, n_par)
 
-    # compute pattern matrix of graphical elements (e.g. fill colors)
-    if (is.null(params$pattern_type) || is.na(params$pattern_type))
-        params$pattern_type <- switch(grid, square = "square", "hex")
-    m_pat <- get_pattern_matrix(params$pattern_type, params$pattern_subtype, grid_xy, n_par)
+	# compute pattern matrix of graphical elements (e.g. fill colors)
+	if (is.null(params$pattern_type) || is.na(params$pattern_type)) {
+		params$pattern_type <- switch(grid, square = "square", "hex")
+	}
+	m_pat <- get_pattern_matrix(params$pattern_type, params$pattern_subtype, grid_xy, n_par)
 
-    gl <- gList()
-    for (i_par in seq(n_par)) {
-        if (shape[i_par] == "null") next
-        xy_par <- get_xy_par(grid_xy, i_par, m_pat, grid, spacing)
-        if (length(xy_par$x) == 0) next
+	gl <- gList()
+	for (i_par in seq(n_par)) {
+		if (shape[i_par] == "null") {
+			next
+		}
+		xy_par <- get_xy_par(grid_xy, i_par, m_pat, grid, spacing)
+		if (length(xy_par$x) == 0) {
+			next
+		}
 
-        # rotate by 'angle'
-        xy_par <- rotate_xy(xy_par$x, xy_par$y, params$pattern_angle, vpm$x, vpm$y)
+		# rotate by 'angle'
+		xy_par <- rotate_xy(xy_par$x, xy_par$y, params$pattern_angle, vpm$x, vpm$y)
 
-        gp <- gpar(col = col[i_par], fontsize = fontsize[i_par],
-                   fontfamily = fontfamily[i_par], fontface = fontface[i_par])
+		gp <- gpar(
+			col = col[i_par],
+			fontsize = fontsize[i_par],
+			fontfamily = fontfamily[i_par],
+			fontface = fontface[i_par]
+		)
 
-        # create grob for interior polygons
-        name <- paste0("text.", i_par)
+		# create grob for interior polygons
+		name <- paste0("text.", i_par)
 
-        grob <- textGrob(label = shape[i_par], x = xy_par$x, y = xy_par$y,
-                         rot = rot[i_par], just = "center", default.units = "bigpts",
-                         name = name, gp = gp)
+		grob <- textGrob(
+			label = shape[i_par],
+			x = xy_par$x,
+			y = xy_par$y,
+			rot = rot[i_par],
+			just = "center",
+			default.units = "bigpts",
+			name = name,
+			gp = gp
+		)
 
-        gl <- append_gList(gl, grob)
-    }
-    maskee <- gTree(children = gl)
-    masker <- convert_polygon_df_to_polygon_grob(boundary_df, default.units = "bigpts",
-                                                 gp = gpar(fill = "white", col = NA, lwd = 0))
-    png_device <- params$pattern_png_device
-    alphaMaskGrob(maskee, masker,
-                  use_R4.1_masks = params$pattern_use_R4.1_masks,
-                  png_device = png_device,
-                  res = params$pattern_res, name = "text")
+		gl <- append_gList(gl, grob)
+	}
+	maskee <- gTree(children = gl)
+	masker <- convert_polygon_df_to_polygon_grob(
+		boundary_df,
+		default.units = "bigpts",
+		gp = gpar(fill = "white", col = NA, lwd = 0)
+	)
+	png_device <- params$pattern_png_device
+	alphaMaskGrob(
+		maskee,
+		masker,
+		use_R4.1_masks = params$pattern_use_R4.1_masks,
+		png_device = png_device,
+		res = params$pattern_res,
+		name = "text"
+	)
 }

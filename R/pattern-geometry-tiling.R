@@ -82,998 +82,1848 @@
 #' grid.pattern_polygon_tiling(x_hex, y_hex, type = "rhombille",
 #'                               spacing = 0.2, gp = gp3)
 #' @export
-grid.pattern_polygon_tiling <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
-                                        colour = gp$col %||% "grey20",
-                                        fill = gp$fill %||% "grey80",
-                                        angle = 30, spacing = 0.05, xoffset = 0, yoffset = 0, units = "snpc",
-                                        type = "square",
-                                        alpha = gp$alpha %||% NA_real_,
-                                        linetype = gp$lty %||% 1,
-                                        linewidth = size %||% gp$lwd %||% 1,
-                                        size = NULL,
-                                        default.units = "npc", name = NULL,
-                                        gp = gpar(), draw = TRUE, vp = NULL) {
-    if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
-    grid.pattern("polygon_tiling", x, y, id,
-                 colour = colour, fill = fill, angle = angle,
-                 spacing = spacing, xoffset = xoffset, yoffset = yoffset, units = units,
-                 type = type,
-                 alpha = alpha, linetype = linetype, linewidth = linewidth,
-                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+grid.pattern_polygon_tiling <- function(
+	x = c(0, 0, 1, 1),
+	y = c(1, 0, 0, 1),
+	id = 1L,
+	...,
+	colour = gp$col %||% "grey20",
+	fill = gp$fill %||% "grey80",
+	angle = 30,
+	spacing = 0.05,
+	xoffset = 0,
+	yoffset = 0,
+	units = "snpc",
+	type = "square",
+	alpha = gp$alpha %||% NA_real_,
+	linetype = gp$lty %||% 1,
+	linewidth = size %||% gp$lwd %||% 1,
+	size = NULL,
+	default.units = "npc",
+	name = NULL,
+	gp = gpar(),
+	draw = TRUE,
+	vp = NULL
+) {
+	if (missing(colour) && hasName(l <- list(...), "color")) {
+		colour <- l$color
+	}
+	grid.pattern(
+		"polygon_tiling",
+		x,
+		y,
+		id,
+		colour = colour,
+		fill = fill,
+		angle = angle,
+		spacing = spacing,
+		xoffset = xoffset,
+		yoffset = yoffset,
+		units = units,
+		type = type,
+		alpha = alpha,
+		linetype = linetype,
+		linewidth = linewidth,
+		default.units = default.units,
+		name = name,
+		gp = gp,
+		draw = draw,
+		vp = vp
+	)
 }
 
 #' @rdname grid.pattern_polygon_tiling
 #' @export
-names_polygon_tiling <- c("elongated_triangular",
-                          "herringbone",
-                          "hexagonal",
-                          "pythagorean",
-                          "rhombitrihexagonal",
-                          "rhombille",
-                          "snub_square",
-                          "snub_trihexagonal",
-                          "square",
-                          "tetrakis_square",
-                          "triangular",
-                          "trihexagonal",
-                          "truncated_square",
-                          "truncated_hexagonal",
-                          "truncated_trihexagonal",
-                          "2*.2**.2*.2**",
-                          "2**.3**.12*",
-                          "3.3.3.3**",
-                          "3.3*.3.3**",
-                          "3.3.3.12*.3.3.12*",
-                          "3.3.8*.3.4.3.8*",
-                          "3.3.8*.4**.8*",
-                          "3.4.6.3.12*",
-                          "3.4.8.3.8*",
-                          "3.6*.6**",
-                          "4.2*.4.2**",
-                          "4.4*.4**",
-                          "4.6.4*.6",
-                          "4.6*.4.6*.4.6*",
-                          "4.8*.4**.8*",
-                          "6.6*.6.6*",
-                          "8.4*.8.4*",
-                          "9.3.9.3*",
-                          "12.3*.12.3*",
-                          "12.12.4*",
-                          "18.18.3*")
+names_polygon_tiling <- c(
+	"elongated_triangular",
+	"herringbone",
+	"hexagonal",
+	"pythagorean",
+	"rhombitrihexagonal",
+	"rhombille",
+	"snub_square",
+	"snub_trihexagonal",
+	"square",
+	"tetrakis_square",
+	"triangular",
+	"trihexagonal",
+	"truncated_square",
+	"truncated_hexagonal",
+	"truncated_trihexagonal",
+	"2*.2**.2*.2**",
+	"2**.3**.12*",
+	"3.3.3.3**",
+	"3.3*.3.3**",
+	"3.3.3.12*.3.3.12*",
+	"3.3.8*.3.4.3.8*",
+	"3.3.8*.4**.8*",
+	"3.4.6.3.12*",
+	"3.4.8.3.8*",
+	"3.6*.6**",
+	"4.2*.4.2**",
+	"4.4*.4**",
+	"4.6.4*.6",
+	"4.6*.4.6*.4.6*",
+	"4.8*.4**.8*",
+	"6.6*.6.6*",
+	"8.4*.8.4*",
+	"9.3.9.3*",
+	"12.3*.12.3*",
+	"12.12.4*",
+	"18.18.3*"
+)
 
 create_pattern_polygon_tiling <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
-    type <- tolower(params$pattern_type)
+	type <- tolower(params$pattern_type)
 
-    xyi <- boundary_df
+	xyi <- boundary_df
 
-    fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
-    col <- update_alpha(params$pattern_colour, params$pattern_alpha)
-    lwd <- params$pattern_linewidth
-    lty <- params$pattern_linetype
-    stopifnot(length(fill) < 4L, max(lengths(list(col, lwd, lty))) == 1L)
-    gp <- gpar(fill = fill, col = col, lwd = lwd, lty = lty)
+	fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
+	col <- update_alpha(params$pattern_colour, params$pattern_alpha)
+	lwd <- params$pattern_linewidth
+	lty <- params$pattern_linetype
+	stopifnot(length(fill) < 4L, max(lengths(list(col, lwd, lty))) == 1L)
+	gp <- gpar(fill = fill, col = col, lwd = lwd, lty = lty)
 
-    angle <- params$pattern_angle
-    spacing <- params$pattern_spacing
-    units <- params$pattern_units
+	angle <- params$pattern_angle
+	spacing <- params$pattern_spacing
+	units <- params$pattern_units
 
-    fn <- switch(type,
-                 elongated_triangular = create_el_tri_tiling,
-                 herringbone = create_herringbone_tiling,
-                 hexagonal = create_hexagonal_tiling,
-                 pythagorean = create_pythagorean_tiling,
-                 snub_square = create_snub_square_tiling,
-                 snub_trihexagonal = create_snub_trihex_tiling,
-                 square = create_square_tiling,
-                 rhombille = create_rhombille_tiling,
-                 rhombitrihexagonal = create_rhombitrihexagonal_tiling,
-                 tetrakis_square = create_tetrakis_tiling,
-                 triangular = create_triangular_tiling,
-                 trihexagonal = create_trihexagonal_tiling,
-                 truncated_hexagonal = create_trunc_hex_tiling,
-                 truncated_square = create_trunc_square_tiling,
-                 truncated_trihexagonal = create_trunc_trihex_tiling,
-                 `2*.2**.2*.2**` = create_2_53.2__233.2_53.2__233_tiling,
-                 `2**.3**.12*` = create_2__.3__.12__tiling,
-                 `3.3.3.3**` = create_3.3.3.3___tiling,
-                 `3.3*.3.3**` = create_3.3_30.3.3_30_tiling,
-                 `3.3.3.12*.3.3.12*` = create_3.3.3.12_30.3.3.12_30_tiling,
-                 `3.4.6.3.12*` = create_3.4.6.3.12_30_tiling,
-                 `3.3.8*.3.4.3.8*` = create_3.3.8_15.3.4.3.8_15_tiling,
-                 `3.3.8*.4**.8*` = create_3.3.8_15.4__60.8_15_tiling,
-                 `3.4.8.3.8*` = create_3.4.8.3.8_15_tiling,
-                 `3.6*.6**` = create_3.6_30.6__30_tiling,
-                 `4.2*.4.2**` = create_4.2_60.4.2__240_tiling,
-                 `4.4*.4**` = create_4.4_30.4__30_tiling,
-                 `4.6.4*.6` = create_4.6.4_30.6_tiling,
-                 `4.6*.4.6*.4.6*` = create_4.6_30.4.6_30.4.6_30_tiling,
-                 `4.8*.4**.8*` = create_4.8_.4__.8__tiling,
-                 `6.6*.6.6*` = create_6.6_60.6.6_60_tiling,
-                 `8.4*.8.4*` = create_8.4_45.8.4_45_tiling,
-                 `9.3.9.3*` = create_9.3.9.3_40_tiling,
-                 `12.3*.12.3*` = create_12.3_30.12.3_30_tiling,
-                 `12.12.4*` = create_12.12.4_60_tiling,
-                 `18.18.3*` = create_18.18.3__tiling,
-                 abort(paste("Don't know how to do tiling", type)))
-    gTree(children = fn(xyi, gp, spacing, units, angle), name = "polygon_tiling")
+	fn <- switch(
+		type,
+		elongated_triangular = create_el_tri_tiling,
+		herringbone = create_herringbone_tiling,
+		hexagonal = create_hexagonal_tiling,
+		pythagorean = create_pythagorean_tiling,
+		snub_square = create_snub_square_tiling,
+		snub_trihexagonal = create_snub_trihex_tiling,
+		square = create_square_tiling,
+		rhombille = create_rhombille_tiling,
+		rhombitrihexagonal = create_rhombitrihexagonal_tiling,
+		tetrakis_square = create_tetrakis_tiling,
+		triangular = create_triangular_tiling,
+		trihexagonal = create_trihexagonal_tiling,
+		truncated_hexagonal = create_trunc_hex_tiling,
+		truncated_square = create_trunc_square_tiling,
+		truncated_trihexagonal = create_trunc_trihex_tiling,
+		`2*.2**.2*.2**` = create_2_53.2__233.2_53.2__233_tiling,
+		`2**.3**.12*` = create_2__.3__.12__tiling,
+		`3.3.3.3**` = create_3.3.3.3___tiling,
+		`3.3*.3.3**` = create_3.3_30.3.3_30_tiling,
+		`3.3.3.12*.3.3.12*` = create_3.3.3.12_30.3.3.12_30_tiling,
+		`3.4.6.3.12*` = create_3.4.6.3.12_30_tiling,
+		`3.3.8*.3.4.3.8*` = create_3.3.8_15.3.4.3.8_15_tiling,
+		`3.3.8*.4**.8*` = create_3.3.8_15.4__60.8_15_tiling,
+		`3.4.8.3.8*` = create_3.4.8.3.8_15_tiling,
+		`3.6*.6**` = create_3.6_30.6__30_tiling,
+		`4.2*.4.2**` = create_4.2_60.4.2__240_tiling,
+		`4.4*.4**` = create_4.4_30.4__30_tiling,
+		`4.6.4*.6` = create_4.6.4_30.6_tiling,
+		`4.6*.4.6*.4.6*` = create_4.6_30.4.6_30.4.6_30_tiling,
+		`4.8*.4**.8*` = create_4.8_.4__.8__tiling,
+		`6.6*.6.6*` = create_6.6_60.6.6_60_tiling,
+		`8.4*.8.4*` = create_8.4_45.8.4_45_tiling,
+		`9.3.9.3*` = create_9.3.9.3_40_tiling,
+		`12.3*.12.3*` = create_12.3_30.12.3_30_tiling,
+		`12.12.4*` = create_12.12.4_60_tiling,
+		`18.18.3*` = create_18.18.3__tiling,
+		abort(paste("Don't know how to do tiling", type))
+	)
+	gTree(children = fn(xyi, gp, spacing, units, angle), name = "polygon_tiling")
 }
 
 create_3.3.3.12_30.3.3.12_30_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_star <- gp_dod <- gp_bg <- gp
-    if (n_col == 2L) {
-        gp_bg$fill <- gp_star$fill <- gp$fill[1L]
-        gp_dod$fill <- gp$fill[2L]
-    } else if (n_col == 3L) {
-        gp_bg$fill <- gp$fill[3]
-        gp_dod$fill <- gp$fill[2]
-        gp_star$fill <- gp$fill[1]
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    dodecagons <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                              grid = "hex_circle",
-                              shape = "convex12", density = 1.034, rot = 15,
-                              spacing = spacing, units = units,
-                              angle = angle, gp = gp_dod,
-                              name = "dodecagons")
-    scale <- star_scale(12, 60, external = TRUE)
-    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                         grid = "hex_circle",
-                         shape = "star12", density = 1.034, rot = 15,
-                         spacing = spacing, units = units,
-                         angle = angle, gp = gp_star,
-                         scale = scale, name = "stars")
-    gList(bg, dodecagons, stars)
+	n_col <- length(gp$fill)
+	gp_star <- gp_dod <- gp_bg <- gp
+	if (n_col == 2L) {
+		gp_bg$fill <- gp_star$fill <- gp$fill[1L]
+		gp_dod$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp_bg$fill <- gp$fill[3]
+		gp_dod$fill <- gp$fill[2]
+		gp_star$fill <- gp$fill[1]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	dodecagons <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		grid = "hex_circle",
+		shape = "convex12",
+		density = 1.034,
+		rot = 15,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_dod,
+		name = "dodecagons"
+	)
+	scale <- star_scale(12, 60, external = TRUE)
+	stars <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		grid = "hex_circle",
+		shape = "star12",
+		density = 1.034,
+		rot = 15,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_star,
+		scale = scale,
+		name = "stars"
+	)
+	gList(bg, dodecagons, stars)
 }
 
 create_3.3.8_15.4__60.8_15_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_star8 <- gp_star4 <- gp_sq <- gp
-    if (n_col == 2L) {
-        gp_sq$fill <- gp_star4$fill <- gp$fill[1L]
-        gp_star8$fill <- gp$fill[2L]
-    } else if (n_col == 3L) {
-        gp_sq$fill <- gp$fill[2]
-        gp_star4$fill <- gp$fill[1]
-        gp_star8$fill <- gp$fill[3]
-    }
-    sq <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                      shape = "square", density = 1,
-                      spacing = spacing, units = units,
-                      angle = angle, gp = gp_sq,
-                      name = "background_color")
-    scale <- star_scale(4, 60)
-    star4 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                            shape = "star4", density = 1.14, rot = 45,
-                            spacing = spacing, units = units,
-                            xoffset = spacing / 2, yoffset = spacing / 2,
-                            angle = angle, gp = gp_star4, name = "star4")
-    scale <- star_scale(8, 15)
-    star8 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                         shape = "star8", density = 1.082, rot = 22.5,
-                         spacing = spacing, units = units,
-                         angle = angle, gp = gp_star8,
-                         scale = scale, name = "star8")
-    gList(sq, star4, star8)
+	n_col <- length(gp$fill)
+	gp_star8 <- gp_star4 <- gp_sq <- gp
+	if (n_col == 2L) {
+		gp_sq$fill <- gp_star4$fill <- gp$fill[1L]
+		gp_star8$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp_sq$fill <- gp$fill[2]
+		gp_star4$fill <- gp$fill[1]
+		gp_star8$fill <- gp$fill[3]
+	}
+	sq <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "square",
+		density = 1,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_sq,
+		name = "background_color"
+	)
+	scale <- star_scale(4, 60)
+	star4 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star4",
+		density = 1.14,
+		rot = 45,
+		spacing = spacing,
+		units = units,
+		xoffset = spacing / 2,
+		yoffset = spacing / 2,
+		angle = angle,
+		gp = gp_star4,
+		name = "star4"
+	)
+	scale <- star_scale(8, 15)
+	star8 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star8",
+		density = 1.082,
+		rot = 22.5,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_star8,
+		scale = scale,
+		name = "star8"
+	)
+	gList(sq, star4, star8)
 }
 create_3.3.8_15.3.4.3.8_15_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_star <- gp_oct <- gp_bg <- gp
-    if (n_col == 2L) {
-        gp_bg$fill <- gp_star$fill <- gp$fill[1L]
-        gp_oct$fill <- gp$fill[2L]
-    } else if (n_col == 3L) {
-        gp_bg$fill <- gp$fill[3]
-        gp_oct$fill <- gp$fill[1]
-        gp_star$fill <- gp$fill[2]
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    octagons <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                            shape = "convex8", density = 1.082, rot = 22.5,
-                            spacing = spacing, units = units,
-                            angle = angle, gp = gp_oct,
-                            name = "octagons")
-    scale <- star_scale(8, 60, external = TRUE)
-    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                         shape = "star8", density = 1.082, rot = 22.5,
-                         spacing = spacing, units = units,
-                         angle = angle, gp = gp_star,
-                         scale = scale, name = "stars")
-    gList(bg, octagons, stars)
+	n_col <- length(gp$fill)
+	gp_star <- gp_oct <- gp_bg <- gp
+	if (n_col == 2L) {
+		gp_bg$fill <- gp_star$fill <- gp$fill[1L]
+		gp_oct$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp_bg$fill <- gp$fill[3]
+		gp_oct$fill <- gp$fill[1]
+		gp_star$fill <- gp$fill[2]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	octagons <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex8",
+		density = 1.082,
+		rot = 22.5,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_oct,
+		name = "octagons"
+	)
+	scale <- star_scale(8, 60, external = TRUE)
+	stars <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star8",
+		density = 1.082,
+		rot = 22.5,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_star,
+		scale = scale,
+		name = "stars"
+	)
+	gList(bg, octagons, stars)
 }
 
 create_3.4.8.3.8_15_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_star <- gp_oct <- gp_bg <- gp
-    if (n_col == 2L) {
-        gp_bg$fill <- gp_star$fill <- gp$fill[2L]
-        gp_oct$fill <- gp$fill[1L]
-    } else if (n_col == 3L) {
-        gp_bg$fill <- gp$fill[2]
-        gp_oct$fill <- gp$fill[c(1,3)]
-        gp_star$fill <- gp$fill[2]
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    octagons <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                            shape = "convex8", density = 1.082, rot = 22.5,
-                            spacing = spacing, units = units,
-                            angle = angle, gp = gp_oct,
-                            name = "octagons")
-    scale <- star_scale(8, 60, external = TRUE)
-    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                         shape = c("null", "star8"), density = 1.082, rot = 22.5,
-                         spacing = spacing, units = units,
-                         angle = angle, gp = gp_star,
-                         scale = scale, name = "stars")
-    gList(bg, octagons, stars)
+	n_col <- length(gp$fill)
+	gp_star <- gp_oct <- gp_bg <- gp
+	if (n_col == 2L) {
+		gp_bg$fill <- gp_star$fill <- gp$fill[2L]
+		gp_oct$fill <- gp$fill[1L]
+	} else if (n_col == 3L) {
+		gp_bg$fill <- gp$fill[2]
+		gp_oct$fill <- gp$fill[c(1, 3)]
+		gp_star$fill <- gp$fill[2]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	octagons <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex8",
+		density = 1.082,
+		rot = 22.5,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_oct,
+		name = "octagons"
+	)
+	scale <- star_scale(8, 60, external = TRUE)
+	stars <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = c("null", "star8"),
+		density = 1.082,
+		rot = 22.5,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_star,
+		scale = scale,
+		name = "stars"
+	)
+	gList(bg, octagons, stars)
 }
 create_4.2_60.4.2__240_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_rh <- gp_sq1 <- gp_sq2 <- gp
-    if (n_col == 2L) {
-        gp_sq1$fill <- gp_sq2$fill <- gp$fill[1L]
-        gp_rh$fill <- gp$fill[2L]
-    } else if (n_col == 3L) {
-        gp_sq2$fill <- gp$fill[3]
-        gp_sq1$fill <- gp$fill[2]
-        gp_rh$fill <- gp$fill[1]
-    }
-    dens_sq <- 0.73
-    squares.1 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                             shape = "convex4", density = dens_sq, rot = 60,
-                             spacing = spacing, units = units,
-                             angle = angle, gp = gp_sq1,
-                             name = "squares.1")
-    squares.2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                             shape = "convex4", density = dens_sq, rot = -60,
-                             xoffset = 0.5 * spacing, yoffset = 0.5 * spacing,
-                             spacing = spacing, units = units,
-                             angle = angle, gp = gp_sq2,
-                             name = "squares.2")
-    scale <- star_scale(2, 60)
-    dens_rh <- 0.88
-    rhombi.1 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                         shape = "star2", density = dens_rh, rot = 45,
-                         spacing = spacing, units = units,
-                         angle = angle, gp = gp_rh,
-                         xoffset = 0.5 * spacing,
-                         scale = scale, name = "rhombi.1")
-    rhombi.2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                         shape = "star2", density = dens_rh, rot = -45,
-                         spacing = spacing, units = units,
-                         angle = angle, gp = gp_rh,
-                         yoffset = 0.5 * spacing,
-                         scale = scale, name = "rhombi.2")
-    gList(squares.1, squares.2, rhombi.1, rhombi.2)
+	n_col <- length(gp$fill)
+	gp_rh <- gp_sq1 <- gp_sq2 <- gp
+	if (n_col == 2L) {
+		gp_sq1$fill <- gp_sq2$fill <- gp$fill[1L]
+		gp_rh$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp_sq2$fill <- gp$fill[3]
+		gp_sq1$fill <- gp$fill[2]
+		gp_rh$fill <- gp$fill[1]
+	}
+	dens_sq <- 0.73
+	squares.1 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex4",
+		density = dens_sq,
+		rot = 60,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_sq1,
+		name = "squares.1"
+	)
+	squares.2 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex4",
+		density = dens_sq,
+		rot = -60,
+		xoffset = 0.5 * spacing,
+		yoffset = 0.5 * spacing,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_sq2,
+		name = "squares.2"
+	)
+	scale <- star_scale(2, 60)
+	dens_rh <- 0.88
+	rhombi.1 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star2",
+		density = dens_rh,
+		rot = 45,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_rh,
+		xoffset = 0.5 * spacing,
+		scale = scale,
+		name = "rhombi.1"
+	)
+	rhombi.2 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star2",
+		density = dens_rh,
+		rot = -45,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_rh,
+		yoffset = 0.5 * spacing,
+		scale = scale,
+		name = "rhombi.2"
+	)
+	gList(squares.1, squares.2, rhombi.1, rhombi.2)
 }
 create_2_53.2__233.2_53.2__233_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_rh1 <- gp_rh2 <- gp_rh3 <- gp_rh4 <- gp
-    if (n_col == 2L) {
-        gp_rh1$fill <- gp_rh2$fill <- gp$fill[1L]
-        gp_rh3$fill <- gp_rh4$fill <- gp$fill[2L]
-    } else if (n_col == 3L) {
-        gp_rh1$fill <- gp$fill[2:3]
-        gp_rh2$fill <- gp$fill[3:2]
-        gp_rh3$fill <- gp$fill[1]
-        gp_rh4$fill <- gp$fill[1]
-    }
-    rhombi.1 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                             shape = "star2", density = 1, scale = 0.5,
-                             spacing = spacing, units = units,
-                             angle = angle, gp = gp_rh1,
-                             name = "rhombi.1", type = "horizontal")
-    rhombi.2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                             shape = "star2", density = 1, scale = 0.5,
-                             xoffset = 0.5 * spacing,
-                             spacing = spacing, units = units,
-                             angle = angle, gp = gp_rh2,
-                             name = "rhombi.2", type = "horizontal")
-    rhombi.3 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                         shape = "star2", density = 1, scale = 0.5,
-                         spacing = spacing, units = units,
-                         angle = angle, gp = gp_rh3,
-                         xoffset = 0.25 * spacing, yoffset = 0.5 * spacing,
-                         scale = scale, name = "rhombi.3")
-    rhombi.4 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                         shape = "star2", density = 1, scale = 0.5,
-                         spacing = spacing, units = units,
-                         angle = angle, gp = gp_rh4,
-                         xoffset = 0.75 * spacing, yoffset = 0.5 * spacing,
-                         scale = scale, name = "rhombi.4")
-    gList(rhombi.1, rhombi.2, rhombi.3, rhombi.4)
+	n_col <- length(gp$fill)
+	gp_rh1 <- gp_rh2 <- gp_rh3 <- gp_rh4 <- gp
+	if (n_col == 2L) {
+		gp_rh1$fill <- gp_rh2$fill <- gp$fill[1L]
+		gp_rh3$fill <- gp_rh4$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp_rh1$fill <- gp$fill[2:3]
+		gp_rh2$fill <- gp$fill[3:2]
+		gp_rh3$fill <- gp$fill[1]
+		gp_rh4$fill <- gp$fill[1]
+	}
+	rhombi.1 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star2",
+		density = 1,
+		scale = 0.5,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_rh1,
+		name = "rhombi.1",
+		type = "horizontal"
+	)
+	rhombi.2 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star2",
+		density = 1,
+		scale = 0.5,
+		xoffset = 0.5 * spacing,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_rh2,
+		name = "rhombi.2",
+		type = "horizontal"
+	)
+	rhombi.3 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star2",
+		density = 1,
+		scale = 0.5,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_rh3,
+		xoffset = 0.25 * spacing,
+		yoffset = 0.5 * spacing,
+		scale = scale,
+		name = "rhombi.3"
+	)
+	rhombi.4 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star2",
+		density = 1,
+		scale = 0.5,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_rh4,
+		xoffset = 0.75 * spacing,
+		yoffset = 0.5 * spacing,
+		scale = scale,
+		name = "rhombi.4"
+	)
+	gList(rhombi.1, rhombi.2, rhombi.3, rhombi.4)
 }
 
 create_4.6_30.4.6_30.4.6_30_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_star <- gp_bg <- gp
-    gp_bg$fill <- gp$fill[1L]
-    if (n_col > 1L)
-        gp_star$fill <- rev(gp$fill[-1L])
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    scale <- star_scale(6, 30)
-    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "star6", density = 1, grid = "hex",
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_star,
-                        scale = scale, name = "stars")
-    gList(bg, stars)
+	n_col <- length(gp$fill)
+	gp_star <- gp_bg <- gp
+	gp_bg$fill <- gp$fill[1L]
+	if (n_col > 1L) {
+		gp_star$fill <- rev(gp$fill[-1L])
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	scale <- star_scale(6, 30)
+	stars <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star6",
+		density = 1,
+		grid = "hex",
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_star,
+		scale = scale,
+		name = "stars"
+	)
+	gList(bg, stars)
 }
 create_8.4_45.8.4_45_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_oct <- gp_bg <- gp
-    gp_bg$fill <- gp$fill[n_col]
-    if (n_col == 2L) {
-        gp_oct$fill <- gp$fill[-n_col]
-    } else if (n_col == 3L) {
-        gp_oct$fill <- rep(gp$fill[-n_col], each = 2)
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    subtype <- if (n_col > 2) "2134" else NULL
-    octs <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = c("convex8", "null"), density = 1.41,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_oct,
-                        type = "square_tiling", subtype = subtype,
-                        scale = scale, name = "octagons")
-    gList(bg, octs)
+	n_col <- length(gp$fill)
+	gp_oct <- gp_bg <- gp
+	gp_bg$fill <- gp$fill[n_col]
+	if (n_col == 2L) {
+		gp_oct$fill <- gp$fill[-n_col]
+	} else if (n_col == 3L) {
+		gp_oct$fill <- rep(gp$fill[-n_col], each = 2)
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	subtype <- if (n_col > 2) "2134" else NULL
+	octs <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = c("convex8", "null"),
+		density = 1.41,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_oct,
+		type = "square_tiling",
+		subtype = subtype,
+		scale = scale,
+		name = "octagons"
+	)
+	gList(bg, octs)
 }
 
 create_12.3_30.12.3_30_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_dod <- gp_bg <- gp
-    gp_bg$fill <- gp$fill[n_col]
-    if (n_col > 1L)
-        gp_dod$fill <- gp$fill[-n_col]
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    dodecagons <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex12", density = 1,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_dod,
-                        scale = scale, name = "dodecagons")
-    gList(bg, dodecagons)
+	n_col <- length(gp$fill)
+	gp_dod <- gp_bg <- gp
+	gp_bg$fill <- gp$fill[n_col]
+	if (n_col > 1L) {
+		gp_dod$fill <- gp$fill[-n_col]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	dodecagons <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex12",
+		density = 1,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_dod,
+		scale = scale,
+		name = "dodecagons"
+	)
+	gList(bg, dodecagons)
 }
 create_12.12.4_60_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_dod <- gp_bg <- gp
-    gp_bg$fill <- gp$fill[n_col]
-    if (n_col > 1L)
-        gp_dod$fill <- gp$fill[-n_col]
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    dodecagons <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex12", density = 1.035, rot = 15,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_dod,
-                        scale = scale, name = "dodecagons")
-    gList(bg, dodecagons)
+	n_col <- length(gp$fill)
+	gp_dod <- gp_bg <- gp
+	gp_bg$fill <- gp$fill[n_col]
+	if (n_col > 1L) {
+		gp_dod$fill <- gp$fill[-n_col]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	dodecagons <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex12",
+		density = 1.035,
+		rot = 15,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_dod,
+		scale = scale,
+		name = "dodecagons"
+	)
+	gList(bg, dodecagons)
 }
 create_4.8_.4__.8__tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_dod <- gp_bg <- gp
-    gp_bg$fill <- gp$fill[n_col]
-    if (n_col > 1L)
-        gp_dod$fill <- gp$fill[1:2]
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    scale <- star_scale(8, 90, external = TRUE)
-    polygons <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = c("star8", "convex4"), density = c(1.53, 1.2),
-                        rot = c(22.5, 0),
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_dod,
-                        scale = scale, name = "polygons")
-    gList(bg, polygons)
+	n_col <- length(gp$fill)
+	gp_dod <- gp_bg <- gp
+	gp_bg$fill <- gp$fill[n_col]
+	if (n_col > 1L) {
+		gp_dod$fill <- gp$fill[1:2]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	scale <- star_scale(8, 90, external = TRUE)
+	polygons <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = c("star8", "convex4"),
+		density = c(1.53, 1.2),
+		rot = c(22.5, 0),
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_dod,
+		scale = scale,
+		name = "polygons"
+	)
+	gList(bg, polygons)
 }
 create_18.18.3__tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_dod <- gp_bg <- gp
-    gp_bg$fill <- gp$fill[n_col]
-    if (n_col > 1L)
-        gp_dod$fill <- rev(gp$fill[-n_col])
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    eighteen <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex18", density = 1.014, grid = "hex_circle",
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_dod,
-                        scale = scale, name = "eighteen-sided")
-    gList(bg, eighteen)
+	n_col <- length(gp$fill)
+	gp_dod <- gp_bg <- gp
+	gp_bg$fill <- gp$fill[n_col]
+	if (n_col > 1L) {
+		gp_dod$fill <- rev(gp$fill[-n_col])
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	eighteen <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex18",
+		density = 1.014,
+		grid = "hex_circle",
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_dod,
+		scale = scale,
+		name = "eighteen-sided"
+	)
+	gList(bg, eighteen)
 }
 create_3.6_30.6__30_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_star <- gp_bg <- gp
-    if (n_col == 2L) {
-        gp_bg$fill <- gp$fill[2L]
-        gp_star$fill <- rev(gp$fill[1L])
-    } else if (n_col == 3L) {
-        gp_bg$fill <- gp$fill[2L]
-        gp_star$fill <- gp$fill[c(3, 1)]
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    scale <- star_scale(6, 30)
-    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "star6", density = 1.30, rot = -22.0,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_star,
-                        scale = scale, grid = "hex", name = "stars")
-    gList(bg, stars)
+	n_col <- length(gp$fill)
+	gp_star <- gp_bg <- gp
+	if (n_col == 2L) {
+		gp_bg$fill <- gp$fill[2L]
+		gp_star$fill <- rev(gp$fill[1L])
+	} else if (n_col == 3L) {
+		gp_bg$fill <- gp$fill[2L]
+		gp_star$fill <- gp$fill[c(3, 1)]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	scale <- star_scale(6, 30)
+	stars <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star6",
+		density = 1.30,
+		rot = -22.0,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_star,
+		scale = scale,
+		grid = "hex",
+		name = "stars"
+	)
+	gList(bg, stars)
 }
 create_4.4_30.4__30_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_star <- gp_bg <- gp
-    if (n_col == 2L) {
-        gp_star$fill <- gp$fill[1]
-        gp_bg$fill <- gp$fill[2]
-    } else if (n_col == 3L) {
-        gp_star$fill <- gp$fill[2:3]
-        gp_bg$fill <- gp$fill[1]
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    scale <- star_scale(4, 30)
-    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                         shape = "star4", density = 1.60, rot = -9.5,
-                         spacing = spacing, units = units,
-                         angle = angle, gp = gp_star,
-                         scale = scale, name = "stars")
-    gList(bg, stars)
+	n_col <- length(gp$fill)
+	gp_star <- gp_bg <- gp
+	if (n_col == 2L) {
+		gp_star$fill <- gp$fill[1]
+		gp_bg$fill <- gp$fill[2]
+	} else if (n_col == 3L) {
+		gp_star$fill <- gp$fill[2:3]
+		gp_bg$fill <- gp$fill[1]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	scale <- star_scale(4, 30)
+	stars <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star4",
+		density = 1.60,
+		rot = -9.5,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_star,
+		scale = scale,
+		name = "stars"
+	)
+	gList(bg, stars)
 }
 
 create_3.3_30.3.3_30_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_star <- gp_bg <- gp
-    if (n_col == 2L) {
-        gp_star$fill <- gp$fill[1L]
-        gp_bg$fill <- gp$fill[2L]
-    } else if (n_col == 3L) {
-        gp_star$fill <- gp$fill[c(3L, 1L)]
-        gp_bg$fill <- gp$fill[2L]
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    scale <- star_scale(3, 30)
-    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "star3", density = 1.57,
-                        grid = "hex_circle", rot = 30,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_star,
-                        scale = scale, name = "stars")
-    gList(bg, stars)
+	n_col <- length(gp$fill)
+	gp_star <- gp_bg <- gp
+	if (n_col == 2L) {
+		gp_star$fill <- gp$fill[1L]
+		gp_bg$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp_star$fill <- gp$fill[c(3L, 1L)]
+		gp_bg$fill <- gp$fill[2L]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	scale <- star_scale(3, 30)
+	stars <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star3",
+		density = 1.57,
+		grid = "hex_circle",
+		rot = 30,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_star,
+		scale = scale,
+		name = "stars"
+	)
+	gList(bg, stars)
 }
 create_3.3.3.3___tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_tri <- gp_bg <- gp
-    if (n_col == 2L) {
-        gp_tri$fill <- gp$fill[1L]
-        gp_bg$fill <- gp$fill[2L]
-    } else if (n_col == 3L) {
-        gp_tri$fill <- gp$fill[c(3L, 1L)]
-        gp_bg$fill <- gp$fill[2L]
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    triangles <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex3", density = 1.33,
-                        grid = "hex_circle", rot = 30,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_tri,
-                        scale = scale, name = "triangles")
-    gList(bg, triangles)
+	n_col <- length(gp$fill)
+	gp_tri <- gp_bg <- gp
+	if (n_col == 2L) {
+		gp_tri$fill <- gp$fill[1L]
+		gp_bg$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp_tri$fill <- gp$fill[c(3L, 1L)]
+		gp_bg$fill <- gp$fill[2L]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	triangles <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex3",
+		density = 1.33,
+		grid = "hex_circle",
+		rot = 30,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_tri,
+		scale = scale,
+		name = "triangles"
+	)
+	gList(bg, triangles)
 }
 create_6.6_60.6.6_60_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_star <- gp_bg <- gp
-    if (n_col == 2L) {
-        gp_star$fill <- gp$fill[1L]
-        gp_bg$fill <- gp$fill[2L]
-    } else if (n_col == 3L) {
-        gp_star$fill <- gp$fill[c(3L, 1L)]
-        gp_bg$fill <- gp$fill[2L]
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    scale <- star_scale(6, 120, external = TRUE)
-    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "star6", density = 1,
-                        grid = "hex_circle", rot = 30,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_star,
-                        scale = scale, name = "stars")
-    gList(bg, stars)
+	n_col <- length(gp$fill)
+	gp_star <- gp_bg <- gp
+	if (n_col == 2L) {
+		gp_star$fill <- gp$fill[1L]
+		gp_bg$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp_star$fill <- gp$fill[c(3L, 1L)]
+		gp_bg$fill <- gp$fill[2L]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	scale <- star_scale(6, 120, external = TRUE)
+	stars <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star6",
+		density = 1,
+		grid = "hex_circle",
+		rot = 30,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_star,
+		scale = scale,
+		name = "stars"
+	)
+	gList(bg, stars)
 }
 
 create_herringbone_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    fill2 <- gp$fill[1L]
-    if (n_col > 1L)
-        gp$fill <- gp$fill[-1L]
-    grob <- patternGrob("weave", xyi$x, xyi$y, xyi$id,
-                        type = "twill", subtype = "2/2(1)",
-                        density = 1, fill2 = fill2,
-                        spacing = spacing, units = units,
-                        angle = angle + 45, gp = gp,
-                        name = "rectangles")
-    gList(grob)
+	n_col <- length(gp$fill)
+	fill2 <- gp$fill[1L]
+	if (n_col > 1L) {
+		gp$fill <- gp$fill[-1L]
+	}
+	grob <- patternGrob(
+		"weave",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		type = "twill",
+		subtype = "2/2(1)",
+		density = 1,
+		fill2 = fill2,
+		spacing = spacing,
+		units = units,
+		angle = angle + 45,
+		gp = gp,
+		name = "rectangles"
+	)
+	gList(grob)
 }
 
 create_hexagonal_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    if (n_col == 2L)
-        gp$fill <- rev(gp$fill)
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex6", density = 1, grid = "hex",
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp,
-                        name = "hexagons")
-    gList(grob)
+	n_col <- length(gp$fill)
+	if (n_col == 2L) {
+		gp$fill <- rev(gp$fill)
+	}
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex6",
+		density = 1,
+		grid = "hex",
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp,
+		name = "hexagons"
+	)
+	gList(grob)
 }
 
 create_el_tri_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp
-    if (n_col == 2L) {
-        gp_bg$fill <- gp$fill[2L]
-        gp$fill <- rep(c(gp$fill[1L], gp$fill[2L]), each = 2)
-    } else if (n_col == 3L) {
-        gp_bg$fill <- gp$fill[1L]
-        gp$fill <- c(gp$fill[2L], gp$fill[3L], gp$fill[1L], gp$fill[1L])
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = rep(c("convex4", "convex3"), each = 2),
-                        density = rep(c(1.41, 1.15), each = 2),
-                        grid = "elongated_triangle",
-                        type = "square_tiling", subtype = "3412",
-                        rot = rep(c(45, 0), each = 2),
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp,
-                        name = "squares_and_triangles")
-    gList(bg, grob)
+	n_col <- length(gp$fill)
+	gp_bg <- gp
+	if (n_col == 2L) {
+		gp_bg$fill <- gp$fill[2L]
+		gp$fill <- rep(c(gp$fill[1L], gp$fill[2L]), each = 2)
+	} else if (n_col == 3L) {
+		gp_bg$fill <- gp$fill[1L]
+		gp$fill <- c(gp$fill[2L], gp$fill[3L], gp$fill[1L], gp$fill[1L])
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = rep(c("convex4", "convex3"), each = 2),
+		density = rep(c(1.41, 1.15), each = 2),
+		grid = "elongated_triangle",
+		type = "square_tiling",
+		subtype = "3412",
+		rot = rep(c(45, 0), each = 2),
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp,
+		name = "squares_and_triangles"
+	)
+	gList(bg, grob)
 }
 
 create_pythagorean_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp
-    gp_bg$fill <- gp$fill[n_col]
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    if (n_col == 2L)
-        gp$fill <- gp$fill[1L]
-    else if (n_col == 3L)
-        gp$fill <- gp$fill[2:1]
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex4", density = 1.222, rot = 15,
-                        spacing = spacing, units = units,
-                        angle = angle - 60, gp = gp,
-                        name = "squares_larger")
-    gList(bg, grob)
+	n_col <- length(gp$fill)
+	gp_bg <- gp
+	gp_bg$fill <- gp$fill[n_col]
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	if (n_col == 2L) {
+		gp$fill <- gp$fill[1L]
+	} else if (n_col == 3L) {
+		gp$fill <- gp$fill[2:1]
+	}
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex4",
+		density = 1.222,
+		rot = 15,
+		spacing = spacing,
+		units = units,
+		angle = angle - 60,
+		gp = gp,
+		name = "squares_larger"
+	)
+	gList(bg, grob)
 }
 
 create_rhombitrihexagonal_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp
-    gp_sq <- gp_bg
-    gp_dd <- gp_bg
-    gp_bg$fill <- gp$fill[n_col]
-    if (n_col == 2L) {
-        gp_sq$fill <- gp$fill[1L]
-        gp_dd$fill <- gp$fill[1L]
-    }
-    else if (n_col == 3L) {
-        gp_bg$fill <- gp$fill[2L]
-        gp_sq$fill <- gp$fill[3L]
-        gp_dd$fill <- gp$fill[1L]
-    }
-    # hexagons
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    # squares
-    stripe1 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
-                           angle = angle,
-                           grid = "hex_circle", density = 0.25,
-                           spacing = spacing, units = units,
-                           gp = gp_sq, name = "square_stripes.1")
-    stripe2 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
-                           angle = angle + 60,
-                           grid = "hex_circle", density = 0.25,
-                           spacing = spacing, units = units,
-                           gp = gp_sq, name = "square_stripes.2")
-    stripe3 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
-                           angle = angle - 60,
-                           grid = "hex_circle", density = 0.25,
-                           spacing = spacing, units = units,
-                           gp = gp_sq, name = "square_stripes.3")
-    # dodecagons
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex12", density = 0.82, rot = 15,
-                        grid = "hex_circle",
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_dd,
-                        name = "dodecagons")
-    gList(bg, stripe1, stripe2, stripe3, grob)
+	n_col <- length(gp$fill)
+	gp_bg <- gp
+	gp_sq <- gp_bg
+	gp_dd <- gp_bg
+	gp_bg$fill <- gp$fill[n_col]
+	if (n_col == 2L) {
+		gp_sq$fill <- gp$fill[1L]
+		gp_dd$fill <- gp$fill[1L]
+	} else if (n_col == 3L) {
+		gp_bg$fill <- gp$fill[2L]
+		gp_sq$fill <- gp$fill[3L]
+		gp_dd$fill <- gp$fill[1L]
+	}
+	# hexagons
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	# squares
+	stripe1 <- patternGrob(
+		"stripe",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		angle = angle,
+		grid = "hex_circle",
+		density = 0.25,
+		spacing = spacing,
+		units = units,
+		gp = gp_sq,
+		name = "square_stripes.1"
+	)
+	stripe2 <- patternGrob(
+		"stripe",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		angle = angle + 60,
+		grid = "hex_circle",
+		density = 0.25,
+		spacing = spacing,
+		units = units,
+		gp = gp_sq,
+		name = "square_stripes.2"
+	)
+	stripe3 <- patternGrob(
+		"stripe",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		angle = angle - 60,
+		grid = "hex_circle",
+		density = 0.25,
+		spacing = spacing,
+		units = units,
+		gp = gp_sq,
+		name = "square_stripes.3"
+	)
+	# dodecagons
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex12",
+		density = 0.82,
+		rot = 15,
+		grid = "hex_circle",
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_dd,
+		name = "dodecagons"
+	)
+	gList(bg, stripe1, stripe2, stripe3, grob)
 }
 
 create_3.4.6.3.12_30_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp_sq <- gp_dd <- gp
-    if (n_col == 2L) {
-        gp_bg$fill <- gp$fill[1L]
-        gp_sq$fill <- gp_dd$fill <- gp$fill[2L]
-    }
-    else if (n_col == 3L) {
-        gp_bg$fill <- gp$fill[1L]
-        gp_dd$fill <- gp$fill[2L]
-        gp_sq$fill <- gp$fill[3L]
-    }
-    # hexagons
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    # squares
-    stripe1 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
-                           angle = angle,
-                           grid = "hex_circle", density = 0.25,
-                           spacing = spacing, units = units,
-                           gp = gp_sq, name = "square_stripes.1")
-    stripe2 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
-                           angle = angle + 60,
-                           grid = "hex_circle", density = 0.25,
-                           spacing = spacing, units = units,
-                           gp = gp_sq, name = "square_stripes.2")
-    stripe3 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
-                           angle = angle - 60,
-                           grid = "hex_circle", density = 0.25,
-                           spacing = spacing, units = units,
-                           gp = gp_sq, name = "square_stripes.3")
-    # triangles
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex12", density = 0.82, rot = 15,
-                        grid = "hex_circle",
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_dd,
-                        name = "dodecagons")
-    # twelve-pointed stars
-    scale <- star_scale(12, 30)
-    stars <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "star12", density = 0.82, rot = 15,
-                        grid = "hex_circle", scale = scale,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_bg,
-                        name = "stars")
-    gList(bg, stripe1, stripe2, stripe3, grob, stars)
+	n_col <- length(gp$fill)
+	gp_bg <- gp_sq <- gp_dd <- gp
+	if (n_col == 2L) {
+		gp_bg$fill <- gp$fill[1L]
+		gp_sq$fill <- gp_dd$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp_bg$fill <- gp$fill[1L]
+		gp_dd$fill <- gp$fill[2L]
+		gp_sq$fill <- gp$fill[3L]
+	}
+	# hexagons
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	# squares
+	stripe1 <- patternGrob(
+		"stripe",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		angle = angle,
+		grid = "hex_circle",
+		density = 0.25,
+		spacing = spacing,
+		units = units,
+		gp = gp_sq,
+		name = "square_stripes.1"
+	)
+	stripe2 <- patternGrob(
+		"stripe",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		angle = angle + 60,
+		grid = "hex_circle",
+		density = 0.25,
+		spacing = spacing,
+		units = units,
+		gp = gp_sq,
+		name = "square_stripes.2"
+	)
+	stripe3 <- patternGrob(
+		"stripe",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		angle = angle - 60,
+		grid = "hex_circle",
+		density = 0.25,
+		spacing = spacing,
+		units = units,
+		gp = gp_sq,
+		name = "square_stripes.3"
+	)
+	# triangles
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex12",
+		density = 0.82,
+		rot = 15,
+		grid = "hex_circle",
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_dd,
+		name = "dodecagons"
+	)
+	# twelve-pointed stars
+	scale <- star_scale(12, 30)
+	stars <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star12",
+		density = 0.82,
+		rot = 15,
+		grid = "hex_circle",
+		scale = scale,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_bg,
+		name = "stars"
+	)
+	gList(bg, stripe1, stripe2, stripe3, grob, stars)
 }
 
 create_snub_square_tiling <- function(xyi, gp, spacing, units, angle) {
-    scale_star <- star_scale(4, 90 + 60, external = TRUE)
-    n_col <- length(gp$fill)
-    gp_sq <- gp_sq2 <- gp_tri <- gp
-    if (n_col == 2) {
-        gp_sq2$fill <- gp_sq$fill <- gp$fill[1L]
-        gp_tri$fill <- gp$fill[2L]
-    } else if (n_col == 3) {
-        gp_tri$fill <- gp$fill[1L]
-        gp_sq$fill <- gp$fill[2L]
-        gp_sq2$fill <- gp$fill[3L]
-    }
-    sq1 <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc",
-                       gp = gp_sq, name = "squares.1")
-    tri <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                       shape = "star4", scale = scale_star,
-                       angle = angle, rot = 15,
-                       spacing = spacing, units = units,
-                       density = 1.41, gp = gp_tri, name = "triangles")
-    sq2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                       shape = "convex4", scale = scale_star,
-                       angle = angle, rot = 60,
-                       spacing = spacing, units = units,
-                       density = scale_star * 1.41, gp = gp_sq2, name = "squares.2")
-    gList(sq1, tri, sq2)
+	scale_star <- star_scale(4, 90 + 60, external = TRUE)
+	n_col <- length(gp$fill)
+	gp_sq <- gp_sq2 <- gp_tri <- gp
+	if (n_col == 2) {
+		gp_sq2$fill <- gp_sq$fill <- gp$fill[1L]
+		gp_tri$fill <- gp$fill[2L]
+	} else if (n_col == 3) {
+		gp_tri$fill <- gp$fill[1L]
+		gp_sq$fill <- gp$fill[2L]
+		gp_sq2$fill <- gp$fill[3L]
+	}
+	sq1 <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_sq, name = "squares.1")
+	tri <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star4",
+		scale = scale_star,
+		angle = angle,
+		rot = 15,
+		spacing = spacing,
+		units = units,
+		density = 1.41,
+		gp = gp_tri,
+		name = "triangles"
+	)
+	sq2 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex4",
+		scale = scale_star,
+		angle = angle,
+		rot = 60,
+		spacing = spacing,
+		units = units,
+		density = scale_star * 1.41,
+		gp = gp_sq2,
+		name = "squares.2"
+	)
+	gList(sq1, tri, sq2)
 }
 
 create_snub_trihex_tiling <- function(xyi, gp, spacing, units, angle) {
-    scale_star <- star_scale(6, 60 + 60, external = TRUE)
-    n_col <- length(gp$fill)
-    gp_tri1 <- gp_tri2 <- gp_hex <- gp
-    if (n_col == 2) {
-        gp_tri1$fill <- gp_tri2$fill <- gp$fill[1L]
-        gp_hex$fill <- gp$fill[2L]
-    } else if (n_col == 3) {
-        gp_tri2$fill <- gp$fill[1L]
-        gp_hex$fill <- gp$fill[2L]
-        gp_tri1$fill <- gp$fill[3L]
-    }
-    tri1 <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc",
-                        gp = gp_tri1, name = "triangles.1")
-    tri2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "star6", scale = scale_star,
-                        grid = "hex_circle",
-                        angle = angle, rot = 19,
-                        spacing = spacing, units = units,
-                        density = 1.305, gp = gp_tri2, name = "triangles.2")
-    hex <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                       shape = "convex6", grid = "hex_circle",
-                       angle = angle, rot = 49,
-                       spacing = spacing, units = units,
-                       density = scale_star * 1.305, gp = gp_hex, name = "hexagons")
-    gList(tri1, tri2, hex)
+	scale_star <- star_scale(6, 60 + 60, external = TRUE)
+	n_col <- length(gp$fill)
+	gp_tri1 <- gp_tri2 <- gp_hex <- gp
+	if (n_col == 2) {
+		gp_tri1$fill <- gp_tri2$fill <- gp$fill[1L]
+		gp_hex$fill <- gp$fill[2L]
+	} else if (n_col == 3) {
+		gp_tri2$fill <- gp$fill[1L]
+		gp_hex$fill <- gp$fill[2L]
+		gp_tri1$fill <- gp$fill[3L]
+	}
+	tri1 <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_tri1,
+		name = "triangles.1"
+	)
+	tri2 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star6",
+		scale = scale_star,
+		grid = "hex_circle",
+		angle = angle,
+		rot = 19,
+		spacing = spacing,
+		units = units,
+		density = 1.305,
+		gp = gp_tri2,
+		name = "triangles.2"
+	)
+	hex <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex6",
+		grid = "hex_circle",
+		angle = angle,
+		rot = 49,
+		spacing = spacing,
+		units = units,
+		density = scale_star * 1.305,
+		gp = gp_hex,
+		name = "hexagons"
+	)
+	gList(tri1, tri2, hex)
 }
 
 create_square_tiling <- function(xyi, gp, spacing, units, angle) {
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "square", density = 1,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp,
-                        name = "squares")
-    gList(grob)
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "square",
+		density = 1,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp,
+		name = "squares"
+	)
+	gList(grob)
 }
 create_rhombille_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_rh1 <- gp_rh2 <- gp_rh3 <- gp
-    if (n_col == 2) {
-        gp_rh1$fill <- gp_rh2$fill <- gp$fill[1L]
-        gp_rh3$fill <- gp$fill[2L]
-    } else if (n_col == 3) {
-        gp_rh1$fill <- gp$fill[1L]
-        gp_rh2$fill <- gp$fill[2L]
-        gp_rh3$fill <- gp$fill[3L]
-    }
-    rh1 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                       shape = "rhombille_rhombus", grid = "hex",
-                       angle = angle, rot = -120,
-                       spacing = spacing, units = units, density = 1,
-                       gp = gp_rh1, name = "rhombi.1")
-    rh2 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                       shape = "rhombille_rhombus", grid = "hex",
-                       angle = angle, rot = 120,
-                       spacing = spacing, units = units, density = 1,
-                       gp = gp_rh2, name = "rhombi.2")
-    rh3 <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                       shape = "rhombille_rhombus", grid = "hex",
-                       angle = angle, rot = 0,
-                       spacing = spacing, units = units, density = 1,
-                       gp = gp_rh3, name = "rhombi.3")
-    gList(rh1, rh2, rh3)
+	n_col <- length(gp$fill)
+	gp_rh1 <- gp_rh2 <- gp_rh3 <- gp
+	if (n_col == 2) {
+		gp_rh1$fill <- gp_rh2$fill <- gp$fill[1L]
+		gp_rh3$fill <- gp$fill[2L]
+	} else if (n_col == 3) {
+		gp_rh1$fill <- gp$fill[1L]
+		gp_rh2$fill <- gp$fill[2L]
+		gp_rh3$fill <- gp$fill[3L]
+	}
+	rh1 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "rhombille_rhombus",
+		grid = "hex",
+		angle = angle,
+		rot = -120,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_rh1,
+		name = "rhombi.1"
+	)
+	rh2 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "rhombille_rhombus",
+		grid = "hex",
+		angle = angle,
+		rot = 120,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_rh2,
+		name = "rhombi.2"
+	)
+	rh3 <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "rhombille_rhombus",
+		grid = "hex",
+		angle = angle,
+		rot = 0,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_rh3,
+		name = "rhombi.3"
+	)
+	gList(rh1, rh2, rh3)
 }
 create_9.3.9.3_40_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_non <- gp_tri <- gp_star3 <- gp
-    if (n_col == 2) {
-        gp_non$fill <- gp$fill[1L]
-        gp_star3$fill <- gp_tri$fill <- gp$fill[2L]
-    } else if (n_col == 3) {
-        gp_non$fill <- gp$fill[1L]
-        gp_star3$fill <- gp$fill[2L]
-        gp_tri$fill <- gp$fill[3L]
-    }
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_star3,
-                      name = "background_color")
-    stripe <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
-                          grid = "hex_circle", yoffset = 0.24 * spacing,
-                          angle = angle,
-                          spacing = spacing, units = units, density = 0.35,
-                          gp = gp_tri, name = "stripes")
-    non <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                       shape = "convex9", grid = "hex_circle",
-                       angle = angle, rot = 0,
-                       spacing = spacing, units = units, density = 1.01,
-                       gp = gp_non, name = "nonagons")
-    gList(bg, stripe, non)
+	n_col <- length(gp$fill)
+	gp_non <- gp_tri <- gp_star3 <- gp
+	if (n_col == 2) {
+		gp_non$fill <- gp$fill[1L]
+		gp_star3$fill <- gp_tri$fill <- gp$fill[2L]
+	} else if (n_col == 3) {
+		gp_non$fill <- gp$fill[1L]
+		gp_star3$fill <- gp$fill[2L]
+		gp_tri$fill <- gp$fill[3L]
+	}
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_star3,
+		name = "background_color"
+	)
+	stripe <- patternGrob(
+		"stripe",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		grid = "hex_circle",
+		yoffset = 0.24 * spacing,
+		angle = angle,
+		spacing = spacing,
+		units = units,
+		density = 0.35,
+		gp = gp_tri,
+		name = "stripes"
+	)
+	non <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex9",
+		grid = "hex_circle",
+		angle = angle,
+		rot = 0,
+		spacing = spacing,
+		units = units,
+		density = 1.01,
+		gp = gp_non,
+		name = "nonagons"
+	)
+	gList(bg, stripe, non)
 }
 create_tetrakis_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_tri1 <- gp_tri2 <- gp_tri3 <- gp
-    if (n_col == 2) {
-        gp_tri1$fill <- gp$fill[1L]
-        gp_tri2$fill <- gp_tri3$fill <- gp$fill[2L]
-    } else if (n_col == 3) {
-        gp_tri1$fill <- gp$fill[1L]
-        gp_tri2$fill <- gp$fill[2L]
-        gp_tri3$fill <- gp$fill[3L]
-    }
-    tri1.a <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "tetrakis_left",
-                        angle = angle, rot = 0,
-                        spacing = spacing, units = units, density = 1,
-                        gp = gp_tri1, name = "triangles.1.a")
-    tri1.b <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "tetrakis_left",
-                        angle = angle, rot = 90,
-                        spacing = spacing, units = units, density = 1,
-                        gp = gp_tri1, name = "triangles.1.b")
-    tri1.c <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "tetrakis_left",
-                        angle = angle, rot = 180,
-                        spacing = spacing, units = units, density = 1,
-                        gp = gp_tri1, name = "triangles.1.c")
-    tri1.d <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "tetrakis_left",
-                        angle = angle, rot = 270,
-                        spacing = spacing, units = units, density = 1,
-                        gp = gp_tri1, name = "triangles.1.d")
-    tri2.a <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "tetrakis_right",
-                        angle = angle, rot = 0,
-                        spacing = spacing, units = units, density = 1,
-                        gp = gp_tri2, name = "triangles.2.a")
-    tri2.b <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "tetrakis_right",
-                        angle = angle, rot = 180,
-                        spacing = spacing, units = units, density = 1,
-                        gp = gp_tri2, name = "triangles.2.b")
-    tri3.a <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "tetrakis_right",
-                        angle = angle, rot = 90,
-                        spacing = spacing, units = units, density = 1,
-                        gp = gp_tri3, name = "triangles.3.a")
-    tri3.b <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "tetrakis_right",
-                        angle = angle, rot = 270,
-                        spacing = spacing, units = units, density = 1,
-                        gp = gp_tri3, name = "triangles.3.b")
-    gList(tri1.a, tri1.b, tri1.c, tri1.d, tri2.a, tri2.b, tri3.a, tri3.b)
+	n_col <- length(gp$fill)
+	gp_tri1 <- gp_tri2 <- gp_tri3 <- gp
+	if (n_col == 2) {
+		gp_tri1$fill <- gp$fill[1L]
+		gp_tri2$fill <- gp_tri3$fill <- gp$fill[2L]
+	} else if (n_col == 3) {
+		gp_tri1$fill <- gp$fill[1L]
+		gp_tri2$fill <- gp$fill[2L]
+		gp_tri3$fill <- gp$fill[3L]
+	}
+	tri1.a <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "tetrakis_left",
+		angle = angle,
+		rot = 0,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_tri1,
+		name = "triangles.1.a"
+	)
+	tri1.b <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "tetrakis_left",
+		angle = angle,
+		rot = 90,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_tri1,
+		name = "triangles.1.b"
+	)
+	tri1.c <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "tetrakis_left",
+		angle = angle,
+		rot = 180,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_tri1,
+		name = "triangles.1.c"
+	)
+	tri1.d <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "tetrakis_left",
+		angle = angle,
+		rot = 270,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_tri1,
+		name = "triangles.1.d"
+	)
+	tri2.a <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "tetrakis_right",
+		angle = angle,
+		rot = 0,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_tri2,
+		name = "triangles.2.a"
+	)
+	tri2.b <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "tetrakis_right",
+		angle = angle,
+		rot = 180,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_tri2,
+		name = "triangles.2.b"
+	)
+	tri3.a <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "tetrakis_right",
+		angle = angle,
+		rot = 90,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_tri3,
+		name = "triangles.3.a"
+	)
+	tri3.b <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "tetrakis_right",
+		angle = angle,
+		rot = 270,
+		spacing = spacing,
+		units = units,
+		density = 1,
+		gp = gp_tri3,
+		name = "triangles.3.b"
+	)
+	gList(tri1.a, tri1.b, tri1.c, tri1.d, tri2.a, tri2.b, tri3.a, tri3.b)
 }
 
 create_triangular_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp
-    gp_bg$fill <- gp$fill[1]
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    if (n_col == 2L)
-        gp$fill <- gp$fill[2L]
-    else if (n_col == 3L)
-        gp$fill <- gp$fill[3:2]
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex3", density = 1, grid = "hex", rot = 180,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp,
-                        name = "triangles")
-    gList(bg, grob)
+	n_col <- length(gp$fill)
+	gp_bg <- gp
+	gp_bg$fill <- gp$fill[1]
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	if (n_col == 2L) {
+		gp$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp$fill <- gp$fill[3:2]
+	}
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex3",
+		density = 1,
+		grid = "hex",
+		rot = 180,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp,
+		name = "triangles"
+	)
+	gList(bg, grob)
 }
 
 create_2__.3__.12__tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp
-    gp_bg$fill <- gp$fill[1]
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    if (n_col > 1L)
-        gp$fill <- rev(gp$fill[-1L])
-    scale <- star_scale(12, 60, external = TRUE)
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "star12", density = 1.034, rot = 15,
-                        grid = "hex_circle", scale = scale,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp,
-                        name = "dodecagons")
-    gList(bg, grob)
+	n_col <- length(gp$fill)
+	gp_bg <- gp
+	gp_bg$fill <- gp$fill[1]
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	if (n_col > 1L) {
+		gp$fill <- rev(gp$fill[-1L])
+	}
+	scale <- star_scale(12, 60, external = TRUE)
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "star12",
+		density = 1.034,
+		rot = 15,
+		grid = "hex_circle",
+		scale = scale,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp,
+		name = "dodecagons"
+	)
+	gList(bg, grob)
 }
 create_trunc_hex_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp
-    gp_bg$fill <- gp$fill[n_col]
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    if (n_col == 2L)
-        gp$fill <- gp$fill[1L]
-    else if (n_col == 3L)
-        gp$fill <- gp$fill[2:1]
+	n_col <- length(gp$fill)
+	gp_bg <- gp
+	gp_bg$fill <- gp$fill[n_col]
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	if (n_col == 2L) {
+		gp$fill <- gp$fill[1L]
+	} else if (n_col == 3L) {
+		gp$fill <- gp$fill[2:1]
+	}
 
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex12", density = 1.034, rot = 15,
-                        grid = "hex_circle",
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp,
-                        name = "dodecagons")
-    gList(bg, grob)
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex12",
+		density = 1.034,
+		rot = 15,
+		grid = "hex_circle",
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp,
+		name = "dodecagons"
+	)
+	gList(bg, grob)
 }
 
 create_trunc_square_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp
-    gp_bg$fill <- gp$fill[n_col]
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    if (n_col == 2L)
-        gp$fill <- gp$fill[1L]
-    else if (n_col == 3L)
-        gp$fill <- gp$fill[1:2]
+	n_col <- length(gp$fill)
+	gp_bg <- gp
+	gp_bg$fill <- gp$fill[n_col]
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	if (n_col == 2L) {
+		gp$fill <- gp$fill[1L]
+	} else if (n_col == 3L) {
+		gp$fill <- gp$fill[1:2]
+	}
 
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex8", density = 1.082, rot = 22.5,
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp,
-                        name = "octagons")
-    gList(bg, grob)
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex8",
+		density = 1.082,
+		rot = 22.5,
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp,
+		name = "octagons"
+	)
+	gList(bg, grob)
 }
 
 create_4.6.4_30.6_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp
-    gp_bg$fill <- gp$fill[1L]
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    if (n_col == 2L)
-        gp$fill <- gp$fill[2L]
-    else if (n_col == 3L)
-        gp$fill <- gp$fill[2:3]
+	n_col <- length(gp$fill)
+	gp_bg <- gp
+	gp_bg$fill <- gp$fill[1L]
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	if (n_col == 2L) {
+		gp$fill <- gp$fill[2L]
+	} else if (n_col == 3L) {
+		gp$fill <- gp$fill[2:3]
+	}
 
-    scale <- star_scale(4, 120, external = TRUE)
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = c("star4", "convex4"), density = c(1.2, 0.8),
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp,
-                        name = "stars_and_squares", scale = scale)
-    gList(bg, grob)
+	scale <- star_scale(4, 120, external = TRUE)
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = c("star4", "convex4"),
+		density = c(1.2, 0.8),
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp,
+		name = "stars_and_squares",
+		scale = scale
+	)
+	gList(bg, grob)
 }
 
 create_trunc_trihex_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp
-    gp_sq <- gp_bg
-    gp_hx <- gp_bg
-    gp_bg$fill <- gp$fill[n_col]
-    if (n_col == 2L) {
-        gp_bg$fill <- gp$fill[1L]
-        gp_sq$fill <- gp$fill[2L]
-        gp_hx$fill <- gp$fill[1L]
-    }
-    else if (n_col == 3L) {
-        gp_sq$fill <- gp$fill[2L]
-        gp_hx$fill <- gp$fill[1L]
-    }
-    # triangles
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    # squares
-    stripe1 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
-                           angle = angle,
-                           grid = "hex_circle", density = 0.42,
-                           spacing = spacing, units = units,
-                           gp = gp_sq, name = "square_stripes.1")
-    stripe2 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
-                           angle = angle + 60,
-                           grid = "hex_circle", density = 0.42,
-                           spacing = spacing, units = units,
-                           gp = gp_sq, name = "square_stripes.2")
-    stripe3 <- patternGrob("stripe", xyi$x, xyi$y, xyi$id,
-                           angle = angle - 60,
-                           grid = "hex_circle", density = 0.42,
-                           spacing = spacing, units = units,
-                           gp = gp_sq, name = "square_stripes.3")
-    # hexagons
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex6", density = 0.75,
-                        grid = "hex_circle",
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp_hx,
-                        name = "hexagons")
-    gList(bg, stripe1, stripe2, stripe3, grob)
+	n_col <- length(gp$fill)
+	gp_bg <- gp
+	gp_sq <- gp_bg
+	gp_hx <- gp_bg
+	gp_bg$fill <- gp$fill[n_col]
+	if (n_col == 2L) {
+		gp_bg$fill <- gp$fill[1L]
+		gp_sq$fill <- gp$fill[2L]
+		gp_hx$fill <- gp$fill[1L]
+	} else if (n_col == 3L) {
+		gp_sq$fill <- gp$fill[2L]
+		gp_hx$fill <- gp$fill[1L]
+	}
+	# triangles
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	# squares
+	stripe1 <- patternGrob(
+		"stripe",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		angle = angle,
+		grid = "hex_circle",
+		density = 0.42,
+		spacing = spacing,
+		units = units,
+		gp = gp_sq,
+		name = "square_stripes.1"
+	)
+	stripe2 <- patternGrob(
+		"stripe",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		angle = angle + 60,
+		grid = "hex_circle",
+		density = 0.42,
+		spacing = spacing,
+		units = units,
+		gp = gp_sq,
+		name = "square_stripes.2"
+	)
+	stripe3 <- patternGrob(
+		"stripe",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		angle = angle - 60,
+		grid = "hex_circle",
+		density = 0.42,
+		spacing = spacing,
+		units = units,
+		gp = gp_sq,
+		name = "square_stripes.3"
+	)
+	# hexagons
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex6",
+		density = 0.75,
+		grid = "hex_circle",
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp_hx,
+		name = "hexagons"
+	)
+	gList(bg, stripe1, stripe2, stripe3, grob)
 }
 
 create_trihexagonal_tiling <- function(xyi, gp, spacing, units, angle) {
-    n_col <- length(gp$fill)
-    gp_bg <- gp
-    gp_bg$fill <- gp$fill[n_col]
-    bg <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_bg,
-                      name = "background_color")
-    if (n_col == 2L)
-        gp$fill <- gp$fill[1L]
-    else if (n_col == 3L)
-        gp$fill <- gp$fill[2:1]
-    grob <- patternGrob("regular_polygon", xyi$x, xyi$y, xyi$id,
-                        shape = "convex6", density = 1, rot = 30,
-                        grid = "hex_circle",
-                        spacing = spacing, units = units,
-                        angle = angle, gp = gp,
-                        name = "hexagons")
-    gList(bg, grob)
+	n_col <- length(gp$fill)
+	gp_bg <- gp
+	gp_bg$fill <- gp$fill[n_col]
+	bg <- polygonGrob(
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		default.units = "npc",
+		gp = gp_bg,
+		name = "background_color"
+	)
+	if (n_col == 2L) {
+		gp$fill <- gp$fill[1L]
+	} else if (n_col == 3L) {
+		gp$fill <- gp$fill[2:1]
+	}
+	grob <- patternGrob(
+		"regular_polygon",
+		xyi$x,
+		xyi$y,
+		xyi$id,
+		shape = "convex6",
+		density = 1,
+		rot = 30,
+		grid = "hex_circle",
+		spacing = spacing,
+		units = units,
+		angle = angle,
+		gp = gp,
+		name = "hexagons"
+	)
+	gList(bg, grob)
 }

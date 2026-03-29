@@ -8,9 +8,8 @@
 #'
 #' @return grid grob objects.
 #' @noRd
-create_pattern_none <- function(params, boundary_df, aspect_ratio,
-                                legend = FALSE) {
-  grid::nullGrob()
+create_pattern_none <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
+	grid::nullGrob()
 }
 
 #' Grobs without any pattern
@@ -26,8 +25,26 @@ create_pattern_none <- function(params, boundary_df, aspect_ratio,
 #' grid.pattern_none(x_hex, y_hex)
 #' @seealso [grid::grid.null()]
 #' @export
-grid.pattern_none <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
-                              default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    grid.pattern("none", x, y, id,
-                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+grid.pattern_none <- function(
+	x = c(0, 0, 1, 1),
+	y = c(1, 0, 0, 1),
+	id = 1L,
+	...,
+	default.units = "npc",
+	name = NULL,
+	gp = gpar(),
+	draw = TRUE,
+	vp = NULL
+) {
+	grid.pattern(
+		"none",
+		x,
+		y,
+		id,
+		default.units = default.units,
+		name = name,
+		gp = gp,
+		draw = draw,
+		vp = vp
+	)
 }

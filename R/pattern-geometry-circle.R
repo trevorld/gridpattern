@@ -44,27 +44,70 @@
 #' @seealso
 #'   See [grid.pattern_regular_polygon()] for a more general case of this pattern.
 #' @export
-grid.pattern_circle <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
-                                colour = gp$col %||% "grey20", fill = gp$fill %||% "grey80", angle = 30,
-                                density = 0.2, spacing = 0.05, xoffset = 0, yoffset = 0, units = "snpc",
-                                alpha = gp$alpha %||% NA_real_,
-                                linetype = gp$lty %||% 1,
-                                linewidth = size %||% gp$lwd %||% 1,
-                                size = NULL,
-                                grid = "square", type = NULL, subtype = NULL,
-                                default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    if (missing(colour) && hasName(l <- list(...), "color")) colour <- l$color
-    grid.pattern("circle", x, y, id,
-                 colour = colour, fill = fill, angle = angle,
-                 density = density, spacing = spacing, xoffset = xoffset, yoffset = yoffset, units = units,
-                 alpha = alpha, linetype = linetype, linewidth = linewidth,
-                 grid = grid, type = type, subtype = subtype,
-                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+grid.pattern_circle <- function(
+	x = c(0, 0, 1, 1),
+	y = c(1, 0, 0, 1),
+	id = 1L,
+	...,
+	colour = gp$col %||% "grey20",
+	fill = gp$fill %||% "grey80",
+	angle = 30,
+	density = 0.2,
+	spacing = 0.05,
+	xoffset = 0,
+	yoffset = 0,
+	units = "snpc",
+	alpha = gp$alpha %||% NA_real_,
+	linetype = gp$lty %||% 1,
+	linewidth = size %||% gp$lwd %||% 1,
+	size = NULL,
+	grid = "square",
+	type = NULL,
+	subtype = NULL,
+	default.units = "npc",
+	name = NULL,
+	gp = gpar(),
+	draw = TRUE,
+	vp = NULL
+) {
+	if (missing(colour) && hasName(l <- list(...), "color")) {
+		colour <- l$color
+	}
+	grid.pattern(
+		"circle",
+		x,
+		y,
+		id,
+		colour = colour,
+		fill = fill,
+		angle = angle,
+		density = density,
+		spacing = spacing,
+		xoffset = xoffset,
+		yoffset = yoffset,
+		units = units,
+		alpha = alpha,
+		linetype = linetype,
+		linewidth = linewidth,
+		grid = grid,
+		type = type,
+		subtype = subtype,
+		default.units = default.units,
+		name = name,
+		gp = gp,
+		draw = draw,
+		vp = vp
+	)
 }
 
 create_pattern_circle_via_sf <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
-    params$pattern_shape <- "circle"
-    grob <- create_pattern_regular_polygon_via_sf(params, boundary_df, aspect_ratio, legend = legend)
-    grob <- editGrob(grob, name = "circle")
-    grob
+	params$pattern_shape <- "circle"
+	grob <- create_pattern_regular_polygon_via_sf(
+		params,
+		boundary_df,
+		aspect_ratio,
+		legend = legend
+	)
+	grob <- editGrob(grob, name = "circle")
+	grob
 }

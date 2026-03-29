@@ -41,18 +41,46 @@
 #'          [reset_image_cache()] resets the image cache used by `grid.pattern_image()`
 #'          and [grid.pattern_placeholder()].
 #' @export
-grid.pattern_image <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ...,
-                               filename = "", type = "fit", scale = 1,
-                               gravity = switch(type, tile = "southwest", "center"),
-                               filter = "lanczos",
-                               alpha = gp$alpha %||% NA_real_, aspect_ratio = 1, key_scale_factor = 1,
-                               res = getOption("ggpattern_res", 72),
-                               default.units = "npc", name = NULL, gp = gpar(), draw = TRUE, vp = NULL) {
-    grid.pattern("image", x, y, id,
-                 filename = filename, type = type, scale = scale,
-                 gravity = gravity, filter = filter,
-                 alpha = alpha, aspect_ratio = aspect_ratio, key_scale_factor = key_scale_factor, res = res,
-                 default.units = default.units, name = name, gp = gp , draw = draw, vp = vp)
+grid.pattern_image <- function(
+	x = c(0, 0, 1, 1),
+	y = c(1, 0, 0, 1),
+	id = 1L,
+	...,
+	filename = "",
+	type = "fit",
+	scale = 1,
+	gravity = switch(type, tile = "southwest", "center"),
+	filter = "lanczos",
+	alpha = gp$alpha %||% NA_real_,
+	aspect_ratio = 1,
+	key_scale_factor = 1,
+	res = getOption("ggpattern_res", 72),
+	default.units = "npc",
+	name = NULL,
+	gp = gpar(),
+	draw = TRUE,
+	vp = NULL
+) {
+	grid.pattern(
+		"image",
+		x,
+		y,
+		id,
+		filename = filename,
+		type = type,
+		scale = scale,
+		gravity = gravity,
+		filter = filter,
+		alpha = alpha,
+		aspect_ratio = aspect_ratio,
+		key_scale_factor = key_scale_factor,
+		res = res,
+		default.units = default.units,
+		name = name,
+		gp = gp,
+		draw = draw,
+		vp = vp
+	)
 }
 
 #' Read a user specified filename/URL as an image
@@ -63,30 +91,29 @@ grid.pattern_image <- function(x = c(0, 0, 1, 1), y = c(1, 0, 0, 1), id = 1L, ..
 #'
 #' @noRd
 img_read_as_array_wrapper <- function(width, height, params, legend) {
+	assert_suggested("magick", "image")
 
-  assert_suggested("magick", "image")
+	filename <- as.character(params$pattern_filename)
 
-  filename <- as.character(params$pattern_filename)
+	fill_type <- tolower(as.character(params$pattern_type))
+	fill_type <- check_default(fill_type, options = fill_types)
 
-  fill_type <- tolower(as.character(params$pattern_type))
-  fill_type <- check_default(fill_type, options = fill_types)
+	gravity <- tolower(as.character(params$pattern_gravity))
+	gravity <- check_default(gravity, tolower(magick::gravity_types()), 'center')
 
-  gravity <- tolower(as.character(params$pattern_gravity))
-  gravity <- check_default(gravity, tolower(magick::gravity_types()), 'center')
+	filter <- tolower(as.character(params$pattern_filter))
+	filter <- check_default(filter, tolower(magick::filter_types()), 'lanczos')
 
-  filter <- tolower(as.character(params$pattern_filter))
-  filter <- check_default(filter, tolower(magick::filter_types()), 'lanczos')
+	scale <- params$pattern_scale
+	scale <- check_default(scale, default = 1, type = 'numeric')
 
-  scale  <- params$pattern_scale
-  scale  <- check_default(scale, default = 1, type = 'numeric')
-
-  img_read_as_array(
-    filename    = filename,
-    width       = width,
-    height      = height,
-    fill_type   = fill_type,
-    gravity     = gravity,
-    filter      = filter,
-    scale       = scale
-  )
+	img_read_as_array(
+		filename = filename,
+		width = width,
+		height = height,
+		fill_type = fill_type,
+		gravity = gravity,
+		filter = filter,
+		scale = scale
+	)
 }
