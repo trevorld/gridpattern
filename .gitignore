@@ -1,10 +1,11 @@
 README.html
 codecov.yml
 *.swp
+/.claude/
 /doc/
 /Meta/
 /pkgdown/
 /tmp/
-raw-data/*.png
+data-raw/*.png
 vignettes/*.R
 vignettes/*.html

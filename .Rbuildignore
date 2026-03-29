@@ -1,4 +1,5 @@
 ^.appveyor.yml$
+^.claude$
 ^.travis.yml$
 ^cran-comments.md$
 ^LICENSE.md$
@@ -7,7 +8,7 @@
 ^Rakefile$
 ^pkgdown$
 ^_pkgdown.yml$
-^raw-data$
+^data-raw$
 ^codecov.yml$
 ^doc$
 ^tmp$
