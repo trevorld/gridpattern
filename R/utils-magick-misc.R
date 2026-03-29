@@ -20,7 +20,7 @@ convert_r_colour_to_magick_colour <- function(col) {
 #'
 #' @param img magick image
 #'
-#' @return RGBA array with all values in range [0, 1]
+#' @return RGBA array with all values in range `[0, 1]`
 #'
 #' @noRd
 convert_img_to_array <- function(img) {
