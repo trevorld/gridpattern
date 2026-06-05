@@ -1,8 +1,12 @@
-gridpattern v1.3.2
-==================
+gridpattern v1.3.3 (development)
+================================
 
 Bug fixes and minor improvements
 --------------------------------
+
+* Fixes a bug where geometry-based patterns (e.g. "stripe", "crosshatch", "wave")
+  could silently disappear in small viewports when `pattern_key_scale_factor`
+  was a relatively large value (#95).
 
 * The following "placeholder" pattern updates (#83):
 
@@ -81,8 +85,8 @@ New Features
   + It is a fork of `ggplot2::fill_alpha()` by @teunbrand.
   + It does not depend on `{ggplot2}` or `{scales}`.
   + It does not throw an error with a length one list of a vector of multiple colours.
-  + It is available as a "standalone" file. 
-    You may copy its source under the permissive MIT license into your own R package by either 
+  + It is available as a "standalone" file.
+    You may copy its source under the permissive MIT license into your own R package by either
     using `usethis::use_standalone("trevorld/gridpattern", "standalone-update_alpha.R")`
     or simply copying `standalone-update_alpha.R` into your R directory and adding
     `grDevices`, `grid`, and `rlang` to the `Imports` of your `DESCRIPTION` file.
@@ -104,8 +108,8 @@ Bug fixes and minor improvements
 * `alphaMaskGrob()` can now more efficiently compute a `rasterGrob()` approximation
   for `png_device` functions that support
   the alpha mask feature such as`png(type = "cairo")`(#75).
-* `alphaMaskGrob()` and `clippingPathGrob()` now 
-  switch back to the previously open graphics device if 
+* `alphaMaskGrob()` and `clippingPathGrob()` now
+  switch back to the previously open graphics device if
   they open and close any new graphics devices.
 
 gridpattern v1.1.1
@@ -120,17 +124,17 @@ gridpattern v1.1.0
 New Features
 ------------
 
-* `reset_image_cache()` resets the image cache used by `grid.pattern_image()` 
+* `reset_image_cache()` resets the image cache used by `grid.pattern_image()`
    and `grid.pattern_placeholder()` to store images (#63).
 
 Bug fixes and minor improvements
 --------------------------------
 
 * The function `guess_has_R4.1_features()` is now available as a "standalone" file.
-  You may copy its source under the permissive [MIT No Attribution (MIT-0)](https://spdx.org/licenses/MIT-0.html) 
+  You may copy its source under the permissive [MIT No Attribution (MIT-0)](https://spdx.org/licenses/MIT-0.html)
   license into your own R package
   by either using `usethis::use_standalone("trevorld/gridpattern", "standalone-guess_has_R4.1_features.R")`
-  or simply copying `standalone-guess_has_R4.1_features.R` into your `R` directory and 
+  or simply copying `standalone-guess_has_R4.1_features.R` into your `R` directory and
   adding `grDevices` and `utils` to the `Imports` of your `DESCRIPTION` file.
 * If `{vdiffr}` has been updated to at least v1.0.6 (released 2023-08-25) then
   `guess_has_R4.1_features()` should now always correctly guess R4.1 feature support for the
@@ -153,16 +157,16 @@ Bug fixes and minor improvements
 
 * `guess_has_R4.1_features()` can now also take advantage if `dev.capabilities()`
   **explicitly** indicates that a feature is **not** supported in active graphics device.
-* To match aesthetic changes in `{ggplot2}` one may now use the parameter `linewidth` to 
+* To match aesthetic changes in `{ggplot2}` one may now use the parameter `linewidth` to
    set polygon/path line widths in
-  `grid.pattern_circle()`, `grid.pattern_crosshatch()`, `grid.pattern_pch()`, 
-  `grid.pattern_polygon_tiling()`, 
-  `grid.pattern_regular_polygon()`, `grid.pattern_stripe()`, `grid.pattern_rose()`, 
+  `grid.pattern_circle()`, `grid.pattern_crosshatch()`, `grid.pattern_pch()`,
+  `grid.pattern_polygon_tiling()`,
+  `grid.pattern_regular_polygon()`, `grid.pattern_stripe()`, `grid.pattern_rose()`,
   `grid.pattern_wave()`, and `grid.pattern_weave()`.
   For backwards compatibility one may continue to use `size` as well.
   Continue to use `size` (or `gp`) to set the fontsize in `grid.pattern_text()`.
   Both `pattern_linewidth` and `pattern_size` will be available
-  for use in custom patterns (#57). 
+  for use in custom patterns (#57).
 
 gridpattern v0.5.3
 ==================
@@ -176,12 +180,12 @@ Bug fixes and minor improvements
   `guess_has_R4.1_features()` can now better guess R 4.1 graphic feature support when called within R 4.2.
 
   + In particular `guess_has_R4.1_features()` can now better guess R 4.1 graphic feature support in the
-    `{grDevices}` bitmap devices (i.e. `bmp()`, `jpeg()`, `png()`, `tiff()`) 
+    `{grDevices}` bitmap devices (i.e. `bmp()`, `jpeg()`, `png()`, `tiff()`)
     when called within R 4.2 on Windows.
-    Previously it was not possible to easily distinguish on Windows if the device was called with 
+    Previously it was not possible to easily distinguish on Windows if the device was called with
    `type = "windows"` or `type = "cairo"` and hence we had to conservatively guess no such support
     even if `type = "cairo"` had been specified (and within R 4.1 we must still conservatively do so).
-  + Also if in the future any graphic devices add R 4.1 graphic feature support as well as 
+  + Also if in the future any graphic devices add R 4.1 graphic feature support as well as
     R 4.2 `dev.capabilities()` support then we should now be able to correctly guess such support within R 4.2
     without needing to manually update `guess_has_R4.1_features()`.
 
@@ -196,11 +200,11 @@ gridpattern v0.5.1
 Breaking Changes
 ----------------
 
-* `grid.pattern_rose()` and `grid.pattern_text()` now "clip" their boundary using an 
-  "alpha mask" rather than a "clipping path".  
-  Now use the argument `use_R4.1_masks`, the global option `ggpattern_use_R4.1_masks`, 
-  or the global option `ggpattern_use_R4.1_features` to toggle on/off the R 4.1 alpha mask 
-  feature instead of using the `use_R4.1_clipping` argument or 
+* `grid.pattern_rose()` and `grid.pattern_text()` now "clip" their boundary using an
+  "alpha mask" rather than a "clipping path".
+  Now use the argument `use_R4.1_masks`, the global option `ggpattern_use_R4.1_masks`,
+  or the global option `ggpattern_use_R4.1_features` to toggle on/off the R 4.1 alpha mask
+  feature instead of using the `use_R4.1_clipping` argument or
   the global option `ggpattern_use_R4.1_clipping` as before
   (the latter continue to toggle on/off the R 4.1 clipping path feature in `clippingPathGrob()`).
 
@@ -220,7 +224,7 @@ Bug fixes and minor improvements
 * `guess_has_R4.1_features()` now returns `TRUE` for the `ragg::agg_jpeg()`,
   `ragg::agg_ppm()`, and `ragg::agg_tiff()` devices if `packageVersion("ragg") >= '1.2.0'`.
   It also returns `TRUE` for `svglite::svglite()` if `packageVersion("svglite") >= '2.1.0'`.
-* `clippingPathGrob()` will now consistently - as previously documented - use `ragg::agg_png()` 
+* `clippingPathGrob()` will now consistently - as previously documented - use `ragg::agg_png()`
   as the default `png_device` graphics device if it is available and `use_R4.1_clipping` is `FALSE`.
 * `grid.pattern_image()` should no longer throw an inscrutable `Error in magick_image_readpath`...
   error on certain platforms such as Windows (#47).
@@ -243,8 +247,8 @@ Bug fixes and minor improvements
   "geometry" patterns now support a "elongated_triangle" `grid` value.
 * `guess_has_R4.1_features()` now returns `TRUE` for the `ragg::agg_png()` and
   `ragg::agg_supertransparent()` devices if `packageVersion("ragg") >= '1.2.0'`.
-  It now also returns `TRUE` for the `grDevices::bmp(type = "cairo")`, 
-  `grDevices::cairo_ps()`, `grDevices::jpeg(type = "cairo")`, 
+  It now also returns `TRUE` for the `grDevices::bmp(type = "cairo")`,
+  `grDevices::cairo_ps()`, `grDevices::jpeg(type = "cairo")`,
   and `grDevices::tiff(type = "cairo")` devices if `getRversion() >= '4.1.0'`.
 
 gridpattern v0.3.1
@@ -254,7 +258,7 @@ Breaking Changes
 ----------------
 
 * The package `{magick}` has been downgraded from "Imports" to "Suggests" (#44).
-  You'll need to manually install `{magick}` with `install.packages("magick")` 
+  You'll need to manually install `{magick}` with `install.packages("magick")`
   in order to use the following "array" patterns:
 
   - "gradient" (but only if `use_R4.1_gradients` is `FALSE`)
@@ -300,7 +304,7 @@ New Features
   - `"12.12.4*"` implements a regular (star) polygon tiling made of dodecagons and four-pointed stars.
   - `"18.18.3*"` implements a regular (star) polygon tiling made of eighteen-sided polygons and three-pointed stars.
 
-* `grid.pattern_regular_polygon()` now supports a `"tetrakis_left"` `shape` and `"tetrakis_right"` `shape` 
+* `grid.pattern_regular_polygon()` now supports a `"tetrakis_left"` `shape` and `"tetrakis_right"` `shape`
   which both draw an isosceles right triangle (one oriented left and one oriented right) as well as a
  `"rhombille_rhombus"` shape which draws a rhombus.
   These are non-regular polygons intended to help produce tetrakis square and rhombille polygon tilings.
@@ -308,7 +312,7 @@ New Features
 Bug fixes and minor improvements
 --------------------------------
 
-* `star_angle()` and `star_scale()` now handle the `n_vertices == 2` case 
+* `star_angle()` and `star_scale()` now handle the `n_vertices == 2` case
   (a "two-pointed star" polygon is a rhombus).
 * Fixes `grid.pattern_gradient()` when `use_R4.1_gradients=TRUE` to better
   match behavior when `use_R4.1_gradients=FALSE`.
@@ -357,7 +361,7 @@ New Features
 
   * `ggpattern_use_R4.1_clipping` If `TRUE` use the grid clipping path feature introduced in R v4.1.0.
                     If `FALSE` do a `rasterGrob` approximation of the clipped pattern.
-                    Currently used by `clippingPathGrob()`, `grid.pattern_rose()`, 
+                    Currently used by `clippingPathGrob()`, `grid.pattern_rose()`,
                     `grid.pattern_text()`, and available for custom patterns.
   * `ggpattern_use_R4.1_features` Set the default for all the other
                     `ggpattern_use_R4.1_*` options arguments.
@@ -392,7 +396,7 @@ gridpattern v0.1.2
 
 * Supports the following patterns from [ggpattern](https://github.com/trevorld/ggpattern):
 
-  * "ambient" ``grid.pattern_ambient()``  
+  * "ambient" ``grid.pattern_ambient()``
   * "circle" ``grid.pattern_circle()`` (#5)
   * "crosshatch"  ``grid.pattern_crosshatch()``(#4)
   * "gradient"  ``grid.pattern_gradient()``(#8)
@@ -419,10 +423,10 @@ gridpattern v0.1.2
       * Use of ``density`` greater than ``1`` will now sometimes give an attractive result (#17).
       * Uses ``{sf}`` to clip circles to boundary instead of ``{gridGeometry}``
 
-    * ``grid.pattern_crosshatch()`` allows using the argument ``fill2`` to set 
+    * ``grid.pattern_crosshatch()`` allows using the argument ``fill2`` to set
        different fill color(s) for the "over" crosshatch lines (#14).
     * ``xoffset``, ``yoffset``, and ``spacing`` are now interpreted as "snpc" units and
-      ``grid.pattern_stripe()`` and ``grid.pattern_crosshatch()`` now allow using the 
+      ``grid.pattern_stripe()`` and ``grid.pattern_crosshatch()`` now allow using the
       argument ``grid`` to tweak placement of lines so that they now match the placement
       of circles from ``grid.pattern_circle()`` and polygons from ``grid.pattern_regular_polygon()`` (#24).
     * The center point of the geometry "grid" now matches the center of the viewport.

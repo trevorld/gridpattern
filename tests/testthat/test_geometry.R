@@ -159,3 +159,16 @@ test_that("geometry patterns work as expected", {
 		grid.pattern(x = x, y = y, id = id)
 	})
 })
+test_that("get_xy_grid() bounding box is non-degenerate when spacing exceeds viewport (issue #95)", {
+	# In ggpattern legend keys, `pattern_spacing` (after unit conversion) can exceed
+	# `vpm$length`. When that happens `x_seq` collapses to `c(0)`, so `x = c(vpm$x)` and
+	# `x_min == x_max`, producing a zero-width rectangle that `sf::st_intersection()` silently
+	# discards — the pattern disappears entirely.
+	params <- get_params(spacing = 20, grid = "square") # spacing already in same units as vpm
+	vpm <- list(width = 10, height = 10, length = 10, x = 5, y = 5)
+
+	grid_xy <- get_xy_grid(params, vpm)
+
+	expect_gt(grid_xy$x_max - grid_xy$x_min, 0)
+	expect_gt(grid_xy$y_max - grid_xy$y_min, 0)
+})

@@ -344,8 +344,13 @@ get_xy_grid <- function(params, vpm, wavelength = FALSE) {
 	)
 	x_seq <- seq_robust(from = 0, to = gm * vpm$length + x_adjust, by = h_spacing)
 	x <- xoffset + vpm$x + c(rev(tail(-x_seq, -1L)), x_seq)
-	x_min <- min(x)
-	x_max <- max(x)
+	if (length(x) == 1L) {
+		x_min <- vpm$x - vpm$length
+		x_max <- vpm$x + vpm$length
+	} else {
+		x_min <- min(x)
+		x_max <- max(x)
+	}
 
 	# adjust vertical spacing for "hex" pattern
 	if (params$pattern_grid == "square") {
@@ -364,8 +369,13 @@ get_xy_grid <- function(params, vpm, wavelength = FALSE) {
 	if (params$pattern_grid == "elongated_triangle") {
 		y <- y + rep(c(0, -0.15 * v_spacing), length.out = length(y))
 	}
-	y_min <- min(y)
-	y_max <- max(y)
+	if (length(y) == 1L) {
+		y_min <- vpm$y - vpm$length
+		y_max <- vpm$y + vpm$length
+	} else {
+		y_min <- min(y)
+		y_max <- max(y)
+	}
 
 	list(
 		x = x,
