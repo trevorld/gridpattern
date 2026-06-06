@@ -73,5 +73,5 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \seealso{
 \code{\link[=grid.pattern_ambient]{grid.pattern_ambient()}} provides a noise pattern using the \code{ambient} package.
-Pseudorandom seeds for the plasma pattern may be set via \code{\link[magick:config]{magick::magick_set_seed()}}.
+Pseudorandom seeds for the plasma pattern may be set via \code{\link[magick:magick_set_seed]{magick::magick_set_seed()}}.
 }

@@ -28,7 +28,7 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{...}{Currently ignored}
 
-\item{fill}{Fill colour(s) or \code{\link[grid:patterns]{grid::pattern()}} / gradient object(s).}
+\item{fill}{Fill colour(s) or \code{\link[grid:pattern]{grid::pattern()}} / gradient object(s).}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 

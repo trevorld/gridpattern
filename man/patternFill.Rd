@@ -20,7 +20,7 @@ patternFill(
 \arguments{
 \item{...}{Passed to \code{\link[=patternGrob]{patternGrob()}}.}
 
-\item{x, y, width, height}{The size of the \code{\link[grid:patterns]{grid::pattern()}} tile.}
+\item{x, y, width, height}{The size of the \code{\link[grid:pattern]{grid::pattern()}} tile.}
 
 \item{default.units}{The default \code{\link[grid:unit]{grid::unit()}} unit to use for \code{x}, \code{y}, \code{width}, and \code{height}.}
 
@@ -29,10 +29,10 @@ patternFill(
 \item{group}{A logical indicating whether the pattern is relative to the bounding box of the grob or whether it is relative to individual shapes within the grob.  Ignored if R is less than version 4.2.}
 }
 \value{
-A \code{\link[grid:patterns]{grid::pattern()}} fill object.
+A \code{\link[grid:pattern]{grid::pattern()}} fill object.
 }
 \description{
-\code{patternFill()} returns \code{\link[grid:patterns]{grid::pattern()}} fill objects.
+\code{patternFill()} returns \code{\link[grid:pattern]{grid::pattern()}} fill objects.
 It is a wrapper around \code{\link[=patternGrob]{patternGrob()}}.
 }
 \examples{

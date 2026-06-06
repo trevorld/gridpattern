@@ -62,7 +62,7 @@ All locations within the same \code{id} belong to the same boundary.}
 applied to exterior radius to get interior radius.}
 
 \item{shape}{A character or expression vector.
-See \code{label} argument of \code{\link[grid:grid.text]{grid::textGrob()}} for more details.}
+See \code{label} argument of \code{\link[grid:textGrob]{grid::textGrob()}} for more details.}
 
 \item{grid}{Adjusts placement and density of certain graphical elements.
 \code{"square"} (default) is a square grid.
