@@ -41,7 +41,7 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{colour}{Stroke colour(s).}
 
-\item{fill}{Fill colour(s) or \code{\link[grid:patterns]{grid::pattern()}} / gradient object(s).}
+\item{fill}{Fill colour(s) or \code{\link[grid:pattern]{grid::pattern()}} / gradient object(s).}
 
 \item{angle}{Rotation angle in degrees.}
 
@@ -102,4 +102,5 @@ grid.pattern_stripe(x_hex, y_hex, density = 0.3,
 }
 \seealso{
 \verb{[grid.pattern_crosshatch()]} and \verb{[grid.pattern_weave()]} for overlaying stripes.
+Use \code{\link[=grid.pattern_line]{grid.pattern_line()}} for stroked lines that support all native \code{linetype} values.
 }
