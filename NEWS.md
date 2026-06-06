@@ -1,5 +1,14 @@
-gridpattern v1.3.3 (development)
+gridpattern v1.4.0 (development)
 ================================
+
+New Features
+------------
+
+* New "line" pattern with corresponding `grid.pattern_line()`.
+  Unlike the "stripe" pattern which fills bands with solid colour,
+  "line" draws stroked lines using the device's native line rendering,
+  enabling all of R's built-in `linetype` values
+  (including `"dotdash"`, `"twodash"`, and custom line types specified as hex strings per `?par`).
 
 Bug fixes and minor improvements
 --------------------------------

@@ -15,6 +15,7 @@
 #' grid.pattern_stripe(x_hex, y_hex, density = 0.3,
 #'                     gp = grid::gpar(col = "blue", fill = "yellow"))
 #' @seealso `[grid.pattern_crosshatch()]` and `[grid.pattern_weave()]` for overlaying stripes.
+#'          Use [grid.pattern_line()] for stroked lines that support all native `linetype` values.
 #' @export
 grid.pattern_stripe <- function(
 	x = c(0, 0, 1, 1),

@@ -1,7 +1,7 @@
 Package: gridpattern
 Type: Package
 Title: 'grid' Pattern Grobs
-Version: 1.3.3-3
+Version: 1.4.0-1
 Authors@R: c(
         person("Trevor L.", "Davis", role=c("aut", "cre"), email="trevor.l.davis@gmail.com",
                comment = c(ORCID = "0000-0001-6341-4639")),
@@ -13,7 +13,6 @@ BugReports: https://github.com/trevorld/gridpattern/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Depends:
     R (>= 3.4.0)
 Imports:
@@ -39,3 +38,4 @@ Suggests:
     testthat,
     vdiffr (>= 1.0.6)
 VignetteBuilder: knitr, rmarkdown
+Config/roxygen2/version: 8.0.0

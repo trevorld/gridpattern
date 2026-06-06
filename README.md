@@ -35,6 +35,7 @@ as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", 
 1. [fill](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_fill.html): simple fill patterns
 1. [gradient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_gradient.html): gradient array/geometry patterns
 1. [image](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_image.html): image array patterns
+1. [line](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_line.html): line geometry patterns
 1. [magick](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_magick.html): imagemagick array patterns
 1. [none](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_none.html): draws nothing
 1. [placeholder](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_placeholder.html): placeholder image array patterns
