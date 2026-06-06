@@ -42,7 +42,7 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{colour}{Stroke colour(s).}
 
-\item{fill}{Fill colour(s) or \code{\link[grid:patterns]{grid::pattern()}} / gradient object(s).}
+\item{fill}{Fill colour(s) or \code{\link[grid:pattern]{grid::pattern()}} / gradient object(s).}
 
 \item{fill2}{The fill colour for the \dQuote{top} crosshatch lines.}
 
