@@ -81,9 +81,20 @@ test_that("`assert_patterns_unique()` works as expected", {
 	)
 })
 
+test_that("`mix_col()` works as expected", {
+	skip_if_not_installed("aqp")
+	expect_equal(mix_col(c("red", "blue")), "#C2008FFF")
+	expect_equal(mix_col(c("yellow", "green")), "#ACFF00FF")
+	expect_equal(mix_col(c("red", "yellow", "blue"), w = c(2, 1, 1)), "#F46666FF")
+})
+
 test_that("`assert_suggested()` works as expected", {
 	expect_error(
-		assert_suggested("doesnotexist", "blueberry"),
-		"The suggested package \\{doesnotexist\\} must be installed"
+		assert_suggested("doesnotexist", pattern = "blueberry"),
+		"The suggested package \\{doesnotexist\\} must be installed in order to use the \"blueberry\" pattern"
+	)
+	expect_error(
+		assert_suggested("doesnotexist", fn = "blueberry"),
+		"The suggested package \\{doesnotexist\\} must be installed in order to use `blueberry\\(\\)`"
 	)
 })

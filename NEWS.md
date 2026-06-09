@@ -4,6 +4,10 @@ gridpattern v1.4.0 (development)
 New Features
 ------------
 
+* `mix_col()` is a new utility function that mixes colors via Munsell color
+  space using `aqp::mixMunsell()`, simulating subtractive (pigment) mixing.
+  Requires the suggested package `{aqp}`.
+
 * New "line" pattern with corresponding `grid.pattern_line()`.
   Unlike the "stripe" pattern which fills bands with solid colour,
   "line" draws stroked lines using the device's native line rendering,

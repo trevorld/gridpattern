@@ -25,6 +25,7 @@ reference:
         - clippingPathGrob
         - guess_has_R4.1_features
         - mean_col
+        - mix_col
         - reset_image_cache
         - star_scale
         - update_alpha
