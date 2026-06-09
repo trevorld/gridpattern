@@ -45,6 +45,7 @@ get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) 
 		l$pattern_type <- default_pattern_type(pattern)
 	}
 	l$pattern_units <- l$pattern_units %||% "snpc"
+	l$pattern_stagger <- l$pattern_stagger %||% FALSE
 	l$pattern_xoffset <- l$pattern_xoffset %||% 0
 	l$pattern_yoffset <- l$pattern_yoffset %||% 0
 

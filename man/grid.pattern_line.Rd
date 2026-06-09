@@ -20,6 +20,7 @@ grid.pattern_line(
   linetype = gp$lty \%||\% 1,
   linewidth = size \%||\% gp$lwd \%||\% 1,
   size = NULL,
+  stagger = FALSE,
   use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
     getOption("ggpattern_use_R4.1_features")),
   png_device = NULL,
@@ -62,6 +63,10 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{linewidth}{Stroke linewidth.}
 
 \item{size}{For backwards compatibility can be used to set \code{linewidth}.}
+
+\item{stagger}{If \code{TRUE}, alternate lines are shifted by half the dash period so that
+dashes of adjacent lines interleave.
+Computed from \code{linetype} and \code{linewidth} per \code{?par}.  Default \code{FALSE}.}
 
 \item{use_R4.1_masks}{If \code{TRUE} use the grid mask feature introduced in R v4.1.0.
 If \code{FALSE} do a \code{rasterGrob} approximation.
@@ -106,13 +111,8 @@ x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 if (capabilities("png") || guess_has_R4.1_features("masks")) {
   grid::grid.newpage()
-  grid.pattern_line(x_hex, y_hex, colour = "black", angle = 0, spacing = 0.1)
-}
-
-if (capabilities("png") || guess_has_R4.1_features("masks")) {
-  grid::grid.newpage()
   grid.pattern_line(x_hex, y_hex, colour = "black", linetype = "dotdash",
-                    angle = 45, spacing = 0.1)
+                    angle = 45, spacing = 0.1, stagger = TRUE)
 }
 
 # more intricate dashed lines are possible with hex strings
