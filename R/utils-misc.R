@@ -1,10 +1,12 @@
-assert_suggested <- function(package, pattern) {
+assert_suggested <- function(package, pattern = NULL, fn = NULL) {
 	if (!requireNamespace(package, quietly = TRUE)) {
+		context <- if (!is.null(pattern)) {
+			glue('in order to use the "{pattern}" pattern.')
+		} else {
+			glue("in order to use `{fn}()`.")
+		}
 		abort(c(
-			glue(
-				"The suggested package {{{package}}} must be installed ",
-				'in order to use the "{pattern}" pattern.'
-			),
+			glue("The suggested package {{{package}}} must be installed {context}"),
 			i = glue('Install with the command `install.packages("{package}")`')
 		))
 	}
