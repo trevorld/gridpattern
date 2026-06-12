@@ -7,6 +7,9 @@
 #' @param amplitude Wave amplitude (in `units` units)
 #' @param frequency Linear frequency (in inverse `units` units)
 #' @param type Either \dQuote{sine} or \dQuote{triangle} (default).
+#' @param stagger If `TRUE`, alternate wave rows are shifted by half a wavelength so that
+#'   crests of one row align with troughs of adjacent rows, creating an interlocking effect.
+#'   Default `FALSE`.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
 #' x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -22,6 +25,13 @@
 #' grid.pattern_wave(x_hex, y_hex, colour = "black", type = "triangle",
 #'                     fill = c("red", "blue"), density = 0.4,
 #'                     spacing = 0.15, angle = 0, amplitude = 0.075)
+#'
+#' # stagger shifts alternate rows by half a wavelength
+#' grid::grid.newpage()
+#' grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
+#'                   fill = c("red", "blue"), density = 0.4,
+#'                   spacing = 0.15, angle = 0,
+#'                   amplitude = 0.05, frequency = 1 / 0.15, stagger = TRUE)
 #' @seealso Use [grid.pattern_stripe()] for straight lines instead of waves.
 #' @export
 grid.pattern_wave <- function(
@@ -45,6 +55,7 @@ grid.pattern_wave <- function(
 	size = NULL,
 	grid = "square",
 	type = "triangle",
+	stagger = FALSE,
 	default.units = "npc",
 	name = NULL,
 	gp = gpar(),
@@ -74,6 +85,7 @@ grid.pattern_wave <- function(
 		linewidth = linewidth,
 		grid = grid,
 		type = type,
+		stagger = stagger,
 		default.units = default.units,
 		name = name,
 		gp = gp,
@@ -104,6 +116,16 @@ create_pattern_wave_via_sf <- function(params, boundary_df, aspect_ratio, legend
 	density <- params$pattern_density
 
 	n_par <- max(lengths(list(fill, col, lwd, lty, density)))
+
+	if (isTRUE(params$pattern_stagger) && n_par %% 2L == 1L) {
+		halfwidth <- 0.5 * grid_xy$v_spacing * params$pattern_density
+		if (2 * (params$pattern_amplitude + halfwidth) > n_par * grid_xy$v_spacing) {
+			abort(c(
+				"Wave stagger bands overlap between adjacent rows.",
+				i = "Reduce `amplitude` or `density`, increase `spacing`, or use an even number of fill/colour values."
+			))
+		}
+	}
 
 	fill <- rep_len_fill(fill, n_par)
 	col <- rep_len(col, n_par)
@@ -146,10 +168,12 @@ create_sine_waves_sf <- function(params, grid_xy, vpm, i_par, n_par) {
 	a <- params$pattern_amplitude
 	n_s <- 180L
 	theta <- to_radians(seq(0, by = 360L / n_s, length.out = n_s))
-	y_s <- a * sin(theta)
 	n_y <- length(grid_xy$y)
 	indices_y <- seq(from = i_par, to = n_y, by = n_par)
-	l_waves <- lapply(grid_xy$y[indices_y], function(y0) {
+	l_waves <- lapply(seq_along(indices_y), function(j) {
+		y0 <- grid_xy$y[indices_y[j]]
+		phase <- if (isTRUE(params$pattern_stagger) && indices_y[j] %% 2L == 0L) pi else 0
+		y_s <- a * sin(theta + phase)
 		n_x <- length(grid_xy$x)
 		xc <- seq(grid_xy$x_min, grid_xy$x_max, length.out = n_s * n_x + 1L)
 		yc <- y0 + rep(y_s, length.out = n_s * n_x + 1L)
@@ -169,10 +193,16 @@ create_triangle_waves_sf <- function(params, grid_xy, vpm, i_par, n_par) {
 	a <- params$pattern_amplitude
 	n_y <- length(grid_xy$y)
 	indices_y <- seq(from = i_par, to = n_y, by = n_par)
-	l_waves <- lapply(grid_xy$y[indices_y], function(y0) {
+	l_waves <- lapply(seq_along(indices_y), function(j) {
+		y0 <- grid_xy$y[indices_y[j]]
+		half_period_shape <- if (isTRUE(params$pattern_stagger) && indices_y[j] %% 2L == 0L) {
+			c(0, -a, 0, a)
+		} else {
+			c(0, a, 0, -a)
+		}
 		n_x <- length(grid_xy$x)
 		xc <- seq(grid_xy$x_min, grid_xy$x_max, length.out = 4L * n_x + 1L)
-		yc <- y0 + rep(c(0, a, 0, -a), length.out = 4L * n_x + 1L)
+		yc <- y0 + rep(half_period_shape, length.out = 4L * n_x + 1L)
 		yt <- yc + halfwidth
 		yb <- yc - halfwidth
 		x <- c(xc, rev(xc))

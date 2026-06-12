@@ -121,6 +121,49 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
+	expect_doppelganger("wave_sine_stagger", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "sine",
+			fill = c("red", "blue"),
+			density = 0.4,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15,
+			stagger = TRUE
+		)
+	})
+
+	expect_error(
+		grid.pattern_wave(
+			x,
+			y,
+			fill = "yellow",
+			type = "triangle",
+			density = 0.5,
+			spacing = 0.15,
+			stagger = TRUE
+		),
+		"overlap"
+	)
+
+	expect_doppelganger("wave_triangle_stagger", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			color = "black",
+			fill = "yellow",
+			type = "triangle",
+			density = 0.3,
+			spacing = 0.15,
+			amplitude = 0.03,
+			stagger = TRUE
+		)
+	})
+
 	expect_doppelganger("weave", function() {
 		grid.pattern_weave(
 			x,

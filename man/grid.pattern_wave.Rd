@@ -25,6 +25,7 @@ grid.pattern_wave(
   size = NULL,
   grid = "square",
   type = "triangle",
+  stagger = FALSE,
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -78,6 +79,10 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{type}{Either \dQuote{sine} or \dQuote{triangle} (default).}
 
+\item{stagger}{If \code{TRUE}, alternate wave rows are shifted by half a wavelength so that
+crests of one row align with troughs of adjacent rows, creating an interlocking effect.
+Default \code{FALSE}.}
+
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}
 
@@ -112,6 +117,13 @@ grid::grid.newpage()
 grid.pattern_wave(x_hex, y_hex, colour = "black", type = "triangle",
                     fill = c("red", "blue"), density = 0.4,
                     spacing = 0.15, angle = 0, amplitude = 0.075)
+
+# stagger shifts alternate rows by half a wavelength
+grid::grid.newpage()
+grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
+                  fill = c("red", "blue"), density = 0.4,
+                  spacing = 0.15, angle = 0,
+                  amplitude = 0.05, frequency = 1 / 0.15, stagger = TRUE)
 }
 \seealso{
 Use \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for straight lines instead of waves.

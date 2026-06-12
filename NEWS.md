@@ -19,6 +19,8 @@ New Features
 Bug fixes and minor improvements
 --------------------------------
 
+* `grid.pattern_wave()` gains a `stagger` parameter (#100).
+
 * Fixes a bug where geometry-based patterns (e.g. "stripe", "crosshatch", "wave")
   could silently disappear in small viewports when `pattern_key_scale_factor`
   was a relatively large value (#95).
