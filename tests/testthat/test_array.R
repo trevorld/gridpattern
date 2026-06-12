@@ -14,10 +14,13 @@ test_raster <- function(ref_png, fn, update = FALSE) {
 	bool <- attr(diff, "distortion") < 0.01
 	if (!bool) {
 		grDevices::dev.new()
+		grid::grid.text(ref_png, y = 0.95)
 		grid::pushViewport(grid::viewport(x = 0.25, width = 0.5))
+		grid::grid.text("ref", y = 0.9)
 		grid::grid.raster(ref)
 		grid::popViewport()
 		grid::pushViewport(grid::viewport(x = 0.75, width = 0.5))
+		grid::grid.text("new", y = 0.9)
 		grid::grid.raster(image)
 		grid::popViewport()
 	}
@@ -79,8 +82,90 @@ test_that("array patterns works as expected", {
 	test_raster("image_squish.png", function() {
 		grid.pattern_image(x, y, filename = logo_filename, type = "squish")
 	})
+	test_raster("hatch_azure.png", function() {
+		grid.pattern_hatch(x, y, type = "azure", colour = "black", spacing = 0.1)
+	})
+	test_raster("hatch_gules.png", function() {
+		grid.pattern_hatch(x, y, type = "gules", colour = "black", spacing = 0.1)
+	})
+	test_raster("hatch_sable.png", function() {
+		grid.pattern_hatch(x, y, type = "sable", colour = "black", spacing = 0.1)
+	})
+	test_raster("hatch_sanguine.png", function() {
+		grid.pattern_hatch(x, y, type = "sanguine", colour = "black", spacing = 0.1)
+	})
+	test_raster("hatch_or.png", function() {
+		grid.pattern_hatch(x, y, type = "or", colour = "black", spacing = 0.1)
+	})
+	test_raster("hatch_cendree.png", function() {
+		grid.pattern_hatch(x, y, type = "cendree", colour = "black", spacing = 0.1)
+	})
+	test_raster("hatch_olive.png", function() {
+		grid.pattern_hatch(x, y, type = "olive", colour = "black", spacing = 0.1)
+	})
+	test_raster("hatch_proper.png", function() {
+		grid.pattern_hatch(
+			x,
+			y,
+			type = "proper",
+			subtype = "fox-davies",
+			colour = "black",
+			spacing = 0.1
+		)
+	})
+	test_raster("hatch_steel.png", function() {
+		grid.pattern_hatch(
+			x,
+			y,
+			type = "steel",
+			subtype = "goodman",
+			colour = "black",
+			spacing = 0.1
+		)
+	})
+	test_raster("hatch_copper.png", function() {
+		grid.pattern_hatch(
+			x,
+			y,
+			type = "copper",
+			subtype = "goodman",
+			colour = "black",
+			spacing = 0.1
+		)
+	})
+	test_raster("hatch_unicode_orange.png", function() {
+		grid.pattern_hatch(
+			x,
+			y,
+			type = "orange",
+			subtype = "unicode",
+			colour = "black",
+			spacing = 0.1
+		)
+	})
+	test_raster("hatch_unicode_grey.png", function() {
+		grid.pattern_hatch(
+			x,
+			y,
+			type = "grey",
+			subtype = "unicode",
+			colour = "black",
+			spacing = 0.1
+		)
+	})
 	test_raster("line.png", function() {
 		grid.pattern_line(x, y, colour = "black", angle = 0, spacing = 0.1)
+	})
+	test_raster("line_stagger.png", function() {
+		grid.pattern_line(
+			x,
+			y,
+			colour = "black",
+			angle = 0,
+			spacing = 0.1,
+			linetype = "dashed",
+			stagger = TRUE
+		)
 	})
 	test_raster("magick.png", function() {
 		grid.pattern_magick(x, y, type = "octagons", fill = "blue", scale = 2)

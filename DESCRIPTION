@@ -37,6 +37,7 @@ Suggests:
     scales,
     svglite (>= 2.1.0),
     testthat,
+    Unicode,
     vdiffr (>= 1.0.6)
 VignetteBuilder: knitr, rmarkdown
 Config/roxygen2/version: 8.0.0

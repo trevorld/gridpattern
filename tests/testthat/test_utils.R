@@ -88,6 +88,109 @@ test_that("`mix_col()` works as expected", {
 	expect_equal(mix_col(c("red", "yellow", "blue"), w = c(2, 1, 1)), "#F46666FF")
 })
 
+test_that("`names_hatch()` works as expected", {
+	# default is combinatorial, returns color equivalents
+	nms <- names_hatch()
+	expect_type(nms, "character")
+	expect_true(all(!duplicated(nms)))
+	expect_true(all(c("red", "blue", "green", "purple", "yellow", "black", "white") %in% nms))
+	expect_true(all(c("magenta", "teal", "violet", "orange", "lime green") %in% nms))
+	expect_true(all(c("pink", "grey", "mint green", "light blue", "lavender") %in% nms))
+
+	# fox-davies returns heraldic names
+	fd <- names_hatch("fox-davies")
+	expect_true(all(!duplicated(fd)))
+	expect_true(all(c("gules", "azure", "vert", "purpure", "sable", "argent", "or") %in% fd))
+	expect_true(all(
+		c(
+			"eisenfarbe",
+			"brunatre",
+			"sanguine",
+			"tenne",
+			"carnation",
+			"cendree",
+			"orange",
+			"bleu celeste",
+			"proper"
+		) %in%
+			fd
+	))
+
+	# goodman: has new tinctures, lacks eisenfarbe and proper
+	gd <- names_hatch("goodman")
+	expect_true(all(!duplicated(gd)))
+	expect_true(all(c("murrey", "steel", "copper", "bronze", "lead") %in% gd))
+	expect_false("eisenfarbe" %in% gd)
+	expect_false("proper" %in% gd)
+
+	# unicode returns color equivalents matching emoji heart colors
+	un <- names_hatch("unicode")
+	expect_true(all(!duplicated(un)))
+	expect_true(all(
+		c(
+			"red",
+			"blue",
+			"green",
+			"yellow",
+			"purple",
+			"black",
+			"white",
+			"brown",
+			"orange",
+			"light blue",
+			"grey",
+			"pink"
+		) %in%
+			un
+	))
+
+	# accent substitutes accented spellings
+	fd_acc <- names_hatch("fox-davies", accent = TRUE)
+	expect_true("tenné" %in% fd_acc)
+	expect_true("brunâtre" %in% fd_acc)
+	expect_true("cendrée" %in% fd_acc)
+	expect_true("bleu céleste" %in% fd_acc)
+	expect_false("tenne" %in% fd_acc)
+
+	# subtype matching is case-insensitive and ignores hyphens
+	expect_equal(names_hatch("Fox-Davies"), names_hatch("fox-davies"))
+	expect_equal(names_hatch("UNICODE"), names_hatch("unicode"))
+	expect_equal(names_hatch("Goodman"), names_hatch("goodman"))
+})
+
+test_that("`grid.pattern_hatch()` warns on unsupported type/subtype combinations", {
+	x <- c(0, 0, 1, 1)
+	y <- c(1, 0, 0, 1)
+	render <- function(expr) {
+		f <- tempfile(fileext = ".pdf")
+		on.exit(unlink(f))
+		prev_dev <- dev.cur()
+		pdf(f)
+		on.exit(
+			{
+				suppressWarnings(dev.off())
+				if (prev_dev > 1L) dev.set(prev_dev)
+			},
+			add = TRUE
+		)
+		force(expr)
+	}
+	# unknown type errors
+	expect_error(
+		render(grid.pattern_hatch(x, y, type = "notacolor")),
+		"Unknown hatching type"
+	)
+	# type valid globally but not in this subtype errors
+	expect_error(
+		render(grid.pattern_hatch(x, y, type = "violet", subtype = "fox-davies")),
+		"not supported by the 'fox-davies' subtype"
+	)
+	expect_error(
+		render(grid.pattern_hatch(x, y, type = "proper", subtype = "goodman")),
+		"not supported by the 'goodman' subtype"
+	)
+})
+
 test_that("`assert_suggested()` works as expected", {
 	expect_error(
 		assert_suggested("doesnotexist", pattern = "blueberry"),

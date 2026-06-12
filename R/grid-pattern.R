@@ -17,6 +17,8 @@
 #'                   See [grid.pattern_crosshatch()] for more information.}
 #' \item{gradient}{Gradient array/geometry patterns.
 #'                 See [grid.pattern_gradient()] for more information.}
+#' \item{hatch}{Heraldic hatching patterns.
+#'              See [grid.pattern_hatch()] for more information.}
 #' \item{image}{Image array patterns.
 #'              See [grid.pattern_image()] for more information.}
 #' \item{line}{Line geometry patterns.
@@ -158,6 +160,7 @@ names_pattern <- c(
 	"crosshatch",
 	"fill",
 	"gradient",
+	"hatch",
 	"image",
 	"line",
 	"magick",
@@ -251,6 +254,7 @@ get_pattern_fn <- function(pattern) {
 			crosshatch = create_pattern_crosshatch_via_sf,
 			fill = create_pattern_fill,
 			gradient = create_pattern_gradient,
+			hatch = create_pattern_hatch,
 			line = create_pattern_line,
 			none = create_pattern_none,
 			pch = create_pattern_pch,
