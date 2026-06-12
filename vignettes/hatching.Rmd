@@ -1,0 +1,553 @@
+---
+title: "Heraldic Color Hatching"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Heraldic Color Hatching}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>"
+)
+can_render <- capabilities("png") || guess_has_R4.1_features("masks")
+```
+
+The `gridpattern` package supports heraldic color hatching via `grid.pattern_hatch()`.
+Hatching encodes color information using patterns of lines and dots, allowing
+images to be reproduced in black and white while retaining color identity.
+
+Four systems are supported via the `subtype` argument:
+
+- `"combinatorial"` (default): extends the seven standard Petra Sancta tinctures with systematically derived mixed-color combinations following three rules:
+
+  1. white combined with a color is represented by dashed lines
+  2. yellow combined with a color is represented by dotdash lines
+  3. color combined with a color is represented by crossing solid lines
+
+- `"fox-davies"`: contains the sixteen hatchings from Fox-Davies' [*A Complete Guide to Heraldry*](https://en.wikisource.org/wiki/A_Complete_Guide_to_Heraldry/Chapter_7#74) covering the seven standard Petra Sancta tinctures plus nine extensions from German heraldry.
+- `"goodman"`: contains all the hatchings from David Goodman's [Heraldic Tincture](https://david.goodman.graphics/portfolio/item/crests-heraldry-and-coats-of-arms/) reference (v2.0, 2024).
+- `"unicode"`: the system used in the official Unicode character chart pdfs to render "colored" (emoji) glyphs in black-and-white.
+
+Use `names_hatch()` to query supported tincture names for a given subtype.  The "hatch" pattern will also coerce some of the more common color names to the right tincture e.g. "gold" and "yellow" will be both coerced to "or" and vice versa.
+
+```{r setup}
+library("grid")
+library("gridpattern")
+```
+
+```{r names}
+names_hatch()
+names_hatch("fox-davies")
+names_hatch("goodman")
+names_hatch("unicode")
+```
+
+## Combinatorial color hatching
+
+The default `"combinatorial"` subtype starts from the set of five [Munsell primary colors](https://en.wikipedia.org/wiki/Munsell_color_system) of red, yellow, green, blue, and purple plus black and white and the standard Petra Sancta color hatching system and then systematically derives additional color hatchings via three rules:
+
+1. **white + color** → dashed lines
+2. **yellow + color** → dotdash lines
+3. **color + color** → crossing solid lines
+
+```{r combinatorial-table, fig.alt = "Color table showing the Combinatorial Petra Sancta tinctures arranged by achromatic, primaries, secondaries, and notable combinations", fig.width = 7, fig.height = 8.5, eval = can_render && requireNamespace("aqp", quietly = TRUE), echo = FALSE}
+# Munsell primary colors
+p_col <- c(
+    argent  = "#FFFFFF",
+    sable   = "#000000",
+    gules   = "#C83030", # 5R 4/14
+    # or      = "#E8C840", # 5Y 8/12
+    or      = "#D4B828", # 5Y 7/12
+    azure   = "#0072B0", # 5B 4/10
+    vert    = "#008060", # 5G 5/10
+    # purpure = "#7B4090" # 5P 4/10
+    purpure = "#9050C0" # 5P 6/12
+)
+# p_col <- c(
+# 	argent  = aqp::parseMunsell("N 9.5/"),
+# 	azure   = aqp::parseMunsell("5B 4/10"),
+# 	gules   = aqp::parseMunsell("5R 4/14"),
+# 	or      = aqp::parseMunsell("5Y 7/12"),
+# 	sable   = aqp::parseMunsell("N 1/"),
+#     purpure = aqp::parseMunsell("5P 6/12"),
+#     vert    = aqp::parseMunsell("5G 5/10")
+# )
+
+# Five Munsell secondary hues via subtractive mixing
+s_col <- c(
+    orange   = mix_col(c(p_col["gules"],   p_col["or"])),       # YR: red + yellow
+    lime     = mix_col(c(p_col["or"],       p_col["vert"])),     # GY: yellow + green
+    teal     = mix_col(c(p_col["azure"],    p_col["vert"])),     # BG: blue + green
+    violet   = mix_col(c(p_col["azure"],    p_col["purpure"])),  # PB: blue + purple
+    sanguine = mix_col(c(p_col["gules"],    p_col["purpure"]))   # RP: red + purple
+)
+
+# Notable combination colors
+w_col <- c(
+    carnation      = mix_col(c(p_col["argent"],  p_col["gules"])),
+    cendree        = mix_col(c(p_col["argent"],  p_col["sable"])),
+    mint           = mix_col(c(p_col["argent"],  p_col["vert"])),
+    `bleu celeste` = mix_col(c(p_col["argent"],  p_col["azure"])),
+    lavender       = mix_col(c(p_col["argent"],  p_col["purpure"]))
+)
+o_col <- c(
+    tenne          = mix_col(c(p_col["gules"],   p_col["vert"])),
+    slate          = mix_col(c(p_col["purpure"], p_col["vert"])),
+    olive          = mix_col(c(p_col["or"],       p_col["sable"])),
+    rose           = mix_col(c(p_col["or"],       p_col["purpure"])),
+    brunatre       = mix_col(c(p_col["azure"],    p_col["gules"],   p_col["vert"]))
+)
+
+groups <- list(
+    list(
+        label     = "Achromatic",
+        tinctures = c("argent", "sable"),
+        cols      = p_col[c("argent", "sable")],
+        names     = c("white (W)", "black (K)")
+    ),
+    list(
+        label     = "Munsell Primary Hues",
+        tinctures = c("gules", "or", "vert", "azure", "purpure"),
+        cols      = p_col[c("gules", "or", "vert", "azure", "purpure")],
+        names     = c("red (R)", "yellow (Y)", "green (G)", "blue (B)", "purple (P)")
+    ),
+    list(
+        label     = "Munsell Secondary Hues",
+        tinctures = c("orange", "lime", "teal", "violet", "sanguine"),
+        cols      = s_col,
+        names     = c("orange (R+Y)", "lime (Y+G)", "teal (G+B)", "violet (B+P)", "magenta (P+R)")
+    ),
+    list(
+        label     = "Combinations with White",
+        tinctures = c("carnation", "cendree", "mint", "bleu celeste", "lavender"),
+        cols      = w_col,
+        names     = c("pink (R+W)", "grey (K+W)", "mint (G+W)", "light blue (B+W)", "lavender (P+W)")
+    ),
+    list(
+        label     = "Other Combinations*",
+        tinctures = c("tenne", "olive", "slate", "brunatre", "rose"),
+        cols      = o_col[c("tenne", "olive", "slate", "brunatre", "rose")],
+        names     = c("brown (R+G)", "olive (Y+K)", "slate (G+P)", "umbre (B+R+G)", "rose (Y+P)")
+    )
+)
+
+rx <- c(0, 0, 1, 1)
+ry <- c(1, 0, 0, 1)
+ncols_fig <- 5L
+
+row_heights <- unlist(lapply(groups, function(g) {
+    n_sr <- ceiling(length(g$tinctures) / ncols_fig)
+    c(0.28, rep(1, n_sr))
+}))
+
+grid.newpage()
+grid.rect(gp = gpar(fill = "white", col = NA))
+pushViewport(viewport(width = 0.97, height = 0.97))
+grid.text(
+    "Combinatorial Petra Sancta",
+    y = unit(1, "npc") - unit(0.25, "cm"),
+    just = "top",
+    gp = gpar(fontsize = 31, fontface = "bold")
+)
+
+# Upper-right rules legend
+pushViewport(viewport(
+    x = unit(1, "npc") - unit(0.2, "cm"),
+	y = unit(1, "npc") - unit(1.3, "cm"),
+    just = c("right", "top"),
+    width = unit(10.0, "cm"), height = unit(3.1, "cm")
+))
+grid.rect(gp = gpar(fill = "grey98", col = "grey60", lwd = 0.8))
+grid.text("Combination rules:", x = 0.01, y = 0.91, just = c("left", "top"),
+          gp = gpar(fontsize = 14, fontface = "bold"))
+legend_rules <- c(
+    "1. Dashed lines — combined with white",
+    "2. Dot-dash lines — combined with yellow",
+    "3. Crossed solid lines — mixed colors (if not black)"
+)
+for (i in seq_along(legend_rules)) {
+    grid.text(legend_rules[i], x = 0.01, y = 0.66 - (i - 1L) * 0.25,
+              just = c("left", "top"), gp = gpar(fontsize = 11))
+}
+popViewport()
+
+pushViewport(viewport(
+    y = 0.49, height = 0.90,
+    layout = grid.layout(length(row_heights), ncols_fig, heights = unit(row_heights, "null"))
+))
+
+layout_row <- 1L
+for (g in groups) {
+    pushViewport(viewport(layout.pos.row = layout_row, layout.pos.col = 1:ncols_fig))
+    grid.text(g$label, x = 0.01, just = "left",
+              gp = gpar(fontsize = 18, fontface = "bold", col = "black"))
+    popViewport()
+    layout_row <- layout_row + 1L
+
+    n_sr <- ceiling(length(g$tinctures) / ncols_fig)
+    for (sr in seq_len(n_sr)) {
+        idx_from <- (sr - 1L) * ncols_fig + 1L
+        idx_to   <- min(sr * ncols_fig, length(g$tinctures))
+        for (ci in idx_from:idx_to) {
+            t     <- g$tinctures[ci]
+            col_i <- (ci - 1L) %% ncols_fig + 1L
+            if (is.na(t)) next
+            col   <- unname(g$cols[ci])
+            nm    <- g$names[ci]
+            display_col <- if (t == "argent") "grey55" else col
+
+            pushViewport(viewport(layout.pos.row = layout_row, layout.pos.col = col_i))
+            pushViewport(viewport(y = 0.58, width = 0.90, height = 0.72,
+                                  layout = grid.layout(1, 2)))
+            pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+            grid.rect(gp = gpar(fill = col, col = display_col, lwd = 1.5))
+            popViewport()
+            pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
+            grid.pattern_hatch(rx, ry, type = t, color = display_col,
+                               spacing = 0.18, linewidth = 0.8)
+            grid.rect(gp = gpar(fill = NA, col = display_col, lwd = 1.5))
+            popViewport()
+            popViewport()
+            grid.text(nm, y = unit(0.105, "npc"), gp = gpar(fontsize = 9, col = "black"))
+            popViewport()
+        }
+        layout_row <- layout_row + 1L
+    }
+}
+
+popViewport()
+
+# Footnote
+grid.text(
+    "* Display colors are sensitive to the exact primary pigments chosen;\n  results are roughly consistent for saturated heraldic primaries with Munsell pigment mixing.",
+    x = 0.01, y = 0.004, just = c("left", "bottom"),
+    gp = gpar(fontsize = 10, col = "black", fontface = "italic")
+)
+
+popViewport()
+```
+
+**Note:** The mixed display colors shown above can be sensitive to the exact hex values chosen for the primaries.
+The results are fairly consistent when the primaries are the saturated, high-chroma colors typical of heraldry combined with Munsell pigment mixing
+but softer or more neutral primaries can shift some secondaries noticeably
+(for example, mixing yellow and blue can yield anything from olive-grey to muted purple depending on the blue's hue angle).
+
+## Heraldic tincture hatching
+
+### Fox-Davies
+
+The `"fox-davies"` hatching subtype includes the seven standard tinctures plus nine extensions from German heraldry whose hatchings were included in Fox-Davies' [*A Complete Guide to Heraldry*](https://en.wikisource.org/wiki/A_Complete_Guide_to_Heraldry/Chapter_7#74).
+
+```{r fox-davies-shields, fig.alt = "Heraldic shields showing the Fox-Davies hatching tinctures", fig.width = 7, fig.height = 6.0, eval = can_render, echo = FALSE}
+# Approximate display color for each tincture
+tincture_col <- c(
+    argent         = "grey40",
+    azure          = "#003399",
+    `bleu celeste` = "#4499CC",
+    brunatre       = "#7B3A10",
+    carnation      = "#CC6688",
+    cendree        = "#708090",
+    gules          = "#CC0000",
+    eisenfarbe     = "#708090",
+    proper         = "#228B22",
+    or             = "#DAA520",
+    orange         = "#EE7700",
+    purpure        = "#660099",
+    sable          = "#111111",
+    sanguine       = "#880000",
+    tenne          = "#BB6600",
+    vert           = "#006400"
+)
+color_equiv <- c(
+    argent         = "white/silver",
+    azure          = "blue",
+    `bleu celeste` = "light blue",
+    brunatre       = "(earth) brown",
+    carnation      = "carnation",
+    cendree        = "ash grey",
+    gules          = "red",
+    eisenfarbe     = "iron grey",
+    proper         = "color of nature",
+    or             = "yellow/gold",
+    orange         = "orange",
+    purpure        = "purple",
+    sable          = "black",
+    sanguine       = "blood red",
+    tenne          = "(tawny) brown",
+    vert           = "green"
+)
+
+# Heater shield polygon (normalised to [0,1] x [0,1])
+sx <- c(0.0, 0.0, 0.5, 1.0, 1.0)
+sy <- c(1.0, 0.35, 0.0, 0.35, 1.0)
+
+tinctures <- names_hatch("fox-davies")
+tincture_labels <- names_hatch("fox-davies", accent = TRUE)
+n <- length(tinctures)
+ncols <- 4L
+nrows <- ceiling(n / ncols)
+
+grid.newpage()
+grid.rect(gp = gpar(fill = "white", col = NA))
+pushViewport(viewport(width = 0.97, height = 0.97))
+grid.text(
+    "Heraldic Hatching (Petra Sancta + German Heraldry Extensions)",
+    y = unit(1, "npc") - unit(0.25, "cm"),
+    just = "top",
+    gp = gpar(fontsize = 13, fontface = "bold")
+)
+pushViewport(viewport(y = 0.47, height = 0.90, layout = grid.layout(nrows, ncols)))
+
+for (i in seq_len(n)) {
+    t <- tinctures[i]
+    col <- tincture_col[t]
+    row_i <- ((i - 1L) %/% ncols) + 1L
+    col_i <- ((i - 1L) %% ncols) + 1L
+
+    pushViewport(viewport(layout.pos.row = row_i, layout.pos.col = col_i))
+    pushViewport(viewport(y = 0.60, width = 0.78, height = 0.70))
+
+    grid.polygon(sx, sy, gp = gpar(fill = "white", col = NA))
+    grid.pattern_hatch(sx, sy, type = t, subtype = "fox-davies", color = col, spacing = 0.12, linewidth = 1.0)
+    grid.polygon(sx, sy, gp = gpar(fill = NA, col = col, lwd = 1.5))
+
+    popViewport()
+
+    grid.text(tincture_labels[i], y = unit(0.20, "npc"), gp = gpar(fontsize = 8.5, col = "grey20"))
+    grid.text(color_equiv[t], y = unit(0.06, "npc"), gp = gpar(fontsize = 7.5, col = col))
+
+    popViewport()
+}
+
+popViewport()
+popViewport()
+```
+
+### Goodman
+
+The `"goodman"` hatching subtype includes all the hatchings in David Goodman's [Heraldic Tincture](https://david.goodman.graphics/portfolio/item/crests-heraldry-and-coats-of-arms/) reference (v2.0, 2024).  This shares most hatchings with Fox-Davies but differs in few ways:
+
+- Goodman's **sanguine** hatching instead uses horizontal plus diagonal `\` crossing lines.
+- Goodman also has a distinct **murrey** hatching which uses crossing diagonal lines (Fox-Davies' instead uses this hatching for the eisenfarbe (iron grey) hatching).
+- New **rose** with the same hatching as carnation (which Goodman also lists).
+- New **steel** metal rendered as plus signs in a square grid.
+- New **copper**, **bronze**, and **lead** metals which are each rendered as the letter "c" in a hex grid.
+- Goodman omits the **proper** hatching that Fox-Davies included.
+
+```{r goodman-shields, fig.alt = "Heraldic shields showing Goodman tinctures that differ from Fox-Davies", fig.width = 7, fig.height = 4.0, eval = can_render, echo = FALSE}
+tincture_col <- c(
+    sanguine = "#880000",
+    murrey   = "#990055",
+    steel    = "#708090",
+    copper   = "#B87333"
+)
+
+sx <- c(0.0, 0.0, 0.5, 1.0, 1.0)
+sy <- c(1.0, 0.35, 0.0, 0.35, 1.0)
+
+tinctures <- names(tincture_col)
+n <- length(tinctures)
+ncols <- 4L
+nrows <- ceiling(n / ncols)
+
+grid.newpage()
+grid.rect(gp = gpar(fill = "white", col = NA))
+pushViewport(viewport(width = 0.97, height = 0.97))
+grid.text(
+    "Goodman — New and Different Tinctures",
+    y = unit(1, "npc") - unit(0.25, "cm"),
+    just = "top",
+    gp = gpar(fontsize = 13, fontface = "bold")
+)
+pushViewport(viewport(y = 0.44, height = 0.85, layout = grid.layout(nrows, ncols)))
+
+for (i in seq_len(n)) {
+    t <- tinctures[i]
+    col <- tincture_col[t]
+    row_i <- ((i - 1L) %/% ncols) + 1L
+    col_i <- ((i - 1L) %% ncols) + 1L
+
+    pushViewport(viewport(layout.pos.row = row_i, layout.pos.col = col_i))
+    pushViewport(viewport(y = 0.60, width = 0.78, height = 0.70))
+
+    grid.polygon(sx, sy, gp = gpar(fill = "white", col = NA))
+    grid.pattern_hatch(sx, sy, type = t, subtype = "goodman", color = col, spacing = 0.12, linewidth = 0.8)
+    grid.polygon(sx, sy, gp = gpar(fill = NA, col = col, lwd = 1.5))
+
+    popViewport()
+
+    grid.text(t, y = unit(0.20, "npc"), gp = gpar(fontsize = 18, col = "black"))
+    popViewport()
+}
+
+popViewport()
+popViewport()
+```
+
+## Unicode color hatching
+
+The `"unicode"` hatching subtype provides each of the hatching used in the official Unicode character chart pdfs to assign a distinct pattern to each color to render "colored" (emoji) glyphs in black-and-white.
+Notably Unicode has twelve different [colored heart emoji](https://unicode.org/emoji/charts/full-emoji-list.html#heart) (red, blue, green, yellow, purple, black, white, brown, orange, light blue, grey, pink) that each needed a separate hatching.
+
+```{r unicode-hearts, fig.alt = "Twelve Unicode colored hearts rendered with hatching patterns", fig.width = 7, fig.height = 6, eval = requireNamespace("Unicode", quietly = TRUE) && can_render, echo = FALSE}
+library("Unicode")
+
+# The 12 Unicode colored hearts in codepoint order
+heart_codepoints <- c(
+    red          = 0x2764L, # HEAVY BLACK HEART (displays as red via emoji VS)
+    blue         = 0x1F499L,
+    green        = 0x1F49AL,
+    yellow       = 0x1F49BL,
+    purple       = 0x1F49CL,
+    black        = 0x1F5A4L,
+    white        = 0x1F90DL,
+    brown        = 0x1F90EL,
+    orange       = 0x1F9E1L,
+    `light blue` = 0x1FA75L,
+    grey         = 0x1FA76L,
+    pink         = 0x1FA77L
+)
+
+# Approximate display colors
+heart_col <- c(
+    red          = "#CC0000",
+    blue         = "#0055CC",
+    green        = "#006400",
+    yellow       = "#CCAA00",
+    purple       = "#6600AA",
+    black        = "#111111",
+    white        = "#999999", # grey stroke so argent pattern is visible
+    brown        = "#7B3A10",
+    orange       = "#FF8000",
+    `light blue` = "#4499CC",
+    grey         = "#666666",
+    pink         = "#DD4488"
+)
+
+uchars <- as.u_char(as.integer(heart_codepoints))
+labels <- u_char_name(uchars)
+heart_shape <- "♥" # U+2665 BLACK HEART SUIT — uniform shape template
+
+n <- length(heart_codepoints)
+ncols <- 4L
+nrows <- ceiling(n / ncols)
+
+grid.newpage()
+grid.rect(gp = gpar(fill = "white", col = NA))
+pushViewport(viewport(width = 0.95, height = 0.95))
+grid.text(
+    "Unicode Colored Hearts with Hatching",
+    y = unit(1, "npc") - unit(0.25, "cm"),
+    just = "top",
+    gp = gpar(fontsize = 22, fontface = "bold")
+)
+pushViewport(viewport(y = 0.48, height = 0.90, layout = grid.layout(nrows, ncols)))
+
+for (i in seq_len(n)) {
+    col_i <- ((i - 1L) %% ncols) + 1L
+    row_i <- ((i - 1L) %/% ncols) + 1L
+    col <- heart_col[i]
+
+    pushViewport(viewport(layout.pos.row = row_i, layout.pos.col = col_i))
+    pushViewport(viewport(width = 0.85, height = 0.85))
+
+    pfill <- patternFill(
+        "hatch",
+        type      = names(heart_codepoints)[i],
+        subtype   = "unicode",
+        color    = col,
+        spacing   = 0.14,
+        linewidth = 0.8
+    )
+    grid.draw(
+        fillStrokeGrob(
+            textGrob(heart_shape, gp = gpar(fontsize = 84)),
+            gp = gpar(fill = pfill, col = col)
+        )
+    )
+
+    grid.text(labels[i], y = unit(0.12, "npc"),
+              gp = gpar(fontsize = 12, col = "black"))
+    grid.text(sprintf("U+%04X", heart_codepoints[i]), y = unit(0.00, "npc"),
+              gp = gpar(fontsize = 10, col = "black"))
+
+    popViewport()
+    popViewport()
+}
+
+popViewport()
+popViewport()
+```
+
+## Okabe-Ito hatching
+
+One of the techniques to meet Web Content Accessibility Guidelines (WCAG) is to [use color and pattern](https://www.w3.org/WAI/WCAG21/Techniques/general/G111) to ensure things are accessible to the color-blind.
+
+The [Okabe-Ito palette](https://jfly.uni-koeln.de/color/) is a widely used colorblind-friendly palette. Here is an example of adding a simple hatching scheme to go with this palette to provide visual redundancy:
+
+  * "yellow", "blue", and "white" are given their standard Petra Sancta hatchings
+  + "reddish purple" is given a "purple" Petra Sancta hatching
+  * "bluish green" is given a "green" Petra Sancta hatching
+  * "vermillion" (red orange) is given a "red" Petra Sancta hatching
+  + we use a simple black fill for "black" instead of a "sable" crosshatch
+  * "orange" and "sky blue" are given the hatchings from German heraldry (see Fox-Davies' section above)
+
+```{r okabe-ito, fig.alt = "Table of Okabe-Ito palette colors paired with heraldic hatching patterns", fig.width = 6, fig.height = 6, eval = can_render}
+oi_names <- c(
+    "black", "orange", "sky blue", "bluish green",
+    "yellow", "blue", "vermilion", "reddish purple", "white"
+)
+oi_hex <- c(
+    "#000000", "#E69F00", "#56B4E9", "#009E73",
+    "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#FFFFFF"
+)
+oi_hatch <- c(
+    NA, "orange", "bleu celeste", "vert",
+    "or", "azure", "gules", "purpure", NA
+)
+sx <- c(0, 0, 1, 1)
+sy <- c(1, 0, 0, 1)
+n <- length(oi_names)
+
+grid.newpage()
+grid.rect(gp = gpar(fill = "white", col = NA))
+pushViewport(viewport(width = 0.90, height = 0.94))
+grid.text(
+    "Okabe-Ito Palette with Heraldic Hatching",
+    y = unit(1, "npc") - unit(0.25, "cm"),
+    just = "top",
+    gp = gpar(fontsize = 13, fontface = "bold")
+)
+pushViewport(viewport(
+    y = 0.46, height = 0.88,
+    layout = grid.layout(
+        n, 3,
+        widths = unit(c(3, 2.5, 4), "null"),
+        heights = unit(rep(1, n), "null")
+    )
+))
+
+for (i in seq_len(n)) {
+    grid.text(oi_names[i], x = 0.90, just = "right",
+              gp = gpar(fontsize = 12, col = "black"),
+	          vp = viewport(layout.pos.row = i, layout.pos.col = 1))
+
+    grid.text(oi_hex[i],
+              gp = gpar(fontsize = 12, fontfamily = "mono", col = "black"),
+	          vp = viewport(layout.pos.row = i, layout.pos.col = 2))
+
+    pushViewport(viewport(layout.pos.row = i, layout.pos.col = 3))
+    grid.rect(gp = gpar(fill = oi_hex[i], col = "black", lwd = 3.0))
+    if (!is.na(oi_hatch[i])) {
+        grid.pattern_hatch(sx, sy, type = oi_hatch[i],
+                           colour = "black", spacing = 0.18, linewidth = 0.8)
+    }
+    popViewport()
+}
+
+popViewport()
+popViewport()
+```

@@ -92,6 +92,8 @@ See \code{\link[=grid.pattern_circle]{grid.pattern_circle()}} for more informati
 See \code{\link[=grid.pattern_crosshatch]{grid.pattern_crosshatch()}} for more information.}
 \item{gradient}{Gradient array/geometry patterns.
 See \code{\link[=grid.pattern_gradient]{grid.pattern_gradient()}} for more information.}
+\item{hatch}{Heraldic hatching patterns.
+See \code{\link[=grid.pattern_hatch]{grid.pattern_hatch()}} for more information.}
 \item{image}{Image array patterns.
 See \code{\link[=grid.pattern_image]{grid.pattern_image()}} for more information.}
 \item{line}{Line geometry patterns.

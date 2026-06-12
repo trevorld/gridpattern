@@ -34,6 +34,7 @@ as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", 
 1. [crosshatch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_crosshatch.html): crosshatch geometry patterns
 1. [fill](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_fill.html): simple fill patterns
 1. [gradient](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_gradient.html): gradient array/geometry patterns
+1. [hatch](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_hatch.html): heraldic hatching patterns
 1. [image](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_image.html): image array patterns
 1. [line](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_line.html): line geometry patterns
 1. [magick](https://trevorldavis.com/R/gridpattern/dev/reference/grid.pattern_magick.html): imagemagick array patterns

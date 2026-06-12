@@ -132,6 +132,7 @@ default_pattern_type <- function(pattern) {
 		pattern,
 		ambient = "simplex",
 		aRtsy = "strokes",
+		hatch = "gules",
 		image = "fit",
 		placeholder = "bear",
 		polygon_tiling = "square",

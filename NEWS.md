@@ -4,15 +4,17 @@ gridpattern v1.4.0 (development)
 New Features
 ------------
 
-* `mix_col()` is a new utility function that mixes colors via Munsell color
-  space using `aqp::mixMunsell()`, simulating subtractive (pigment) mixing.
-  Requires the suggested package `{aqp}`.
+* New "hatch" pattern with corresponding `grid.pattern_hatch()` and `names_hatch()` (#97).
 
 * New "line" pattern with corresponding `grid.pattern_line()`.
   Unlike the "stripe" pattern which fills bands with solid colour,
   "line" draws stroked lines using the device's native line rendering,
   enabling all of R's built-in `linetype` values
   (including `"dotdash"`, `"twodash"`, and custom line types specified as hex strings per `?par`).
+
+* `mix_col()` is a new utility function that mixes colors via Munsell color
+  space using `aqp::mixMunsell()`.
+  Requires the suggested package `{aqp}`.
 
 Bug fixes and minor improvements
 --------------------------------
