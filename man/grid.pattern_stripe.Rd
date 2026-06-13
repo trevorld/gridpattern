@@ -103,4 +103,5 @@ grid.pattern_stripe(x_hex, y_hex, density = 0.3,
 \seealso{
 \verb{[grid.pattern_crosshatch()]} and \verb{[grid.pattern_weave()]} for overlaying stripes.
 Use \code{\link[=grid.pattern_line]{grid.pattern_line()}} for stroked lines that support all native \code{linetype} values.
+Use \code{\link[=grid.pattern_wave]{grid.pattern_wave()}} for wavy bands instead of straight ones.
 }

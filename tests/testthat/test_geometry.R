@@ -94,12 +94,12 @@ test_that("geometry patterns work as expected", {
 		grid.pattern("stripe", x, y, gp = gpar(col = "blue", fill = "red", lwd = 2))
 	})
 
-	expect_doppelganger("wave_sine", function() {
+	expect_doppelganger("wave_wavy", function() {
 		grid.pattern_wave(
 			x,
 			y,
 			colour = "black",
-			type = "sine",
+			type = "wavy",
 			fill = c("red", "blue"),
 			density = 0.4,
 			spacing = 0.15,
@@ -109,24 +109,85 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("wave_triangle", function() {
+	expect_doppelganger("wave_indented", function() {
 		grid.pattern_wave(
 			x,
 			y,
 			color = "black",
 			fill = "yellow",
-			type = "triangle",
+			type = "indented",
 			density = 0.5,
 			spacing = 0.15
 		)
 	})
 
-	expect_doppelganger("wave_sine_stagger", function() {
+	expect_doppelganger("wave_sawtooth", function() {
 		grid.pattern_wave(
 			x,
 			y,
 			colour = "black",
-			type = "sine",
+			type = "sawtoothed",
+			fill = c("red", "blue"),
+			density = 0.4,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_doppelganger("wave_sawtooth_reverse", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "sawtoothed",
+			reverse = TRUE,
+			fill = c("red", "blue"),
+			density = 0.4,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_error(
+		grid.pattern_wave(
+			x,
+			y,
+			type = "embattled",
+			fill = c("red", "blue"),
+			density = 0.6,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		),
+		"overlap"
+	)
+
+	expect_doppelganger("wave_embattled", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "embattled",
+			fill = c("red", "blue"),
+			density = 0.4,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_doppelganger("wave_wavy_stagger", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "wavy",
 			fill = c("red", "blue"),
 			density = 0.4,
 			spacing = 0.15,
@@ -142,7 +203,7 @@ test_that("geometry patterns work as expected", {
 			x,
 			y,
 			fill = "yellow",
-			type = "triangle",
+			type = "indented",
 			density = 0.5,
 			spacing = 0.15,
 			stagger = TRUE
@@ -150,17 +211,243 @@ test_that("geometry patterns work as expected", {
 		"overlap"
 	)
 
-	expect_doppelganger("wave_triangle_stagger", function() {
+	expect_doppelganger("wave_indented_stagger", function() {
 		grid.pattern_wave(
 			x,
 			y,
 			color = "black",
 			fill = "yellow",
-			type = "triangle",
+			type = "indented",
 			density = 0.3,
 			spacing = 0.15,
 			amplitude = 0.03,
 			stagger = TRUE
+		)
+	})
+
+	expect_error(
+		grid.pattern_wave(
+			x,
+			y,
+			type = "urdy",
+			fill = c("red", "blue"),
+			density = 0.6,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		),
+		"overlap"
+	)
+
+	expect_doppelganger("wave_urdy", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "urdy",
+			fill = c("red", "blue"),
+			density = 0.4,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_error(
+		grid.pattern_wave(
+			x,
+			y,
+			type = "dovetailed",
+			fill = c("red", "blue"),
+			density = 0.4,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		),
+		"overlap"
+	)
+
+	expect_doppelganger("wave_dovetailed", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "dovetailed",
+			fill = c("red", "blue"),
+			density = 0.2,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_doppelganger("wave_engrailed", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "engrailed",
+			fill = c("red", "blue"),
+			density = 0.4,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_doppelganger("wave_invected", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "invected",
+			fill = c("red", "blue"),
+			density = 0.4,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_error(
+		grid.pattern_wave(
+			x,
+			y,
+			type = "nebuly",
+			fill = c("red", "blue"),
+			density = 0.4,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		),
+		"overlap"
+	)
+
+	expect_doppelganger("wave_nebuly", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "nebuly",
+			fill = c("red", "blue"),
+			density = 0.2,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_error(
+		grid.pattern_wave(
+			x,
+			y,
+			type = "potenty",
+			fill = c("red", "blue"),
+			density = 0.4,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		),
+		"overlap"
+	)
+
+	expect_doppelganger("wave_potenty", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "potenty",
+			fill = c("red", "blue"),
+			density = 0.2,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_error(
+		grid.pattern_wave(
+			x,
+			y,
+			type = "embattled_grady",
+			fill = c("red", "blue"),
+			density = 0.5,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		),
+		"overlap"
+	)
+
+	expect_doppelganger("wave_embattled_grady", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "embattled_grady",
+			fill = c("red", "blue"),
+			density = 0.2,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_error(
+		grid.pattern_wave(
+			x,
+			y,
+			type = "raguly",
+			fill = c("red", "blue"),
+			density = 0.5,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		),
+		"overlap"
+	)
+
+	expect_doppelganger("wave_raguly", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "raguly",
+			fill = c("red", "blue"),
+			density = 0.3,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
+		)
+	})
+
+	expect_doppelganger("wave_raguly_reverse", function() {
+		grid.pattern_wave(
+			x,
+			y,
+			colour = "black",
+			type = "raguly",
+			reverse = TRUE,
+			fill = c("red", "blue"),
+			density = 0.3,
+			spacing = 0.15,
+			angle = 0,
+			amplitude = 0.05,
+			frequency = 1 / 0.15
 		)
 	})
 

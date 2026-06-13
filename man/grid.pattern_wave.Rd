@@ -2,6 +2,7 @@
 % Please edit documentation in R/pattern-geometry-wave.R
 \name{grid.pattern_wave}
 \alias{grid.pattern_wave}
+\alias{names_wave}
 \title{Wave patterned grobs}
 \usage{
 grid.pattern_wave(
@@ -24,7 +25,8 @@ grid.pattern_wave(
   linewidth = size \%||\% gp$lwd \%||\% 1,
   size = NULL,
   grid = "square",
-  type = "triangle",
+  type = "indented",
+  reverse = FALSE,
   stagger = FALSE,
   default.units = "npc",
   name = NULL,
@@ -32,6 +34,8 @@ grid.pattern_wave(
   draw = TRUE,
   vp = NULL
 )
+
+names_wave
 }
 \arguments{
 \item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary.}
@@ -77,7 +81,23 @@ All locations within the same \code{id} belong to the same boundary.}
 \code{"hex_circle"} is a hexagonal grid suitable for circle packing.
 \code{"elongated_triangle"} is a grid used for the "elongated triangle" tiling.}
 
-\item{type}{Either \dQuote{sine} or \dQuote{triangle} (default).}
+\item{type}{One of the following (see \code{names_wave} for the canonical list):
+\describe{
+\item{\code{"dovetailed"}}{A wave with diagonal strokes connecting the crests and troughs.  Alias: \code{"dovetail"}.}
+\item{\code{"embattled"}}{Square wave. Alias: \code{"square"}.}
+\item{\code{"embattled_grady"}}{Graduated stepped wave: two ascending steps followed by two descending steps per period.}
+\item{\code{"engrailed"}}{Repeating arches curving downward (non-positive half of a sine wave per period).}
+\item{\code{"indented"} (default)}{Triangular wave with equal rise and fall. Alias: \code{"triangle"}.}
+\item{\code{"invected"}}{Repeating arches curving upward (non-negative half of a sine wave per period).}
+\item{\code{"nebuly"}}{Smooth cloud-like wave.}
+\item{\code{"potenty"}}{A stepped wave with T-shaped crenellations.}
+\item{\code{"raguly"}}{Oblique stepped wave.  Use \code{reverse = TRUE} for the horizontally mirror image.}
+\item{\code{"sawtoothed"}}{Sawtooth wave with a gradual rise and sharp fall.  Use \code{reverse = TRUE} for a sharp rise and gradual fall.  Aliases: \code{"sawlike"}, \code{"sawtooth"}.}
+\item{\code{"urdy"}}{A wave with pointed crests and troughs.}
+\item{\code{"wavy"}}{Smooth sinusoidal wave. Aliases: \code{"sine"}, \code{"undy"}.}
+}}
+
+\item{reverse}{If \code{TRUE}, horizontally mirror the wave.  Currently affects \code{"sawtoothed"} and \code{"raguly"} only.  Default \code{FALSE}.}
 
 \item{stagger}{If \code{TRUE}, alternate wave rows are shifted by half a wavelength so that
 crests of one row align with troughs of adjacent rows, creating an interlocking effect.
@@ -102,29 +122,44 @@ A grid grob object invisibly.  If \code{draw} is \code{TRUE} then also draws to 
 }
 \description{
 \code{grid.pattern_wave()} draws a wave pattern onto the graphic device.
+\code{names_wave} is a character vector of supported \code{type} values.
 }
 \examples{
-x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-grid::grid.newpage()
-grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
-                  fill = c("red", "blue"), density = 0.4,
-                  spacing = 0.15, angle = 0,
-                  amplitude = 0.05, frequency = 1 / 0.20)
+print(names_wave)
 
-# zig-zag pattern is a wave of `type` "triangle"
+# visual table of all wave types
 grid::grid.newpage()
-grid.pattern_wave(x_hex, y_hex, colour = "black", type = "triangle",
-                    fill = c("red", "blue"), density = 0.4,
-                    spacing = 0.15, angle = 0, amplitude = 0.075)
+n <- length(names_wave)
+nc <- 2L
+nr <- ceiling(n / nc)
+grid::pushViewport(grid::viewport(layout = grid::grid.layout(nr, nc)))
+for (i in seq_len(n)) {
+    grid::pushViewport(grid::viewport(
+        layout.pos.row = (i - 1L) \%/\% nc + 1L,
+        layout.pos.col = (i - 1L) \%\% nc + 1L
+    ))
+    grid.pattern_wave(colour = "black", fill = c("gold", "steelblue"),
+                      type = names_wave[i], density = 0.18, spacing = 0.45,
+                      angle = 0, amplitude = 0.100, frequency = 1 / 0.45)
+    grid::grid.rect(x = 0.5, y = 0.86, width = 0.5, height = 0.28,
+                    just = "centre", gp = grid::gpar(fill = "grey80", col = "black"))
+    grid::grid.text(names_wave[i], x = 0.5, y = 0.88,
+                    gp = grid::gpar(fontsize = 11))
+    grid::grid.rect(gp = grid::gpar(fill = "transparent", col = "black", lwd = 6))
+    grid::popViewport()
+}
+grid::popViewport()
 
 # stagger shifts alternate rows by half a wavelength
 grid::grid.newpage()
-grid.pattern_wave(x_hex, y_hex, colour = "black", type = "sine",
-                  fill = c("red", "blue"), density = 0.4,
+x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
+grid.pattern_wave(x_hex, y_hex, colour = "black", type = "urdy",
+                  fill = c("red", "blue"), density = 0.3,
                   spacing = 0.15, angle = 0,
-                  amplitude = 0.05, frequency = 1 / 0.15, stagger = TRUE)
+                  amplitude = 0.045, frequency = 1 / 0.15, stagger = TRUE)
 }
 \seealso{
-Use \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for straight lines instead of waves.
+Use \code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for straight filled bands or \code{\link[=grid.pattern_line]{grid.pattern_line()}} for stroked lines instead of waves.
+See \url{https://en.wikipedia.org/wiki/Line_(heraldry)} and \url{https://en.wikipedia.org/wiki/Waveform} for more information about the supported wave types.
 }

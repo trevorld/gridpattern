@@ -1,6 +1,14 @@
 gridpattern v1.4.0 (development)
 ================================
 
+Breaking Changes
+----------------
+
+* The `"indented"` (formerly `"triangle"`) wave type now uses a wider stroke
+  in order to better match the apparent stroke widths of the new wave types.
+  Users who relied on the previous visual appearance should reduce `density`
+  to compensate.
+
 New Features
 ------------
 
@@ -12,14 +20,21 @@ New Features
   enabling all of R's built-in `linetype` values
   (including `"dotdash"`, `"twodash"`, and custom line types specified as hex strings per `?par`).
 
-* `mix_col()` is a new utility function that mixes colors via Munsell color
-  space using `aqp::mixMunsell()`.
+* The preexisting "wave" pattern gains ten new `type` values, a `reverse` parameter, a `stagger` parameter, and `names_wave` (#100, #101).
+
+* New `mix_col()` that mixes colors via Munsell color space using `aqp::mixMunsell()`.
   Requires the suggested package `{aqp}`.
 
 Bug fixes and minor improvements
 --------------------------------
 
-* `grid.pattern_wave()` gains a `stagger` parameter (#100).
+* Fixes a bug where the `"sine"` (aliases `"wavy"`, `"undy"`) and `"triangle"` wave
+  types had an effective wavelength of `(n-1)/n` times the requested wavelength,
+  where `n` is the number of wavelength-spaced grid positions spanning the viewport.
+  The error was most visible when only a few periods were displayed
+  (e.g. `spacing ≈ wavelength`), where the period was up to 20% too short.
+  As a side effect, these wave types now have their peaks correctly phase-aligned
+  with the other wave types (peak at one quarter of the wavelength from the left edge).
 
 * Fixes a bug where geometry-based patterns (e.g. "stripe", "crosshatch", "wave")
   could silently disappear in small viewports when `pattern_key_scale_factor`

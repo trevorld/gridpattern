@@ -29,6 +29,13 @@ rotate_xy <- function(x, y, theta = 0, x0 = NULL, y0 = NULL) {
 	list(x = x1, y = y1)
 }
 
+# rotate (x,y) by `angle` and return a closed polygon ring (list of one matrix) for sf::st_multipolygon()
+polygon_ring <- function(x, y, angle, vpm) {
+	xy <- rotate_xy(x, y, angle, vpm$x, vpm$y)
+	m <- as.matrix(as.data.frame(xy))
+	list(rbind(m, m[1, ]))
+}
+
 # (x,y) coordinates of convex regular polygon centered at (0, 0)
 convex_xy <- function(n_vertices, theta = 90, radius_outer = 0.5) {
 	t <- theta + seq(0, 360, length.out = n_vertices + 1)
