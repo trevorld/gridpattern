@@ -176,9 +176,7 @@ create_warp_covered_sf <- function(params, grid_xy, vpm, m_weave) {
 				y0 <- grid_xy$y[i]
 				x <- x0 + c(-1, -1, 1, 1) * halfwidth
 				y <- y0 + c(-1, 1, 1, -1) * halfwidth
-				xy <- rotate_xy(x, y, params$pattern_angle, vpm$x, vpm$y)
-				m <- as.matrix(as.data.frame(xy))
-				l_rects <- append(l_rects, list(list(rbind(m, m[1, ]))))
+				l_rects <- append(l_rects, list(polygon_ring(x, y, params$pattern_angle, vpm)))
 			}
 		}
 	}

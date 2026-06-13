@@ -27,7 +27,7 @@
 #'   grid::grid.newpage()
 #'   grid.pattern_line(x_hex, y_hex, gp = grid::gpar(col = "darkred", lty = "23632E"))
 #' }
-#' @seealso [grid.pattern_stripe()] for filled bands, [grid.pattern_crosshatch()] for two sets of lines.
+#' @seealso [grid.pattern_stripe()] for filled bands, [grid.pattern_wave()] for wavy bands, [grid.pattern_crosshatch()] for two sets of lines.
 #' @export
 grid.pattern_line <- function(
 	x = c(0, 0, 1, 1),

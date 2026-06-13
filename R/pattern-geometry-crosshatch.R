@@ -125,9 +125,7 @@ create_h_stripes_sf <- function(params, grid_xy, vpm) {
 	l_rects <- lapply(grid_xy$y, function(y0) {
 		x <- c(grid_xy$x_min, grid_xy$x_min, grid_xy$x_max, grid_xy$x_max)
 		y <- y0 + c(-1, 1, 1, -1) * halfwidth
-		xy <- rotate_xy(x, y, params$pattern_angle, vpm$x, vpm$y)
-		m <- as.matrix(as.data.frame(xy))
-		list(rbind(m, m[1, ]))
+		polygon_ring(x, y, params$pattern_angle, vpm)
 	})
 	sf::st_multipolygon(l_rects)
 }
@@ -138,9 +136,7 @@ create_v_stripes_sf <- function(params, grid_xy, vpm) {
 	l_rects <- lapply(grid_xy$x, function(x0) {
 		x <- x0 + c(-1, 1, 1, -1) * halfwidth
 		y <- c(grid_xy$y_min, grid_xy$y_min, grid_xy$y_max, grid_xy$y_max)
-		xy <- rotate_xy(x, y, params$pattern_angle, vpm$x, vpm$y)
-		m <- as.matrix(as.data.frame(xy))
-		list(rbind(m, m[1, ]))
+		polygon_ring(x, y, params$pattern_angle, vpm)
 	})
 	sf::st_multipolygon(l_rects)
 }

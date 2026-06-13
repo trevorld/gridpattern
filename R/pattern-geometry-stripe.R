@@ -16,6 +16,7 @@
 #'                     gp = grid::gpar(col = "blue", fill = "yellow"))
 #' @seealso `[grid.pattern_crosshatch()]` and `[grid.pattern_weave()]` for overlaying stripes.
 #'          Use [grid.pattern_line()] for stroked lines that support all native `linetype` values.
+#'          Use [grid.pattern_wave()] for wavy bands instead of straight ones.
 #' @export
 grid.pattern_stripe <- function(
 	x = c(0, 0, 1, 1),

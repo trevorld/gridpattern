@@ -122,5 +122,5 @@ if (capabilities("png") || guess_has_R4.1_features("masks")) {
 }
 }
 \seealso{
-\code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for filled bands, \code{\link[=grid.pattern_crosshatch]{grid.pattern_crosshatch()}} for two sets of lines.
+\code{\link[=grid.pattern_stripe]{grid.pattern_stripe()}} for filled bands, \code{\link[=grid.pattern_wave]{grid.pattern_wave()}} for wavy bands, \code{\link[=grid.pattern_crosshatch]{grid.pattern_crosshatch()}} for two sets of lines.
 }
