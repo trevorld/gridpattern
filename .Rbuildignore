@@ -13,6 +13,7 @@
 ^data-raw$
 ^codecov.yml$
 ^doc$
+^revdep$
 ^tmp$
 ^Meta$
 ^\.git$

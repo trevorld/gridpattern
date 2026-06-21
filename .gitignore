@@ -5,6 +5,7 @@ codecov.yml
 /doc/
 /Meta/
 /pkgdown/
+/revdep/
 /tmp/
 data-raw/*.png
 vignettes/*.R
