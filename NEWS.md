@@ -1,5 +1,5 @@
-gridpattern v1.4.0 (development)
-================================
+gridpattern v1.4.1
+==================
 
 Breaking Changes
 ----------------
@@ -28,14 +28,6 @@ New Features
 Bug fixes and minor improvements
 --------------------------------
 
-* Fixes a bug where the `"sine"` (aliases `"wavy"`, `"undy"`) and `"triangle"` wave
-  types had an effective wavelength of `(n-1)/n` times the requested wavelength,
-  where `n` is the number of wavelength-spaced grid positions spanning the viewport.
-  The error was most visible when only a few periods were displayed
-  (e.g. `spacing ≈ wavelength`), where the period was up to 20% too short.
-  As a side effect, these wave types now have their peaks correctly phase-aligned
-  with the other wave types (peak at one quarter of the wavelength from the left edge).
-
 * Fixes a bug where geometry-based patterns (e.g. "stripe", "crosshatch", "wave")
   could silently disappear in small viewports when `pattern_key_scale_factor`
   was a relatively large value (#95).
@@ -51,6 +43,9 @@ Bug fixes and minor improvements
     - "placeholder" and "placeholderbw"
 
   + The "placeholderbw" name now provides a pure black-and-white image (i.e. no grey).
+
+* Fixes a bug where the `"wavy"` (aliases `"sine"`, `"undy"`) and  `"indented"` (alias `"triangle"`) wave types had an effective wavelength of `(n-1)/n` times the requested wavelength, where `n` is the number of wavelength-spaced grid positions spanning the viewport.
+
 
 gridpattern v1.3.1
 ==================
