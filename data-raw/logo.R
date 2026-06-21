@@ -83,7 +83,7 @@ draw_logo <- function(bleed = FALSE, cut = FALSE) {
 	popViewport()
 
 	pushViewport(viewport(width = unit(w, "inches"), height = unit(w, "inches")))
-	gp = gpar(col = "black", fontsize = 50, fontfamily = "sans", fontface = "bold")
+	gp <- gpar(col = "black", fontsize = 50, fontfamily = "sans", fontface = "bold")
 	yoffset <- 0.002
 	grid.text("g", x = 0.23, y = 0.625 + yoffset, gp = gp)
 	grid.text("r", x = 0.40, y = 0.625 + yoffset, gp = gp)
@@ -94,7 +94,7 @@ draw_logo <- function(bleed = FALSE, cut = FALSE) {
 	step <- (xr[2] - xr[1]) / 7
 	x <- seq(xr[1] + step / 2, by = step, length.out = 7)
 	yoffset <- -0.001
-	gp = gpar(col = "black", fontsize = 48, fontfamily = "sans", fontface = "bold")
+	gp <- gpar(col = "black", fontsize = 48, fontfamily = "sans", fontface = "bold")
 	grid.text("p", x = x[1], y = 0.375 + yoffset, gp = gp)
 	grid.text("a", x = x[2], y = 0.375 + yoffset, gp = gp)
 	grid.text("t", x = x[3], y = 0.375 + yoffset, gp = gp)
