@@ -38,11 +38,12 @@ quadratic_mean <- function(x) sqrt(mean(x^2))
 #' @param mixingMethod Mixing method passed to [aqp::mixMunsell()].
 #' @return A single R color string in hex notation.
 #' @examples
-#' if (requireNamespace("aqp", quietly = TRUE)) {
-#'   mix_col("red", "blue")
+#' should_run_ex <- requireNamespace("aqp", quietly = TRUE) &&
+#'     (interactive() || identical(Sys.getenv("IN_PKGDOWN"), "true"))
+#' if (should_run_ex) {
 #'   mix_col(c("red", "blue"))
 #' }
-#' if (requireNamespace("aqp", quietly = TRUE)) {
+#' if (should_run_ex) {
 #'   mix_col("red", "yellow", "blue", w = c(2, 1, 1))
 #' }
 #' @seealso [mean_col()] for a simpler quadratic-mean RGB approach (no extra packages required).

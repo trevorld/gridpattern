@@ -25,11 +25,12 @@ input colors to Munsell notation via \code{\link[aqp:col2Munsell]{aqp::col2Munse
 via \code{\link[aqp:parseMunsell]{aqp::parseMunsell()}}.
 }
 \examples{
-if (requireNamespace("aqp", quietly = TRUE)) {
-  mix_col("red", "blue")
+should_run_ex <- requireNamespace("aqp", quietly = TRUE) &&
+    (interactive() || identical(Sys.getenv("IN_PKGDOWN"), "true"))
+if (should_run_ex) {
   mix_col(c("red", "blue"))
 }
-if (requireNamespace("aqp", quietly = TRUE)) {
+if (should_run_ex) {
   mix_col("red", "yellow", "blue", w = c(2, 1, 1))
 }
 }

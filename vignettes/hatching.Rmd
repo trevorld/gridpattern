@@ -13,6 +13,8 @@ knitr::opts_chunk$set(
     comment = "#>"
 )
 can_render <- capabilities("png") || guess_has_R4.1_features("masks")
+can_run_aqp <- requireNamespace("aqp", quietly = TRUE) &&
+    (interactive() || identical(Sys.getenv("IN_PKGDOWN"), "true") || identical(Sys.getenv("NOT_CRAN"), "true"))
 ```
 
 The `gridpattern` package supports heraldic color hatching via `grid.pattern_hatch()`.
@@ -53,7 +55,7 @@ The default `"combinatorial"` subtype starts from the set of five [Munsell prima
 2. **yellow + color** → dotdash lines
 3. **color + color** → crossing solid lines
 
-```{r combinatorial-table, fig.alt = "Color table showing the Combinatorial Petra Sancta tinctures arranged by achromatic, primaries, secondaries, and notable combinations", fig.width = 7, fig.height = 8.5, eval = can_render && requireNamespace("aqp", quietly = TRUE), echo = FALSE}
+```{r combinatorial-table, fig.alt = "Color table showing the Combinatorial Petra Sancta tinctures arranged by achromatic, primaries, secondaries, and notable combinations", fig.width = 7, fig.height = 8.5, eval = can_render && can_run_aqp, echo = FALSE}
 # Munsell primary colors
 p_col <- c(
     argent  = "#FFFFFF",
