@@ -82,6 +82,7 @@ test_that("`assert_patterns_unique()` works as expected", {
 })
 
 test_that("`mix_col()` works as expected", {
+	skip_on_cran()
 	skip_if_not_installed("aqp")
 	expect_equal(mix_col(c("red", "blue")), "#C2008FFF")
 	expect_equal(mix_col(c("yellow", "green")), "#ACFF00FF")

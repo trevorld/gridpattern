@@ -1,3 +1,5 @@
+* Skips running a new `mix_col` example on CRAN to avoid triggering a "Examples with CPU time > 2.5 times elapsed time" NOTE
+
 ## Test environments
 
 * local (linux, R 4.6.0)
@@ -8,7 +10,9 @@
 
 ## R CMD check --as-cran results
 
-OK
+1 NOTE
+
+Several Wikipedia URLs returning a 429 "Too Many Requests" response---these are all valid URLs.
 
 ## revdepcheck results
 
