@@ -1,3 +1,12 @@
+gridpattern v1.4.3 (development)
+================================
+
+Bug fixes and minor improvements
+--------------------------------
+
+* Fixes a bug where the "hatch" pattern failed when `pattern_subtype` was `NA`
+  (the `{ggpattern}` default) instead of `NULL` (#106).
+
 gridpattern v1.4.2
 ==================
 
