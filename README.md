@@ -22,7 +22,7 @@ user-specified boundary path with a user-specified pattern. These pattern grobs 
 enhanced versions of the patterns originally contained within
 [Mike FC](https://github.com/coolbutuseless)'s awesome
 [ggpattern](https://github.com/trevorld/ggpattern) package
-as well as original "pch", "polygon_tiling", "regular_polygon", "rose", "text", "wave", and "weave" patterns.
+as well as several original patterns.
 
 `{gridpattern}` currently provides `{grid}` grob support for the following patterns:
 
