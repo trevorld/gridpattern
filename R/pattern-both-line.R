@@ -62,7 +62,7 @@ grid.pattern_line <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"line",
+		"gridpattern::line",
 		x,
 		y,
 		id,

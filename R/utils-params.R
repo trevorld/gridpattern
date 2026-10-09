@@ -1,81 +1,89 @@
-# returns list of pattern parameters using defaults if necessary
-get_params <- function(..., pattern = "none", prefix = "pattern_", gp = gpar()) {
-	l <- list(...)
+# adds `prefix` to the names of list `l`
+prefix_args <- function(l, prefix = "pattern_") {
 	if (length(l)) {
 		names(l) <- paste0(prefix, names(l))
 	}
-	l$pattern <- pattern
-
-	# possibly get from gpar()
-	l$pattern_alpha <- l$pattern_alpha %||% gp$alpha %||% NA_real_
-	l$pattern_colour <- l$pattern_colour %||% l$pattern_color %||% gp$col %||% "grey20"
-	l$pattern_fill <- l[["pattern_fill"]] %||% gp$fill %||% "grey80"
-	l$pattern_lineend <- l$pattern_lineend %||% gp$lineend %||% "round"
-	l$pattern_linetype <- l$pattern_linetype %||% gp$lty %||% 1
-	l$pattern_linewidth <- l$pattern_linewidth %||% l$pattern_size %||% gp$lwd %||% 1
-	if (pattern == "text") {
-		l$pattern_size <- l$pattern_size %||% gp$fontsize %||% 12
-	} else {
-		l$pattern_size <- l$pattern_size %||% gp$lwd %||% 1
-	}
-	l$pattern_fontfamily <- l$pattern_fontfamily %||% gp$fontfamily %||% "sans"
-	l$pattern_fontface <- l$pattern_fontface %||% gp$fontface %||% "plain"
-
-	# never get from gpar()
-	l$pattern_angle <- l$pattern_angle %||% 30
-	l$pattern_aspect_ratio <- l$pattern_aspect_ratio %||% NA_real_
-	l$pattern_density <- l$pattern_density %||% 0.2
-	l$pattern_filename <- l$pattern_filename %||% ""
-	l$pattern_fill2 <- l$pattern_fill2 %||%
-		switch(pattern, crosshatch = l$pattern_fill, "#4169E1")
-	l$pattern_filter <- l$pattern_filter %||%
-		switch(pattern, magick = "box", "lanczos")
-	l$pattern_grid <- l$pattern_grid %||% "square"
-	l$pattern_key_scale_factor <- l$pattern_key_scale_factor %||% 1
-	l$pattern_orientation <- l$pattern_orientation %||% "vertical"
-	l$pattern_rot <- l$pattern_rot %||% 0
-	l$pattern_shape <- l$pattern_shape %||%
-		switch(pattern, regular_polygon = "convex4", 1)
-	l$pattern_scale <- l$pattern_scale %||%
-		switch(pattern, regular_polygon = 0.5, 1)
-	l$pattern_spacing <- l$pattern_spacing %||% 0.05
-	# l$pattern_subtype <- l$pattern_subtype
-	l$pattern_type <- l$pattern_type %||% default_pattern_type(pattern)
-	if (is.na(l$pattern_type)) {
-		l$pattern_type <- default_pattern_type(pattern)
-	}
-	l$pattern_units <- l$pattern_units %||% "snpc"
-	l$pattern_reverse <- l$pattern_reverse %||% FALSE
-	l$pattern_stagger <- l$pattern_stagger %||% FALSE
-	l$pattern_xoffset <- l$pattern_xoffset %||% 0
-	l$pattern_yoffset <- l$pattern_yoffset %||% 0
-
-	l$pattern_gravity <- l$pattern_gravity %||%
-		switch(l$pattern_type, tile = "southwest", "center")
-	if (is.na(l$pattern_gravity)) {
-		l$pattern_gravity <- switch(l$pattern_type, tile = "southwest", "center")
-	}
-
-	l$pattern_res <- l$pattern_res %||% getOption("ggpattern_res", 72) # in PPI
-
-	# Additional ambient defaults
-	l$pattern_frequency <- l$pattern_frequency %||%
-		switch(pattern, ambient = 0.01, rose = 0.1, 1 / l$pattern_spacing)
-	l$pattern_interpolator <- l$pattern_interpolator %||% "quintic" # perlin, simplex, value
-	l$pattern_fractal <- l$pattern_fractal %||%
-		switch(l$pattern_type, worley = "none", "fbm")
-	l$pattern_pertubation <- l$pattern_pertubation %||% "none" # all
-	l$pattern_octaves <- l$pattern_octaves %||% 3 # all but white
-	l$pattern_lacunarity <- l$pattern_lacunarity %||% 2 # all but white
-	l$pattern_gain <- l$pattern_gain %||% 0.5 # all but white
-	l$pattern_amplitude <- l$pattern_amplitude %||%
-		switch(pattern, wave = 0.5 * l$pattern_spacing, 1) # all
-	l$pattern_value <- l$pattern_value %||% "cell"
-	l$pattern_distance_ind <- l$pattern_distance_ind %||% c(1, 2)
-	l$pattern_jitter <- l$pattern_jitter %||% 0.45
-
 	l
 }
+
+# fills in missing pattern parameters in list `l` (whose names are already prefixed)
+# `defaults` are pattern-specific defaults that replace (or are appended to) `GENERIC_DEFAULTS`
+complete_params <- function(l, pattern = "none", gp = gpar(), defaults = list()) {
+	l$pattern <- pattern
+	# `{ggpattern}` uses `NA` for these
+	for (nm in c("pattern_type", "pattern_gravity")) {
+		if (length(l[[nm]]) == 1L && is.na(l[[nm]])) {
+			l[[nm]] <- NULL
+		}
+	}
+	all_defaults <- GENERIC_DEFAULTS
+	all_defaults[names(defaults)] <- defaults
+	# defaults are filled in order so functions may use earlier parameters
+	for (nm in names(all_defaults)) {
+		if (is.null(l[[nm]])) {
+			value <- all_defaults[[nm]]
+			if (is.function(value)) {
+				value <- value(l, gp)
+			}
+			l[[nm]] <- value
+		}
+	}
+	l
+}
+
+# Values are either constants or `function(params, gp)`
+GENERIC_DEFAULTS <- list(
+	# possibly get from gpar()
+	pattern_alpha = function(params, gp) gp$alpha %||% NA_real_,
+	pattern_colour = function(params, gp) params$pattern_color %||% gp$col %||% "grey20",
+	pattern_fill = function(params, gp) gp$fill %||% "grey80",
+	pattern_lineend = function(params, gp) gp$lineend %||% "round",
+	pattern_linetype = function(params, gp) gp$lty %||% 1,
+	pattern_linewidth = function(params, gp) params$pattern_size %||% gp$lwd %||% 1,
+	pattern_size = function(params, gp) gp$lwd %||% 1,
+	pattern_fontfamily = function(params, gp) gp$fontfamily %||% "sans",
+	pattern_fontface = function(params, gp) gp$fontface %||% "plain",
+
+	# never get from gpar()
+	pattern_angle = 30,
+	pattern_aspect_ratio = NA_real_,
+	pattern_density = 0.2,
+	pattern_filename = "",
+	pattern_fill2 = "#4169E1",
+	pattern_filter = "lanczos",
+	pattern_grid = "square",
+	pattern_key_scale_factor = 1,
+	pattern_orientation = "vertical",
+	pattern_rot = 0,
+	pattern_shape = 1,
+	pattern_scale = 1,
+	pattern_spacing = 0.05,
+	pattern_type = NA_character_,
+	pattern_units = "snpc",
+	pattern_reverse = FALSE,
+	pattern_stagger = FALSE,
+	pattern_xoffset = 0,
+	pattern_yoffset = 0,
+	pattern_gravity = function(params, gp) {
+		switch(params$pattern_type, tile = "southwest", "center")
+	},
+	pattern_res = function(params, gp) getOption("ggpattern_res", 72), # in PPI
+
+	# Additional ambient defaults
+	pattern_frequency = function(params, gp) 1 / params$pattern_spacing,
+	pattern_interpolator = "quintic", # perlin, simplex, value
+	pattern_fractal = function(params, gp) {
+		switch(params$pattern_type, worley = "none", "fbm")
+	},
+	pattern_pertubation = "none", # all
+	pattern_octaves = 3, # all but white
+	pattern_lacunarity = 2, # all but white
+	pattern_gain = 0.5, # all but white
+	pattern_amplitude = 1, # all
+	pattern_value = "cell",
+	pattern_distance_ind = c(1, 2),
+	pattern_jitter = 0.45
+)
 
 get_R4.1_params <- function(l) {
 	# R 4.1 features
@@ -126,20 +134,4 @@ convert_params_units <- function(params, units = "bigpts") {
 		valueOnly = TRUE
 	)
 	params
-}
-
-default_pattern_type <- function(pattern) {
-	switch(
-		pattern,
-		ambient = "simplex",
-		aRtsy = "strokes",
-		hatch = "gules",
-		image = "fit",
-		placeholder = "bear",
-		polygon_tiling = "square",
-		magick = "hexagons",
-		wave = "indented",
-		weave = "plain",
-		NA_character_
-	)
 }

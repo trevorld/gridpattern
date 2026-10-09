@@ -37,7 +37,7 @@ grid.pattern_none <- function(
 	vp = NULL
 ) {
 	grid.pattern(
-		"none",
+		"gridpattern::none",
 		x,
 		y,
 		id,

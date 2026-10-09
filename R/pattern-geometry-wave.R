@@ -97,7 +97,7 @@ grid.pattern_wave <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"wave",
+		"gridpattern::wave",
 		x,
 		y,
 		id,

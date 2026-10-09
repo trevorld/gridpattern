@@ -46,7 +46,7 @@ grid.pattern_stripe <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"stripe",
+		"gridpattern::stripe",
 		x,
 		y,
 		id,

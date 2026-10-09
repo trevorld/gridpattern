@@ -14,8 +14,10 @@ Provides 'grid' grobs that fill in a user-defined area with various patterns. In
 
 The following \code{gridpattern} options may be set globally via \code{\link[base:options]{base::options()}}:
 \describe{
-\item{ggpattern_array_funcs}{Set custom \dQuote{array} pattern functions.}
-\item{ggpattern_geometry_funcs}{Set custom \dQuote{geometry} pattern functions.}
+\item{ggpattern_array_funcs}{Legacy option to set custom \dQuote{array} pattern functions.
+Should use \code{register_pattern(kind = "array")} instead.}
+\item{ggpattern_geometry_funcs}{Legacy option to set custom \dQuote{geometry} pattern functions.
+Should use \code{\link[=register_pattern]{register_pattern()}} instead.}
 \item{ggpattern_res}{Set custom raster image resolution (pixels per inch) for certain patterns.}
 \item{ggpattern_use_R4.1_clipping}{If \code{TRUE} use the grid clipping path feature introduced in R v4.1.0.
 If \code{FALSE} do a \code{rasterGrob} approximation of the clipped pattern.

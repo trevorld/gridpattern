@@ -39,7 +39,10 @@ patternGrob(
 )
 }
 \arguments{
-\item{pattern}{Name of pattern.  See Details section for a list of supported patterns.}
+\item{pattern}{Name of pattern.  See Details section for a list of supported patterns.
+Builtin patterns may also be referred to by their qualified name e.g. \code{"gridpattern::stripe"}
+and custom patterns registered by packages by \code{"pkg::name"}.
+See \code{\link[=register_pattern]{register_pattern()}} for more information.}
 
 \item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary.}
 
@@ -122,8 +125,8 @@ See \code{\link[=grid.pattern_text]{grid.pattern_text()}} for more information.}
 See \code{\link[=grid.pattern_wave]{grid.pattern_wave()}} for more information.}
 \item{weave}{Weave geometry patterns.
 See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information.}
-\item{Custom geometry-based patterns}{See \url{https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html} for more information.}
-\item{Custom array-based patterns}{See \url{https://trevorldavis.com/R/gridpattern/dev/articles/developing-patterns.html} for more information.}
+\item{Custom geometry-based patterns}{See \code{\link[=register_pattern]{register_pattern()}} and the \dQuote{Developing Patterns} vignette \code{vignette("developing-patterns", package = "gridpattern")} for more information.}
+\item{Custom array-based patterns}{See \code{\link[=register_pattern]{register_pattern()}} and the \dQuote{Developing Patterns} vignette \code{vignette("developing-patterns", package = "gridpattern")} for more information.}
 }
 }
 \examples{

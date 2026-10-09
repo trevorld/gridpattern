@@ -42,7 +42,7 @@ grid.pattern_magick <- function(
 	vp = NULL
 ) {
 	grid.pattern(
-		"magick",
+		"gridpattern::magick",
 		x,
 		y,
 		id,

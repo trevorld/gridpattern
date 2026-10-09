@@ -6,7 +6,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-  
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
 collapse = TRUE,
@@ -23,7 +23,7 @@ To develop a pattern for use with `{gridpattern}` (and packages that use it such
 
 1. Decide whether this is a geometry-based pattern or an array-based pattern.
 2. Create a function with the required arguments and return value
-3. Use `options()` to let `{gridpattern}` know that a certain pattern name should be
+3. Use `register_pattern()` to let `{gridpattern}` know that a certain pattern name should be
    delegated to your function.
 
 This vignette shows how to:
@@ -50,11 +50,11 @@ and array-based.
 
 **Geometry-based** patterns create a series of geometry objects and trim
 them (using `sf::st_intersection()`, `gridGeometry::polyclipGrob()`, `gridpattern::clippingPathGrob()`, etc)
-to be within the boundary of the grob. 
+to be within the boundary of the grob.
 For example, the 'stripes' pattern in `gridpattern` is a series of equally spaced rectangular polygons.
 
-**Array-based** patterns are RGBA image arrays.  Any supplied image will be 
-processed by `gridpattern` to ensure it is masked to only apply to the area 
+**Array-based** patterns are RGBA image arrays.  Any supplied image will be
+processed by `gridpattern` to ensure it is masked to only apply to the area
 within the grob's boundary.
 
 ## <a name="aes"></a> `{ggpattern}` Aesthetics - Descriptions and Defaults
@@ -101,7 +101,7 @@ so may make your pattern more useful for others:
 </details>
 
 Note `{ggpattern}` may also pass other geom aesthetics of possible interest such as ``fill``.
-Also note that `{ggpattern}` will only pass pattern aesthetics values of length one 
+Also note that `{ggpattern}` will only pass pattern aesthetics values of length one
 but if the pattern is called directly by `gridpattern::patternGrob()` then the pattern
 may be passed pattern parameters of arbitrary length.
 
@@ -141,7 +141,7 @@ The `polygon_df` is a very simple data.frame format to contain polygon values.  
 used to pass the coordinates of the geom boundary from the geom to the
 pattern generating function.
 
-It contains only 'x' and 'y' columns for the coordinates, and an 'id' column 
+It contains only 'x' and 'y' columns for the coordinates, and an 'id' column
 used to signify which polygon the coordinates belong to.
 
 The following `polygon_df` data.frame contains 2 polygons:
@@ -163,21 +163,68 @@ knitr::kable(x, caption = "example data in 'polygon_df' format")
 
 ## <a name="user-funcs"></a> Associating a function with  `{gridpattern}` pattern name
 
-There are two global `option()` values which can be set - one for geometry-based 
-patterns, and the other for array-based patterns.
-
-The global values should point to a named list, where the names are the pattern 
-names you want to use within `{gridpattern}`, and the named values are the
-actual functions.  Note for backwards-compatibility with the original `{ggpattern}` system
-these options start with `ggpattern` instead of `gridpattern`.
-
+Use `register_pattern()` to associate a pattern function with a pattern name.
+Use `kind = "geometry"` (the default) for geometry-based patterns
+and `kind = "array"` for array-based patterns.
 
 ```{r eval = FALSE}
-options(ggpattern_array_funcs    = list(your_pattern_name = your_pattern_function))
-options(ggpattern_geometry_funcs = list(your_pattern_name = your_pattern_function))
+register_pattern("your_pattern_name", your_geometry_pattern_function)
+register_pattern("your_pattern_name", your_array_pattern_function, kind = "array")
 ```
 
-Pattern names must be different from any of the builtin patterns included in `{gridpattern}`.
+* Packages should register their patterns in their `.onLoad()` function
+  (see [Registering patterns from a package](#package-registration) below).
+* Patterns can always be referred to by their qualified name `"owner::name"`
+  e.g. `"pkg::name"`, `"gridpattern::stripe"`, or `"R_GlobalEnv::name"` (for patterns registered by the user).
+* A bare name `"name"` may be used if only one owner (the user, `{gridpattern}`, or a package)
+  has a pattern with that name.
+  Otherwise there is a conflict and using the bare name throws an error
+  unless the user has declared a preference with `prefer_pattern()` e.g.
+  `prefer_pattern("R_GlobalEnv::stripe")` to use a user's custom "stripe" pattern
+  instead of the builtin one.
+* `conflicting_patterns()` lists patterns whose bare names are shared by more than one pattern.
+  `unprefer_pattern()` removes a preference.
+* Package code that relies on a particular pattern should use its qualified name.
+* `register_pattern()`'s `defaults` argument may set pattern-specific default parameter values
+  e.g. `defaults = list(type = "running", spacing = 0.1)`.
+  Note `{ggpattern}` supplies its own defaults for most of its pattern aesthetics.
+* `registered_patterns()` lists all the available patterns and `unregister_pattern()` removes a registration.
+* `has_pattern()` checks whether pattern names currently resolve to a pattern.
+* `local_pattern()` registers a pattern only until the current function (or test) exits.
+
+### <a name="package-registration"></a> Registering patterns from a package
+
+We recommend packages register their patterns in their `.onLoad()` function using
+`rlang::on_package_load()`:
+
+```{r eval = FALSE}
+.onLoad <- function(libname, pkgname) {
+	rlang::on_package_load("gridpattern", {
+		if (exists("register_pattern", envir = asNamespace("gridpattern"), inherits = FALSE)) {
+			gridpattern::register_pattern("brick", create_pattern_brick)
+		} else {
+			funcs <- getOption("ggpattern_geometry_funcs", list())
+			funcs[["brick"]] <- create_pattern_brick
+			options(ggpattern_geometry_funcs = funcs)
+		}
+	})
+}
+```
+
+* `rlang::on_package_load()` registers the pattern immediately if `{gridpattern}` is already loaded
+  and otherwise when `{gridpattern}` is later loaded.
+  This means `{gridpattern}` may be listed in `Suggests` (rather than `Imports`)
+  and `{gridpattern}` won't be loaded until needed.
+* It also re-registers the pattern if `{gridpattern}` is reloaded (e.g. by `devtools::load_all()`)
+  which would otherwise forget the package's patterns.
+* Your package is still detected as the owner of the pattern so it may be referred to as `"yourpkg::brick"`.
+* If writing a helper function that calls `register_pattern()` on behalf of your package
+  pass along `register_pattern()`'s `env` argument.
+
+* `register_pattern()` was added in `{gridpattern}` v1.5.0.  The `exists("register_pattern", ...)` check above detects whether `{gridpattern}` is too old and the `else` clause falls back to appending the pattern
+  to the legacy global options, preserving any other custom patterns already set there.
+  Use the `ggpattern_array_funcs` option instead for array-based patterns.
+  Note this modifies the user's global options when your package is loaded.
 
 <a name="geometry-example-1"></a> Example geometry-based pattern #1 (recreate polygon)
 ---------------------------------------------------------------------------------------
@@ -191,7 +238,7 @@ All geometry-based pattern creation functions must:
       aspect ratio of the **viewport** in which this pattern is being rendered.
     * `legend` logical value to indicate whether or not this function is being called
       to render a key legend or the in-place geom fill.
-2. Return a grid grob bounded by the boundary represented by `boundary_df` 
+2. Return a grid grob bounded by the boundary represented by `boundary_df`
    (including grid structures like a `grid::grobTree()`).
 
 For this example we'll create a simple single color fill pattern based on `grid::polygonGrob()` called 'polygon'.
@@ -203,7 +250,7 @@ create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = F
     id <- boundary_df$id
 
     alpha <- ifelse(is.na(params$pattern_alpha), 1, params$pattern_alpha)
-    gp <- grid::gpar(alpha = alpha, 
+    gp <- grid::gpar(alpha = alpha,
                      col = params$pattern_colour,
                      fill = params$pattern_fill,
                      lty = params$pattern_linetype,
@@ -213,20 +260,18 @@ create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = F
 }
 ```
 
-A global option `ggpattern_geometry_funcs` is a named list which contains 
-geometry-based pattern creating functions to use outside of `ggpattern`.
-
-The **name** used in this list corresponds to the `pattern` name used with 
-the geom - in this case we will be using `pattern = 'polygon'`.
+We register the function with `register_pattern()`.
+The **name** corresponds to the `pattern` name used with
+`grid.pattern()` or the geom - in this case we will be using `pattern = 'polygon'`.
 
 ```{r}
-options(ggpattern_geometry_funcs = list(polygon = create_pattern_polygon))
+register_pattern("polygon", create_pattern_polygon)
 ```
 
 ```{r, fig.alt = "Three rectangles each filled with a single color"}
-grid.pattern("polygon", fill = "red", size = 4, linetype = "dashed", 
+grid.pattern("polygon", fill = "red", size = 4, linetype = "dashed",
              x = c(0.05, 0.05, 0.305, 0.305), y = c(0.05, 0.305, 0.305, 0.05))
-grid.pattern("polygon", fill = "green", alpha = 0.2, 
+grid.pattern("polygon", fill = "green", alpha = 0.2,
              x = c(0.35, 0.35, 0.65, 0.65), y = c(0.35, 0.65, 0.65, 0.35))
 grid.pattern("polygon", fill = "blue", colour = "grey",
              x = c(0.7, 0.7, 1.0, 1.0), y = c(0.7, 1.0, 1.0, 0.7))
@@ -244,10 +289,10 @@ All geometry-based pattern creation functions must:
       aspect ratio of the **viewport** in which this pattern is being rendered.
     * `legend` logical value to indicate whether or not this function is being called
       to render a key legend or the in-place geom fill.
-2. Return a grid grob bounded by the boundary represented by `boundary_df` 
+2. Return a grid grob bounded by the boundary represented by `boundary_df`
    (including grid structures like a `grid::grobTree()`).
 
-For this example we'll create an example that re-uses the pre-existing 
+For this example we'll create an example that re-uses the pre-existing
 'stripe', 'circle', and 'gradient' patterns and combines them into a new 'complex' pattern.
 
 ```{r}
@@ -260,20 +305,20 @@ create_pattern_complex <- function(params, boundary_df, aspect_ratio, legend = F
     args$prefix <- ""
 
     args_stripe <- args
-    args_stripe$pattern <- "stripe"
+    args_stripe$pattern <- "gridpattern::stripe"
     args_stripe$pattern_density <- 0.5 * args$pattern_density
     args_stripe$pattern_spacing <- 2 * args$pattern_spacing
     grob_stripe <- do.call(gridpattern::patternGrob, args_stripe)
 
     args_circle <- args
-    args_circle$pattern <- "regular_polygon"
+    args_circle$pattern <- "gridpattern::regular_polygon"
     args_circle$pattern_shape <- c("circle", "null")
     args_circle$pattern_yoffset <- args$pattern_spacing + args$pattern_yoffset
     args_circle$pattern_type = "horizontal"
     grob_circle <- do.call(gridpattern::patternGrob, args_circle)
 
     args_gradient <- args
-    args_gradient$pattern <- "gradient"
+    args_gradient$pattern <- "gridpattern::gradient"
     args_gradient$pattern_fill <- "#00000070"
     args_gradient$pattern_fill2 <- "#FFFFFF70"
     args_gradient$pattern_orientation <- "vertical"
@@ -283,14 +328,12 @@ create_pattern_complex <- function(params, boundary_df, aspect_ratio, legend = F
 }
 ```
 
-A global option `ggpattern_geometry_funcs` is a named list which contains 
-geometry-based pattern creating functions to use outside of `ggpattern`.
-
-The **name** used in this list corresponds to the `pattern` name used with 
-the geom - in this case we will be using `pattern = 'complex'`.
+We register the function with `register_pattern()`.
+The **name** corresponds to the `pattern` name used with
+`grid.pattern()` or the geom - in this case we will be using `pattern = 'complex'`.
 
 ```{r}
-options(ggpattern_geometry_funcs = list(complex = create_pattern_complex))
+register_pattern("complex", create_pattern_complex)
 ```
 
 ```{r, fig.alt = "Three rectangles each with a 'stripe', 'circle', and 'gradient' pattern"}
@@ -301,8 +344,8 @@ grid.pattern("complex", fill = "green", angle = 45, spacing = 0.2, density = 0.2
 grid.pattern("complex", fill = "blue", angle = 45, spacing = 0.1, density = 0.3,
              x = c(0.7, 0.7, 1.0, 1.0), y = c(0.7, 1.0, 1.0, 0.7))
 grid::grid.polygon(x = c(0.0, 0.0, 0.3, 0.3, 0.35, 0.35, 0.65, 0.65, 0.7, 0.7, 1.0, 1.0),
-                   y = c(0.0, 0.3, 0.3, 0.0, 0.35, 0.65, 0.65, 0.35, 0.7, 1.0, 1.0, 0.7), 
-                   id = rep(1:3, each = 4), 
+                   y = c(0.0, 0.3, 0.3, 0.0, 0.35, 0.65, 0.65, 0.35, 0.7, 1.0, 1.0, 0.7),
+                   id = rep(1:3, each = 4),
                    gp = grid::gpar(col = "black", fill = NA, lwd=4))
 ```
 
@@ -323,22 +366,22 @@ For this example we'll create a simple example that cycles through RGBA values.
 
 Parameters for this pattern:
 
-* `pattern_type` is used to distinguish between source data for the pattern 
+* `pattern_type` is used to distinguish between source data for the pattern
 
-**Note**: This pattern exploits vector recyling in the creation of the RGBA array, 
-and as dimensions change the alignment of the R, G, B and A planes will not 
+**Note**: This pattern exploits vector recyling in the creation of the RGBA array,
+and as dimensions change the alignment of the R, G, B and A planes will not
 remain in a fixed relationship.  Thus if you change the shape of the rendered image,
 you will change the nature of the pattern.
 
 ```{r}
 create_pattern_simple <- function(width, height, params, legend) {
-  
+
   # Ensure the selected pattern is sane.
   choice <- params$pattern_type
   if (is.null(choice) || is.na(choice) || !is.character(choice)) {
     choice <- 'a'
   }
-  
+
   # Choose the values with which to fill the array
   values <- switch(
     choice,
@@ -354,18 +397,16 @@ create_pattern_simple <- function(width, height, params, legend) {
 }
 ```
 
-A global option `ggpattern_array_funcs` is a named list which contains 
-geometry-based pattern creating functions to use outside of `ggpattern`.
-
-The **name** used in this list corresponds to the `pattern` name used with 
-the geom - in this case we will be using `pattern = 'simple'`.
+We register the function with `register_pattern()` using `kind = "array"`.
+The **name** corresponds to the `pattern` name used with
+`grid.pattern()` or the geom - in this case we will be using `pattern = 'simple'`.
 
 ```{r}
-options(ggpattern_array_funcs = list(simple = create_pattern_simple))
+register_pattern("simple", create_pattern_simple, kind = "array")
 ```
 
 ```{r, fig.alt = "Three rectangles each filled with an 'array' pattern"}
-grid::grid.polygon(x = c(0, 0, 1, 1), y = c(0, 1, 1, 0), 
+grid::grid.polygon(x = c(0, 0, 1, 1), y = c(0, 1, 1, 0),
                    gp = grid::gpar(col=NA, fill="grey"))
 grid.pattern("simple", type = "a",
              x = c(0.0, 0.0, 0.3, 0.3), y = c(0.0, 0.3, 0.3, 0.0))

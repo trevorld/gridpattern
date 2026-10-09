@@ -70,7 +70,7 @@ grid.pattern_weave <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"weave",
+		"gridpattern::weave",
 		x,
 		y,
 		id,

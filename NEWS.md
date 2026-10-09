@@ -1,11 +1,40 @@
-gridpattern v1.4.3 (development)
+gridpattern v1.5.1 (development)
 ================================
+
+New Features
+------------
+
+* `register_pattern()` is now the recommended way for packages to register patterns
+  (in their `.onLoad()` function, ideally wrapped in `rlang::on_package_load()`)
+  instead of setting the `ggpattern_geometry_funcs` / `ggpattern_array_funcs` global options
+  which may clobber other registrations (#108).
+
+  + Patterns are owned by either the package that registered them or the user.
+  + `register_pattern()`'s `defaults` argument sets pattern-specific default parameter values
+    (constants or functions of the other parameters).
+    The builtin patterns now use this to register their pattern-specific defaults.
+  + `patternGrob()` caches the pattern resolved when the grob is created so redraws
+    (e.g. resizing an interactive device) still work if the pattern is later unregistered or masked.
+  + Package patterns (including builtins) may be referred to by their qualified name
+    e.g. `"gridpattern::stripe"` or `"pkg::name"`.
+* `unregister_pattern()` can be used to unregister a pattern.
+* `prefer_pattern("owner::name")` sets preferences and `unprefer_pattern(name)` removes them
+  (both are vectorized and return the previous preferences so they can be restored).
+  Bare pattern names resolve to the pattern preferred by `prefer_pattern()` (if any) and otherwise to the pattern of the only owner (the user, `{gridpattern}`, or a package) with that name.
+  If more than one owner has a pattern with that name there is a conflict and an error asks for either a qualified name or a `prefer_pattern()` preference (similar to the `{conflicted}` package).
+* `conflicting_patterns()` lists patterns whose bare names are shared by more than one pattern
+* `has_pattern()` returns whether a pattern name resolves to a pattern.
+* `local_pattern()` registers a pattern until the current function (or test) exits and then restores any previous registration (useful in tests and examples).
 
 Bug fixes and minor improvements
 --------------------------------
 
 * Fixes a bug where the "hatch" pattern failed when `pattern_subtype` was `NA`
   (the `{ggpattern}` default) instead of `NULL` (#106).
+* Patterns set via the global options may now share a name with a builtin pattern
+  (resolved with `prefer_pattern()`) instead of always throwing an error.
+* Name clashes between patterns now only throw an error when the conflicted
+  pattern name is used rather than for every pattern.
 
 gridpattern v1.4.2
 ==================

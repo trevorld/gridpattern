@@ -68,7 +68,7 @@ grid.pattern_rose <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"rose",
+		"gridpattern::rose",
 		x,
 		y,
 		id,

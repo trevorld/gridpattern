@@ -62,7 +62,7 @@ grid.pattern_image <- function(
 	vp = NULL
 ) {
 	grid.pattern(
-		"image",
+		"gridpattern::image",
 		x,
 		y,
 		id,

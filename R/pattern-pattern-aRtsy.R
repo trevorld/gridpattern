@@ -73,7 +73,7 @@ grid.pattern_aRtsy <- function(
 	vp = NULL
 ) {
 	grid.pattern(
-		"aRtsy",
+		"gridpattern::aRtsy",
 		x,
 		y,
 		id,

@@ -10,11 +10,12 @@ img_read_memoised <- img_read
 # Modify function at load time
 .onLoad <- function(libname, pkgname) {
 	img_read_memoised <<- memoise::memoise(img_read)
+	register_builtin_patterns()
 }
 
 #' @import grid
 #' @importFrom glue glue
 #' @importFrom grDevices col2rgb dev.capture dev.capabilities dev.off png rgb
-#' @importFrom rlang %||% abort inform warn
+#' @importFrom rlang %||% abort caller_env inform warn
 #' @importFrom utils hasName head packageVersion tail
 NULL

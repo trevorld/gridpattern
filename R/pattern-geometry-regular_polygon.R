@@ -97,7 +97,7 @@ grid.pattern_regular_polygon <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		x,
 		y,
 		id,
