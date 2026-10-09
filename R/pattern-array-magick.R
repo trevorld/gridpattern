@@ -20,7 +20,7 @@
 #'
 #'   # supported magick pattern names
 #'   print(names_magick)
-#' @seealso The `imagemagick` documentation <http://www.imagemagick.org/script/formats.php> for more information.
+#' @seealso The `imagemagick` documentation <https://imagemagick.org/script/formats.php/> for more information.
 #' @export
 grid.pattern_magick <- function(
 	x = c(0, 0, 1, 1),
@@ -64,7 +64,7 @@ grid.pattern_magick <- function(
 }
 
 ## Names of patterns available in image magick, plus subsets for shaded intensity and stripes
-## See \url{http://www.imagemagick.org/script/formats.php} for more information.
+## See \url{https://imagemagick.org/script/formats.php/} for more information.
 
 #' @rdname grid.pattern_magick
 #' @export
