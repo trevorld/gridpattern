@@ -225,7 +225,7 @@ test_that("array patterns works as expected", {
 
 		simple_array
 	}
-	options(ggpattern_array_funcs = list(simple = create_pattern_simple))
+	withr::local_options(ggpattern_array_funcs = list(simple = create_pattern_simple))
 	test_raster("simple.png", function() grid.pattern("simple", x, y, type = "b"))
 
 	# clippingPathGrob()

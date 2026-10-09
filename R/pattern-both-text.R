@@ -60,7 +60,7 @@ grid.pattern_text <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"text",
+		"gridpattern::text",
 		x,
 		y,
 		id,

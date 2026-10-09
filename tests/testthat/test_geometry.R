@@ -1,3 +1,11 @@
+# errors thrown by pattern functions while drawing leave the graphics device locked
+# (and open a default device if none is open) so check them with `makeContent()` instead
+expect_pattern_error <- function(grob, ...) {
+	grDevices::pdf(NULL)
+	on.exit(grDevices::dev.off(), add = TRUE)
+	expect_error(makeContent(grob), ...)
+}
+
 context("geometry")
 test_that("geometry helpers work as expected", {
 	xy <- rotate_xy(c(0, 1), c(0, 1), 90)
@@ -152,7 +160,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_error(
+	expect_pattern_error(
 		grid.pattern_wave(
 			x,
 			y,
@@ -162,7 +170,8 @@ test_that("geometry patterns work as expected", {
 			spacing = 0.15,
 			angle = 0,
 			amplitude = 0.05,
-			frequency = 1 / 0.15
+			frequency = 1 / 0.15,
+			draw = FALSE
 		),
 		"overlap"
 	)
@@ -198,7 +207,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_error(
+	expect_pattern_error(
 		grid.pattern_wave(
 			x,
 			y,
@@ -206,7 +215,8 @@ test_that("geometry patterns work as expected", {
 			type = "indented",
 			density = 0.5,
 			spacing = 0.15,
-			stagger = TRUE
+			stagger = TRUE,
+			draw = FALSE
 		),
 		"overlap"
 	)
@@ -225,7 +235,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_error(
+	expect_pattern_error(
 		grid.pattern_wave(
 			x,
 			y,
@@ -235,7 +245,8 @@ test_that("geometry patterns work as expected", {
 			spacing = 0.15,
 			angle = 0,
 			amplitude = 0.05,
-			frequency = 1 / 0.15
+			frequency = 1 / 0.15,
+			draw = FALSE
 		),
 		"overlap"
 	)
@@ -255,7 +266,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_error(
+	expect_pattern_error(
 		grid.pattern_wave(
 			x,
 			y,
@@ -265,7 +276,8 @@ test_that("geometry patterns work as expected", {
 			spacing = 0.15,
 			angle = 0,
 			amplitude = 0.05,
-			frequency = 1 / 0.15
+			frequency = 1 / 0.15,
+			draw = FALSE
 		),
 		"overlap"
 	)
@@ -315,7 +327,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_error(
+	expect_pattern_error(
 		grid.pattern_wave(
 			x,
 			y,
@@ -325,7 +337,8 @@ test_that("geometry patterns work as expected", {
 			spacing = 0.15,
 			angle = 0,
 			amplitude = 0.05,
-			frequency = 1 / 0.15
+			frequency = 1 / 0.15,
+			draw = FALSE
 		),
 		"overlap"
 	)
@@ -345,7 +358,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_error(
+	expect_pattern_error(
 		grid.pattern_wave(
 			x,
 			y,
@@ -355,7 +368,8 @@ test_that("geometry patterns work as expected", {
 			spacing = 0.15,
 			angle = 0,
 			amplitude = 0.05,
-			frequency = 1 / 0.15
+			frequency = 1 / 0.15,
+			draw = FALSE
 		),
 		"overlap"
 	)
@@ -375,7 +389,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_error(
+	expect_pattern_error(
 		grid.pattern_wave(
 			x,
 			y,
@@ -385,7 +399,8 @@ test_that("geometry patterns work as expected", {
 			spacing = 0.15,
 			angle = 0,
 			amplitude = 0.05,
-			frequency = 1 / 0.15
+			frequency = 1 / 0.15,
+			draw = FALSE
 		),
 		"overlap"
 	)
@@ -405,7 +420,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_error(
+	expect_pattern_error(
 		grid.pattern_wave(
 			x,
 			y,
@@ -415,7 +430,8 @@ test_that("geometry patterns work as expected", {
 			spacing = 0.15,
 			angle = 0,
 			amplitude = 0.05,
-			frequency = 1 / 0.15
+			frequency = 1 / 0.15,
+			draw = FALSE
 		),
 		"overlap"
 	)
@@ -475,7 +491,7 @@ test_that("geometry patterns work as expected", {
 			gp = grid::gpar(col = update_alpha(params$pattern_fill, params$pattern_alpha))
 		)
 	}
-	options(ggpattern_geometry_funcs = list(centroid = centroid_dot_pattern))
+	withr::local_options(ggpattern_geometry_funcs = list(centroid = centroid_dot_pattern))
 	x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 	y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 	expect_doppelganger("centroid", function() {
@@ -494,7 +510,7 @@ test_that("get_xy_grid() bounding box is non-degenerate when spacing exceeds vie
 	# `vpm$length`. When that happens `x_seq` collapses to `c(0)`, so `x = c(vpm$x)` and
 	# `x_min == x_max`, producing a zero-width rectangle that `sf::st_intersection()` silently
 	# discards — the pattern disappears entirely.
-	params <- get_params(spacing = 20, grid = "square") # spacing already in same units as vpm
+	params <- complete_params(list(pattern_spacing = 20, pattern_grid = "square")) # spacing already in same units as vpm
 	vpm <- list(width = 10, height = 10, length = 10, x = 5, y = 5)
 
 	grid_xy <- get_xy_grid(params, vpm)

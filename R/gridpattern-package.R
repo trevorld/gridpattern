@@ -1,8 +1,10 @@
 #' @section Package options:
 #' The following `gridpattern` options may be set globally via [base::options()]:
 #'  \describe{
-#'    \item{ggpattern_array_funcs}{Set custom \dQuote{array} pattern functions.}
-#'    \item{ggpattern_geometry_funcs}{Set custom \dQuote{geometry} pattern functions.}
+#'    \item{ggpattern_array_funcs}{Legacy option to set custom \dQuote{array} pattern functions.
+#'                                  Should use `register_pattern(kind = "array")` instead.}
+#'    \item{ggpattern_geometry_funcs}{Legacy option to set custom \dQuote{geometry} pattern functions.
+#'                                     Should use [register_pattern()] instead.}
 #'    \item{ggpattern_res}{Set custom raster image resolution (pixels per inch) for certain patterns.}
 #'    \item{ggpattern_use_R4.1_clipping}{If `TRUE` use the grid clipping path feature introduced in R v4.1.0.
 #'                          If `FALSE` do a `rasterGrob` approximation of the clipped pattern.

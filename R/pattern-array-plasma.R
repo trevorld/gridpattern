@@ -32,7 +32,7 @@ grid.pattern_plasma <- function(
 	vp = NULL
 ) {
 	grid.pattern(
-		"plasma",
+		"gridpattern::plasma",
 		x,
 		y,
 		id,

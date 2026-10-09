@@ -129,7 +129,7 @@ draw_logo <- function(bleed = FALSE, cut = FALSE) {
 # dev.off()
 
 png(
-	"raw-data/sticker_with_cutline.png",
+	"data-raw/sticker_with_cutline.png",
 	width = 5.125,
 	height = 5.125,
 	units = "in",
@@ -139,6 +139,6 @@ png(
 draw_logo(bleed = TRUE, cut = TRUE)
 dev.off()
 
-png("raw-data/sticker.png", width = 5.125, height = 5.125, units = "in", res = 150, bg = "white")
+png("data-raw/sticker.png", width = 5.125, height = 5.125, units = "in", res = 150, bg = "white")
 draw_logo(bleed = TRUE, cut = FALSE)
 dev.off()

@@ -47,7 +47,7 @@ grid.pattern_gradient <- function(
 	vp = NULL
 ) {
 	grid.pattern(
-		"gradient",
+		"gridpattern::gradient",
 		x,
 		y,
 		id,

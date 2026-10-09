@@ -78,7 +78,7 @@ grid.pattern_pch <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"pch",
+		"gridpattern::pch",
 		x,
 		y,
 		id,

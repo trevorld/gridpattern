@@ -35,7 +35,7 @@ grid.pattern_placeholder <- function(
 	vp = NULL
 ) {
 	grid.pattern(
-		"placeholder",
+		"gridpattern::placeholder",
 		x,
 		y,
 		id,

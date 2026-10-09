@@ -74,7 +74,7 @@ grid.pattern_circle <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"circle",
+		"gridpattern::circle",
 		x,
 		y,
 		id,

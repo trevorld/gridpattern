@@ -18,3 +18,4 @@
 ^Meta$
 ^\.git$
 ^\.github$
+^R/roxygen2_inline\.R$

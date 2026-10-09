@@ -49,7 +49,7 @@ grid.pattern_fill <- function(
 	vp = NULL
 ) {
 	grid.pattern(
-		"fill",
+		"gridpattern::fill",
 		x,
 		y,
 		id,

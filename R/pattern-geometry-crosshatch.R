@@ -45,7 +45,7 @@ grid.pattern_crosshatch <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"crosshatch",
+		"gridpattern::crosshatch",
 		x,
 		y,
 		id,

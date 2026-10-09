@@ -50,7 +50,7 @@ grid.pattern_ambient <- function(
 	vp = NULL
 ) {
 	grid.pattern(
-		"ambient",
+		"gridpattern::ambient",
 		x,
 		y,
 		id,

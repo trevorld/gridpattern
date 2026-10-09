@@ -109,7 +109,7 @@ grid.pattern_polygon_tiling <- function(
 		colour <- l$color
 	}
 	grid.pattern(
-		"polygon_tiling",
+		"gridpattern::polygon_tiling",
 		x,
 		y,
 		id,
@@ -252,7 +252,7 @@ create_3.3.3.12_30.3.3.12_30_tiling <- function(xyi, gp, spacing, units, angle) 
 		name = "background_color"
 	)
 	dodecagons <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -268,7 +268,7 @@ create_3.3.3.12_30.3.3.12_30_tiling <- function(xyi, gp, spacing, units, angle) 
 	)
 	scale <- star_scale(12, 60, external = TRUE)
 	stars <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -298,7 +298,7 @@ create_3.3.8_15.4__60.8_15_tiling <- function(xyi, gp, spacing, units, angle) {
 		gp_star8$fill <- gp$fill[3]
 	}
 	sq <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -312,7 +312,7 @@ create_3.3.8_15.4__60.8_15_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	scale <- star_scale(4, 60)
 	star4 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -329,7 +329,7 @@ create_3.3.8_15.4__60.8_15_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	scale <- star_scale(8, 15)
 	star8 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -365,7 +365,7 @@ create_3.3.8_15.3.4.3.8_15_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "background_color"
 	)
 	octagons <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -380,7 +380,7 @@ create_3.3.8_15.3.4.3.8_15_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	scale <- star_scale(8, 60, external = TRUE)
 	stars <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -417,7 +417,7 @@ create_3.4.8.3.8_15_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "background_color"
 	)
 	octagons <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -432,7 +432,7 @@ create_3.4.8.3.8_15_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	scale <- star_scale(8, 60, external = TRUE)
 	stars <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -461,7 +461,7 @@ create_4.2_60.4.2__240_tiling <- function(xyi, gp, spacing, units, angle) {
 	}
 	dens_sq <- 0.73
 	squares.1 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -475,7 +475,7 @@ create_4.2_60.4.2__240_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "squares.1"
 	)
 	squares.2 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -493,7 +493,7 @@ create_4.2_60.4.2__240_tiling <- function(xyi, gp, spacing, units, angle) {
 	scale <- star_scale(2, 60)
 	dens_rh <- 0.88
 	rhombi.1 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -509,7 +509,7 @@ create_4.2_60.4.2__240_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "rhombi.1"
 	)
 	rhombi.2 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -539,7 +539,7 @@ create_2_53.2__233.2_53.2__233_tiling <- function(xyi, gp, spacing, units, angle
 		gp_rh4$fill <- gp$fill[1]
 	}
 	rhombi.1 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -554,7 +554,7 @@ create_2_53.2__233.2_53.2__233_tiling <- function(xyi, gp, spacing, units, angle
 		type = "horizontal"
 	)
 	rhombi.2 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -570,7 +570,7 @@ create_2_53.2__233.2_53.2__233_tiling <- function(xyi, gp, spacing, units, angle
 		type = "horizontal"
 	)
 	rhombi.3 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -587,7 +587,7 @@ create_2_53.2__233.2_53.2__233_tiling <- function(xyi, gp, spacing, units, angle
 		name = "rhombi.3"
 	)
 	rhombi.4 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -623,7 +623,7 @@ create_4.6_30.4.6_30.4.6_30_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	scale <- star_scale(6, 30)
 	stars <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -658,7 +658,7 @@ create_8.4_45.8.4_45_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	subtype <- if (n_col > 2) "2134" else NULL
 	octs <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -692,7 +692,7 @@ create_12.3_30.12.3_30_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "background_color"
 	)
 	dodecagons <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -723,7 +723,7 @@ create_12.12.4_60_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "background_color"
 	)
 	dodecagons <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -756,7 +756,7 @@ create_4.8_.4__.8__tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	scale <- star_scale(8, 90, external = TRUE)
 	polygons <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -788,7 +788,7 @@ create_18.18.3__tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "background_color"
 	)
 	eighteen <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -824,7 +824,7 @@ create_3.6_30.6__30_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	scale <- star_scale(6, 30)
 	stars <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -861,7 +861,7 @@ create_4.4_30.4__30_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	scale <- star_scale(4, 30)
 	stars <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -898,7 +898,7 @@ create_3.3_30.3.3_30_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	scale <- star_scale(3, 30)
 	stars <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -934,7 +934,7 @@ create_3.3.3.3___tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "background_color"
 	)
 	triangles <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -971,7 +971,7 @@ create_6.6_60.6.6_60_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	scale <- star_scale(6, 120, external = TRUE)
 	stars <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -996,7 +996,7 @@ create_herringbone_tiling <- function(xyi, gp, spacing, units, angle) {
 		gp$fill <- gp$fill[-1L]
 	}
 	grob <- patternGrob(
-		"weave",
+		"gridpattern::weave",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1019,7 +1019,7 @@ create_hexagonal_tiling <- function(xyi, gp, spacing, units, angle) {
 		gp$fill <- rev(gp$fill)
 	}
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1054,7 +1054,7 @@ create_el_tri_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "background_color"
 	)
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1091,7 +1091,7 @@ create_pythagorean_tiling <- function(xyi, gp, spacing, units, angle) {
 		gp$fill <- gp$fill[2:1]
 	}
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1132,7 +1132,7 @@ create_rhombitrihexagonal_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	# squares
 	stripe1 <- patternGrob(
-		"stripe",
+		"gridpattern::stripe",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1145,7 +1145,7 @@ create_rhombitrihexagonal_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "square_stripes.1"
 	)
 	stripe2 <- patternGrob(
-		"stripe",
+		"gridpattern::stripe",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1158,7 +1158,7 @@ create_rhombitrihexagonal_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "square_stripes.2"
 	)
 	stripe3 <- patternGrob(
-		"stripe",
+		"gridpattern::stripe",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1172,7 +1172,7 @@ create_rhombitrihexagonal_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	# dodecagons
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1211,7 +1211,7 @@ create_3.4.6.3.12_30_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	# squares
 	stripe1 <- patternGrob(
-		"stripe",
+		"gridpattern::stripe",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1224,7 +1224,7 @@ create_3.4.6.3.12_30_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "square_stripes.1"
 	)
 	stripe2 <- patternGrob(
-		"stripe",
+		"gridpattern::stripe",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1237,7 +1237,7 @@ create_3.4.6.3.12_30_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "square_stripes.2"
 	)
 	stripe3 <- patternGrob(
-		"stripe",
+		"gridpattern::stripe",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1251,7 +1251,7 @@ create_3.4.6.3.12_30_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	# triangles
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1268,7 +1268,7 @@ create_3.4.6.3.12_30_tiling <- function(xyi, gp, spacing, units, angle) {
 	# twelve-pointed stars
 	scale <- star_scale(12, 30)
 	stars <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1300,7 +1300,7 @@ create_snub_square_tiling <- function(xyi, gp, spacing, units, angle) {
 	}
 	sq1 <- polygonGrob(xyi$x, xyi$y, xyi$id, default.units = "npc", gp = gp_sq, name = "squares.1")
 	tri <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1315,7 +1315,7 @@ create_snub_square_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "triangles"
 	)
 	sq2 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1353,7 +1353,7 @@ create_snub_trihex_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "triangles.1"
 	)
 	tri2 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1369,7 +1369,7 @@ create_snub_trihex_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "triangles.2"
 	)
 	hex <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1388,7 +1388,7 @@ create_snub_trihex_tiling <- function(xyi, gp, spacing, units, angle) {
 
 create_square_tiling <- function(xyi, gp, spacing, units, angle) {
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1414,7 +1414,7 @@ create_rhombille_tiling <- function(xyi, gp, spacing, units, angle) {
 		gp_rh3$fill <- gp$fill[3L]
 	}
 	rh1 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1429,7 +1429,7 @@ create_rhombille_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "rhombi.1"
 	)
 	rh2 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1444,7 +1444,7 @@ create_rhombille_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "rhombi.2"
 	)
 	rh3 <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1480,7 +1480,7 @@ create_9.3.9.3_40_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "background_color"
 	)
 	stripe <- patternGrob(
-		"stripe",
+		"gridpattern::stripe",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1494,7 +1494,7 @@ create_9.3.9.3_40_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "stripes"
 	)
 	non <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1522,7 +1522,7 @@ create_tetrakis_tiling <- function(xyi, gp, spacing, units, angle) {
 		gp_tri3$fill <- gp$fill[3L]
 	}
 	tri1.a <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1536,7 +1536,7 @@ create_tetrakis_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "triangles.1.a"
 	)
 	tri1.b <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1550,7 +1550,7 @@ create_tetrakis_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "triangles.1.b"
 	)
 	tri1.c <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1564,7 +1564,7 @@ create_tetrakis_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "triangles.1.c"
 	)
 	tri1.d <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1578,7 +1578,7 @@ create_tetrakis_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "triangles.1.d"
 	)
 	tri2.a <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1592,7 +1592,7 @@ create_tetrakis_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "triangles.2.a"
 	)
 	tri2.b <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1606,7 +1606,7 @@ create_tetrakis_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "triangles.2.b"
 	)
 	tri3.a <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1620,7 +1620,7 @@ create_tetrakis_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "triangles.3.a"
 	)
 	tri3.b <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1654,7 +1654,7 @@ create_triangular_tiling <- function(xyi, gp, spacing, units, angle) {
 		gp$fill <- gp$fill[3:2]
 	}
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1688,7 +1688,7 @@ create_2__.3__.12__tiling <- function(xyi, gp, spacing, units, angle) {
 	}
 	scale <- star_scale(12, 60, external = TRUE)
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1724,7 +1724,7 @@ create_trunc_hex_tiling <- function(xyi, gp, spacing, units, angle) {
 	}
 
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1760,7 +1760,7 @@ create_trunc_square_tiling <- function(xyi, gp, spacing, units, angle) {
 	}
 
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1796,7 +1796,7 @@ create_4.6.4_30.6_tiling <- function(xyi, gp, spacing, units, angle) {
 
 	scale <- star_scale(4, 120, external = TRUE)
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1837,7 +1837,7 @@ create_trunc_trihex_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	# squares
 	stripe1 <- patternGrob(
-		"stripe",
+		"gridpattern::stripe",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1850,7 +1850,7 @@ create_trunc_trihex_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "square_stripes.1"
 	)
 	stripe2 <- patternGrob(
-		"stripe",
+		"gridpattern::stripe",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1863,7 +1863,7 @@ create_trunc_trihex_tiling <- function(xyi, gp, spacing, units, angle) {
 		name = "square_stripes.2"
 	)
 	stripe3 <- patternGrob(
-		"stripe",
+		"gridpattern::stripe",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1877,7 +1877,7 @@ create_trunc_trihex_tiling <- function(xyi, gp, spacing, units, angle) {
 	)
 	# hexagons
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,
@@ -1911,7 +1911,7 @@ create_trihexagonal_tiling <- function(xyi, gp, spacing, units, angle) {
 		gp$fill <- gp$fill[2:1]
 	}
 	grob <- patternGrob(
-		"regular_polygon",
+		"gridpattern::regular_polygon",
 		xyi$x,
 		xyi$y,
 		xyi$id,

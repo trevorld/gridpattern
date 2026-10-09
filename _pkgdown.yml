@@ -14,8 +14,15 @@ reference:
       desc: "Pattern grob functions"
       contents:
         - starts_with("grid.pattern")
+    - title: "Pattern registration"
+      desc: "Register (and unregister) custom patterns"
+      contents:
+        - register_pattern
+        - registered_patterns
+        - local_pattern
+        - prefer_pattern
     - title: "Pattern matrices"
-    - desc: "Pattern matrix functions"
+      desc: "Pattern matrix functions"
       contents:
         - starts_with("pattern_")
     - title: "Miscellaneous helpers"
