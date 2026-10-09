@@ -3,7 +3,7 @@
 #' These are all 2-colour pixel patterns - the 'white' part will be made transparent.
 #'
 #' @param width,height image dimensions
-#' @param type name of the imagemagick pattern. See \url{http://www.imagemagick.org/script/formats.php}
+#' @param type name of the imagemagick pattern. See \url{https://imagemagick.org/script/formats.php/}
 #'        for more information. See \link{names_magick} for a list of all
 #'        supported imagemagick patterns.
 #' @param colour colour used to draw the pattern

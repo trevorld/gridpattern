@@ -95,5 +95,5 @@ plus subsets for shaded intensity and stripes.
   print(names_magick)
 }
 \seealso{
-The \code{imagemagick} documentation \url{http://www.imagemagick.org/script/formats.php} for more information.
+The \code{imagemagick} documentation \url{https://imagemagick.org/script/formats.php/} for more information.
 }

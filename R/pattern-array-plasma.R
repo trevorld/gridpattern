@@ -72,7 +72,7 @@ create_magick_plasma_as_array <- function(width, height, params, legend) {
 
 #' Create plasma using imagemagick
 #'
-#' Ref: \url{https://www.imagemagick.org/Usage/canvas/}
+#' Ref: \url{https://usage.imagemagick.org/canvas/}
 #'
 #' @param width,height image dimensions
 #' @param colour colour
