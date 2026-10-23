@@ -12,7 +12,9 @@ Breaking Changes
   The generic defaults for `pattern_frequency` and `pattern_gravity` are now the constants
   `0.1` and `"center"` (matching `{ggpattern}`) instead of `1 / pattern_spacing` and
   a function of `pattern_type`; the "wave", "ambient", and "image" patterns override them.
-  `pattern_subtype` now has a generic default of `NA` (matching `{ggpattern}`).
+  `pattern_subtype` now has a generic default of `NA` (matching `{ggpattern}`) and like
+  `pattern_type` and `pattern_gravity` an `NA` value is treated as unset so pattern-specific defaults apply.
+  An `NA` `pattern_res` is also treated as unset (previously an obscure error).
 
 New Features
 ------------

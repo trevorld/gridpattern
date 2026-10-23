@@ -10,8 +10,11 @@ prefix_args <- function(l, prefix = "pattern_") {
 # `defaults` are pattern-specific defaults that replace (or are appended to) `GENERIC_DEFAULTS`
 complete_params <- function(l, pattern = "none", gp = gpar(), defaults = list()) {
 	l$pattern <- pattern
-	# `{ggpattern}` uses `NA` for these
-	for (nm in c("pattern_type", "pattern_gravity")) {
+	# `{ggpattern}` passes `NA` for these parameters (for which `NA` has no meaning)
+	# so treat it as "not supplied" and let the defaults fill them in
+	# (`{ggpattern}` resolves an `NA` `pattern_res` itself so that one only helps direct callers).
+	# NB. `NA` is meaningful for other parameters e.g. a transparent colour or an invisible linewidth
+	for (nm in c("pattern_type", "pattern_subtype", "pattern_gravity", "pattern_res")) {
 		if (length(l[[nm]]) == 1L && is.na(l[[nm]])) {
 			l[[nm]] <- NULL
 		}

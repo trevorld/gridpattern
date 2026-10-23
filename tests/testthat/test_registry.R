@@ -277,6 +277,7 @@ test_that("pattern-specific defaults", {
 		create_pattern_capture,
 		defaults = list(
 			pattern_type = "running",
+			pattern_subtype = "lefthand",
 			pattern_spacing = 0.1,
 			# may use earlier (generic) defaults
 			pattern_amplitude = function(params, gp) 2 * params$pattern_spacing,
@@ -295,13 +296,23 @@ test_that("pattern-specific defaults", {
 	expect_equal(captured$params$pattern_mortar, 0.1)
 	expect_equal(captured$params$pattern_density, 0.2) # generic default
 
-	# supplied parameters take priority (including `NA` "type" from `{ggpattern}`)
-	draw(patternGrob("capture", spacing = 0.2, size = 3, gp = gpar(fontsize = 20)))
+	# supplied parameters take priority
+	draw(patternGrob(
+		"capture",
+		spacing = 0.2,
+		size = 3,
+		subtype = "righthand",
+		gp = gpar(fontsize = 20)
+	))
 	expect_equal(captured$params$pattern_spacing, 0.2)
 	expect_equal(captured$params$pattern_amplitude, 0.4)
 	expect_equal(captured$params$pattern_size, 3)
-	draw(patternGrob("capture", type = NA, gp = gpar(fontsize = 20)))
+	expect_equal(captured$params$pattern_subtype, "righthand")
+	# except the `NA` "type" / "subtype" / "gravity" / "res" that `{ggpattern}` passes
+	draw(patternGrob("capture", type = NA, subtype = NA, res = NA, gp = gpar(fontsize = 20)))
 	expect_equal(captured$params$pattern_type, "running")
+	expect_equal(captured$params$pattern_subtype, "lefthand")
+	expect_equal(captured$params$pattern_res, 72)
 	expect_equal(captured$params$pattern_size, 20)
 
 	# generic defaults are filled first and then the pattern-specific defaults in the order given
