@@ -1,5 +1,18 @@
-gridpattern v1.5.1 (development)
+gridpattern v1.5.0 (development)
 ================================
+
+Breaking Changes
+----------------
+
+* Custom patterns are no longer given generic default values for the `pattern_amplitude` parameter
+  nor for the `{ambient}` noise parameters (`pattern_fractal`, `pattern_octaves`, etc.).
+  These are now pattern-specific defaults of the builtin "wave" and "ambient" patterns.
+  A custom pattern that reads them should now set its own defaults
+  with `register_pattern()`'s `defaults` argument.
+  The generic defaults for `pattern_frequency` and `pattern_gravity` are now the constants
+  `0.1` and `"center"` (matching `{ggpattern}`) instead of `1 / pattern_spacing` and
+  a function of `pattern_type`; the "wave", "ambient", and "image" patterns override them.
+  `pattern_subtype` now has a generic default of `NA` (matching `{ggpattern}`).
 
 New Features
 ------------
@@ -11,7 +24,8 @@ New Features
 
   + Patterns are owned by either the package that registered them or the user.
   + `register_pattern()`'s `defaults` argument sets pattern-specific default parameter values
-    (constants or functions of the other parameters).
+    (constants or functions of the other parameters, named e.g. `pattern_spacing` or `fill`;
+    unprefixed names are an error unless declared in the `unprefixed` argument).
     The builtin patterns now use this to register their pattern-specific defaults.
   + `patternGrob()` caches the pattern resolved when the grob is created so redraws
     (e.g. resizing an interactive device) still work if the pattern is later unregistered or masked.

@@ -9,6 +9,7 @@ local_pattern(
   fn,
   kind = c("geometry", "array"),
   defaults = list(),
+  unprefixed = character(),
   env = caller_env(),
   .local_envir = parent.frame()
 )
@@ -39,14 +40,29 @@ for more details and examples.}
 \item{kind}{Either \code{"geometry"} or \code{"array"}.}
 
 \item{defaults}{A named list of pattern-specific default parameter values
-(without the \code{pattern_} prefix) e.g. \code{list(type = "running", spacing = 0.1)}.
+e.g. \code{list(pattern_type = "running", pattern_spacing = 0.1)}.
+Names are used as-is and must be \code{pattern_} prefixed unless listed in \code{unprefixed}.
 Values may be constants or functions of the form \verb{function(params, gp)}
-where \code{params} is the list of (prefixed) pattern parameters filled in so far
+where \code{params} is the list of pattern parameters filled in so far
 and \code{gp} is the grob's \code{\link[grid:gpar]{grid::gpar()}} object
-e.g. \code{list(amplitude = function(params, gp) 0.5 * params$pattern_spacing)}.
+e.g. \code{list(pattern_amplitude = function(params, gp) 0.5 * params$pattern_spacing)}
+or \code{list(pattern_size = function(params, gp) gp$fontsize \%||\% 12)}.
 These replace the generic defaults for parameters that weren't supplied.
+The remaining generic defaults are filled in first and then these in the order given
+so a function default may use any generic parameter and any earlier pattern-specific default.
 Note \code{{ggpattern}} supplies its own (generic) defaults for most of its pattern aesthetics
 so these will mainly be used with \code{\link[=grid.pattern]{grid.pattern()}} / \code{\link[=patternGrob]{patternGrob()}}.}
+
+\item{unprefixed}{A character vector of parameter names without the \code{pattern_} prefix
+that the pattern reads so that \code{defaults} may set them.
+The usual case is a plain \code{{ggplot2}} aesthetic that \code{{ggpattern}} passes
+to pattern functions alongside the \code{pattern_} aesthetics
+e.g. \verb{defaults = list(fill = "black"), unprefixed = "fill"}
+lets a pattern that reads \code{params$fill} under \code{{ggpattern}}
+also work with \code{\link[=grid.pattern]{grid.pattern()}}.
+Since such patterns are rare any other unprefixed name
+(e.g. \code{fill} or \code{spacing} instead of \code{pattern_fill} or \code{pattern_spacing})
+is an error of class \code{"gridpattern_error_unprefixed_defaults"}.}
 
 \item{env}{The environment used to determine the \dQuote{owner} of the pattern.
 If writing a function that registers patterns on behalf of its caller

@@ -153,6 +153,16 @@ create_pattern_wave_via_sf <- function(params, boundary_df, aspect_ratio, legend
 	default.units <- "bigpts"
 	boundary_df <- convert_polygon_df_units(boundary_df, default.units)
 	params <- convert_params_units(params, default.units)
+	params$pattern_amplitude <- convertX(
+		unit(params$pattern_amplitude, params$pattern_units),
+		default.units,
+		valueOnly = TRUE
+	)
+	params$pattern_wavelength <- convertX(
+		unit(1 / params$pattern_frequency, params$pattern_units),
+		default.units,
+		valueOnly = TRUE
+	)
 	vpm <- get_vp_measurements(default.units)
 
 	# create grid of points large enough to cover viewport no matter the angle

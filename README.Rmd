@@ -161,6 +161,11 @@ One can also create [custom patterns](https://trevorldavis.com/R/ggpattern/dev/a
 Here is an example of creating a "tiling3" pattern that creates
 three-color polygon tilings using the ``fill`` colour, the ``pattern_fill`` colour,
 and their "average" color.
+`{ggpattern}` always passes along the ``fill`` aesthetic
+but when registering the pattern we also set a default ``fill`` of "black"
+(which contrasts with the default ``pattern_fill`` of "grey80")
+so the pattern can also be used directly with `grid.pattern()`
+(and declare ``fill`` in `unprefixed` since unprefixed parameter names are unusual).
 
 ```{r hex_ggpattern, fig.alt = "A bar chart using 'ggpattern' with custom patterned fills"}
 tiling3_pattern <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
@@ -182,7 +187,8 @@ tiling3_pattern <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
     do.call(gridpattern::patternGrob, args)
 }
 
-options(ggpattern_geometry_funcs = list(tiling3 = tiling3_pattern))
+gridpattern::register_pattern("tiling3", tiling3_pattern,
+                              defaults = list(fill = "black"), unprefixed = "fill")
 df <- data.frame(trt = c("a", "b", "c"), outcome = c(2.3, 1.9, 3.2))
 ggplot(df, aes(trt, outcome)) +
     geom_col_pattern(aes(fill = trt, pattern_type = trt),

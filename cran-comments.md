@@ -1,8 +1,6 @@
-* Skips running a new `mix_col` example on CRAN to avoid triggering a "Examples with CPU time > 2.5 times elapsed time" NOTE
-
 ## Test environments
 
-* local (linux, R 4.6.0)
+* local (linux, R 4.6.1)
 * win-builder (windows, R devel)
 * github actions (linux, R oldrel)
 * github actions (linux, R release)

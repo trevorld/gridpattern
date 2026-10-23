@@ -104,6 +104,11 @@ Note `{ggpattern}` may also pass other geom aesthetics of possible interest such
 Also note that `{ggpattern}` will only pass pattern aesthetics values of length one
 but if the pattern is called directly by `gridpattern::patternGrob()` then the pattern
 may be passed pattern parameters of arbitrary length.
+`{gridpattern}` sets no defaults for the spare `{ggpattern}` aesthetics
+``pattern_option_1`` - ``pattern_option_5`` and ``pattern_phase``
+(nor for any other parameter not used by a builtin pattern)
+so a pattern that reads them should set its own defaults with the `defaults` argument of `register_pattern()`
+so they are also available when the pattern is called directly by `gridpattern::patternGrob()`.
 
 ## <a name="geometry-based"></a> Geometry-based pattern functions - Formal Arguments and Return Values
 
@@ -186,7 +191,17 @@ register_pattern("your_pattern_name", your_array_pattern_function, kind = "array
   `unprefer_pattern()` removes a preference.
 * Package code that relies on a particular pattern should use its qualified name.
 * `register_pattern()`'s `defaults` argument may set pattern-specific default parameter values
-  e.g. `defaults = list(type = "running", spacing = 0.1)`.
+  e.g. `defaults = list(pattern_type = "running", pattern_spacing = 0.1)`.
+  Values may also be functions of the form `function(params, gp)` of the parameters filled in so far
+  and the grob's `gpar()` e.g. `pattern_amplitude = function(params, gp) 0.5 * params$pattern_spacing`
+  or `pattern_size = function(params, gp) gp$fontsize %||% 12`.
+  The generic defaults are filled in first and then the pattern-specific defaults in the order given
+  so a function default may use any generic parameter and any earlier pattern-specific default.
+  Names may also be the plain `{ggplot2}` aesthetics `{ggpattern}` passes along
+  e.g. `fill = "black"` lets a pattern that reads `params$fill` under `{ggpattern}`
+  also work with `grid.pattern()`; list such names in the `unprefixed` argument
+  (e.g. `unprefixed = "fill"`) since otherwise an unprefixed name is an error
+  (it is probably a forgotten `pattern_` prefix).
   Note `{ggpattern}` supplies its own defaults for most of its pattern aesthetics.
 * `registered_patterns()` lists all the available patterns and `unregister_pattern()` removes a registration.
 * `has_pattern()` checks whether pattern names currently resolve to a pattern.
