@@ -16,14 +16,24 @@ complete_params <- function(l, pattern = "none", gp = gpar(), defaults = list())
 			l[[nm]] <- NULL
 		}
 	}
-	all_defaults <- GENERIC_DEFAULTS
-	all_defaults[names(defaults)] <- defaults
-	# defaults are filled in order so functions may use earlier parameters
+	# The generic defaults not overridden by the pattern are filled first (in `GENERIC_DEFAULTS` order)
+	# and then the pattern-specific `defaults` in the order given, so a pattern-specific
+	# (function) default may use any generic parameter and any earlier pattern-specific one.
+	generic <- GENERIC_DEFAULTS[!(names(GENERIC_DEFAULTS) %in% names(defaults))]
+	all_defaults <- c(generic, defaults)
 	for (nm in names(all_defaults)) {
 		if (is.null(l[[nm]])) {
 			value <- all_defaults[[nm]]
 			if (is.function(value)) {
 				value <- value(l, gp)
+				if (length(value) == 0L) {
+					abort(c(
+						glue(
+							"The default for `{nm}` of pattern \"{pattern}\" returned a length-zero value."
+						),
+						i = "A function default may only use parameters filled in before it (see `?register_pattern`)."
+					))
+				}
 			}
 			l[[nm]] <- value
 		}
@@ -51,6 +61,8 @@ GENERIC_DEFAULTS <- list(
 	pattern_filename = "",
 	pattern_fill2 = "#4169E1",
 	pattern_filter = "lanczos",
+	pattern_frequency = 0.1,
+	pattern_gravity = "center",
 	pattern_grid = "square",
 	pattern_key_scale_factor = 1,
 	pattern_orientation = "vertical",
@@ -58,31 +70,16 @@ GENERIC_DEFAULTS <- list(
 	pattern_shape = 1,
 	pattern_scale = 1,
 	pattern_spacing = 0.05,
+	pattern_subtype = NA,
 	pattern_type = NA_character_,
 	pattern_units = "snpc",
 	pattern_reverse = FALSE,
 	pattern_stagger = FALSE,
 	pattern_xoffset = 0,
 	pattern_yoffset = 0,
-	pattern_gravity = function(params, gp) {
-		switch(params$pattern_type, tile = "southwest", "center")
-	},
-	pattern_res = function(params, gp) getOption("ggpattern_res", 72), # in PPI
-
-	# Additional ambient defaults
-	pattern_frequency = function(params, gp) 1 / params$pattern_spacing,
-	pattern_interpolator = "quintic", # perlin, simplex, value
-	pattern_fractal = function(params, gp) {
-		switch(params$pattern_type, worley = "none", "fbm")
-	},
-	pattern_pertubation = "none", # all
-	pattern_octaves = 3, # all but white
-	pattern_lacunarity = 2, # all but white
-	pattern_gain = 0.5, # all but white
-	pattern_amplitude = 1, # all
-	pattern_value = "cell",
-	pattern_distance_ind = c(1, 2),
-	pattern_jitter = 0.45
+	pattern_res = function(params, gp) getOption("ggpattern_res", 72) # in PPI
+	# NB. generic defaults are filled before the pattern-specific ones so a generic function default
+	# must not rely on a pattern-specific default (`params$pattern_size` above is user-supplied or `NULL`)
 )
 
 get_R4.1_params <- function(l) {
@@ -108,11 +105,6 @@ get_R4.1_params <- function(l) {
 
 convert_params_units <- function(params, units = "bigpts") {
 	p_units <- params$pattern_units
-	params$pattern_amplitude <- convertX(
-		unit(params$pattern_amplitude, p_units),
-		units,
-		valueOnly = TRUE
-	)
 	params$pattern_spacing <- convertX(
 		unit(params$pattern_spacing, p_units),
 		units,
@@ -125,11 +117,6 @@ convert_params_units <- function(params, units = "bigpts") {
 	)
 	params$pattern_yoffset <- convertX(
 		unit(params$pattern_yoffset, p_units),
-		units,
-		valueOnly = TRUE
-	)
-	params$pattern_wavelength <- convertX(
-		unit(1 / params$pattern_frequency, p_units),
 		units,
 		valueOnly = TRUE
 	)

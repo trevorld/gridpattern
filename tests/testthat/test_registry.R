@@ -231,7 +231,7 @@ test_that("`local_pattern()` works", {
 	register_pattern(
 		"local",
 		create_pattern_capture,
-		defaults = list(spacing = 1),
+		defaults = list(pattern_spacing = 1),
 		env = globalenv()
 	)
 	g <- function() {
@@ -241,7 +241,7 @@ test_that("`local_pattern()` works", {
 			local_pattern(
 				"local",
 				create_pattern_capture,
-				defaults = list(spacing = 3),
+				defaults = list(pattern_spacing = 3),
 				env = globalenv()
 			)
 			resolve_pattern("local")$defaults$pattern_spacing
@@ -276,14 +276,14 @@ test_that("pattern-specific defaults", {
 		"capture",
 		create_pattern_capture,
 		defaults = list(
-			type = "running",
-			spacing = 0.1,
+			pattern_type = "running",
+			pattern_spacing = 0.1,
 			# may use earlier (generic) defaults
-			amplitude = function(params, gp) 2 * params$pattern_spacing,
+			pattern_amplitude = function(params, gp) 2 * params$pattern_spacing,
 			# may use the gpar
-			size = function(params, gp) gp$fontsize %||% 10,
+			pattern_size = function(params, gp) gp$fontsize %||% 10,
 			# new parameters are appended
-			mortar = function(params, gp) params$pattern_amplitude / 2
+			pattern_mortar = function(params, gp) params$pattern_amplitude / 2
 		),
 		env = globalenv()
 	)
@@ -304,17 +304,100 @@ test_that("pattern-specific defaults", {
 	expect_equal(captured$params$pattern_type, "running")
 	expect_equal(captured$params$pattern_size, 20)
 
+	# generic defaults are filled first and then the pattern-specific defaults in the order given
+	# so an overridden generic default may use a new pattern-specific parameter listed before it
+	register_pattern(
+		"capture",
+		create_pattern_capture,
+		defaults = list(
+			pattern_mortar = 0.1,
+			pattern_spacing = function(params, gp) 2 * params$pattern_mortar
+		),
+		env = globalenv()
+	)
+	draw(patternGrob("capture"))
+	expect_equal(captured$params$pattern_spacing, 0.2)
+	# but not one listed after it (a clear error rather than a confusing one downstream)
+	register_pattern(
+		"capture",
+		create_pattern_capture,
+		defaults = list(
+			pattern_spacing = function(params, gp) 2 * params$pattern_mortar,
+			pattern_mortar = 0.1
+		),
+		env = globalenv()
+	)
+	expect_error(
+		complete_params(list(), "capture", defaults = resolve_pattern("capture")$defaults),
+		"`pattern_spacing`.*length-zero"
+	)
+
+	# defaults for the plain `{ggplot2}` aesthetics `{ggpattern}` passes along e.g. `fill`
+	register_pattern(
+		"capture",
+		create_pattern_capture,
+		defaults = list(fill = function(params, gp) gp$fill %||% "grey80"),
+		unprefixed = "fill",
+		env = globalenv()
+	)
+	draw(patternGrob("capture"))
+	expect_equal(captured$params$fill, "grey80")
+	expect_equal(captured$params$pattern_fill, "grey80")
+	draw(patternGrob("capture", gp = gpar(fill = "red")))
+	expect_equal(captured$params$fill, "red")
+	draw(patternGrob("capture", fill = "blue", prefix = "", gp = gpar(fill = "red")))
+	expect_equal(captured$params$fill, "blue")
+
 	expect_error(register_pattern("capture", create_pattern_capture, defaults = 1), "named list")
 	expect_error(
 		register_pattern("capture", create_pattern_capture, defaults = list(1)),
 		"unique, non-empty names"
 	)
 	expect_error(
-		register_pattern("capture", create_pattern_capture, defaults = list(a = 1, a = 2)),
+		register_pattern(
+			"capture",
+			create_pattern_capture,
+			defaults = list(pattern_a = 1, pattern_a = 2)
+		),
 		"unique, non-empty names"
 	)
 	expect_error(
-		register_pattern("capture", create_pattern_capture, defaults = list(a = function(x) x)),
+		register_pattern("capture", create_pattern_capture, defaults = list(pattern = "stripe")),
+		"must not set `pattern`"
+	)
+	# an unprefixed name not listed in `unprefixed` is a (classed) error
+	expect_error(
+		register_pattern(
+			"capture",
+			create_pattern_capture,
+			defaults = list(fill = "black", pattern_spacing = 0.1, mortar = 1),
+			env = globalenv()
+		),
+		"prefix: `fill`, `mortar`.*Did you mean `pattern_fill`, `pattern_mortar`\\?.*in `unprefixed`",
+		class = "gridpattern_error_unprefixed_defaults"
+	)
+	# but not if listed in `unprefixed`
+	register_pattern(
+		"capture",
+		create_pattern_capture,
+		defaults = list(fill = "black", linewidth = 2, mortar = 0.1),
+		unprefixed = c("fill", "linewidth", "mortar"),
+		env = globalenv()
+	)
+	expect_equal(
+		resolve_pattern("capture")$defaults,
+		list(fill = "black", linewidth = 2, mortar = 0.1)
+	)
+	expect_error(
+		register_pattern("capture", create_pattern_capture, unprefixed = 1),
+		"`unprefixed` must be a character vector"
+	)
+	expect_error(
+		register_pattern(
+			"capture",
+			create_pattern_capture,
+			defaults = list(pattern_a = function(x) x)
+		),
 		"function\\(params, gp\\)"
 	)
 })

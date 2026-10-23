@@ -81,14 +81,28 @@
 #'        for more details and examples.
 #' @param kind Either `"geometry"` or `"array"`.
 #' @param defaults A named list of pattern-specific default parameter values
-#'                 (without the `pattern_` prefix) e.g. `list(type = "running", spacing = 0.1)`.
+#'                 e.g. `list(pattern_type = "running", pattern_spacing = 0.1)`.
+#'                 Names are used as-is and must be `pattern_` prefixed unless listed in `unprefixed`.
 #'                 Values may be constants or functions of the form `function(params, gp)`
-#'                 where `params` is the list of (prefixed) pattern parameters filled in so far
+#'                 where `params` is the list of pattern parameters filled in so far
 #'                 and `gp` is the grob's [grid::gpar()] object
-#'                 e.g. `list(amplitude = function(params, gp) 0.5 * params$pattern_spacing)`.
+#'                 e.g. `list(pattern_amplitude = function(params, gp) 0.5 * params$pattern_spacing)`
+#'                 or `list(pattern_size = function(params, gp) gp$fontsize %||% 12)`.
 #'                 These replace the generic defaults for parameters that weren't supplied.
+#'                 The remaining generic defaults are filled in first and then these in the order given
+#'                 so a function default may use any generic parameter and any earlier pattern-specific default.
 #'                 Note `{ggpattern}` supplies its own (generic) defaults for most of its pattern aesthetics
 #'                 so these will mainly be used with [grid.pattern()] / [patternGrob()].
+#' @param unprefixed A character vector of parameter names without the `pattern_` prefix
+#'                   that the pattern reads so that `defaults` may set them.
+#'                   The usual case is a plain `{ggplot2}` aesthetic that `{ggpattern}` passes
+#'                   to pattern functions alongside the `pattern_` aesthetics
+#'                   e.g. `defaults = list(fill = "black"), unprefixed = "fill"`
+#'                   lets a pattern that reads `params$fill` under `{ggpattern}`
+#'                   also work with [grid.pattern()].
+#'                   Since such patterns are rare any other unprefixed name
+#'                   (e.g. `fill` or `spacing` instead of `pattern_fill` or `pattern_spacing`)
+#'                   is an error of class `"gridpattern_error_unprefixed_defaults"`.
 #' @param env The environment used to determine the \dQuote{owner} of the pattern.
 #'            If writing a function that registers patterns on behalf of its caller
 #'            add an `env = rlang::caller_env()` argument to that function and pass it on.
@@ -117,6 +131,7 @@ register_pattern <- function(
 	fn,
 	kind = c("geometry", "array"),
 	defaults = list(),
+	unprefixed = character(),
 	env = caller_env()
 ) {
 	assert_pattern_name(name)
@@ -124,7 +139,7 @@ register_pattern <- function(
 		abort("`fn` must be a function.")
 	}
 	kind <- match.arg(kind)
-	defaults <- prefix_defaults(defaults)
+	defaults <- validate_defaults(defaults, unprefixed)
 	owner <- registration_owner(env)
 	key <- pattern_key(owner, name)
 	old <- pattern_registry[[key]]
@@ -255,11 +270,19 @@ local_pattern <- function(
 	fn,
 	kind = c("geometry", "array"),
 	defaults = list(),
+	unprefixed = character(),
 	env = caller_env(),
 	.local_envir = parent.frame()
 ) {
 	rlang::check_installed("withr", "to use `local_pattern()`.")
-	old <- register_pattern(name, fn, kind = kind, defaults = defaults, env = env)
+	old <- register_pattern(
+		name,
+		fn,
+		kind = kind,
+		defaults = defaults,
+		unprefixed = unprefixed,
+		env = env
+	)
 	key <- pattern_key(registration_owner(env), name)
 	withr::defer(restore_pattern(key, old), envir = .local_envir)
 	invisible(old)
@@ -457,10 +480,13 @@ pattern_entry <- function(
 	list(name = name, owner = owner, kind = kind, fn = fn, source = source, defaults = defaults)
 }
 
-# validates `defaults` and adds "pattern_" prefix to names
-prefix_defaults <- function(defaults) {
+# validates `defaults` (a named list; names are used as-is e.g. "pattern_fill" or "fill")
+validate_defaults <- function(defaults, unprefixed = character()) {
 	if (!is.list(defaults)) {
 		abort("`defaults` must be a named list.")
+	}
+	if (!is.character(unprefixed)) {
+		abort("`unprefixed` must be a character vector.")
 	}
 	if (length(defaults) == 0L) {
 		return(list())
@@ -469,13 +495,29 @@ prefix_defaults <- function(defaults) {
 	if (is.null(nms) || any(is.na(nms) | !nzchar(nms)) || anyDuplicated(nms)) {
 		abort("`defaults` must be a list with unique, non-empty names.")
 	}
+	if ("pattern" %in% nms) {
+		abort("`defaults` must not set `pattern` (it is always the resolved pattern name).")
+	}
+	# An unprefixed name is probably a forgotten `pattern_` prefix (e.g. `fill` instead of `pattern_fill`)
+	# unless the pattern really reads it e.g. a plain `{ggplot2}` aesthetic (then listed in `unprefixed`)
+	bare <- nms[!startsWith(nms, "pattern_") & !(nms %in% unprefixed)]
+	if (length(bare) > 0L) {
+		backticked <- function(x) paste0("`", x, "`", collapse = ", ")
+		abort(
+			c(
+				glue("`defaults` has names without the `pattern_` prefix: {backticked(bare)}."),
+				i = glue("Did you mean {backticked(paste0('pattern_', bare))}?"),
+				i = "If the pattern really reads such unprefixed parameters list them in `unprefixed`."
+			),
+			class = "gridpattern_error_unprefixed_defaults"
+		)
+	}
 	for (nm in nms) {
 		value <- defaults[[nm]]
 		if (is.function(value) && length(formals(value)) < 2L) {
 			abort(glue("Function default `{nm}` must have the form `function(params, gp)`."))
 		}
 	}
-	names(defaults) <- paste0("pattern_", nms)
 	defaults
 }
 
@@ -584,7 +626,7 @@ register_builtin_patterns <- function() {
 				kind,
 				fns[[kind]][[name]],
 				"builtin",
-				prefix_defaults(defaults[[name]] %||% list())
+				validate_defaults(defaults[[name]] %||% list())
 			)
 			assign(pattern_key("gridpattern", name), entry, envir = pattern_registry)
 		}
@@ -595,21 +637,45 @@ register_builtin_patterns <- function() {
 # builtin pattern-specific defaults (replacing `GENERIC_DEFAULTS`)
 builtin_defaults <- function() {
 	list(
-		ambient = list(type = "simplex", frequency = 0.01),
-		aRtsy = list(type = "strokes"),
-		crosshatch = list(fill2 = function(params, gp) params$pattern_fill),
-		hatch = list(type = "gules"),
-		image = list(type = "fit"),
-		magick = list(type = "hexagons", filter = "box"),
-		placeholder = list(type = "bear"),
-		polygon_tiling = list(type = "square"),
-		regular_polygon = list(shape = "convex4", scale = 0.5),
-		rose = list(frequency = 0.1),
-		text = list(size = function(params, gp) gp$fontsize %||% 12),
-		wave = list(type = "indented", amplitude = function(params, gp) {
-			0.5 * params$pattern_spacing
-		}),
-		weave = list(type = "plain")
+		ambient = list(
+			pattern_type = "simplex",
+			pattern_frequency = 0.01,
+			pattern_interpolator = "quintic", # perlin, simplex, value
+			pattern_fractal = function(params, gp) {
+				switch(params$pattern_type, worley = "none", "fbm")
+			},
+			pattern_octaves = 3, # all but white
+			pattern_lacunarity = 2, # all but white
+			pattern_gain = 0.5, # all but white
+			pattern_pertubation = "none", # all
+			pattern_pertubation_amplitude = 1, # all
+			pattern_value = "cell", # worley
+			pattern_distance_ind = c(1, 2), # worley
+			pattern_jitter = 0.45 # worley
+		),
+		aRtsy = list(pattern_type = "strokes"),
+		crosshatch = list(pattern_fill2 = function(params, gp) params$pattern_fill),
+		hatch = list(pattern_type = "gules"),
+		image = list(
+			pattern_type = "fit",
+			pattern_gravity = function(params, gp) {
+				switch(params$pattern_type, tile = "southwest", "center")
+			}
+		),
+		magick = list(pattern_type = "hexagons", pattern_filter = "box"),
+		placeholder = list(pattern_type = "bear"),
+		polygon_tiling = list(pattern_type = "square"),
+		regular_polygon = list(pattern_shape = "convex4", pattern_scale = 0.5),
+		text = list(pattern_size = function(params, gp) gp$fontsize %||% 12),
+		wave = list(
+			pattern_type = "indented",
+			pattern_amplitude = function(params, gp) 0.5 * params$pattern_spacing,
+			pattern_frequency = function(params, gp) 1 / params$pattern_spacing
+		),
+		weave = list(
+			pattern_type = "plain",
+			pattern_fill2 = function(params, gp) params$pattern_fill
+		)
 	)
 }
 
