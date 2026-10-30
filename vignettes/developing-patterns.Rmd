@@ -83,7 +83,7 @@ a pattern may register its own (pattern-specific) defaults which take precedence
 | `pattern_frequency`        | Frequency                                     | 0.1        |                                    |
 | `pattern_gravity`          | Image placement                               | 'center'   | `magick::gravity_types`            |
 | `pattern_grid`             | Pattern grid type                             | 'square'   | 'square', 'hex', 'hex\_circle'     |
-| `pattern_key_scale_factor` | Scale factor for pattern in legend            | 1          |                                    |
+| `pattern_key_scale_factor` | Scale factor (zoom) for pattern in legend     | 1          | positive number                    |
 | `pattern_linetype`         | Stroke linetype                               | 1          | linetype                           |
 | `pattern_linewidth`        | Stroke linewidth                              | `pattern_size` | linewidth                      |
 | `pattern_option_1 - 5`     | Generic options for expansion                 | 0          |                                    |
@@ -134,7 +134,7 @@ All geometry-based pattern creation functions must:
     * `legend` logical value to indicate whether or not this function is being called
       to render a key legend or the in-place geom fill.
       Any legend key scaling requested by a numeric `legend` argument of `patternGrob()`
-      (as used by `{ggpattern}`) is applied before this function is called.
+      (as used by `{ggpattern}`) or by `pattern_key_scale_factor` is applied before this function is called.
 
 2. Return a grid grob object. This can be any valid grob including a `grid::grobTree()`.
    The user should make sure it lies within the boundary represented by `boundary_df` either by clipping with functions
@@ -151,7 +151,7 @@ All array-based pattern creation functions must:
     * `legend` logical value to indicate whether or not this function is being called
       to render a key legend or the in-place geom fill.
       Any legend key scaling requested by a numeric `legend` argument of `patternGrob()`
-      (as used by `{ggpattern}`) is applied before this function is called.
+      (as used by `{ggpattern}`) or by `pattern_key_scale_factor` is applied before this function is called.
 2. Return a 3D array of RGBA values (all values in the range [0, 1]).
    `gridpattern` itself will mask this image so that it only applies to the area within the grob's boundary.
 

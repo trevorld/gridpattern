@@ -10,7 +10,8 @@
 #' @param use_R4.1_gradients Whether to use the gradient feature introduced in R v4.1
 #'                           or use a `rasterGrob` approximation.
 #'                           Note not all graphic devices support the grid gradient feature.
-#' @param key_scale_factor Additional scale factor for legend.
+#' @param key_scale_factor Additional scale factor (zoom) for a legend key.
+#'                         See the `legend` argument of [patternGrob()].
 #' @param res Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples

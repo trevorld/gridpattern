@@ -9,9 +9,21 @@ prefix_args <- function(l, prefix = "pattern_") {
 # parameters for which a length-one `NA` is treated as "not supplied" (see `complete_params()`)
 NA_IS_UNSET <- c("pattern_type", "pattern_subtype", "pattern_gravity", "pattern_res")
 
+# lengths that `pattern_key_scale_factor` zooms in a (numeric) legend key if `pattern_units` isn't relative
+# (relative lengths are instead zoomed by the larger legend viewport, see `makeContent.pattern()`)
+KEY_SCALED_LENGTHS <- c("pattern_spacing", "pattern_xoffset", "pattern_yoffset")
+RELATIVE_UNITS <- c("snpc", "npc")
+
 # fills in missing pattern parameters in list `l` (whose names are already prefixed)
 # `defaults` are pattern-specific defaults that replace (or are appended to) `GENERIC_DEFAULTS`
-complete_params <- function(l, pattern = "none", gp = gpar(), defaults = list()) {
+# `key_zoom` is whether to zoom by `pattern_key_scale_factor` (i.e. drawn in a numeric legend key)
+complete_params <- function(
+	l,
+	pattern = "none",
+	gp = gpar(),
+	defaults = list(),
+	key_zoom = FALSE
+) {
 	l$pattern <- pattern
 	# The generic defaults not overridden by the pattern are filled first (in `GENERIC_DEFAULTS` order)
 	# and then the pattern-specific `defaults` in the order given, so a pattern-specific
@@ -39,24 +51,51 @@ complete_params <- function(l, pattern = "none", gp = gpar(), defaults = list())
 			l[[nm]] <- NULL
 		}
 	}
+	fill_default <- function(l, nm) {
+		value <- all_defaults[[nm]]
+		if (is.function(value)) {
+			value <- value(l, gp)
+			if (length(value) == 0L) {
+				abort(c(
+					glue(
+						"The default for `{nm}` of pattern \"{pattern}\" returned a length-zero value."
+					),
+					i = "A function default may only use parameters filled in before it (see `?register_pattern`)."
+				))
+			}
+		}
+		value
+	}
+	# In a (numeric) legend key `pattern_key_scale_factor` zooms the absolute (non-relative unit) lengths
+	# as soon as each is filled in so any later (function) defaults computed from them
+	# (e.g. the "wave" amplitude) are zoomed too.
+	zoom <- 1
+	if (key_zoom) {
+		for (nm in c("pattern_key_scale_factor", "pattern_units")) {
+			l[[nm]] <- l[[nm]] %||% fill_default(l, nm)
+		}
+		k <- check_key_scale_factor(l$pattern_key_scale_factor)
+		zoom <- ifelse(l$pattern_units %in% RELATIVE_UNITS, 1, k)
+		for (nm in intersect(KEY_SCALED_LENGTHS, names(l))) {
+			l[[nm]] <- zoom * l[[nm]]
+		}
+	}
 	for (nm in names(all_defaults)) {
 		if (is.null(l[[nm]])) {
-			value <- all_defaults[[nm]]
-			if (is.function(value)) {
-				value <- value(l, gp)
-				if (length(value) == 0L) {
-					abort(c(
-						glue(
-							"The default for `{nm}` of pattern \"{pattern}\" returned a length-zero value."
-						),
-						i = "A function default may only use parameters filled in before it (see `?register_pattern`)."
-					))
-				}
+			l[[nm]] <- fill_default(l, nm)
+			if (nm %in% KEY_SCALED_LENGTHS) {
+				l[[nm]] <- zoom * l[[nm]]
 			}
-			l[[nm]] <- value
 		}
 	}
 	l
+}
+
+check_key_scale_factor <- function(k) {
+	if (!isTRUE(is.numeric(k) && length(k) == 1L && is.finite(k) && k > 0)) {
+		abort("`pattern_key_scale_factor` must be a single positive number")
+	}
+	k
 }
 
 # Values are either constants or `function(params, gp)`

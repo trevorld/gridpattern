@@ -75,6 +75,13 @@
 #'                   \dQuote{cm} units, and array pixels (see `pattern_res`) are unchanged.
 #'                   This is what `{ggpattern}` uses so its legend keys resemble its plot panels.}
 #'               }
+#'               A numeric `legend` key is also zoomed by the `pattern_key_scale_factor` parameter (default `1`):
+#'               the viewport is `legend * pattern_key_scale_factor` times larger than the key and
+#'               `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset` are multiplied by
+#'               `pattern_key_scale_factor` if `pattern_units` isn't a relative unit (\dQuote{snpc} or \dQuote{npc}).
+#'               A logical `legend` isn't zoomed by `pattern_key_scale_factor` (the caller zooms it if desired,
+#'               as `{ggpattern}` 1.3.1 and earlier do) so `TRUE` and `1` differ if it isn't `1`
+#'               (although the "magick" pattern scales its image by it either way).
 #'               Pattern functions are always passed a logical `legend` value.
 #' @param prefix Prefix to prepend to the name of each of the pattern parameters in `...`.
 #'               For compatibility with `ggpattern` most underlying functions assume parameters beginning with `pattern_`.
@@ -215,7 +222,7 @@ patternGrob <- function(
 	draw = TRUE,
 	vp = NULL
 ) {
-	legend <- legend_scale(legend)
+	legend_scale(legend) # validate (but keep a logical `legend` logical, see `makeContent.pattern()`)
 	args <- prefix_args(list(...), prefix)
 	# cache pattern resolved at creation (if possible) so redraws (e.g. resizing the device)
 	# still work if the pattern is later unregistered or masked
@@ -251,20 +258,26 @@ makeContent.pattern <- function(x) {
 	} else {
 		entry <- resolve_pattern(x$pattern)
 	}
+	legend <- legend_scale(x$legend) # in case `legend` has since been edited
+	# Only a numeric `legend` zooms by `pattern_key_scale_factor`:
+	# older `{ggpattern}` (<= 1.3.1) passes `legend = TRUE` and zooms the key itself
+	key_zoom <- is.numeric(x$legend) && legend > 0
 	params <- complete_params(
 		x$args,
 		pattern = entry$name,
 		gp = x$gp,
-		defaults = entry$defaults
+		defaults = entry$defaults,
+		key_zoom = key_zoom
 	)
 
 	xp <- convertX(x$x, "npc", valueOnly = TRUE)
 	yp <- convertY(x$y, "npc", valueOnly = TRUE)
 
-	# a numeric `legend` draws the pattern in a viewport that many times larger than the key
-	# (and centred on it) so all `snpc` lengths (spacing, offsets, amplitudes, ...) scale together
-	# while absolute sizes (linewidth, fontsize, "cm" units) don't
-	s <- legend_scale(x$legend) # in case `legend` has since been edited
+	# a numeric legend key draws the pattern in a viewport `legend * pattern_key_scale_factor` times
+	# larger than the key (and centred on it) so all relative lengths (spacing, offsets, amplitudes, ...)
+	# scale together while absolute sizes (linewidth, fontsize, "cm" units) don't
+	# (`complete_params()` instead zooms absolute spacing and offsets by `pattern_key_scale_factor`)
+	s <- if (key_zoom) legend * params$pattern_key_scale_factor else legend
 	if (s > 0 && s != 1) {
 		# the pattern is computed in the `makeContent()` of a child whose `vp` is the larger viewport
 		# (so grid pushes it) instead of pushing a viewport here
@@ -278,7 +291,7 @@ makeContent.pattern <- function(x) {
 			cl = "pattern_legend"
 		)
 	} else {
-		grob <- pattern_content(entry, params, xp, yp, x$id, legend = s > 0)
+		grob <- pattern_content(entry, params, xp, yp, x$id, legend = legend > 0)
 	}
 	setChildren(x, gList(grob))
 }
@@ -300,9 +313,8 @@ pattern_content <- function(entry, params, xp, yp, id, legend) {
 	if (!is.na(params$pattern_aspect_ratio)) {
 		aspect_ratio <- params$pattern_aspect_ratio
 	} else {
-		width <- convertWidth(unit(1, "npc"), "in", valueOnly = TRUE)
-		height <- convertHeight(unit(1, "npc"), "in", valueOnly = TRUE)
-		aspect_ratio <- width / height
+		vpm <- get_vp_measurements("in")
+		aspect_ratio <- vpm$width / vpm$height
 	}
 
 	# needs to be called within active graphics device to guess R4.1 capabilities

@@ -79,3 +79,66 @@ test_that("a scaled legend draws the pattern inside the boundary", {
 	expect_identical(grid::current.vpPath(), NULL)
 	expect_false("pattern_legend" %in% grid::grid.ls(viewports = TRUE, print = FALSE)$name)
 })
+
+test_that("`pattern_key_scale_factor` zooms a legend key", {
+	on.exit(unregister_pattern("legend_capture", env = globalenv()), add = TRUE)
+	register_pattern(
+		"legend_capture",
+		create_pattern_legend_capture,
+		defaults = list(pattern_amplitude = function(params, gp) params$pattern_spacing / 2),
+		env = globalenv()
+	)
+	k <- 2
+	s <- 2.5
+	no <- draw_legend_capture(FALSE, key_scale_factor = k)
+	# not zoomed if not a legend key
+	expect_equal(no$params$pattern_spacing, 0.05)
+	expect_equal(no$params$pattern_amplitude, 0.025)
+
+	# relative lengths are zoomed by a viewport `legend * k` times larger than the key
+	for (legend in list(1, s)) {
+		zoomed <- draw_legend_capture(legend, key_scale_factor = k, xoffset = 0.1)
+		expect_equal(zoomed$vp_in, as.numeric(legend) * k * no$vp_in)
+		expect_equal(zoomed$params$pattern_spacing, 0.05)
+		expect_equal(zoomed$params$pattern_xoffset, 0.1)
+		expect_equal(zoomed$params$pattern_amplitude, 0.025)
+		expect_equal(range(zoomed$boundary_df$x), 0.5 + c(-0.5, 0.5) / (as.numeric(legend) * k))
+	}
+	expect_equal(
+		draw_legend_capture(s, units = "npc", key_scale_factor = k)$params$pattern_spacing,
+		0.05
+	)
+
+	# absolute lengths (whether supplied or defaults) are zoomed by `k` (as are defaults computed from them)
+	cm <- draw_legend_capture(s, units = "cm", spacing = 1, yoffset = 0.5, key_scale_factor = k)
+	expect_equal(cm$vp_in, s * k * no$vp_in)
+	expect_equal(cm$params$pattern_spacing, k)
+	expect_equal(cm$spacing_in, k / 2.54)
+	expect_equal(cm$params$pattern_yoffset, k * 0.5)
+	expect_equal(cm$params$pattern_xoffset, 0)
+	expect_equal(cm$params$pattern_amplitude, k / 2)
+	cm <- draw_legend_capture(1, units = "cm", key_scale_factor = k)
+	expect_equal(cm$params$pattern_spacing, k * 0.05)
+	expect_equal(cm$params$pattern_amplitude, k * 0.025)
+	# but a logical `legend` (as passed by `{ggpattern}` <= 1.3.1 which zooms the key itself) isn't zoomed
+	for (units in c("snpc", "cm")) {
+		yes <- draw_legend_capture(TRUE, units = units, spacing = 0.3, key_scale_factor = k)
+		expect_identical(yes$legend, TRUE)
+		expect_equal(yes$vp_in, no$vp_in)
+		expect_equal(yes$params$pattern_spacing, 0.3)
+		expect_equal(yes$params$pattern_amplitude, 0.15)
+		# although it is still passed on (e.g. "magick" scales its image by it)
+		expect_equal(yes$params$pattern_key_scale_factor, k)
+	}
+	# an unset (`NaN`) key scale factor is `1`
+	expect_equal(draw_legend_capture(s, key_scale_factor = NaN)$vp_in, s * no$vp_in)
+
+	for (bad in list(0, -1, NA, c(1, 2), "2")) {
+		expect_error(
+			complete_params(list(pattern_key_scale_factor = bad), key_zoom = TRUE),
+			"`pattern_key_scale_factor` must be"
+		)
+	}
+	# (which is only checked for a legend key)
+	expect_equal(complete_params(list(pattern_key_scale_factor = 0))$pattern_key_scale_factor, 0)
+})

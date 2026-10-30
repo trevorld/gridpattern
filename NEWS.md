@@ -45,6 +45,14 @@ New features
   The pattern functions themselves are still passed a logical `legend` value.
   `{ggpattern}` now uses this to scale its legend keys instead of rescaling
   `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset` itself.
+* A numeric `legend` key is now zoomed by the `pattern_key_scale_factor` parameter (`key_scale_factor` argument):
+  the legend viewport is `legend * pattern_key_scale_factor` times larger than the key
+  and if `pattern_units` isn't "snpc" nor "npc" then `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset`
+  are multiplied by `pattern_key_scale_factor` (before any defaults computed from them e.g. the "wave" amplitude)
+  so legend keys of patterns with absolute units (e.g. "cm") can be zoomed too.
+  A logical `legend` (as passed by `{ggpattern}` 1.3.1 and earlier, which zoom their keys themselves)
+  is not zoomed by `pattern_key_scale_factor`.
+  Previously only the "magick" pattern used `pattern_key_scale_factor` (which it still does for any legend key).
 
 Bug fixes and minor improvements
 --------------------------------
