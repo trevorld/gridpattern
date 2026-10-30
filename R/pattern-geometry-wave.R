@@ -81,7 +81,7 @@ grid.pattern_wave <- function(
 	frequency = 1 / spacing,
 	alpha = gp$alpha %||% NA_real_,
 	linetype = gp$lty %||% 1,
-	linewidth = size %||% gp$lwd %||% 1,
+	linewidth = size %||% gp$lwd %||% 0.5,
 	size = NULL,
 	grid = "square",
 	type = "indented",

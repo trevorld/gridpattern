@@ -62,13 +62,16 @@ within the grob's boundary.
 Although custom `{gridpattern}` pattern parameters need not limit itself to the set of aesthetics provided by `{ggpattern}` doing
 so may make your pattern more useful for others:
 
+The defaults listed below are `{gridpattern}`'s generic defaults:
+a pattern may register its own (pattern-specific) defaults which take precedence.
+
 <details open = "true">
 <summary> `{ggpattern}` aesthetic summary - click to open/close </summary>
 
-| aesthetic                  | description                                   | default    | possible values                    |
+| aesthetic                  | description                                   | generic default | possible values               |
 |----------------------------|-----------------------------------------------|------------|------------------------------------|
 | `pattern`                  | Name of the pattern to draw                   | 'stripe'   | `gridpattern::names_pattern`       |
-| `pattern_alpha`            | Alpha                                         | 1          | value in range [0, 1] or `NA`      |
+| `pattern_alpha`            | Alpha                                         | NA         | value in range [0, 1] or `NA`      |
 | `pattern_angle`            | Rotation angle (entire pattern)               | 30         | angle in degrees                   |
 | `pattern_aspect_ratio`     | Aspect ratio adjustment                       | NA         | usual range [0.01, 10]             |
 | `pattern_colour`           | Stroke colour                                 | 'grey20'   | colour                             |
@@ -82,15 +85,15 @@ so may make your pattern more useful for others:
 | `pattern_grid`             | Pattern grid type                             | 'square'   | 'square', 'hex', 'hex\_circle'     |
 | `pattern_key_scale_factor` | Scale factor for pattern in legend            | 1          |                                    |
 | `pattern_linetype`         | Stroke linetype                               | 1          | linetype                           |
-| `pattern_linewidth`        | Stroke linewidth                              | 1          | linewidth                          |
+| `pattern_linewidth`        | Stroke linewidth                              | `pattern_size` | linewidth                      |
 | `pattern_option_1 - 5`     | Generic options for expansion                 | 0          |                                    |
 | `pattern_orientation`      | Orientation                                   | 'vertical' | 'vertical', 'horizontal', 'radial' |
 | `pattern_phase`            | Phase                                         | 0          |                                    |
-| `pattern_res`              | Pattern resolution (pixels per inch)          | NA         |                                    |
+| `pattern_res`              | Pattern resolution (pixels per inch)          | `getOption("ggpattern_res", 72)` |              |
 | `pattern_rot`              | Rotation angle (shape within pattern)         | 0          | angle in degrees                   |
 | `pattern_scale`            | Scale                                         | 1          | Multiplier                         |
 | `pattern_shape`            | Plotting shape                                | 1          | shapes                             |
-| `pattern_size`             | Size factor (e.g. fontsize)                   | 1          | fontsize                           |
+| `pattern_size`             | Size factor (e.g. linewidth or fontsize)      | 0.5        | linewidth or fontsize              |
 | `pattern_spacing`          | Spacing between repetitions of pattern        | 0.05       | value in range [0, 1] (snpc units) |
 | `pattern_subtype`          | Generic control option                        | NA         | pattern-dependent                  |
 | `pattern_type`             | Generic control option                        | NA         | pattern-dependent                  |

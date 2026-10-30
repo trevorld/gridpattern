@@ -43,7 +43,7 @@ grid.pattern_line <- function(
 	alpha = gp$alpha %||% NA_real_,
 	lineend = gp$lineend %||% "round",
 	linetype = gp$lty %||% 1,
-	linewidth = size %||% gp$lwd %||% 1,
+	linewidth = size %||% gp$lwd %||% 0.5,
 	size = NULL,
 	stagger = FALSE,
 	use_R4.1_masks = getOption(

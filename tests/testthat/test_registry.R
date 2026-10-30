@@ -413,6 +413,52 @@ test_that("pattern-specific defaults", {
 	)
 })
 
+test_that("builtin pattern-specific defaults agree with `grid.pattern_*()` defaults", {
+	# `grid.pattern_*()` arguments that aren't pattern parameters
+	skip_args <- c(
+		"x",
+		"y",
+		"id",
+		"name",
+		"gp",
+		"draw",
+		"vp",
+		"default.units",
+		"png_device",
+		"use_R4.1_clipping",
+		"use_R4.1_gradients",
+		"use_R4.1_masks",
+		"use_R4.1_patterns"
+	)
+	# `scale` is ignored by "pch" (which sets it internally) and by "text"
+	skip_pattern_args <- list(pch = "scale", text = "scale")
+	fns <- grep("^grid\\.pattern_", getNamespaceExports("gridpattern"), value = TRUE)
+	for (fn in sort(fns)) {
+		name <- sub("^grid\\.pattern_", "", fn)
+		entry <- resolve_pattern(name)
+		registry <- complete_params(list(), name, gpar(), entry$defaults)
+		# evaluate the function's default arguments (which may refer to each other and to `gp`)
+		f <- get(fn, envir = asNamespace("gridpattern"))
+		body(f) <- quote(mget(setdiff(names(formals(sys.function())), "..."), environment()))
+		fn_defaults <- f()
+		skip_extra <- if (name %in% names(skip_pattern_args)) skip_pattern_args[[name]] else NULL
+		for (arg in setdiff(names(fn_defaults), c(skip_args, skip_extra))) {
+			fn_value <- fn_defaults[[arg]]
+			# `NULL` means "unset" so the registry default applies
+			if (is.null(fn_value)) {
+				next
+			}
+			registry_value <- registry[[paste0("pattern_", arg)]]
+			label <- paste0(fn, "() `", arg, "`")
+			if (length(fn_value) == 1L && is.na(fn_value)) {
+				expect_true(length(registry_value) == 1L && is.na(registry_value), info = label)
+			} else {
+				expect_equal(fn_value, registry_value, info = label, check.attributes = FALSE)
+			}
+		}
+	}
+})
+
 test_that("helper functions can register patterns on behalf of the user", {
 	on.exit(unregister_pattern("polygon", env = globalenv()), add = TRUE)
 	helper <- function(name, fn, env = parent.frame()) {

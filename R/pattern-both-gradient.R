@@ -6,7 +6,7 @@
 #' @param fill Colour.
 #' @param fill2 Second colour.
 #' @param orientation vertical, horizontal, or radial.
-#' @param aspect_ratio Override aspect ratio.
+#' @param aspect_ratio Override aspect ratio.  If `NA` (default) use the aspect ratio of the current viewport.
 #' @param use_R4.1_gradients Whether to use the gradient feature introduced in R v4.1
 #'                           or use a `rasterGrob` approximation.
 #'                           Note not all graphic devices support the grid gradient feature.
@@ -37,7 +37,7 @@ grid.pattern_gradient <- function(
 		"ggpattern_use_R4.1_gradients",
 		getOption("ggpattern_use_R4.1_features")
 	),
-	aspect_ratio = 1,
+	aspect_ratio = NA,
 	key_scale_factor = 1,
 	res = getOption("ggpattern_res", 72),
 	default.units = "npc",

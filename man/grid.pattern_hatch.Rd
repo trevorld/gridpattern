@@ -19,7 +19,7 @@ grid.pattern_hatch(
   units = "snpc",
   alpha = gp$alpha \%||\% NA_real_,
   lineend = gp$lineend \%||\% "round",
-  linewidth = size \%||\% gp$lwd \%||\% 1,
+  linewidth = size \%||\% gp$lwd \%||\% 0.5,
   size = NULL,
   use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
     getOption("ggpattern_use_R4.1_features")),

@@ -20,7 +20,7 @@ grid.pattern_polygon_tiling(
   type = "square",
   alpha = gp$alpha \%||\% NA_real_,
   linetype = gp$lty \%||\% 1,
-  linewidth = size \%||\% gp$lwd \%||\% 1,
+  linewidth = size \%||\% gp$lwd \%||\% 0.5,
   size = NULL,
   default.units = "npc",
   name = NULL,

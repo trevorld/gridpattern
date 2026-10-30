@@ -40,9 +40,9 @@
 #'                              fill = c("black", "red", "blue", "yellow"),
 #'                              angle = 0, density = 1.0, spacing = 0.2)
 #'
-#' # checker pattern using the default "convex4" shape
+#' # checker pattern using the "convex4" shape
 #' grid::grid.newpage()
-#' grid.pattern_regular_polygon(x_hex, y_hex, density = 1.0,
+#' grid.pattern_regular_polygon(x_hex, y_hex, shape = "convex4", density = 1.0,
 #'                              colour = "black", fill = "blue")
 #'
 #' # using a "twill_zigzag" 'weave' pattern
@@ -78,14 +78,14 @@ grid.pattern_regular_polygon <- function(
 	yoffset = 0,
 	units = "snpc",
 	scale = 0.5,
-	shape = "convex4",
+	shape = "convex6",
 	grid = "square",
 	type = NULL,
 	subtype = NULL,
 	rot = 0,
 	alpha = gp$alpha %||% NA_real_,
 	linetype = gp$lty %||% 1,
-	linewidth = size %||% gp$lwd %||% 1,
+	linewidth = size %||% gp$lwd %||% 0.5,
 	size = NULL,
 	default.units = "npc",
 	name = NULL,

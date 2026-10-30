@@ -13,11 +13,11 @@ grid.pattern_magick(
   id = 1L,
   ...,
   type = "hexagons",
-  fill = "grey20",
+  fill = gp$fill \%||\% "grey80",
   scale = 1,
   filter = "box",
   alpha = gp$alpha \%||\% NA_real_,
-  aspect_ratio = 1,
+  aspect_ratio = NA,
   key_scale_factor = 1,
   res = getOption("ggpattern_res", 72),
   default.units = "npc",
@@ -55,7 +55,7 @@ plus subsets for shaded intensity and stripes.}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 
-\item{aspect_ratio}{Override aspect ratio.}
+\item{aspect_ratio}{Override aspect ratio.  If \code{NA} (default) use the aspect ratio of the current viewport.}
 
 \item{key_scale_factor}{Additional scale factor for legend.}
 

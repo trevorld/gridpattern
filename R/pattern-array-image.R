@@ -52,7 +52,7 @@ grid.pattern_image <- function(
 	gravity = switch(type, tile = "southwest", "center"),
 	filter = "lanczos",
 	alpha = gp$alpha %||% NA_real_,
-	aspect_ratio = 1,
+	aspect_ratio = NA,
 	key_scale_factor = 1,
 	res = getOption("ggpattern_res", 72),
 	default.units = "npc",
