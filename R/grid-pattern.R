@@ -61,7 +61,21 @@
 #' @param id A numeric vector used to separate locations in x, y into multiple boundaries.
 #'           All locations within the same `id` belong to the same boundary.
 #' @param ... Pattern parameters.
-#' @param legend Whether this is intended to be drawn in a legend or not.
+#' @param legend Whether this is intended to be drawn in a legend (key) or not.
+#'               Either a logical value or a non-negative number:
+#'               \describe{
+#'                 \item{`FALSE` or `0`}{Not a legend key (the default).}
+#'                 \item{`TRUE` or `1`}{A legend key drawn at the scale of the key.}
+#'                 \item{A positive number `s`}{A legend key showing (the centre of) the pattern
+#'                   as it would be drawn in an area `s` times the width and height of the key
+#'                   i.e. the pattern is drawn in a centred viewport `s` times larger than the key
+#'                   (and clipped to the boundary).
+#'                   Relative lengths such as \dQuote{snpc} spacings and offsets are then `s` times
+#'                   larger relative to the key while absolute lengths such as line widths, font sizes,
+#'                   \dQuote{cm} units, and array pixels (see `pattern_res`) are unchanged.
+#'                   This is what `{ggpattern}` uses so its legend keys resemble its plot panels.}
+#'               }
+#'               Pattern functions are always passed a logical `legend` value.
 #' @param prefix Prefix to prepend to the name of each of the pattern parameters in `...`.
 #'               For compatibility with `ggpattern` most underlying functions assume parameters beginning with `pattern_`.
 #' @param default.units A string indicating the default units to use if `x` or `y`
@@ -201,6 +215,7 @@ patternGrob <- function(
 	draw = TRUE,
 	vp = NULL
 ) {
+	legend <- legend_scale(legend)
 	args <- prefix_args(list(...), prefix)
 	# cache pattern resolved at creation (if possible) so redraws (e.g. resizing the device)
 	# still work if the pattern is later unregistered or masked
@@ -243,13 +258,43 @@ makeContent.pattern <- function(x) {
 		defaults = entry$defaults
 	)
 
+	xp <- convertX(x$x, "npc", valueOnly = TRUE)
+	yp <- convertY(x$y, "npc", valueOnly = TRUE)
+
+	# a numeric `legend` draws the pattern in a viewport that many times larger than the key
+	# (and centred on it) so all `snpc` lengths (spacing, offsets, amplitudes, ...) scale together
+	# while absolute sizes (linewidth, fontsize, "cm" units) don't
+	s <- legend_scale(x$legend) # in case `legend` has since been edited
+	if (s > 0 && s != 1) {
+		# the pattern is computed in the `makeContent()` of a child whose `vp` is the larger viewport
+		# (so grid pushes it) instead of pushing a viewport here
+		grob <- gTree(
+			entry = entry,
+			params = params,
+			xp = 0.5 + (xp - 0.5) / s,
+			yp = 0.5 + (yp - 0.5) / s,
+			id = x$id,
+			vp = viewport(width = s, height = s, name = "pattern_legend"),
+			cl = "pattern_legend"
+		)
+	} else {
+		grob <- pattern_content(entry, params, xp, yp, x$id, legend = s > 0)
+	}
+	setChildren(x, gList(grob))
+}
+
+#' @export
+makeContent.pattern_legend <- function(x) {
+	grob <- pattern_content(x$entry, x$params, x$xp, x$yp, x$id, legend = TRUE)
+	setChildren(x, gList(grob))
+}
+
+# computes the pattern grob in the current viewport given boundary `xp` / `yp` in "npc" units
+pattern_content <- function(entry, params, xp, yp, id, legend) {
 	# avoid weird errors with array patterns if there is an active device open
 	current_dev <- grDevices::dev.cur()
 	on.exit(grDevices::dev.set(current_dev))
 
-	xp <- convertX(x$x, "npc", valueOnly = TRUE)
-	yp <- convertY(x$y, "npc", valueOnly = TRUE)
-	id <- x$id
 	boundary_df <- create_polygon_df(xp, yp, id)
 
 	if (!is.na(params$pattern_aspect_ratio)) {
@@ -264,7 +309,17 @@ makeContent.pattern <- function(x) {
 	params <- get_R4.1_params(params)
 
 	fn <- get_pattern_fn(entry)
-	grob <- fn(params, boundary_df, aspect_ratio, x$legend)
-	gl <- gList(grob)
-	setChildren(x, gl)
+	fn(params, boundary_df, aspect_ratio, legend)
+}
+
+# `legend` as a (non-negative) scale with `FALSE` -> 0 and `TRUE` -> 1
+legend_scale <- function(legend) {
+	ok <- length(legend) == 1L &&
+		(is.logical(legend) || is.numeric(legend)) &&
+		is.finite(legend) &&
+		legend >= 0
+	if (!isTRUE(ok)) {
+		abort("`legend` must be `TRUE`, `FALSE`, or a single non-negative number")
+	}
+	as.numeric(legend)
 }

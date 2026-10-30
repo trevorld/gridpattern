@@ -69,7 +69,8 @@
 #'            `boundary_df` is a data frame with `x`, `y`, and `id` columns
 #'            describing the boundary polygon(s) in \dQuote{npc} coordinates,
 #'            `aspect_ratio` is the (best guess) aspect ratio of the viewport, and
-#'            `legend` is whether the pattern is being drawn in a `{ggpattern}` legend key.}
+#'            `legend` is a logical value of whether the pattern is being drawn in a legend key
+#'            (e.g. by `{ggpattern}`; see the `legend` argument of [patternGrob()]).}
 #'          \item{array}{`function(width, height, params, legend)`
 #'            returning a 3D array of RGBA values (all values in the range \[0, 1\])
 #'            which `{gridpattern}` will mask to the boundary.
