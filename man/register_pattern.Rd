@@ -28,7 +28,8 @@ returning a grid grob that lies within the boundary
 \code{boundary_df} is a data frame with \code{x}, \code{y}, and \code{id} columns
 describing the boundary polygon(s) in \dQuote{npc} coordinates,
 \code{aspect_ratio} is the (best guess) aspect ratio of the viewport, and
-\code{legend} is whether the pattern is being drawn in a \code{{ggpattern}} legend key.}
+\code{legend} is a logical value of whether the pattern is being drawn in a legend key
+(e.g. by \code{{ggpattern}}; see the \code{legend} argument of \code{\link[=patternGrob]{patternGrob()}}).}
 \item{array}{\verb{function(width, height, params, legend)}
 returning a 3D array of RGBA values (all values in the range [0, 1])
 which \code{{gridpattern}} will mask to the boundary.

@@ -53,7 +53,21 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{...}{Pattern parameters.}
 
-\item{legend}{Whether this is intended to be drawn in a legend or not.}
+\item{legend}{Whether this is intended to be drawn in a legend (key) or not.
+Either a logical value or a non-negative number:
+\describe{
+\item{\code{FALSE} or \code{0}}{Not a legend key (the default).}
+\item{\code{TRUE} or \code{1}}{A legend key drawn at the scale of the key.}
+\item{A positive number \code{s}}{A legend key showing (the centre of) the pattern
+as it would be drawn in an area \code{s} times the width and height of the key
+i.e. the pattern is drawn in a centred viewport \code{s} times larger than the key
+(and clipped to the boundary).
+Relative lengths such as \dQuote{snpc} spacings and offsets are then \code{s} times
+larger relative to the key while absolute lengths such as line widths, font sizes,
+\dQuote{cm} units, and array pixels (see \code{pattern_res}) are unchanged.
+This is what \code{{ggpattern}} uses so its legend keys resemble its plot panels.}
+}
+Pattern functions are always passed a logical \code{legend} value.}
 
 \item{prefix}{Prefix to prepend to the name of each of the pattern parameters in \code{...}.
 For compatibility with \code{ggpattern} most underlying functions assume parameters beginning with \code{pattern_}.}

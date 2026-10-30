@@ -133,6 +133,8 @@ All geometry-based pattern creation functions must:
       aspect ratio of the **viewport** in which this pattern is being rendered.
     * `legend` logical value to indicate whether or not this function is being called
       to render a key legend or the in-place geom fill.
+      Any legend key scaling requested by a numeric `legend` argument of `patternGrob()`
+      (as used by `{ggpattern}`) is applied before this function is called.
 
 2. Return a grid grob object. This can be any valid grob including a `grid::grobTree()`.
    The user should make sure it lies within the boundary represented by `boundary_df` either by clipping with functions
@@ -148,6 +150,8 @@ All array-based pattern creation functions must:
     * `params` - parameters from the geom (the aesthetics) e.g `pattern_fill`
     * `legend` logical value to indicate whether or not this function is being called
       to render a key legend or the in-place geom fill.
+      Any legend key scaling requested by a numeric `legend` argument of `patternGrob()`
+      (as used by `{ggpattern}`) is applied before this function is called.
 2. Return a 3D array of RGBA values (all values in the range [0, 1]).
    `gridpattern` itself will mask this image so that it only applies to the area within the grob's boundary.
 

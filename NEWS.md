@@ -32,6 +32,20 @@ Breaking Changes
   (or checked `is.null(params$pattern_phase)`) to pick its own default when unset now always gets `0`
   and should instead register its defaults with `register_pattern(defaults = )`.
 
+New features
+------------
+
+* The `legend` argument of `patternGrob()` / `grid.pattern()` may now be a non-negative number `s`
+  to draw a legend key showing (the centre of) the pattern as it would be drawn in an area
+  `s` times the width and height of the key
+  (`TRUE` is equivalent to `1` and `FALSE` to `0`).
+  The pattern is drawn in a centred viewport `s` times larger than the key so all relative lengths
+  (e.g. "snpc" spacings, offsets, and wave amplitudes, including those of custom patterns)
+  scale together while absolute lengths (e.g. line widths, font sizes, "cm" units, and array pixels) don't.
+  The pattern functions themselves are still passed a logical `legend` value.
+  `{ggpattern}` now uses this to scale its legend keys instead of rescaling
+  `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset` itself.
+
 Bug fixes and minor improvements
 --------------------------------
 
