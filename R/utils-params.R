@@ -6,24 +6,39 @@ prefix_args <- function(l, prefix = "pattern_") {
 	l
 }
 
+# parameters for which a length-one `NA` is treated as "not supplied" (see `complete_params()`)
+NA_IS_UNSET <- c("pattern_type", "pattern_subtype", "pattern_gravity", "pattern_res")
+
 # fills in missing pattern parameters in list `l` (whose names are already prefixed)
 # `defaults` are pattern-specific defaults that replace (or are appended to) `GENERIC_DEFAULTS`
 complete_params <- function(l, pattern = "none", gp = gpar(), defaults = list()) {
 	l$pattern <- pattern
-	# `{ggpattern}` passes `NA` for these parameters (for which `NA` has no meaning)
-	# so treat it as "not supplied" and let the defaults fill them in
-	# (`{ggpattern}` resolves an `NA` `pattern_res` itself so that one only helps direct callers).
-	# NB. `NA` is meaningful for other parameters e.g. a transparent colour or an invisible linewidth
-	for (nm in c("pattern_type", "pattern_subtype", "pattern_gravity", "pattern_res")) {
-		if (length(l[[nm]]) == 1L && is.na(l[[nm]])) {
-			l[[nm]] <- NULL
-		}
-	}
 	# The generic defaults not overridden by the pattern are filled first (in `GENERIC_DEFAULTS` order)
 	# and then the pattern-specific `defaults` in the order given, so a pattern-specific
 	# (function) default may use any generic parameter and any earlier pattern-specific one.
 	generic <- GENERIC_DEFAULTS[!(names(GENERIC_DEFAULTS) %in% names(defaults))]
 	all_defaults <- c(generic, defaults)
+	# `{ggpattern}` passes `NaN` for an unset aesthetic so treat a length-one `NaN` as "not supplied"
+	# and let the defaults (if any) fill them in.
+	# This is done for every parameter (not just those with a default) so an unset aesthetic looks the same
+	# as one that doesn't exist (`NULL`) i.e. `{ggpattern}` can add new aesthetics and patterns can add
+	# new defaults without changing what a `NaN` means.
+	# NB. `is.na(NaN)` is `TRUE` but `is.nan(NA)` is `FALSE`
+	for (nm in names(l)) {
+		value <- l[[nm]]
+		if (is.numeric(value) && length(value) == 1L && is.nan(value)) {
+			l[[nm]] <- NULL
+		}
+	}
+	# Also treat a length-one `NA` as "not supplied" for these parameters (for which `NA` has no meaning).
+	# NB. `NA` is meaningful for other parameters e.g. a transparent colour, an invisible linewidth,
+	# or the "pch" shape that draws nothing
+	for (nm in NA_IS_UNSET) {
+		value <- l[[nm]]
+		if (is.atomic(value) && length(value) == 1L && is.na(value)) {
+			l[[nm]] <- NULL
+		}
+	}
 	for (nm in names(all_defaults)) {
 		if (is.null(l[[nm]])) {
 			value <- all_defaults[[nm]]
@@ -80,6 +95,13 @@ GENERIC_DEFAULTS <- list(
 	pattern_stagger = FALSE,
 	pattern_xoffset = 0,
 	pattern_yoffset = 0,
+	# spare `{ggpattern}` aesthetics not used by any builtin pattern
+	pattern_phase = 0,
+	pattern_option_1 = 0,
+	pattern_option_2 = 0,
+	pattern_option_3 = 0,
+	pattern_option_4 = 0,
+	pattern_option_5 = 0,
 	pattern_res = function(params, gp) getOption("ggpattern_res", 72) # in PPI
 	# NB. generic defaults are filled before the pattern-specific ones so a generic function default
 	# must not rely on a pattern-specific default (`params$pattern_size` above is user-supplied or `NULL`)

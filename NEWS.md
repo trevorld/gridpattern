@@ -4,6 +4,16 @@ gridpattern v1.6.0 (development)
 Breaking Changes
 ----------------
 
+* A length-one `NaN` value of any pattern parameter is now treated as unset
+  so pattern-specific (or else generic) defaults apply
+  (a parameter without any default is then `NULL` i.e. the same as if it wasn't supplied
+  so new `{ggpattern}` aesthetics and new defaults don't change what a `NaN` means).
+  This is the new `{ggpattern}` default for its aesthetics that should fall back to the pattern's defaults
+  (e.g. the "wave" frequency of `1 / spacing`, the "regular_polygon" scale `0.5`,
+  the "text" shape `"X"`, and the "crosshatch" / "weave" `pattern_fill2` of `pattern_fill`).
+  An `NA` value keeps its meaning (e.g. a transparent colour or a "pch" shape that draws nothing)
+  except for `pattern_type`, `pattern_subtype`, `pattern_gravity`, and `pattern_res`
+  for which a length-one `NA` is still also treated as unset.
 * The default `shape` of `grid.pattern_regular_polygon()` (and the registered default `pattern_shape`
   of the "regular_polygon" pattern) is now `"convex6"` (hexagons) instead of `"convex4"`
   (matching the previous `{ggpattern}` default).
@@ -15,6 +25,12 @@ Breaking Changes
   (matching `{ggpattern}`) instead of `1` for both `patternGrob()` and the `grid.pattern_<name>()` functions
   so default lines are now half as thick.
   The generic default of `pattern_size` is likewise now `gp$lwd %||% 0.5`.
+* The spare `{ggpattern}` aesthetics `pattern_phase` and `pattern_option_1` - `pattern_option_5`
+  (which no builtin pattern uses) now have a generic default of `0`
+  (the default `{ggpattern}` already used for them).
+  A custom pattern drawn by `patternGrob()` that used `params$pattern_option_1 %||% my_default`
+  (or checked `is.null(params$pattern_phase)`) to pick its own default when unset now always gets `0`
+  and should instead register its defaults with `register_pattern(defaults = )`.
 
 Bug fixes and minor improvements
 --------------------------------
