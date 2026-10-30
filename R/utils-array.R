@@ -35,10 +35,9 @@ create_pattern_array <- function(
 	# Calculate the dimensions of the bounding box and use the integer
 	# values of these to define the image dimensions
 	# res of 72 DPI is the imagemagick default
-	# Ideally could detect resolution of graphics device and use that as default...
 	# NB. large pixel sizes can cause errors with getting 'placeholder' images
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	res <- params$pattern_res # defaults to 72 DPI
+	res <- params$pattern_res # defaults to (a little more than) the device resolution
 	in_vp_width <- grid::convertWidth(unit(1, 'npc'), 'inches', valueOnly = TRUE)
 	in_width <- npc_width * in_vp_width
 	in_height <- npc_height * in_vp_width / aspect_ratio

@@ -34,7 +34,7 @@ grid.pattern_magick <- function(
 	alpha = gp$alpha %||% NA_real_,
 	aspect_ratio = NA,
 	key_scale_factor = 1,
-	res = getOption("ggpattern_res", 72),
+	res = NULL,
 	default.units = "npc",
 	name = NULL,
 	gp = gpar(),

@@ -341,7 +341,7 @@ test_that("pattern-specific defaults", {
 	expect_equal(captured$params$pattern_type, "running")
 	expect_equal(captured$params$pattern_subtype, "lefthand")
 	expect_equal(captured$params$pattern_gravity, "center")
-	expect_equal(captured$params$pattern_res, 72)
+	expect_equal(captured$params$pattern_res, 1.14 * 72) # device resolution of `pdf()`
 	# but otherwise an `NA` is meaningful (e.g. a transparent colour or a "pch" shape that draws nothing)
 	# and is passed on as is
 	draw(patternGrob("capture", colour = NA, fill2 = NA, shape = NA, scale = NA))

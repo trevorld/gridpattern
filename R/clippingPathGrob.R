@@ -16,6 +16,8 @@
 #'                   (default [ragg::agg_png()] if available else [grDevices::png()]) and [png::readPNG()]
 #'                   to manually compute a clipped raster.
 #' @param res Resolution of desired `rasterGrob` in pixels per inch if `use_R4.1_clipping` is `FALSE`.
+#'            If `NULL` (the default) or `NA` then `getOption("ggpattern_res")` or else
+#'            (a little more than) the resolution of the graphics device it is drawn on.
 #' @return A `grid` grob
 #' @inheritParams grid::polygonGrob
 #' @examples
@@ -44,7 +46,7 @@ clippingPathGrob <- function(
 		getOption("ggpattern_use_R4.1_features")
 	),
 	png_device = NULL,
-	res = getOption("ggpattern_res", 72),
+	res = NULL,
 	name = NULL,
 	gp = gpar(),
 	vp = NULL
@@ -75,10 +77,11 @@ makeContent.clipping_path <- function(x) {
 	}
 
 	stopifnot(getRversion() >= '4.1.0' || !use_R4.1_clipping)
+	res <- if (is_unset_res(x$res)) default_res() else x$res
 
 	if (use_R4.1_clipping) {
 		grob <- grobTree(x$clippee, vp = viewport(clip = x$clipper), name = "clip")
-	} else if (is.null(region <- raster_region(x$clipper, x$res, stroke = FALSE))) {
+	} else if (is.null(region <- raster_region(x$clipper, res, stroke = FALSE))) {
 		# the clipper doesn't overlap the viewport
 		grob <- nullGrob(name = "clip")
 	} else if (
@@ -87,19 +90,19 @@ makeContent.clipping_path <- function(x) {
 			requireNamespace("ragg", quietly = TRUE) &&
 			packageVersion("ragg") >= '1.2.0'
 	) {
-		grob <- gridpattern_clip_agg_capture(x$clippee, x$clipper, x$res, region)
+		grob <- gridpattern_clip_agg_capture(x$clippee, x$clipper, res, region)
 	} else {
 		png_device <- x$png_device %||% default_png_device()
 		if (device_supports_clipping(png_device)) {
 			grob <- gridpattern_clip_raster_straight(
 				x$clippee,
 				x$clipper,
-				x$res,
+				res,
 				png_device,
 				region
 			)
 		} else {
-			grob <- gridpattern_clip_raster_manual(x$clippee, x$clipper, x$res, png_device, region)
+			grob <- gridpattern_clip_raster_manual(x$clippee, x$clipper, res, png_device, region)
 		}
 	}
 

@@ -72,7 +72,8 @@
 #'                   (and clipped to the boundary).
 #'                   Relative lengths such as \dQuote{snpc} spacings and offsets are then `s` times
 #'                   larger relative to the key while absolute lengths such as line widths, font sizes,
-#'                   \dQuote{cm} units, and array pixels (see `pattern_res`) are unchanged.
+#'                   \dQuote{cm} units, and (a user-set) `pattern_res` are unchanged
+#'                   (the default `pattern_res` is `s` times larger so array patterns resemble the plot panels).
 #'                   This is what `{ggpattern}` uses so its legend keys resemble its plot panels.}
 #'               }
 #'               A numeric `legend` key is also zoomed by the `pattern_key_scale_factor` parameter (default `1`):
@@ -278,6 +279,11 @@ makeContent.pattern <- function(x) {
 	# scale together while absolute sizes (linewidth, fontsize, "cm" units) don't
 	# (`complete_params()` instead zooms absolute spacing and offsets by `pattern_key_scale_factor`)
 	s <- if (key_zoom) legend * params$pattern_key_scale_factor else legend
+	# a numeric legend key's default resolution is also `s` times larger
+	# so pixel-based patterns (e.g. "ambient", "magick") resemble those in the (`s` times larger) plot panels
+	if (key_zoom && is_unset_res(x$args$pattern_res)) {
+		params$pattern_res <- s * default_res(legend = TRUE)
+	}
 	if (s > 0 && s != 1) {
 		# the pattern is computed in the `makeContent()` of a child whose `vp` is the larger viewport
 		# (so grid pushes it) instead of pushing a viewport here

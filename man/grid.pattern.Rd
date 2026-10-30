@@ -64,7 +64,8 @@ i.e. the pattern is drawn in a centred viewport \code{s} times larger than the k
 (and clipped to the boundary).
 Relative lengths such as \dQuote{snpc} spacings and offsets are then \code{s} times
 larger relative to the key while absolute lengths such as line widths, font sizes,
-\dQuote{cm} units, and array pixels (see \code{pattern_res}) are unchanged.
+\dQuote{cm} units, and (a user-set) \code{pattern_res} are unchanged
+(the default \code{pattern_res} is \code{s} times larger so array patterns resemble the plot panels).
 This is what \code{{ggpattern}} uses so its legend keys resemble its plot panels.}
 }
 A numeric \code{legend} key is also zoomed by the \code{pattern_key_scale_factor} parameter (default \code{1}):

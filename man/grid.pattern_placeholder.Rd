@@ -14,7 +14,7 @@ grid.pattern_placeholder(
   alpha = gp$alpha \%||\% NA_real_,
   aspect_ratio = NA,
   key_scale_factor = 1,
-  res = getOption("ggpattern_res", 72),
+  res = NULL,
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -44,7 +44,9 @@ If you would like only greyscale images append \code{bw} to the name.}
 \item{key_scale_factor}{Additional scale factor (zoom) for a legend key.
 See the \code{legend} argument of \code{\link[=patternGrob]{patternGrob()}}.}
 
-\item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.}
+\item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.
+If \code{NULL} (the default) then \code{getOption("ggpattern_res")} or else
+(a little more than) the resolution of the graphics device the pattern is drawn on.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}

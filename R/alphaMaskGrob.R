@@ -15,6 +15,8 @@
 #'                   (default [ragg::agg_png()] if available else [grDevices::png()]) and [png::readPNG()]
 #'                   to manually compute a masked raster.
 #' @param res Resolution of desired `rasterGrob` in pixels per inch if `use_R4.1_masks` is `FALSE`.
+#'            If `NULL` (the default) or `NA` then `getOption("ggpattern_res")` or else
+#'            (a little more than) the resolution of the graphics device it is drawn on.
 #' @return A `grid` grob
 #' @inheritParams grid::polygonGrob
 #' @examples
@@ -55,7 +57,7 @@ alphaMaskGrob <- function(
 		getOption("ggpattern_use_R4.1_features")
 	),
 	png_device = NULL,
-	res = getOption("ggpattern_res", 72),
+	res = NULL,
 	name = NULL,
 	gp = gpar(),
 	vp = NULL
@@ -89,10 +91,11 @@ makeContent.alpha_mask <- function(x) {
 	}
 
 	stopifnot(getRversion() >= '4.1.0' || !use_R4.1_masks)
+	res <- if (is_unset_res(x$res)) default_res() else x$res
 
 	if (use_R4.1_masks) {
 		grob <- grobTree(x$maskee, vp = vport(mask = x$masker), name = "alpha_mask")
-	} else if (is.null(region <- raster_region(x$masker, x$res, stroke = TRUE))) {
+	} else if (is.null(region <- raster_region(x$masker, res, stroke = TRUE))) {
 		# the masker doesn't overlap the viewport
 		grob <- nullGrob(name = "alpha_mask")
 	} else if (
@@ -101,13 +104,13 @@ makeContent.alpha_mask <- function(x) {
 			requireNamespace("ragg", quietly = TRUE) &&
 			packageVersion("ragg") >= '1.2.0'
 	) {
-		grob <- gridpattern_mask_agg_capture(x$maskee, x$masker, x$res, region)
+		grob <- gridpattern_mask_agg_capture(x$maskee, x$masker, res, region)
 	} else {
 		png_device <- x$png_device %||% default_png_device()
 		if (device_supports_masks(png_device)) {
-			grob <- gridpattern_mask_raster_straight(x$maskee, x$masker, x$res, png_device, region)
+			grob <- gridpattern_mask_raster_straight(x$maskee, x$masker, res, png_device, region)
 		} else {
-			grob <- gridpattern_mask_raster_manual(x$maskee, x$masker, x$res, png_device, region)
+			grob <- gridpattern_mask_raster_manual(x$maskee, x$masker, res, png_device, region)
 		}
 	}
 

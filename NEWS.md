@@ -31,6 +31,17 @@ Breaking Changes
   A custom pattern drawn by `patternGrob()` that used `params$pattern_option_1 %||% my_default`
   (or checked `is.null(params$pattern_phase)`) to pick its own default when unset now always gets `0`
   and should instead register its defaults with `register_pattern(defaults = )`.
+* The default resolution `pattern_res` (`res` argument) of array patterns, the "gradient" pattern,
+  and the raster fallbacks of `alphaMaskGrob()` and `clippingPathGrob()`
+  (if the package option `ggpattern_res` is unset) is now computed when drawn
+  from the resolution of the graphics device instead of being `72` pixels per inch:
+  `1.14` times the device resolution (e.g. about `82` on `pdf()` / `svg()` devices and `342` on a `300` ppi `png()`).
+  This is sharper on high resolution devices but uses more memory and time.
+  A numeric `legend` key's default resolution is `1.3 * legend * pattern_key_scale_factor` times the device resolution
+  so array patterns in legend keys resemble those in the (larger) plot panels.
+  These match the resolutions `{ggpattern}` (<= 1.3.1) computed itself.
+  The `res` argument of the `grid.pattern_<name>()` functions, `alphaMaskGrob()`, and `clippingPathGrob()`
+  now defaults to `NULL` (unset).
 
 New features
 ------------

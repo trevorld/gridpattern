@@ -49,7 +49,7 @@ grid.pattern_text <- function(
 		getOption("ggpattern_use_R4.1_features")
 	),
 	png_device = NULL,
-	res = getOption("ggpattern_res", 72),
+	res = NULL,
 	default.units = "npc",
 	name = NULL,
 	gp = gpar(),
