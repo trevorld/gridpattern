@@ -80,7 +80,6 @@ grid.pattern_rose <- function(
 		xoffset = xoffset,
 		yoffset = yoffset,
 		units = units,
-		scale = scale,
 		frequency = frequency,
 		grid = grid,
 		type = type,

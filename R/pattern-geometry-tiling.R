@@ -583,7 +583,6 @@ create_2_53.2__233.2_53.2__233_tiling <- function(xyi, gp, spacing, units, angle
 		gp = gp_rh3,
 		xoffset = 0.25 * spacing,
 		yoffset = 0.5 * spacing,
-		scale = scale,
 		name = "rhombi.3"
 	)
 	rhombi.4 <- patternGrob(
@@ -600,7 +599,6 @@ create_2_53.2__233.2_53.2__233_tiling <- function(xyi, gp, spacing, units, angle
 		gp = gp_rh4,
 		xoffset = 0.75 * spacing,
 		yoffset = 0.5 * spacing,
-		scale = scale,
 		name = "rhombi.4"
 	)
 	gList(rhombi.1, rhombi.2, rhombi.3, rhombi.4)
@@ -670,7 +668,6 @@ create_8.4_45.8.4_45_tiling <- function(xyi, gp, spacing, units, angle) {
 		gp = gp_oct,
 		type = "square_tiling",
 		subtype = subtype,
-		scale = scale,
 		name = "octagons"
 	)
 	gList(bg, octs)
@@ -702,7 +699,6 @@ create_12.3_30.12.3_30_tiling <- function(xyi, gp, spacing, units, angle) {
 		units = units,
 		angle = angle,
 		gp = gp_dod,
-		scale = scale,
 		name = "dodecagons"
 	)
 	gList(bg, dodecagons)
@@ -734,7 +730,6 @@ create_12.12.4_60_tiling <- function(xyi, gp, spacing, units, angle) {
 		units = units,
 		angle = angle,
 		gp = gp_dod,
-		scale = scale,
 		name = "dodecagons"
 	)
 	gList(bg, dodecagons)
@@ -799,7 +794,6 @@ create_18.18.3__tiling <- function(xyi, gp, spacing, units, angle) {
 		units = units,
 		angle = angle,
 		gp = gp_dod,
-		scale = scale,
 		name = "eighteen-sided"
 	)
 	gList(bg, eighteen)
@@ -946,7 +940,6 @@ create_3.3.3.3___tiling <- function(xyi, gp, spacing, units, angle) {
 		units = units,
 		angle = angle,
 		gp = gp_tri,
-		scale = scale,
 		name = "triangles"
 	)
 	gList(bg, triangles)
