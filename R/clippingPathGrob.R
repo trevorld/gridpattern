@@ -78,19 +78,28 @@ makeContent.clipping_path <- function(x) {
 
 	if (use_R4.1_clipping) {
 		grob <- grobTree(x$clippee, vp = viewport(clip = x$clipper), name = "clip")
+	} else if (is.null(region <- raster_region(x$clipper, x$res, stroke = FALSE))) {
+		# the clipper doesn't overlap the viewport
+		grob <- nullGrob(name = "clip")
 	} else if (
 		is.null(x$png_device) &&
 			getRversion() >= '4.1.0' &&
 			requireNamespace("ragg", quietly = TRUE) &&
 			packageVersion("ragg") >= '1.2.0'
 	) {
-		grob <- gridpattern_clip_agg_capture(x$clippee, x$clipper, x$res)
+		grob <- gridpattern_clip_agg_capture(x$clippee, x$clipper, x$res, region)
 	} else {
 		png_device <- x$png_device %||% default_png_device()
 		if (device_supports_clipping(png_device)) {
-			grob <- gridpattern_clip_raster_straight(x$clippee, x$clipper, x$res, png_device)
+			grob <- gridpattern_clip_raster_straight(
+				x$clippee,
+				x$clipper,
+				x$res,
+				png_device,
+				region
+			)
 		} else {
-			grob <- gridpattern_clip_raster_manual(x$clippee, x$clipper, x$res, png_device)
+			grob <- gridpattern_clip_raster_manual(x$clippee, x$clipper, x$res, png_device, region)
 		}
 	}
 
@@ -111,58 +120,73 @@ device_supports_clipping <- function(png_device) {
 	value
 }
 
-gridpattern_clip_agg_capture <- function(clippee, clipper, res) {
+gridpattern_clip_agg_capture <- function(clippee, clipper, res, region = full_region()) {
 	current_dev <- grDevices::dev.cur()
 	if (current_dev > 1) {
 		on.exit(grDevices::dev.set(current_dev))
 	}
-	height <- res * convertHeight(unit(1, "npc"), "in", valueOnly = TRUE)
-	width <- res * convertWidth(unit(1, "npc"), "in", valueOnly = TRUE)
+	px <- region_pixels(region, res)
+	clippee <- in_region(clippee, region)
+	clipper <- in_region(clipper, region)
 
-	ragg::agg_capture(height = height, width = width, res = res, bg = "transparent")
+	ragg::agg_capture(height = px$height, width = px$width, res = res, bg = "transparent")
 	grob <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = TRUE)
 	grid.draw(grob)
 	raster_clipped <- dev.capture(native = FALSE)
 	dev.off()
-	grid::rasterGrob(raster_clipped)
+	region_raster(raster_clipped, region)
 }
 
-gridpattern_clip_raster_straight <- function(clippee, clipper, res, png_device) {
+gridpattern_clip_raster_straight <- function(
+	clippee,
+	clipper,
+	res,
+	png_device,
+	region = full_region()
+) {
 	current_dev <- grDevices::dev.cur()
 	if (current_dev > 1) {
 		on.exit(grDevices::dev.set(current_dev))
 	}
-	height <- res * convertHeight(unit(1, "npc"), "in", valueOnly = TRUE)
-	width <- res * convertWidth(unit(1, "npc"), "in", valueOnly = TRUE)
+	px <- region_pixels(region, res)
+	clippee <- in_region(clippee, region)
+	clipper <- in_region(clipper, region)
 
 	png_clipped <- tempfile(fileext = ".png")
 	on.exit(unlink(png_clipped), add = TRUE)
-	png_device(png_clipped, height = height, width = width, res = res, bg = "transparent")
+	png_device(png_clipped, height = px$height, width = px$width, res = res, bg = "transparent")
 	grob <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = TRUE)
 	grid.draw(grob)
 	dev.off()
 
 	raster_clipped <- png::readPNG(png_clipped, native = FALSE)
-	grid::rasterGrob(raster_clipped)
+	region_raster(raster_clipped, region)
 }
 
-gridpattern_clip_raster_manual <- function(clippee, clipper, res, png_device) {
+gridpattern_clip_raster_manual <- function(
+	clippee,
+	clipper,
+	res,
+	png_device,
+	region = full_region()
+) {
 	current_dev <- grDevices::dev.cur()
 	if (current_dev > 1) {
 		on.exit(grDevices::dev.set(current_dev))
 	}
-	height <- res * convertHeight(unit(1, "npc"), "in", valueOnly = TRUE)
-	width <- res * convertWidth(unit(1, "npc"), "in", valueOnly = TRUE)
+	px <- region_pixels(region, res)
+	clippee <- in_region(clippee, region)
+	clipper <- in_region(clipper, region)
 
 	png_clippee <- tempfile(fileext = ".png")
 	on.exit(unlink(png_clippee), add = TRUE)
-	png_device(png_clippee, height = height, width = width, res = res, bg = "transparent")
+	png_device(png_clippee, height = px$height, width = px$width, res = res, bg = "transparent")
 	grid.draw(clippee)
 	dev.off()
 
 	png_clipper <- tempfile(fileext = ".png")
 	on.exit(unlink(png_clipper), add = TRUE)
-	png_device(png_clipper, height = height, width = width, res = res, bg = "transparent")
+	png_device(png_clipper, height = px$height, width = px$width, res = res, bg = "transparent")
 	pushViewport(viewport(gp = gpar(lwd = 0, col = NA, fill = "black")))
 	grid.draw(clipper)
 	popViewport()
@@ -178,5 +202,5 @@ gridpattern_clip_raster_manual <- function(clippee, clipper, res, png_device) {
 			raster_clippee[!clip_region, j] <- 0
 		}
 	}
-	rasterGrob(raster_clippee, name = "clip")
+	region_raster(raster_clippee, region, name = "clip")
 }
