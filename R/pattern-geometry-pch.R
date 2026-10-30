@@ -3,8 +3,9 @@
 #' `grid.pattern_pch()` draws a plotting character pattern onto the graphic device.
 #'
 #' @inheritParams grid.pattern_regular_polygon
-#' @param shape An integer from `0` to `25` or `NA`.
+#' @param shape An integer vector with values from `0` to `25` or `NA` (draw nothing).
 #'              See [graphics::points()] for more details.
+#'              A length-one `NaN` is treated as unset (i.e. the default shape `1`).
 #'              Note we only support these shapes and do not
 #'              support arbitrary ASCII / Unicode characters.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.

@@ -63,8 +63,9 @@ All locations within the same \code{id} belong to the same boundary.}
 \item{scale}{For star polygons, multiplier (between 0 and 1)
 applied to exterior radius to get interior radius.}
 
-\item{shape}{An integer from \code{0} to \code{25} or \code{NA}.
+\item{shape}{An integer vector with values from \code{0} to \code{25} or \code{NA} (draw nothing).
 See \code{\link[graphics:points]{graphics::points()}} for more details.
+A length-one \code{NaN} is treated as unset (i.e. the default shape \code{1}).
 Note we only support these shapes and do not
 support arbitrary ASCII / Unicode characters.}
 

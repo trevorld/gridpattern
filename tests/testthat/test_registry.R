@@ -308,12 +308,56 @@ test_that("pattern-specific defaults", {
 	expect_equal(captured$params$pattern_amplitude, 0.4)
 	expect_equal(captured$params$pattern_size, 3)
 	expect_equal(captured$params$pattern_subtype, "righthand")
-	# except the `NA` "type" / "subtype" / "gravity" / "res" that `{ggpattern}` passes
-	draw(patternGrob("capture", type = NA, subtype = NA, res = NA, gp = gpar(fontsize = 20)))
+	# except the `NaN` that `{ggpattern}` passes for an unset aesthetic
+	draw(patternGrob(
+		"capture",
+		type = NaN,
+		subtype = NaN,
+		colour = NaN,
+		fill2 = NaN,
+		filter = NaN,
+		shape = NaN,
+		scale = NaN,
+		frequency = NaN,
+		phase = NaN,
+		option_1 = NaN,
+		gp = gpar(fontsize = 20)
+	))
 	expect_equal(captured$params$pattern_type, "running")
 	expect_equal(captured$params$pattern_subtype, "lefthand")
-	expect_equal(captured$params$pattern_res, 72)
+	expect_equal(captured$params$pattern_colour, "grey20")
+	expect_equal(captured$params$pattern_fill2, "#4169E1")
+	expect_equal(captured$params$pattern_filter, "lanczos")
+	expect_equal(captured$params$pattern_shape, 1)
+	expect_equal(captured$params$pattern_scale, 1)
+	expect_equal(captured$params$pattern_frequency, 0.1)
+	expect_equal(captured$params$pattern_phase, 0)
+	expect_equal(captured$params$pattern_option_1, 0)
 	expect_equal(captured$params$pattern_size, 20)
+	draw(patternGrob("capture", size = NaN, linewidth = NaN))
+	expect_equal(captured$params$pattern_linewidth, 0.5)
+	# and the `NA` "type" / "subtype" / "gravity" / "res"
+	draw(patternGrob("capture", type = NA, subtype = NA, gravity = NA, res = NA))
+	expect_equal(captured$params$pattern_type, "running")
+	expect_equal(captured$params$pattern_subtype, "lefthand")
+	expect_equal(captured$params$pattern_gravity, "center")
+	expect_equal(captured$params$pattern_res, 72)
+	# but otherwise an `NA` is meaningful (e.g. a transparent colour or a "pch" shape that draws nothing)
+	# and is passed on as is
+	draw(patternGrob("capture", colour = NA, fill2 = NA, shape = NA, scale = NA))
+	expect_equal(captured$params$pattern_colour, NA)
+	expect_equal(captured$params$pattern_fill2, NA)
+	expect_equal(captured$params$pattern_shape, NA)
+	expect_equal(captured$params$pattern_scale, NA)
+	draw(patternGrob("capture", shape = NA_character_))
+	expect_equal(captured$params$pattern_shape, NA_character_)
+	# as is a `NaN` vector
+	draw(patternGrob("capture", shape = c(NaN, NaN)))
+	expect_equal(captured$params$pattern_shape, c(NaN, NaN))
+	# a `NaN` for a parameter without any default is also unset (`NULL`)
+	draw(patternGrob("capture", trowel = NaN))
+	expect_null(captured$params$pattern_trowel)
+	expect_false("pattern_trowel" %in% names(captured$params))
 
 	# generic defaults are filled first and then the pattern-specific defaults in the order given
 	# so an overridden generic default may use a new pattern-specific parameter listed before it
@@ -322,12 +366,34 @@ test_that("pattern-specific defaults", {
 		create_pattern_capture,
 		defaults = list(
 			pattern_mortar = 0.1,
-			pattern_spacing = function(params, gp) 2 * params$pattern_mortar
+			pattern_spacing = function(params, gp) 2 * params$pattern_mortar,
+			pattern_option_1 = 5
 		),
 		env = globalenv()
 	)
 	draw(patternGrob("capture"))
 	expect_equal(captured$params$pattern_spacing, 0.2)
+	# a pattern-specific default also replaces a `NaN` for the spare `{ggpattern}` aesthetics
+	draw(patternGrob("capture", option_1 = NaN))
+	expect_equal(captured$params$pattern_option_1, 5)
+	# builtin pattern-specific defaults replace a `NaN` too
+	resolved <- function(pattern, ...) {
+		complete_params(list(...), pattern, gpar(), resolve_pattern(pattern)$defaults)
+	}
+	expect_equal(resolved("wave", pattern_frequency = NaN)$pattern_frequency, 20)
+	expect_equal(resolved("regular_polygon", pattern_shape = NaN)$pattern_shape, "convex6")
+	expect_equal(resolved("regular_polygon", pattern_scale = NaN)$pattern_scale, 0.5)
+	expect_equal(resolved("text", pattern_shape = NaN)$pattern_shape, "X")
+	expect_equal(resolved("pch", pattern_shape = NaN)$pattern_shape, 1)
+	expect_equal(resolved("pch", pattern_shape = NA)$pattern_shape, NA)
+	expect_equal(resolved("text", pattern_size = NaN)$pattern_size, 12)
+	expect_equal(resolved("magick", pattern_fill = NaN)$pattern_fill, "grey80")
+	expect_equal(resolved("magick", pattern_filter = NaN)$pattern_filter, "box")
+	expect_equal(resolved("image", pattern_filter = NaN)$pattern_filter, "lanczos")
+	expect_equal(
+		resolved("weave", pattern_fill = "red", pattern_fill2 = NaN)$pattern_fill2,
+		"red"
+	)
 	# but not one listed after it (a clear error rather than a confusing one downstream)
 	register_pattern(
 		"capture",
