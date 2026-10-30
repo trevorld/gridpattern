@@ -89,7 +89,7 @@ a pattern may register its own (pattern-specific) defaults which take precedence
 | `pattern_option_1 - 5`     | Generic options for expansion                 | 0          |                                    |
 | `pattern_orientation`      | Orientation                                   | 'vertical' | 'vertical', 'horizontal', 'radial' |
 | `pattern_phase`            | Phase                                         | 0          |                                    |
-| `pattern_res`              | Pattern resolution (pixels per inch)          | `getOption("ggpattern_res", 72)` |              |
+| `pattern_res`              | Pattern resolution (pixels per inch)          | `getOption("ggpattern_res")` or else (a little more than) the device resolution |              |
 | `pattern_rot`              | Rotation angle (shape within pattern)         | 0          | angle in degrees                   |
 | `pattern_scale`            | Scale                                         | 1          | Multiplier                         |
 | `pattern_shape`            | Plotting shape                                | 1          | shapes                             |

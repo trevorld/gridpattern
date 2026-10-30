@@ -141,7 +141,7 @@ GENERIC_DEFAULTS <- list(
 	pattern_option_3 = 0,
 	pattern_option_4 = 0,
 	pattern_option_5 = 0,
-	pattern_res = function(params, gp) getOption("ggpattern_res", 72) # in PPI
+	pattern_res = function(params, gp) default_res() # in PPI
 	# NB. generic defaults are filled before the pattern-specific ones so a generic function default
 	# must not rely on a pattern-specific default (`params$pattern_size` above is user-supplied or `NULL`)
 )
@@ -185,4 +185,30 @@ convert_params_units <- function(params, units = "bigpts") {
 		valueOnly = TRUE
 	)
 	params
+}
+
+# The default resolution (in pixels per inch) of rasterised patterns, masks, and clipping paths:
+# `getOption("ggpattern_res")` or else (a little more than) the resolution of the current graphics device.
+# A legend key is a little sharper (and a numeric `legend` key also scales it, see `makeContent.pattern()`).
+# NB. The 1.14 and 1.3 factors match the resolutions `{ggpattern}` (<= 1.3.1) computed itself.
+default_res <- function(legend = FALSE) {
+	getOption("ggpattern_res") %||% ((if (legend) 1.3 else 1.14) * device_res())
+}
+
+# pixels per inch of the current graphics device ("px" is 1/72 inch for vector devices like `pdf()`)
+# (`72` if no device is open: `dev.size()` would open one)
+device_res <- function() {
+	if (grDevices::dev.cur() == 1L) {
+		return(72)
+	}
+	res <- tryCatch(
+		grDevices::dev.size("px")[1L] / grDevices::dev.size("in")[1L],
+		error = function(e) NA_real_
+	)
+	if (isTRUE(is.finite(res) && res > 0)) res else 72
+}
+
+# whether a user-supplied `pattern_res` is unset (see `complete_params()`)
+is_unset_res <- function(res) {
+	is.null(res) || (is.atomic(res) && length(res) == 1L && is.na(res))
 }

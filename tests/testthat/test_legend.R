@@ -142,3 +142,38 @@ test_that("`pattern_key_scale_factor` zooms a legend key", {
 	# (which is only checked for a legend key)
 	expect_equal(complete_params(list(pattern_key_scale_factor = 0))$pattern_key_scale_factor, 0)
 })
+
+test_that("the default `pattern_res` is computed from the graphics device when drawn", {
+	skip_if_not_installed("withr")
+	on.exit(unregister_pattern("legend_capture", env = globalenv()), add = TRUE)
+	register_pattern("legend_capture", create_pattern_legend_capture, env = globalenv())
+	draw_res <- function(...) {
+		grid.newpage()
+		grid.pattern("legend_capture", ...)
+		legend_captured$params$pattern_res
+	}
+	withr::with_pdf(NULL, {
+		expect_equal(draw_res(), 1.14 * 72)
+		expect_equal(draw_res(legend = TRUE), 1.14 * 72)
+		# a numeric legend key's default resolution scales with the key's zoom
+		expect_equal(draw_res(legend = 1), 1.3 * 72)
+		expect_equal(draw_res(legend = 2.5, key_scale_factor = 2), 1.3 * 72 * 5)
+		# a user-set resolution isn't scaled
+		expect_equal(draw_res(legend = 2.5, res = 50), 50)
+		expect_equal(draw_res(legend = 2.5, res = NaN), 1.3 * 72 * 2.5)
+		withr::with_options(list(ggpattern_res = 100), {
+			expect_equal(draw_res(), 100)
+			expect_equal(draw_res(legend = 2), 200)
+		})
+	})
+	skip_if_not(capabilities("png"))
+	withr::with_png(tempfile(fileext = ".png"), res = 150, {
+		expect_equal(draw_res(), 1.14 * 150)
+	})
+	# a grob created on one device uses the resolution of the device it is drawn on
+	grob <- patternGrob("legend_capture")
+	withr::with_png(tempfile(fileext = ".png"), res = 300, {
+		grid.draw(grob)
+		expect_equal(legend_captured$params$pattern_res, 1.14 * 300)
+	})
+})

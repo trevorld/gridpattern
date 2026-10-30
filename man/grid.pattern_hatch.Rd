@@ -24,7 +24,7 @@ grid.pattern_hatch(
   use_R4.1_masks = getOption("ggpattern_use_R4.1_masks",
     getOption("ggpattern_use_R4.1_features")),
   png_device = NULL,
-  res = getOption("ggpattern_res", 72),
+  res = NULL,
   default.units = "npc",
   name = NULL,
   gp = gpar(),
@@ -92,7 +92,9 @@ Otherwise we will use \code{png_device}
 (default \code{\link[ragg:agg_png]{ragg::agg_png()}} if available else \code{\link[grDevices:png]{grDevices::png()}}) and \code{\link[png:readPNG]{png::readPNG()}}
 to manually compute a masked raster.}
 
-\item{res}{Resolution of desired \code{rasterGrob} in pixels per inch if \code{use_R4.1_masks} is \code{FALSE}.}
+\item{res}{Resolution of desired \code{rasterGrob} in pixels per inch if \code{use_R4.1_masks} is \code{FALSE}.
+If \code{NULL} (the default) or \code{NA} then \code{getOption("ggpattern_res")} or else
+(a little more than) the resolution of the graphics device it is drawn on.}
 
 \item{default.units}{A string indicating the default units to use if \code{x} or \code{y}
 are only given as numeric vectors.}

@@ -13,6 +13,8 @@
 #' @param key_scale_factor Additional scale factor (zoom) for a legend key.
 #'                         See the `legend` argument of [patternGrob()].
 #' @param res Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.
+#'            If `NULL` (the default) then `getOption("ggpattern_res")` or else
+#'            (a little more than) the resolution of the graphics device the pattern is drawn on.
 #' @return A grid grob object invisibly.  If `draw` is `TRUE` then also draws to the graphic device as a side effect.
 #' @examples
 #'  if (requireNamespace("magick") && capabilities("png")) {
@@ -40,7 +42,7 @@ grid.pattern_gradient <- function(
 	),
 	aspect_ratio = NA,
 	key_scale_factor = 1,
-	res = getOption("ggpattern_res", 72),
+	res = NULL,
 	default.units = "npc",
 	name = NULL,
 	gp = gpar(),

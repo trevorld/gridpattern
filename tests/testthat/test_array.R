@@ -360,3 +360,25 @@ test_that("raster fallbacks only rasterise the bounding box of the masker / clip
 	masked <- grid.force(alphaMaskGrob(rectGrob(), outside, use_R4.1_masks = FALSE))
 	expect_s3_class(masked$children[[1]], "null")
 })
+
+test_that("an unset `res` of the raster fallbacks uses the device resolution", {
+	skip_if_not_installed("ragg")
+	grDevices::pdf(NULL, width = 2, height = 2)
+	on.exit(grDevices::dev.off())
+	for (res in list(NULL, NA, NaN)) {
+		masked <- grid.force(alphaMaskGrob(
+			rectGrob(),
+			rectGrob(),
+			use_R4.1_masks = FALSE,
+			res = res
+		))
+		expect_equal(dim(masked$children[[1]]$raster)[1:2], rep(round(2 * 1.14 * 72), 2))
+		clipped <- grid.force(clippingPathGrob(
+			rectGrob(),
+			rectGrob(),
+			use_R4.1_clipping = FALSE,
+			res = res
+		))
+		expect_equal(dim(clipped$children[[1]]$raster)[1:2], rep(round(2 * 1.14 * 72), 2))
+	}
+})

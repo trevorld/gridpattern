@@ -5,7 +5,9 @@
 #'                                  Should use `register_pattern(kind = "array")` instead.}
 #'    \item{ggpattern_geometry_funcs}{Legacy option to set custom \dQuote{geometry} pattern functions.
 #'                                     Should use [register_pattern()] instead.}
-#'    \item{ggpattern_res}{Set custom raster image resolution (pixels per inch) for certain patterns.}
+#'    \item{ggpattern_res}{Set custom raster image resolution (pixels per inch) for certain patterns
+#'                         (and the raster fallbacks of [alphaMaskGrob()] and [clippingPathGrob()]).
+#'                         If unset defaults to (a little more than) the resolution of the graphics device.}
 #'    \item{ggpattern_use_R4.1_clipping}{If `TRUE` use the grid clipping path feature introduced in R v4.1.0.
 #'                          If `FALSE` do a `rasterGrob` approximation of the clipped pattern.
 #'                          If `NULL` try to guess an appropriate choice.}

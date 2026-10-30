@@ -23,7 +23,7 @@ grid.pattern_ambient(
   value = "cell",
   distance_ind = c(1, 2),
   jitter = 0.45,
-  res = getOption("ggpattern_res", 72),
+  res = NULL,
   alpha = NA_real_,
   default.units = "npc",
   name = NULL,
@@ -93,7 +93,9 @@ be used when calculating \code{value}.}
 \item{jitter}{The maximum distance a point can move from its start position
 during sampling of cell points.}
 
-\item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.}
+\item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.
+If \code{NULL} (the default) then \code{getOption("ggpattern_res")} or else
+(a little more than) the resolution of the graphics device the pattern is drawn on.}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 

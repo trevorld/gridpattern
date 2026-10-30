@@ -41,7 +41,7 @@ grid.pattern_ambient <- function(
 	value = "cell",
 	distance_ind = c(1, 2),
 	jitter = 0.45,
-	res = getOption("ggpattern_res", 72),
+	res = NULL,
 	alpha = NA_real_,
 	default.units = "npc",
 	name = NULL,
