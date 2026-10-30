@@ -52,8 +52,8 @@ GENERIC_DEFAULTS <- list(
 	pattern_fill = function(params, gp) gp$fill %||% "grey80",
 	pattern_lineend = function(params, gp) gp$lineend %||% "round",
 	pattern_linetype = function(params, gp) gp$lty %||% 1,
-	pattern_linewidth = function(params, gp) params$pattern_size %||% gp$lwd %||% 1,
-	pattern_size = function(params, gp) gp$lwd %||% 1,
+	pattern_linewidth = function(params, gp) params$pattern_size %||% gp$lwd %||% 0.5,
+	pattern_size = function(params, gp) gp$lwd %||% 0.5,
 	pattern_fontfamily = function(params, gp) gp$fontfamily %||% "sans",
 	pattern_fontface = function(params, gp) gp$fontface %||% "plain",
 

@@ -50,7 +50,7 @@ grid.pattern_rose <- function(
 	rot = 0,
 	alpha = gp$alpha %||% NA_real_,
 	linetype = gp$lty %||% 1,
-	linewidth = size %||% gp$lwd %||% 1,
+	linewidth = size %||% gp$lwd %||% 0.5,
 	size = NULL,
 	use_R4.1_masks = getOption(
 		"ggpattern_use_R4.1_masks",

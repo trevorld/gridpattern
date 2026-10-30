@@ -15,7 +15,7 @@ grid.pattern_gradient(
   alpha = gp$alpha \%||\% NA_real_,
   use_R4.1_gradients = getOption("ggpattern_use_R4.1_gradients",
     getOption("ggpattern_use_R4.1_features")),
-  aspect_ratio = 1,
+  aspect_ratio = NA,
   key_scale_factor = 1,
   res = getOption("ggpattern_res", 72),
   default.units = "npc",
@@ -47,7 +47,7 @@ All locations within the same \code{id} belong to the same boundary.}
 or use a \code{rasterGrob} approximation.
 Note not all graphic devices support the grid gradient feature.}
 
-\item{aspect_ratio}{Override aspect ratio.}
+\item{aspect_ratio}{Override aspect ratio.  If \code{NA} (default) use the aspect ratio of the current viewport.}
 
 \item{key_scale_factor}{Additional scale factor for legend.}
 

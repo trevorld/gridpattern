@@ -33,7 +33,7 @@ test_that("`complete_params()` works as expected", {
 	expect_equal(params$pattern_yoffset, 0)
 	expect_equal(params$pattern_alpha, NA_real_)
 	expect_equal(params$pattern_linetype, 1)
-	expect_equal(params$pattern_linewidth, 1)
+	expect_equal(params$pattern_linewidth, 0.5)
 
 	params <- complete_params(list(pattern_alpha = 0.5, pattern_spacing = 0.1))
 	expect_equal(params$pattern_alpha, 0.5)

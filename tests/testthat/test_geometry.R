@@ -55,7 +55,14 @@ test_that("geometry patterns work as expected", {
 	expect_null(assert_rp_shape(c("square", "convex4")))
 	expect_null(assert_rp_shape(c("star5", "circle", "null")))
 	expect_doppelganger("regular_polygon", function() {
-		grid.pattern_regular_polygon(x, y, color = "black", fill = "blue", density = 0.5)
+		grid.pattern_regular_polygon(
+			x,
+			y,
+			shape = "convex4",
+			color = "black",
+			fill = "blue",
+			density = 0.5
+		)
 	})
 
 	expect_doppelganger("hexagon", function() {

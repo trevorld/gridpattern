@@ -22,7 +22,7 @@ grid.pattern_plasma <- function(
 	fill = gp$fill %||% "grey80",
 	scale = 1,
 	alpha = gp$alpha %||% NA_real_,
-	aspect_ratio = 1,
+	aspect_ratio = NA,
 	key_scale_factor = 1,
 	res = getOption("ggpattern_res", 72),
 	default.units = "npc",

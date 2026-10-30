@@ -55,7 +55,7 @@ grid.pattern_weave <- function(
 	units = "snpc",
 	alpha = gp$alpha %||% NA_real_,
 	linetype = gp$lty %||% 1,
-	linewidth = size %||% gp$lwd %||% 1,
+	linewidth = size %||% gp$lwd %||% 0.5,
 	size = NULL,
 	grid = "square",
 	type = "plain",

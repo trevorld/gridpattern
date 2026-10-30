@@ -1,3 +1,34 @@
+gridpattern v1.6.0 (development)
+================================
+
+Breaking Changes
+----------------
+
+* The default `shape` of `grid.pattern_regular_polygon()` (and the registered default `pattern_shape`
+  of the "regular_polygon" pattern) is now `"convex6"` (hexagons) instead of `"convex4"`
+  (matching the previous `{ggpattern}` default).
+  Use `shape = "convex4"` to restore the previous appearance.
+* The default `fill` of `grid.pattern_magick()` is now `gp$fill %||% "grey80"` (previously `"grey20"` ignoring `gp$fill`)
+  matching the generic default `pattern_fill` that `patternGrob()` / `{ggpattern}` already used for the "magick" pattern.
+  Use `fill = "grey20"` to restore the previous appearance.
+* The default linewidth (when none of `linewidth`, `size`, nor `gp$lwd` is given) is now `0.5`
+  (matching `{ggpattern}`) instead of `1` for both `patternGrob()` and the `grid.pattern_<name>()` functions
+  so default lines are now half as thick.
+  The generic default of `pattern_size` is likewise now `gp$lwd %||% 0.5`.
+
+Bug fixes and minor improvements
+--------------------------------
+
+* The builtin patterns' registered defaults now agree with the defaults of their `grid.pattern_<name>()` functions
+  (so `patternGrob()` / `{ggpattern}` and `grid.pattern_<name>()` render the same when a parameter is unset):
+
+  + "hatch" registers `pattern_subtype = "combinatorial"` (previously an unset subtype was already treated as `"combinatorial"`).
+  + "text" registers `pattern_shape = "X"` (previously the generic `1`).
+  + The `aspect_ratio` argument of `grid.pattern_gradient()`, `grid.pattern_image()`, `grid.pattern_magick()`,
+    `grid.pattern_placeholder()`, and `grid.pattern_plasma()` now defaults to `NA` (use the aspect ratio of the
+    current viewport, as `patternGrob()` does) instead of `1`
+    so their raster approximations are no longer distorted in non-square viewports.
+
 gridpattern v1.5.1
 ==================
 

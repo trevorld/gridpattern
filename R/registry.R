@@ -655,18 +655,24 @@ builtin_defaults <- function() {
 		),
 		aRtsy = list(pattern_type = "strokes"),
 		crosshatch = list(pattern_fill2 = function(params, gp) params$pattern_fill),
-		hatch = list(pattern_type = "gules"),
+		hatch = list(pattern_type = "gules", pattern_subtype = "combinatorial"),
 		image = list(
 			pattern_type = "fit",
 			pattern_gravity = function(params, gp) {
 				switch(params$pattern_type, tile = "southwest", "center")
 			}
 		),
-		magick = list(pattern_type = "hexagons", pattern_filter = "box"),
+		magick = list(
+			pattern_type = "hexagons",
+			pattern_filter = "box"
+		),
 		placeholder = list(pattern_type = "bear"),
 		polygon_tiling = list(pattern_type = "square"),
-		regular_polygon = list(pattern_shape = "convex4", pattern_scale = 0.5),
-		text = list(pattern_size = function(params, gp) gp$fontsize %||% 12),
+		regular_polygon = list(pattern_shape = "convex6", pattern_scale = 0.5),
+		text = list(
+			pattern_shape = "X",
+			pattern_size = function(params, gp) gp$fontsize %||% 12
+		),
 		wave = list(
 			pattern_type = "indented",
 			pattern_amplitude = function(params, gp) 0.5 * params$pattern_spacing,
