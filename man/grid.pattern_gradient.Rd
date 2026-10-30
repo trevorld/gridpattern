@@ -49,7 +49,8 @@ Note not all graphic devices support the grid gradient feature.}
 
 \item{aspect_ratio}{Override aspect ratio.  If \code{NA} (default) use the aspect ratio of the current viewport.}
 
-\item{key_scale_factor}{Additional scale factor for legend.}
+\item{key_scale_factor}{Additional scale factor (zoom) for a legend key.
+See the \code{legend} argument of \code{\link[=patternGrob]{patternGrob()}}.}
 
 \item{res}{Assumed resolution (in pixels per graphic device inch) to use when creating array pattern.}
 
