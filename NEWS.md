@@ -49,6 +49,12 @@ New features
 Bug fixes and minor improvements
 --------------------------------
 
+* The raster fallbacks of `alphaMaskGrob()` and `clippingPathGrob()`
+  (used by the "hatch", "line", "rose", and "text" patterns when masks / clipping paths aren't supported by the graphics device)
+  now only rasterise the (pixel-snapped) bounding box of the masker / clipper within the viewport
+  instead of the whole viewport (if it can be computed with `grobCoords()` in R 4.2+).
+  This is much faster and uses much less memory for small boundaries in large viewports,
+  in particular for a numeric `legend` (e.g. `{ggpattern}` legend keys).
 * The builtin patterns' registered defaults now agree with the defaults of their `grid.pattern_<name>()` functions
   (so `patternGrob()` / `{ggpattern}` and `grid.pattern_<name>()` render the same when a parameter is unset):
 

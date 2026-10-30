@@ -299,3 +299,64 @@ test_that("array patterns works as expected", {
 		grid.pattern_ambient(x, y, type = "worley", fill = "green", fill2 = "blue")
 	})
 })
+
+test_that("raster fallbacks only rasterise the bounding box of the masker / clipper", {
+	skip_if_not_installed("ragg")
+	grDevices::pdf(NULL, width = 2, height = 2) # 200 x 200 pixels at `res = 100`
+	on.exit(grDevices::dev.off())
+	# the left of the bounding box isn't where a ray west from its centre meets the triangle
+	triangle <- polygonGrob(c(0.25, 0.75, 0.4), c(0.25, 0.35, 0.75), gp = gpar(col = NA))
+	# padded by a couple pixels and snapped to whole pixels
+	expect_equal(
+		unlist(raster_region(triangle, 100)),
+		c(x = 48, y = 48, width = 104, height = 104) / 200
+	)
+	# a masker's strokes count too (but not if it has no colour)
+	expect_equal(
+		unlist(raster_region(triangle, 100, stroke = TRUE)),
+		unlist(raster_region(triangle, 100))
+	)
+	stroked <- editGrob(triangle, gp = gpar(col = "black", lwd = 96 / 100))
+	expect_equal(
+		unlist(raster_region(stroked, 100, stroke = TRUE)),
+		c(x = 47, y = 47, width = 106, height = 106) / 200
+	)
+	# clamped to the viewport
+	expect_equal(
+		unlist(raster_region(polygonGrob(c(-1, 0.5, 0.5), c(0.5, 0.5, 2)), 100)),
+		c(x = 0, y = 98, width = 102, height = 102) / 200
+	)
+	expect_null(raster_region(polygonGrob(c(2, 3, 3), c(2, 2, 3)), 100))
+	# `gTree()` maskers (whose `grobWidth()` is zero) incl. children from `makeContent()`
+	skip_if_not(getRversion() >= "4.2.0")
+	expect_equal(raster_region(grobTree(triangle), 100), raster_region(triangle, 100))
+	expect_equal(
+		raster_region(grobTree(triangle, vp = viewport(width = 0.5, height = 0.5)), 100),
+		lapply(list(x = 73, y = 73, width = 54, height = 54), function(v) v / 200)
+	)
+	# the stripes are within (most of) the triangle
+	stripes <- raster_region(patternGrob("stripe", c(0.25, 0.75, 0.4), c(0.25, 0.35, 0.75)), 100)
+	expect_gt(stripes$width, 0.45)
+	expect_lte(stripes$width, raster_region(triangle, 100)$width)
+	# open shapes
+	expect_equal(
+		unlist(raster_region(segmentsGrob(0.25, 0.25, 0.75, 0.75), 100)),
+		c(x = 48, y = 48, width = 104, height = 104) / 200
+	)
+	# grobs whose coordinates we don't know rasterise the whole viewport
+	expect_equal(raster_region(grobTree(triangle, rasterGrob(matrix(1))), 100), full_region())
+	expect_equal(raster_region(pointsGrob(0.5, 0.5), 100), full_region())
+
+	masked <- grid.force(alphaMaskGrob(rectGrob(), triangle, use_R4.1_masks = FALSE, res = 100))
+	expect_equal(dim(masked$children[[1]]$raster)[1:2], c(104, 104))
+	clipped <- grid.force(clippingPathGrob(
+		rectGrob(),
+		triangle,
+		use_R4.1_clipping = FALSE,
+		res = 100
+	))
+	expect_equal(dim(clipped$children[[1]]$raster)[1:2], c(104, 104))
+	outside <- polygonGrob(c(2, 3, 3), c(2, 2, 3))
+	masked <- grid.force(alphaMaskGrob(rectGrob(), outside, use_R4.1_masks = FALSE))
+	expect_s3_class(masked$children[[1]], "null")
+})
