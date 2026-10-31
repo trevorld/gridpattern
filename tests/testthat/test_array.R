@@ -300,6 +300,34 @@ test_that("array patterns works as expected", {
 	})
 })
 
+test_that("`grobCoords()` of a pattern is its boundary", {
+	grDevices::pdf(NULL, width = 2, height = 2)
+	on.exit(grDevices::dev.off())
+	x <- c(0, 1, 1, 0, 0.2, 0.5, 0.8)
+	y <- c(0, 0, 1, 1, 0.2, 0.8, 0.2)
+	id <- c(1, 1, 1, 1, 2, 2, 2)
+	vp <- viewport(width = 0.5, height = 0.5)
+	boundary <- polygonGrob(x, y, id = id, vp = vp, name = "boundary")
+	for (pattern in c("stripe", "rose", "text", "plasma", "none")) {
+		g <- patternGrob(pattern, x, y, id = id, vp = vp, name = "boundary")
+		expect_equal(grobCoords(g, closed = TRUE), grobCoords(boundary, closed = TRUE))
+		expect_equal(grobCoords(g, closed = FALSE), grobCoords(boundary, closed = FALSE))
+	}
+	# a scalar `id`, a numeric legend key, and nested in a `gTree()`
+	triangle <- polygonGrob(x[5:7], y[5:7], name = "triangle")
+	expect_equal(
+		grobCoords(patternGrob("stripe", x[5:7], y[5:7], legend = 2, name = "triangle"), TRUE),
+		grobCoords(triangle, TRUE)
+	)
+	expect_equal(
+		grobCoords(
+			grobTree(patternGrob("rose", x[5:7], y[5:7], name = "triangle"), name = "t"),
+			TRUE
+		),
+		grobCoords(grobTree(triangle, name = "t"), TRUE)
+	)
+})
+
 test_that("raster fallbacks only rasterise the bounding box of the masker / clipper", {
 	skip_if_not_installed("ragg")
 	grDevices::pdf(NULL, width = 2, height = 2) # 200 x 200 pixels at `res = 100`
@@ -334,10 +362,11 @@ test_that("raster fallbacks only rasterise the bounding box of the masker / clip
 		raster_region(grobTree(triangle, vp = viewport(width = 0.5, height = 0.5)), 100),
 		lapply(list(x = 73, y = 73, width = 54, height = 54), function(v) v / 200)
 	)
-	# the stripes are within (most of) the triangle
-	stripes <- raster_region(patternGrob("stripe", c(0.25, 0.75, 0.4), c(0.25, 0.35, 0.75)), 100)
-	expect_gt(stripes$width, 0.45)
-	expect_lte(stripes$width, raster_region(triangle, 100)$width)
+	# a pattern's outline is its boundary (even if its children are masked or rasterised)
+	for (pattern in c("stripe", "rose", "plasma")) {
+		g <- patternGrob(pattern, c(0.25, 0.75, 0.4), c(0.25, 0.35, 0.75))
+		expect_equal(raster_region(g, 100), raster_region(triangle, 100))
+	}
 	# open shapes
 	expect_equal(
 		unlist(raster_region(segmentsGrob(0.25, 0.25, 0.75, 0.75), 100)),

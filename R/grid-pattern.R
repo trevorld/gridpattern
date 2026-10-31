@@ -302,6 +302,16 @@ makeContent.pattern <- function(x) {
 	setChildren(x, gList(grob))
 }
 
+# The outline of a pattern is its boundary (the pattern is drawn within it)
+# so don't build the pattern (which may be slow and whose masked / rasterised children
+# would give too large or no coordinates)
+#' @export
+grobCoords.pattern <- function(x, closed = TRUE, ...) {
+	id <- rep_len(x$id, length(x$x))
+	boundary <- polygonGrob(x$x, x$y, id = id, name = x$name, vp = x$vp)
+	grobCoords(boundary, closed, ...)
+}
+
 #' @export
 makeContent.pattern_legend <- function(x) {
 	grob <- pattern_content(x$entry, x$params, x$xp, x$yp, x$id, legend = TRUE)
