@@ -112,7 +112,7 @@ lty_period_sum <- function(lty) {
 	if (is.null(pat)) {
 		return(0L)
 	}
-	sum(strtoi(strsplit(pat, "")[[1L]], base = 16L))
+	strsplit(pat, "")[[1L]] |> strtoi(base = 16L) |> sum()
 }
 
 # Expand one row of a staggered pattern into explicit solid on-segments.

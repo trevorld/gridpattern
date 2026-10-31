@@ -84,17 +84,11 @@ create_magick_plasma_img <- function(width = 100, height = 100, colour) {
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	# Create a pattern image of the required size
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	pseudo <- "plasma:"
-	img <- magick::image_blank(width, height, pseudo_image = pseudo)
-	img <- magick::image_convert(img, colorspace = 'gray', depth = 8)
-	img <- magick::image_blur(img, radius = 2)
-
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# Make the white transparent
-	# Colorize the black pixels into the desired colour
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	img <- magick::image_transparent(img, 'white')
-	img <- magick::image_colorize(img, opacity = 50, colour)
-
-	img
+	magick::image_blank(width, height, pseudo_image = "plasma:") |>
+		magick::image_convert(colorspace = 'gray', depth = 8) |>
+		magick::image_blur(radius = 2) |>
+		# Make the white transparent
+		magick::image_transparent('white') |>
+		# Colorize the black pixels into the desired colour
+		magick::image_colorize(opacity = 50, colour)
 }
