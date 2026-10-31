@@ -76,7 +76,6 @@ makeContent.clipping_path <- function(x) {
 		use_R4.1_clipping <- as.logical(use_R4.1_clipping)
 	}
 
-	stopifnot(getRversion() >= '4.1.0' || !use_R4.1_clipping)
 	res <- if (is_unset_res(x$res)) default_res() else x$res
 
 	if (use_R4.1_clipping) {
@@ -86,7 +85,6 @@ makeContent.clipping_path <- function(x) {
 		grob <- nullGrob(name = "clip")
 	} else if (
 		is.null(x$png_device) &&
-			getRversion() >= '4.1.0' &&
 			requireNamespace("ragg", quietly = TRUE) &&
 			packageVersion("ragg") >= '1.2.0'
 	) {

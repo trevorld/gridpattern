@@ -5,7 +5,6 @@ test_that("`update_alpha()` works as expected", {
 	expect_equal(update_alpha("#FF000080", 0.25), "#FF000040")
 
 	expect_error(update_alpha(list("blue", "red"), NA))
-	skip_if_not(getRversion() >= "4.1.0")
 	expect_equal(
 		update_pattern_alpha("red", 0.5, name = "nonrandom"),
 		pattern(rectGrob(name = "nonrandom"), gp = gpar(fill = "#FF000080"))

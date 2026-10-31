@@ -44,7 +44,6 @@ patternFill <- function(
 	vjust = NULL,
 	group = TRUE
 ) {
-	stopifnot(getRversion() >= "4.1.0")
 	args <- list(
 		grob = patternGrob(...),
 		x = x,

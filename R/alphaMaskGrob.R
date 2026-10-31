@@ -90,7 +90,6 @@ makeContent.alpha_mask <- function(x) {
 		use_R4.1_masks <- as.logical(use_R4.1_masks)
 	}
 
-	stopifnot(getRversion() >= '4.1.0' || !use_R4.1_masks)
 	res <- if (is_unset_res(x$res)) default_res() else x$res
 
 	if (use_R4.1_masks) {
@@ -100,7 +99,6 @@ makeContent.alpha_mask <- function(x) {
 		grob <- nullGrob(name = "alpha_mask")
 	} else if (
 		is.null(x$png_device) &&
-			getRversion() >= '4.1.0' &&
 			requireNamespace("ragg", quietly = TRUE) &&
 			packageVersion("ragg") >= '1.2.0'
 	) {

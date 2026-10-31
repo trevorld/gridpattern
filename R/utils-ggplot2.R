@@ -31,7 +31,6 @@ data_frame <- function(...) {
 
 ggplot2pat <- function(gg) {
 	stopifnot(
-		getRversion() >= "4.1.0",
 		requireNamespace("ggplot2", quietly = TRUE),
 		requireNamespace("gtable", quietly = TRUE)
 	)
