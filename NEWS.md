@@ -42,6 +42,7 @@ Breaking Changes
   These match the resolutions `{ggpattern}` (<= 1.3.1) computed itself.
   The `res` argument of the `grid.pattern_<name>()` functions, `alphaMaskGrob()`, and `clippingPathGrob()`
   now defaults to `NULL` (unset).
+* Now declares a dependency on R (>= 4.1.0) (previously declared R (>= 3.4.0)).
 
 New features
 ------------
