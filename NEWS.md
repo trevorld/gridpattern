@@ -75,6 +75,11 @@ Bug fixes and minor improvements
   instead of the whole viewport (if it can be computed with `grobCoords()` in R 4.2+).
   This is much faster and uses much less memory for small boundaries in large viewports,
   in particular for a numeric `legend` (e.g. `{ggpattern}` legend keys).
+* `grid::grobCoords()` of a `patternGrob()` is now the coordinates of its boundary
+  (without building the pattern).
+  Previously it was the coordinates of whatever the pattern drew
+  which was slow for some patterns, empty for array patterns (and raster fallbacks),
+  and too large for masked patterns like "rose" and "text".
 * The builtin patterns' registered defaults now agree with the defaults of their `grid.pattern_<name>()` functions
   (so `patternGrob()` / `{ggpattern}` and `grid.pattern_<name>()` render the same when a parameter is unset):
 
