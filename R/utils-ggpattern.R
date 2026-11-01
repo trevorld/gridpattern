@@ -51,25 +51,3 @@ check_default <- function(x, options = NULL, default = NULL, type = NULL, prefix
 
 	res
 }
-
-#' abind clone for adding a matrix to an array
-#'
-#' A very cut-down version of \code{abind::abind()} that will only stack a
-#' matrix onto an array.
-#'
-#' @param arr,mat array and matrix to be stacked
-#'
-#' @return new array with matrix added as a new plane at the end of the array
-#' @noRd
-my_abind <- function(arr, mat) {
-	stopifnot(is.array(arr))
-	stopifnot(is.matrix(mat))
-	if (!identical(utils::head(dim(arr), -1), dim(mat))) {
-		abort(glue("Dimension missmatch. Array: {deparse(dim(arr))} Matrix: {deparse(dim(mat))}"))
-	}
-
-	new_dim <- dim(arr)
-	new_dim[3] <- new_dim[3] + 1
-
-	array(c(arr, mat), dim = new_dim)
-}
