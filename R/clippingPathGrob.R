@@ -67,7 +67,7 @@ clippingPathGrob <- function(
 #' @export
 makeContent.clipping_path <- function(x) {
 	current_dev <- grDevices::dev.cur()
-	on.exit(grDevices::dev.set(current_dev))
+	on.exit(restore_dev(current_dev), add = TRUE)
 
 	use_R4.1_clipping <- x$use_R4.1_clipping
 	if (is.null(use_R4.1_clipping)) {
@@ -110,9 +110,7 @@ makeContent.clipping_path <- function(x) {
 
 device_supports_clipping <- function(png_device) {
 	current_dev <- grDevices::dev.cur()
-	if (current_dev > 1) {
-		on.exit(grDevices::dev.set(current_dev))
-	}
+	on.exit(restore_dev(current_dev), add = TRUE)
 	png_file <- tempfile(fileext = ".png")
 	on.exit(unlink(png_file), add = TRUE)
 	png_device(png_file)
@@ -123,9 +121,7 @@ device_supports_clipping <- function(png_device) {
 
 gridpattern_clip_agg_capture <- function(clippee, clipper, res, region = full_region()) {
 	current_dev <- grDevices::dev.cur()
-	if (current_dev > 1) {
-		on.exit(grDevices::dev.set(current_dev))
-	}
+	on.exit(restore_dev(current_dev), add = TRUE)
 	px <- region_pixels(region, res)
 	clippee <- in_region(clippee, region)
 	clipper <- in_region(clipper, region)
@@ -146,9 +142,7 @@ gridpattern_clip_raster_straight <- function(
 	region = full_region()
 ) {
 	current_dev <- grDevices::dev.cur()
-	if (current_dev > 1) {
-		on.exit(grDevices::dev.set(current_dev))
-	}
+	on.exit(restore_dev(current_dev), add = TRUE)
 	px <- region_pixels(region, res)
 	clippee <- in_region(clippee, region)
 	clipper <- in_region(clipper, region)
@@ -172,9 +166,7 @@ gridpattern_clip_raster_manual <- function(
 	region = full_region()
 ) {
 	current_dev <- grDevices::dev.cur()
-	if (current_dev > 1) {
-		on.exit(grDevices::dev.set(current_dev))
-	}
+	on.exit(restore_dev(current_dev), add = TRUE)
 	px <- region_pixels(region, res)
 	clippee <- in_region(clippee, region)
 	clipper <- in_region(clipper, region)

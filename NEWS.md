@@ -80,6 +80,10 @@ Bug fixes and minor improvements
   Previously it was the coordinates of whatever the pattern drew
   which was slow for some patterns, empty for array patterns (and raster fallbacks),
   and too large for masked patterns like "rose" and "text".
+* Drawing patterns, `alphaMaskGrob()`, and `clippingPathGrob()` no longer call `grDevices::dev.set()`
+  to restore the graphics device when the current device never changed
+  (which needlessly triggered the device's (de)activate callbacks e.g. window title updates for `quartz()`)
+  and never call `grDevices::dev.set(1L)` (which would open a new device) (#120).
 * The builtin patterns' registered defaults now agree with the defaults of their `grid.pattern_<name>()` functions
   (so `patternGrob()` / `{ggpattern}` and `grid.pattern_<name>()` render the same when a parameter is unset):
 

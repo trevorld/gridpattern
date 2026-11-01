@@ -176,3 +176,23 @@ test_that("`assert_suggested()` works as expected", {
 		"The suggested package \\{doesnotexist\\} must be installed in order to use `blueberry\\(\\)`"
 	)
 })
+
+test_that("`restore_dev()` only changes the device when needed", {
+	n_devices <- function() length(grDevices::dev.list())
+	n <- n_devices()
+	restore_dev(1L) # would open a new device if it called `dev.set(1L)`
+	expect_equal(n_devices(), n)
+
+	grDevices::pdf(NULL)
+	dev1 <- grDevices::dev.cur()
+	on.exit(grDevices::dev.off(dev1), add = TRUE)
+	grDevices::pdf(NULL)
+	dev2 <- grDevices::dev.cur()
+	on.exit(grDevices::dev.off(dev2), add = TRUE)
+
+	restore_dev(dev2)
+	expect_equal(grDevices::dev.cur(), dev2)
+	restore_dev(dev1)
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(n_devices(), n + 2L)
+})
