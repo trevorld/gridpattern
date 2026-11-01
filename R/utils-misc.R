@@ -55,3 +55,13 @@ device_supports_unicode <- function() {
 		FALSE
 	}
 }
+
+# Restores graphics device `dev` if something else is now the current device.
+# NB. `dev.set()` calls the device's (de)activate callbacks even if `dev` is already current
+# and `dev.set(1L)` would open a new device.
+restore_dev <- function(dev) {
+	if (dev > 1L && grDevices::dev.cur() != dev) {
+		grDevices::dev.set(dev)
+	}
+	invisible(NULL)
+}

@@ -81,7 +81,7 @@ vport <- function(...) viewport(...)
 #' @export
 makeContent.alpha_mask <- function(x) {
 	current_dev <- grDevices::dev.cur()
-	on.exit(grDevices::dev.set(current_dev))
+	on.exit(restore_dev(current_dev), add = TRUE)
 
 	use_R4.1_masks <- x$use_R4.1_masks
 	if (is.null(use_R4.1_masks)) {
@@ -118,9 +118,7 @@ makeContent.alpha_mask <- function(x) {
 
 device_supports_masks <- function(png_device) {
 	current_dev <- grDevices::dev.cur()
-	if (current_dev > 1) {
-		on.exit(grDevices::dev.set(current_dev))
-	}
+	on.exit(restore_dev(current_dev), add = TRUE)
 	png_file <- tempfile(fileext = ".png")
 	on.exit(unlink(png_file), add = TRUE)
 	png_device(png_file)
@@ -131,9 +129,7 @@ device_supports_masks <- function(png_device) {
 
 gridpattern_mask_agg_capture <- function(maskee, masker, res, region = full_region()) {
 	current_dev <- grDevices::dev.cur()
-	if (current_dev > 1) {
-		on.exit(grDevices::dev.set(current_dev))
-	}
+	on.exit(restore_dev(current_dev), add = TRUE)
 	px <- region_pixels(region, res)
 	maskee <- in_region(maskee, region)
 	masker <- in_region(masker, region)
@@ -295,9 +291,7 @@ gridpattern_mask_raster_straight <- function(
 	region = full_region()
 ) {
 	current_dev <- grDevices::dev.cur()
-	if (current_dev > 1) {
-		on.exit(grDevices::dev.set(current_dev))
-	}
+	on.exit(restore_dev(current_dev), add = TRUE)
 	px <- region_pixels(region, res)
 	maskee <- in_region(maskee, region)
 	masker <- in_region(masker, region)
@@ -321,9 +315,7 @@ gridpattern_mask_raster_manual <- function(
 	region = full_region()
 ) {
 	current_dev <- grDevices::dev.cur()
-	if (current_dev > 1) {
-		on.exit(grDevices::dev.set(current_dev))
-	}
+	on.exit(restore_dev(current_dev), add = TRUE)
 	px <- region_pixels(region, res)
 	maskee <- in_region(maskee, region)
 	masker <- in_region(masker, region)

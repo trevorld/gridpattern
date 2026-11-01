@@ -322,7 +322,7 @@ makeContent.pattern_legend <- function(x) {
 pattern_content <- function(entry, params, xp, yp, id, legend) {
 	# avoid weird errors with array patterns if there is an active device open
 	current_dev <- grDevices::dev.cur()
-	on.exit(grDevices::dev.set(current_dev))
+	on.exit(restore_dev(current_dev), add = TRUE)
 
 	boundary_df <- create_polygon_df(xp, yp, id)
 
