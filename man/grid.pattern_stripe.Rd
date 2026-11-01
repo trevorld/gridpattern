@@ -53,7 +53,9 @@ All locations within the same \code{id} belong to the same boundary.}
 
 \item{yoffset}{Shift pattern along y axis (in \code{units} units).}
 
-\item{units}{\code{\link[grid:unit]{grid::unit()}} units for \code{spacing}, \code{xoffset}, and \code{yoffset} parameters.}
+\item{units}{\code{\link[grid:unit]{grid::unit()}} units for \code{spacing}, \code{xoffset}, and \code{yoffset} parameters.
+Either \dQuote{snpc} (lengths relative to the viewport) or an absolute unit such as \dQuote{cm} or \dQuote{in}
+(\dQuote{npc}, \dQuote{native}, and \dQuote{null} aren't allowed).}
 
 \item{alpha}{Alpha (between 0 and 1) or \code{NA} (default, preserves colors' alpha value).}
 

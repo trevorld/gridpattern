@@ -12,6 +12,8 @@
 #' @param xoffset Shift pattern along x axis (in `units` units).
 #' @param yoffset Shift pattern along y axis (in `units` units).
 #' @param units [grid::unit()] units for `spacing`, `xoffset`, and `yoffset` parameters.
+#'              Either \dQuote{snpc} (lengths relative to the viewport) or an absolute unit such as \dQuote{cm} or \dQuote{in}
+#'              (\dQuote{npc}, \dQuote{native}, and \dQuote{null} aren't allowed).
 #' @param alpha Alpha (between 0 and 1) or `NA` (default, preserves colors' alpha value).
 #' @param linetype Stroke linetype.
 #' @param linewidth Stroke linewidth.

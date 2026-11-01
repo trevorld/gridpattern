@@ -79,7 +79,7 @@
 #'               A numeric `legend` key is also zoomed by the `pattern_key_scale_factor` parameter (default `1`):
 #'               the viewport is `legend * pattern_key_scale_factor` times larger than the key and
 #'               `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset` are multiplied by
-#'               `pattern_key_scale_factor` if `pattern_units` isn't a relative unit (\dQuote{snpc} or \dQuote{npc}).
+#'               `pattern_key_scale_factor` if `pattern_units` isn't \dQuote{snpc}.
 #'               A logical `legend` isn't zoomed by `pattern_key_scale_factor` (the caller zooms it if desired,
 #'               as `{ggpattern}` 1.3.1 and earlier do) so `TRUE` and `1` differ if it isn't `1`
 #'               (although the "magick" pattern scales its image by it either way).
@@ -225,6 +225,9 @@ patternGrob <- function(
 ) {
 	legend_scale(legend) # validate (but keep a logical `legend` logical, see `makeContent.pattern()`)
 	args <- prefix_args(list(...), prefix)
+	# validate early (errors while drawing leave the graphics device locked)
+	# but `makeContent.pattern()` checks again in case of later edits or (custom) defaults
+	check_units(args$pattern_units)
 	# cache pattern resolved at creation (if possible) so redraws (e.g. resizing the device)
 	# still work if the pattern is later unregistered or masked
 	entry <- tryCatch(resolve_pattern(pattern), error = function(e) NULL)

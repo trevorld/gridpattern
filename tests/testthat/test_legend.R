@@ -104,10 +104,6 @@ test_that("`pattern_key_scale_factor` zooms a legend key", {
 		expect_equal(zoomed$params$pattern_amplitude, 0.025)
 		expect_equal(range(zoomed$boundary_df$x), 0.5 + c(-0.5, 0.5) / (as.numeric(legend) * k))
 	}
-	expect_equal(
-		draw_legend_capture(s, units = "npc", key_scale_factor = k)$params$pattern_spacing,
-		0.05
-	)
 
 	# absolute lengths (whether supplied or defaults) are zoomed by `k` (as are defaults computed from them)
 	cm <- draw_legend_capture(s, units = "cm", spacing = 1, yoffset = 0.5, key_scale_factor = k)

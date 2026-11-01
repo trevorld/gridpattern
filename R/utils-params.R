@@ -9,10 +9,13 @@ prefix_args <- function(l, prefix = "pattern_") {
 # parameters for which a length-one `NA` is treated as "not supplied" (see `complete_params()`)
 NA_IS_UNSET <- c("pattern_type", "pattern_subtype", "pattern_gravity", "pattern_res")
 
-# lengths that `pattern_key_scale_factor` zooms in a (numeric) legend key if `pattern_units` isn't relative
-# (relative lengths are instead zoomed by the larger legend viewport, see `makeContent.pattern()`)
+# lengths that `pattern_key_scale_factor` zooms in a (numeric) legend key if `pattern_units` isn't "snpc"
+# ("snpc" lengths are instead zoomed by the larger legend viewport, see `makeContent.pattern()`)
 KEY_SCALED_LENGTHS <- c("pattern_spacing", "pattern_xoffset", "pattern_yoffset")
-RELATIVE_UNITS <- c("snpc", "npc")
+# `pattern_units` that don't have a well-defined meaning for (the lengths of) patterns:
+# lengths are converted along the viewport's width so "npc" and "native" would ignore its height
+# and "null" (only meaningful in a grid layout) converts to zero
+UNSUPPORTED_UNITS <- c("npc", "native", "null")
 
 # fills in missing pattern parameters in list `l` (whose names are already prefixed)
 # `defaults` are pattern-specific defaults that replace (or are appended to) `GENERIC_DEFAULTS`
@@ -75,7 +78,7 @@ complete_params <- function(
 			l[[nm]] <- l[[nm]] %||% fill_default(l, nm)
 		}
 		k <- check_key_scale_factor(l$pattern_key_scale_factor)
-		zoom <- ifelse(l$pattern_units %in% RELATIVE_UNITS, 1, k)
+		zoom <- ifelse(l$pattern_units %in% "snpc", 1, k)
 		for (nm in intersect(KEY_SCALED_LENGTHS, names(l))) {
 			l[[nm]] <- zoom * l[[nm]]
 		}
@@ -88,7 +91,19 @@ complete_params <- function(
 			}
 		}
 	}
+	check_units(l$pattern_units)
 	l
+}
+
+check_units <- function(units) {
+	bad <- intersect(units, UNSUPPORTED_UNITS)
+	if (length(bad)) {
+		abort(c(
+			glue('`pattern_units` can\'t be "{bad[1L]}".'),
+			i = 'Use "snpc" for lengths relative to the viewport or an absolute unit such as "cm" or "in".'
+		))
+	}
+	units
 }
 
 check_key_scale_factor <- function(k) {

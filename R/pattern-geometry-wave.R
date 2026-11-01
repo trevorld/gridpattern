@@ -5,6 +5,8 @@
 #'
 #' @inheritParams grid.pattern_circle
 #' @param units [grid::unit()] units for `amplitude`, `frequency`, `spacing`, `xoffset`, and `yoffset` parameters.
+#'              Either \dQuote{snpc} (lengths relative to the viewport) or an absolute unit such as \dQuote{cm} or \dQuote{in}
+#'              (\dQuote{npc}, \dQuote{native}, and \dQuote{null} aren't allowed).
 #' @param amplitude Wave amplitude (in `units` units)
 #' @param frequency Linear frequency (in inverse `units` units)
 #' @param type One of the following (see `names_wave` for the canonical list):
