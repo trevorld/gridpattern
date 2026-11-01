@@ -165,6 +165,35 @@ test_that("`grid.pattern_hatch()` warns on unsupported type/subtype combinations
 		"not supported by the 'goodman' subtype"
 	)
 })
+test_that("`grid.pattern_hatch()` special types pass on `units` and offsets", {
+	grDevices::pdf(NULL)
+	on.exit(grDevices::dev.off(), add = TRUE)
+	cases <- list(
+		c("or", "combinatorial", "circle"),
+		c("olive", "combinatorial", "pch"),
+		c("proper", "fox-davies", "wave"),
+		c("steel", "goodman", "pch"),
+		c("copper", "goodman", "text"),
+		c("cendree", "unicode", "polygon_tiling")
+	)
+	for (cs in cases) {
+		grob <- patternGrob(
+			"hatch",
+			type = cs[1],
+			subtype = cs[2],
+			units = "cm",
+			spacing = 1,
+			xoffset = 0.2,
+			yoffset = 0.3
+		)
+		child <- makeContent(grob)$children[[1L]]
+		expect_identical(child$pattern, paste0("gridpattern::", cs[3]))
+		expect_identical(child$args$pattern_units, "cm")
+		expect_identical(child$args$pattern_spacing, 1)
+		expect_identical(child$args$pattern_xoffset, 0.2)
+		expect_identical(child$args$pattern_yoffset, 0.3)
+	}
+})
 
 test_that("`assert_suggested()` works as expected", {
 	expect_error(

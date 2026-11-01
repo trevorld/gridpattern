@@ -89,6 +89,12 @@ Bug fixes and minor improvements
   to restore the graphics device when the current device never changed
   (which needlessly triggered the device's (de)activate callbacks e.g. window title updates for `quartz()`)
   and never call `grDevices::dev.set(1L)` (which would open a new device) (#120).
+* The "hatch" pattern types drawn by other patterns
+  (e.g. "or" circles, "olive", "proper" waves, Goodman "steel" and "copper", and Unicode "cendree" checkers)
+  now pass on `pattern_units`, `pattern_xoffset`, and `pattern_yoffset`.
+  Previously their spacing was always interpreted as "snpc" units
+  (while their density was computed from the spacing in `pattern_units` units)
+  and their offsets were ignored.
 * The builtin patterns' registered defaults now agree with the defaults of their `grid.pattern_<name>()` functions
   (so `patternGrob()` / `{ggpattern}` and `grid.pattern_<name>()` render the same when a parameter is unset):
 
