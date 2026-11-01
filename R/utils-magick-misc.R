@@ -25,39 +25,6 @@ convert_r_colour_to_magick_colour <- function(col) {
 #' @noRd
 convert_img_to_array <- function(img) {
 	stopifnot(inherits(img, 'magick-image'))
-
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# extract the RGB array from that image
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	arr <- as.numeric(magick::image_data(img))
-
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# If this is a grey image (i.e. a 2d matrix), then promote it
-	# to a 3d array by copying the grey into R,G and B planes
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	if (length(dim(arr)) == 2) {
-		arr <- array(c(arr, arr, arr), dim = c(dim(arr), 3))
-	}
-
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# Add an alpha channel if there isn't one already
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	if (dim(arr)[3] == 3) {
-		alpha_matrix <- matrix(1, nrow = dim(arr)[1], ncol = dim(arr)[2])
-		arr <- my_abind(arr, alpha_matrix)
-	}
-
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# Sanity check: Assert everything image is RGBA
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	stopifnot(dim(arr)[3] == 4)
-
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# Transpose the image if requested.
-	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	# if (transpose) {
-	#   arr <- aperm(arr, c(2, 1, 3))
-	# }
-
-	arr
+	# `channels = "rgba"` promotes gray (with or without alpha) and RGB images to RGBA
+	as.numeric(magick::image_data(img, channels = "rgba"))
 }

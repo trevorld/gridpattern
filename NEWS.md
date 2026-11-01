@@ -104,6 +104,14 @@ Bug fixes and minor improvements
     `grid.pattern_placeholder()`, and `grid.pattern_plasma()` now defaults to `NA` (use the aspect ratio of the
     current viewport, as `patternGrob()` does) instead of `1`
     so their raster approximations are no longer distorted in non-square viewports.
+* The "seagal" and "seagalbw" placeholder types work again
+  (their URLs used a nonexistent `www.` subdomain of `stevensegallery.lucidinternets.com`, #118).
+* Placeholder types that return greyscale images (e.g. "murray", "murraybw", "picsumbw", and "seagalbw")
+  no longer throw an error (their single channel images weren't promoted to RGBA arrays).
+* An unknown placeholder `type` now actually falls back to the "bear" placeholder
+  (as its warning claims) instead of a "dummy" placeholder image.
+  A placeholder `type` that isn't length one now also falls back to "bear"
+  (the default `type`) instead of "kitten".
 
 gridpattern v1.5.1
 ==================

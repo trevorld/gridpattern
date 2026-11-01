@@ -130,11 +130,11 @@ fetch_placeholder_img <- function(width = 100, height = 100, type = 'dummy') {
 		picsumbw = glue("https://picsum.photos/{width}/{height}?grayscale"),
 		placeholderbw = glue("https://placehold.co/{width}x{height}/000000/FFFFFF/png"),
 		placeholder = glue("https://placehold.co/{width}x{height}/png"),
-		seagal = glue("https://www.stevensegallery.lucidinternets.com/{width}/{height}"),
-		seagalbw = glue("https://www.stevensegallery.lucidinternets.com/g/{width}/{height}"),
+		seagal = glue("https://stevensegallery.lucidinternets.com/{width}/{height}"),
+		seagalbw = glue("https://stevensegallery.lucidinternets.com/g/{width}/{height}"),
 		{
 			warn(glue("Unknown placeholder type '{type}' using 'bear' instead"))
-			glue("https://dummyimage.com/{width}x{height}")
+			glue("https://placebear.com/{width}/{height}")
 		}
 	)
 
@@ -158,7 +158,7 @@ fetch_placeholder_array <- function(width, height, params, legend) {
 
 	placeholder_type <- check_default(
 		as.character(params$pattern_type),
-		default = 'kitten',
+		default = 'bear',
 		type = 'char'
 	)
 	img <- fetch_placeholder_img(width = width, height = height, type = placeholder_type)
