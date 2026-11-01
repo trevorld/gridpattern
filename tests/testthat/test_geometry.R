@@ -12,6 +12,19 @@ test_that("geometry helpers work as expected", {
 	expect_equal(xy$x, c(1, 0))
 	expect_equal(xy$y, c(0, 1))
 })
+test_that("`pattern_units` can't be \"npc\", \"native\", nor \"null\"", {
+	for (units in c("npc", "native", "null")) {
+		msg <- sprintf('`pattern_units` can\'t be "%s"', units)
+		expect_error(patternGrob("stripe", units = units), msg)
+		expect_error(patternGrob("stripe", pattern_units = units, prefix = ""), msg)
+		# also checked when drawn (e.g. if edited after creation)
+		grob <- editGrob(patternGrob("stripe"), args = list(pattern_units = units))
+		expect_pattern_error(grob, msg)
+		grob <- editGrob(patternGrob("wave", legend = 2), args = list(pattern_units = units))
+		expect_pattern_error(grob, msg)
+		expect_error(patternGrob("image", units = units), msg)
+	}
+})
 test_that("geometry patterns work as expected", {
 	png_file <- tempfile(fileext = ".png")
 	png(png_file)

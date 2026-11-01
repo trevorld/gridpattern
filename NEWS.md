@@ -43,6 +43,11 @@ Breaking Changes
   The `res` argument of the `grid.pattern_<name>()` functions, `alphaMaskGrob()`, and `clippingPathGrob()`
   now defaults to `NULL` (unset).
 * Now declares a dependency on R (>= 4.1.0) (previously declared R (>= 3.4.0)).
+* `pattern_units` (`units` argument) may no longer be "npc", "native", nor "null" (now an error, #115).
+  Pattern lengths (e.g. `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset`) were always converted
+  along the viewport's width so "npc" and "native" ignored the viewport's height (even for vertical offsets)
+  and "null" lengths are zero (which threw an obscure error).
+  Use "snpc" (the default) for lengths relative to the viewport or an absolute unit such as "cm" or "in".
 
 New features
 ------------
@@ -59,7 +64,7 @@ New features
   `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset` itself.
 * A numeric `legend` key is now zoomed by the `pattern_key_scale_factor` parameter (`key_scale_factor` argument):
   the legend viewport is `legend * pattern_key_scale_factor` times larger than the key
-  and if `pattern_units` isn't "snpc" nor "npc" then `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset`
+  and if `pattern_units` isn't "snpc" then `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset`
   are multiplied by `pattern_key_scale_factor` (before any defaults computed from them e.g. the "wave" amplitude)
   so legend keys of patterns with absolute units (e.g. "cm") can be zoomed too.
   A logical `legend` (as passed by `{ggpattern}` 1.3.1 and earlier, which zoom their keys themselves)
