@@ -153,9 +153,13 @@ New Features
   (both are vectorized and return the previous preferences so they can be restored).
   Bare pattern names resolve to the pattern preferred by `prefer_pattern()` (if any) and otherwise to the pattern of the only owner (the user, `{gridpattern}`, or a package) with that name.
   If more than one owner has a pattern with that name there is a conflict and an error asks for either a qualified name or a `prefer_pattern()` preference (similar to the `{conflicted}` package).
+  `prefer_pattern()`'s `must_exist` argument controls what happens if a preferred pattern isn't (yet) registered:
+  `NA` (the default) warns, `TRUE` errors, and `FALSE` neither warns nor loads the pattern's package (useful in an `.Rprofile`).
 * `conflicting_patterns()` lists patterns whose bare names are shared by more than one pattern
 * `has_pattern()` returns whether a pattern name resolves to a pattern.
 * `local_pattern()` registers a pattern until the current function (or test) exits and then restores any previous registration (useful in tests and examples).
+  If `prefer = TRUE` it also prefers that pattern until the current function (or test) exits.
+* `local_prefer_pattern()` sets pattern preferences until the current function (or test) exits and then restores any previous preferences (#113).
 
 Bug fixes and minor improvements
 --------------------------------

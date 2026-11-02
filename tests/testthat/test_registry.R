@@ -82,8 +82,7 @@ test_that("redraws use the pattern resolved at creation", {
 	grDevices::dev.control("enable")
 	draw_local <- function(name, fill) {
 		local_pattern(name, create_pattern_capture, env = globalenv())
-		prefer_pattern(paste0("R_GlobalEnv::", name))
-		on.exit(unprefer_pattern(name), add = TRUE)
+		local_prefer_pattern(paste0("R_GlobalEnv::", name))
 		suppressMessages(grid.pattern(name, fill = fill))
 	}
 
@@ -122,8 +121,7 @@ test_that("redraws use the pattern resolved at creation", {
 	grid::grid.newpage()
 	grob <- local({
 		local_pattern("stripe", create_pattern_capture, env = globalenv())
-		prefer_pattern("R_GlobalEnv::stripe")
-		withr::defer(unprefer_pattern("stripe"))
+		local_prefer_pattern("R_GlobalEnv::stripe")
 		suppressMessages(patternGrob("stripe", fill = "green"))
 	})
 	captured$params <- NULL
@@ -268,6 +266,167 @@ test_that("`local_pattern()` works", {
 		expect_equal(key("local"), "R_GlobalEnv::local")
 	})
 	expect_error(resolve_pattern("local"), "Unknown pattern")
+})
+
+test_that("`local_prefer_pattern()` works", {
+	env_grid <- asNamespace("grid")
+	env_utils <- asNamespace("utils")
+	on.exit(
+		{
+			unprefer_pattern("brick")
+			unregister_pattern("brick", env = env_grid)
+			unregister_pattern("brick", env = env_utils)
+		},
+		add = TRUE
+	)
+	register_pattern("brick", create_pattern_capture, env = env_grid)
+	register_pattern("brick", create_pattern_polygon, env = env_utils)
+	expect_error(key("brick"), "registered by 2 owners")
+
+	f <- function() {
+		expect_equal(local_prefer_pattern("grid::brick"), character(0L))
+		key("brick")
+	}
+	expect_equal(f(), "grid::brick")
+	expect_error(key("brick"), "registered by 2 owners")
+
+	# restores previous preferences (and nests)
+	prefer_pattern("utils::brick")
+	g <- function() {
+		expect_equal(local_prefer_pattern("grid::brick"), "utils::brick")
+		h <- function() {
+			local_prefer_pattern("utils::brick")
+			key("brick")
+		}
+		expect_equal(h(), "utils::brick")
+		key("brick")
+	}
+	expect_equal(g(), "grid::brick")
+	expect_equal(key("brick"), "utils::brick")
+	unprefer_pattern("brick")
+
+	# vectorized
+	k <- function() {
+		local_prefer_pattern(c("gridpattern::stripe", "grid::brick"))
+		c(key("stripe"), key("brick"))
+	}
+	expect_equal(k(), c("gridpattern::stripe", "grid::brick"))
+	expect_equal(preferred_patterns(c("stripe", "brick")), character(0L))
+
+	# multiple preferences in the same frame are undone in reverse order
+	prefer_pattern("utils::brick")
+	m <- function() {
+		local_prefer_pattern("grid::brick")
+		local_prefer_pattern("utils::brick")
+		local_prefer_pattern(c("gridpattern::stripe", "grid::brick"))
+		c(key("stripe"), key("brick"))
+	}
+	expect_equal(m(), c("gridpattern::stripe", "grid::brick"))
+	expect_equal(preferred_patterns(c("stripe", "brick")), "utils::brick")
+	unprefer_pattern("brick")
+
+	# restores previous preference even if it is no longer registered
+	prefer_pattern("utils::brick")
+	local({
+		local_prefer_pattern("grid::brick")
+		unregister_pattern("brick", env = env_utils)
+		expect_equal(key("brick"), "grid::brick")
+	})
+	expect_equal(preferred_patterns("brick"), "utils::brick")
+	unprefer_pattern("brick")
+
+	# empty `pattern` does nothing
+	expect_equal(local_prefer_pattern(character(0L)), character(0L))
+	expect_equal(local_prefer_pattern(NULL), character(0L))
+
+	expect_error(local_prefer_pattern("brick"), "qualified name")
+	expect_error(
+		local_prefer_pattern("gridpattern::nope", must_exist = TRUE),
+		'Unknown pattern "gridpattern::nope"'
+	)
+	expect_equal(preferred_patterns("nope"), character(0L))
+
+	# `must_exist` is passed on to `prefer_pattern()`
+	local({
+		expect_warning(local_prefer_pattern("gridpattern::nope"), "isn't registered")
+		expect_equal(preferred_patterns("nope"), "gridpattern::nope")
+	})
+	local({
+		expect_silent(local_prefer_pattern("gridpattern::nope", must_exist = FALSE))
+		expect_equal(preferred_patterns("nope"), "gridpattern::nope")
+	})
+	expect_equal(preferred_patterns("nope"), character(0L))
+})
+
+test_that("`local_pattern(prefer = TRUE)` works", {
+	f <- function() {
+		# no conflict message since preferred before registering
+		expect_silent(local_pattern(
+			"stripe",
+			create_pattern_capture,
+			env = globalenv(),
+			prefer = TRUE
+		))
+		c(key("stripe"), preferred_patterns("stripe"))
+	}
+	expect_equal(f(), c("R_GlobalEnv::stripe", "R_GlobalEnv::stripe"))
+	expect_equal(preferred_patterns("stripe"), character(0L))
+	expect_equal(key("stripe"), "gridpattern::stripe")
+
+	# restores previous preference
+	on.exit(unprefer_pattern("stripe"), add = TRUE)
+	prefer_pattern("gridpattern::stripe")
+	expect_equal(f(), c("R_GlobalEnv::stripe", "R_GlobalEnv::stripe"))
+	expect_equal(preferred_patterns("stripe"), "gridpattern::stripe")
+	unprefer_pattern("stripe")
+
+	# `prefer = FALSE` doesn't change preferences
+	g <- function() {
+		local_pattern("local", create_pattern_capture, env = globalenv())
+		preferred_patterns("local")
+	}
+	expect_equal(g(), character(0L))
+
+	# registered (and preferred) for owner determined by `env`
+	env_grid <- asNamespace("grid")
+	h <- function() {
+		local_pattern("brick", create_pattern_capture, env = env_grid, prefer = TRUE)
+		preferred_patterns("brick")
+	}
+	expect_equal(h(), "grid::brick")
+	expect_equal(preferred_patterns("brick"), character(0L))
+	expect_false(has_pattern("grid::brick"))
+
+	expect_error(local_pattern("local", create_pattern_capture, prefer = NA), "`prefer`")
+	expect_error(
+		local_pattern("a:b", create_pattern_capture, env = globalenv(), prefer = TRUE),
+		'must not contain ":"'
+	)
+	expect_equal(preferred_patterns("local"), character(0L))
+
+	# failed registration doesn't leave the preference behind
+	local({
+		expect_error(
+			local_pattern("stripe", "notafn", env = globalenv(), prefer = TRUE),
+			"must be a function"
+		)
+		expect_equal(preferred_patterns("stripe"), character(0L))
+		expect_equal(key("stripe"), "gridpattern::stripe")
+	})
+	prefer_pattern("gridpattern::stripe")
+	local({
+		expect_error(
+			local_pattern(
+				"stripe",
+				create_pattern_capture,
+				kind = "nope",
+				env = globalenv(),
+				prefer = TRUE
+			)
+		)
+		expect_equal(preferred_patterns("stripe"), "gridpattern::stripe")
+	})
+	unprefer_pattern("stripe")
 })
 
 test_that("pattern-specific defaults", {
@@ -701,12 +860,19 @@ test_that("`conflicting_patterns()`, `prefer_pattern()`, and `unprefer_pattern()
 	unregister_pattern("brick", env = env_utils)
 	expect_error(
 		resolve_pattern("brick"),
-		'Preferred pattern "utils::brick" for "brick" is no longer registered'
+		'Preferred pattern "utils::brick" for "brick" isn\'t registered'
 	)
 	expect_error(resolve_pattern("brick"), 'unprefer_pattern("utils::brick")', fixed = TRUE)
 
-	expect_error(prefer_pattern("notapackage::brick"), 'Unknown pattern "notapackage::brick"')
-	expect_error(prefer_pattern("gridpattern::nope"), 'Unknown pattern "gridpattern::nope"')
+	expect_error(
+		prefer_pattern("notapackage::brick", must_exist = TRUE),
+		'Unknown pattern "notapackage::brick"'
+	)
+	expect_error(
+		prefer_pattern("gridpattern::nope", must_exist = TRUE),
+		'Unknown pattern "gridpattern::nope"'
+	)
+	expect_error(prefer_pattern("gridpattern::stripe", must_exist = "yes"), "`must_exist`")
 	expect_error(prefer_pattern("stripe"), "unprefer_pattern")
 	expect_error(prefer_pattern("a::b::c"), "qualified name")
 	expect_error(prefer_pattern("::stripe"), "qualified name")
@@ -759,7 +925,10 @@ test_that("`conflicting_patterns()`, `prefer_pattern()`, and `unprefer_pattern()
 	expect_equal(key("brick"), "utils::brick")
 	expect_error(key("stripe"), "registered by 2 owners")
 	# validates everything before changing anything
-	expect_error(prefer_pattern(c("grid::brick", "gridpattern::nope")), "Unknown pattern")
+	expect_error(
+		prefer_pattern(c("grid::brick", "gridpattern::nope"), must_exist = TRUE),
+		"Unknown pattern"
+	)
 	expect_equal(key("brick"), "utils::brick")
 	expect_error(
 		prefer_pattern(c("grid::brick", "utils::brick")),
@@ -804,4 +973,55 @@ test_that("input validation", {
 	expect_error(resolve_pattern("gridpattern::nope"), 'Unknown pattern "gridpattern::nope"')
 	expect_error(resolve_pattern("notapackage::nope"), 'Unknown pattern "notapackage::nope"')
 	expect_error(resolve_pattern(NA_character_), "non-empty string")
+})
+
+test_that("`prefer_pattern(must_exist)` allows preferring patterns before they are registered", {
+	on.exit(
+		{
+			unprefer_pattern(c("later", "nope"))
+			unregister_pattern("later", env = globalenv())
+		},
+		add = TRUE
+	)
+	# `NA` (default) warns but sets the preference
+	expect_warning(
+		old <- prefer_pattern("R_GlobalEnv::later"),
+		'Preferring pattern "R_GlobalEnv::later" which isn\'t registered'
+	)
+	expect_equal(old, character(0L))
+	expect_equal(preferred_patterns("later"), "R_GlobalEnv::later")
+	expect_error(resolve_pattern("later"), 'Preferred pattern "R_GlobalEnv::later" for "later"')
+	# preferring before registering suppresses the conflict message
+	expect_silent(register_pattern("later", create_pattern_capture, env = globalenv()))
+	expect_equal(key("later"), "R_GlobalEnv::later")
+	unregister_pattern("later", env = globalenv())
+	unprefer_pattern("later")
+
+	# `FALSE` is silent and doesn't load packages
+	expect_silent(prefer_pattern("notapackage::later", must_exist = FALSE))
+	expect_equal(preferred_patterns("later"), "notapackage::later")
+	expect_error(resolve_pattern("later"), 'Preferred pattern "notapackage::later"')
+	unprefer_pattern("later")
+
+	# warning mentions uninstalled packages
+	expect_warning(prefer_pattern("notapackage::later"), "\\{notapackage\\} isn't installed")
+	unprefer_pattern("later")
+
+	# `TRUE` errors and doesn't set the preference
+	expect_error(prefer_pattern("R_GlobalEnv::later", must_exist = TRUE), "Unknown pattern")
+	expect_equal(preferred_patterns("later"), character(0L))
+
+	# still validates names
+	expect_error(prefer_pattern("later", must_exist = FALSE), "qualified name")
+	expect_error(
+		prefer_pattern(c("a::later", "b::later"), must_exist = FALSE),
+		'more than one pattern named "later"'
+	)
+	# vectorized with existing and non-existing patterns
+	expect_warning(prefer_pattern(c("gridpattern::stripe", "gridpattern::nope")), "nope")
+	expect_equal(
+		preferred_patterns(c("stripe", "nope")),
+		c("gridpattern::stripe", "gridpattern::nope")
+	)
+	unprefer_pattern("stripe")
 })
