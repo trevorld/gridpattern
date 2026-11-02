@@ -6,7 +6,7 @@
 \alias{conflicting_patterns}
 \title{Resolve pattern name conflicts}
 \usage{
-prefer_pattern(pattern)
+prefer_pattern(pattern, must_exist = NA)
 
 unprefer_pattern(pattern)
 
@@ -24,6 +24,19 @@ If length zero (e.g. \code{character(0)} or \code{NULL}) then \code{prefer_patte
 For \code{unprefer_pattern()} bare pattern names e.g. \code{"stripe"}
 (removes any preference for that name) and/or qualified names
 (only removes the preference if it is for that pattern).}
+
+\item{must_exist}{What to do if a preferred pattern isn't (yet) registered.
+If \code{TRUE} throw an error, if \code{NA} throw a warning, and if \code{FALSE} do nothing.
+In all cases the preference is set (unless there is an error) and
+takes effect once the pattern is registered e.g. once its package is loaded.
+If \code{FALSE} the existence of the patterns isn't checked at all
+(in particular their packages aren't loaded),
+which is useful in an \code{.Rprofile}
+or to prefer a user pattern before it is registered.
+Otherwise the packages of the preferred patterns are loaded (if installed).
+Regardless of \code{must_exist} it is an error if the user has more than one
+pattern with that name (see \code{\link[=register_pattern]{register_pattern()}}) since
+a preference can't choose between them.}
 }
 \value{
 \code{prefer_pattern()} and \code{unprefer_pattern()} invisibly return a character vector of the
@@ -57,11 +70,18 @@ unprefer_pattern(new)
 prefer_pattern(old) # does nothing if `old` is empty
 }\if{html}{\out{</div>}}
 
+\code{\link[=local_prefer_pattern]{local_prefer_pattern()}} does this automatically when the current function (or test) exits.
+
 Preferences only last for the current R session.
 Users may put \code{prefer_pattern()} calls in their \code{.Rprofile} (or scripts)
-to make them persistent.
+to make them persistent
+(use \code{must_exist = FALSE} in an \code{.Rprofile} to avoid loading the packages at startup).
+A bare name with a preference for a pattern that isn't registered is an error
+(but if its package isn't loaded it is loaded first).
 Packages should not call \code{prefer_pattern()} and should instead
-refer to patterns by their qualified name \code{"pkg::name"}.
+refer to patterns by their qualified name \code{"pkg::name"}
+(although packages may use \code{\link[=local_prefer_pattern]{local_prefer_pattern()}} in their tests and examples
+so bare names resolve to their patterns there).
 }
 \examples{
 create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
@@ -70,12 +90,12 @@ create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = F
 }
 x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-# don't clobber any pre-existing user "stripe" pattern
-run_example <- !has_pattern("R_GlobalEnv::stripe")
+# don't clobber any pre-existing user "fill" pattern
+run_example <- !has_pattern("R_GlobalEnv::fill")
 if (run_example) {
-  # temporarily remove any pre-existing "stripe" preference
-  old <- unprefer_pattern("stripe")
-  register_pattern("stripe", create_pattern_polygon)
+  # temporarily remove any pre-existing "fill" preference
+  old <- unprefer_pattern("fill")
+  register_pattern("fill", create_pattern_polygon)
 }
 
 if (run_example) {
@@ -83,16 +103,16 @@ if (run_example) {
 }
 
 if (run_example) {
-  # bare "stripe" is now ambiguous
+  # bare "fill" is now ambiguous
   grid::grid.newpage()
-  try(grid.pattern("stripe", x_hex, y_hex))
+  try(grid.pattern("fill", x_hex, y_hex))
 }
 
 if (run_example) {
-  # prefer the user's "stripe" pattern over the builtin "stripe" pattern
-  prefer_pattern("R_GlobalEnv::stripe")
+  # prefer the user's "fill" pattern over the builtin "fill" pattern
+  prefer_pattern("R_GlobalEnv::fill")
   grid::grid.newpage()
-  grid.pattern("stripe", x_hex, y_hex, fill = "blue")
+  grid.pattern("fill", x_hex, y_hex, fill = "blue")
 }
 
 if (run_example) {
@@ -101,9 +121,9 @@ if (run_example) {
 
 if (run_example) {
   # remove the preference
-  unprefer_pattern("stripe")
-  # remove "R_GlobalEnv::stripe" (not "gridpattern::stripe")
-  unregister_pattern("stripe")
+  unprefer_pattern("fill")
+  # remove "R_GlobalEnv::fill" (not "gridpattern::fill")
+  unregister_pattern("fill")
   # restore any pre-existing preference
   prefer_pattern(old)
 }

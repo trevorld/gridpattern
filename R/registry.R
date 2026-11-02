@@ -236,18 +236,40 @@ has_pattern <- function(pattern) {
 	)
 }
 
-#' Temporarily register a pattern
+#' Temporarily register a pattern or set a preference
 #'
 #' `local_pattern()` registers a pattern (see [register_pattern()])
 #' until the current function (or test, see `.local_envir`) exits
 #' and then restores the previous registration (if any).
-#' Requires the suggested `{withr}` package.
+#' `local_prefer_pattern()` sets pattern preferences (see [prefer_pattern()])
+#' until the current function (or test) exits
+#' and then restores the previous preferences (if any) for those bare pattern names.
+#' Both require the suggested `{withr}` package.
+#'
+#' Like [register_pattern()] the owner of the pattern registered by `local_pattern()`
+#' is determined by `env`.
+#' In particular, since `{testthat}` evaluates a package's tests in an environment
+#' that inherits from the package namespace,
+#' `local_pattern("name", fn)` in a package's tests registers `"pkg::name"`
+#' (use `env = globalenv()` to register `"R_GlobalEnv::name"` instead).
+#' In package tests prefer referring to the pattern by its qualified name `"pkg::name"`
+#' (which doesn't depend on preferences nor on which other packages are loaded)
+#' and only use `prefer = TRUE` when bare names must resolve to your pattern
+#' (e.g. to test code that uses bare names or to deliberately shadow a builtin pattern).
 #'
 #' @inheritParams register_pattern
-#' @param .local_envir The environment whose exit should undo `local_pattern()`'s registration.
+#' @inheritParams prefer_pattern
+#' @param prefer If `TRUE` also prefer the registered pattern (see [prefer_pattern()])
+#'               until `.local_envir` exits.
+#' @param pattern The qualified names `"owner::name"` of the preferred patterns
+#'                (see [prefer_pattern()]).
+#' @param .local_envir The environment whose exit should undo the registration (or preferences).
 #' @return `local_pattern()` invisibly returns the
 #'         previous registration (a list) or `NULL` if there wasn't one.
-#' @seealso [register_pattern()] to (permanently) register patterns.
+#'         `local_prefer_pattern()` invisibly returns a character vector of the
+#'         qualified names of the previous preferences (`character(0)` if there weren't any).
+#' @seealso [register_pattern()] to (permanently) register patterns and
+#'          [prefer_pattern()] to (permanently) set preferences.
 #' @examples
 #' create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
 #'   grid::polygonGrob(boundary_df$x, boundary_df$y, boundary_df$id,
@@ -260,11 +282,23 @@ has_pattern <- function(pattern) {
 #'   grid::grid.newpage()
 #'   grid.pattern("polygon", x_hex, y_hex, fill = "red")
 #' }
-#' # don't clobber (or be confused by) any pre-existing "polygon" pattern
+#' # skip if there is already a "polygon" pattern (which could conflict with ours)
 #' if (requireNamespace("withr", quietly = TRUE) && !has_pattern("polygon")) {
 #'   draw_polygon()
 #' }
 #' print(has_pattern("polygon"))
+#'
+#' # temporarily prefer the user's "fill" pattern over the builtin "fill" pattern
+#' draw_fill <- function() {
+#'   local_pattern("fill", create_pattern_polygon, env = globalenv(), prefer = TRUE)
+#'   grid::grid.newpage()
+#'   grid.pattern("fill", x_hex, y_hex, fill = "blue")
+#' }
+#' # skip if the user already has a "fill" pattern
+#' # (one set by the legacy `ggpattern_geometry_funcs` option would conflict with ours)
+#' if (requireNamespace("withr", quietly = TRUE) && !has_pattern("R_GlobalEnv::fill")) {
+#'   draw_fill()
+#' }
 #' @export
 local_pattern <- function(
 	name,
@@ -273,18 +307,34 @@ local_pattern <- function(
 	defaults = list(),
 	unprefixed = character(),
 	env = caller_env(),
+	prefer = FALSE,
 	.local_envir = parent.frame()
 ) {
 	rlang::check_installed("withr", "to use `local_pattern()`.")
-	old <- register_pattern(
-		name,
-		fn,
-		kind = kind,
-		defaults = defaults,
-		unprefixed = unprefixed,
-		env = env
-	)
+	if (!rlang::is_bool(prefer)) {
+		abort("`prefer` must be `TRUE` or `FALSE`.")
+	}
+	assert_pattern_name(name)
 	key <- pattern_key(registration_owner(env), name)
+	if (prefer) {
+		# prefer before registering so no conflict message
+		old_preference <- prefer_pattern(key, must_exist = FALSE)
+	}
+	old <- withCallingHandlers(
+		register_pattern(
+			name,
+			fn,
+			kind = kind,
+			defaults = defaults,
+			unprefixed = unprefixed,
+			env = env
+		),
+		# don't leave the preference behind if registration fails
+		error = function(e) if (prefer) restore_preferences(name, old_preference)
+	)
+	if (prefer) {
+		withr::defer(restore_preferences(name, old_preference), envir = .local_envir)
+	}
 	withr::defer(restore_pattern(key, old), envir = .local_envir)
 	invisible(old)
 }
@@ -295,6 +345,28 @@ restore_pattern <- function(key, old) {
 		rlang::env_unbind(pattern_registry, key)
 	} else {
 		assign(key, old, envir = pattern_registry)
+	}
+	invisible(NULL)
+}
+
+#' @rdname local_pattern
+#' @export
+local_prefer_pattern <- function(pattern, must_exist = NA, .local_envir = parent.frame()) {
+	rlang::check_installed("withr", "to use `local_prefer_pattern()`.")
+	old <- prefer_pattern(pattern, must_exist = must_exist) # validates `pattern`
+	if (length(pattern)) {
+		names <- unique(bare_name(pattern))
+		withr::defer(restore_preferences(names, old), envir = .local_envir)
+	}
+	invisible(old)
+}
+
+# restores the preferences for bare pattern names `names` to
+# the qualified names `old` (the previous preferences for those names)
+restore_preferences <- function(names, old) {
+	rlang::env_unbind(pattern_preferences, names)
+	for (key in old) {
+		assign(bare_name(key), sub("::.*$", "", key), envir = pattern_preferences)
 	}
 	invisible(NULL)
 }
@@ -318,11 +390,18 @@ restore_pattern <- function(key, old) {
 #' prefer_pattern(old) # does nothing if `old` is empty
 #' ```
 #'
+#' [local_prefer_pattern()] does this automatically when the current function (or test) exits.
+#'
 #' Preferences only last for the current R session.
 #' Users may put `prefer_pattern()` calls in their `.Rprofile` (or scripts)
-#' to make them persistent.
+#' to make them persistent
+#' (use `must_exist = FALSE` in an `.Rprofile` to avoid loading the packages at startup).
+#' A bare name with a preference for a pattern that isn't registered is an error
+#' (but if its package isn't loaded it is loaded first).
 #' Packages should not call `prefer_pattern()` and should instead
-#' refer to patterns by their qualified name `"pkg::name"`.
+#' refer to patterns by their qualified name `"pkg::name"`
+#' (although packages may use [local_prefer_pattern()] in their tests and examples
+#' so bare names resolve to their patterns there).
 #'
 #' @param pattern A character vector.
 #'                For `prefer_pattern()` the qualified names `"owner::name"` of the preferred patterns
@@ -335,6 +414,18 @@ restore_pattern <- function(key, old) {
 #'                For `unprefer_pattern()` bare pattern names e.g. `"stripe"`
 #'                (removes any preference for that name) and/or qualified names
 #'                (only removes the preference if it is for that pattern).
+#' @param must_exist What to do if a preferred pattern isn't (yet) registered.
+#'                   If `TRUE` throw an error, if `NA` throw a warning, and if `FALSE` do nothing.
+#'                   In all cases the preference is set (unless there is an error) and
+#'                   takes effect once the pattern is registered e.g. once its package is loaded.
+#'                   If `FALSE` the existence of the patterns isn't checked at all
+#'                   (in particular their packages aren't loaded),
+#'                   which is useful in an `.Rprofile`
+#'                   or to prefer a user pattern before it is registered.
+#'                   Otherwise the packages of the preferred patterns are loaded (if installed).
+#'                   Regardless of `must_exist` it is an error if the user has more than one
+#'                   pattern with that name (see [register_pattern()]) since
+#'                   a preference can't choose between them.
 #' @return `prefer_pattern()` and `unprefer_pattern()` invisibly return a character vector of the
 #'         qualified names of the previous preferences (for the bare names in `pattern`)
 #'         that existed (`character(0)` if there weren't any).
@@ -347,12 +438,12 @@ restore_pattern <- function(key, old) {
 #' }
 #' x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #' y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#' # don't clobber any pre-existing user "stripe" pattern
-#' run_example <- !has_pattern("R_GlobalEnv::stripe")
+#' # don't clobber any pre-existing user "fill" pattern
+#' run_example <- !has_pattern("R_GlobalEnv::fill")
 #' if (run_example) {
-#'   # temporarily remove any pre-existing "stripe" preference
-#'   old <- unprefer_pattern("stripe")
-#'   register_pattern("stripe", create_pattern_polygon)
+#'   # temporarily remove any pre-existing "fill" preference
+#'   old <- unprefer_pattern("fill")
+#'   register_pattern("fill", create_pattern_polygon)
 #' }
 #'
 #' if (run_example) {
@@ -360,16 +451,16 @@ restore_pattern <- function(key, old) {
 #' }
 #'
 #' if (run_example) {
-#'   # bare "stripe" is now ambiguous
+#'   # bare "fill" is now ambiguous
 #'   grid::grid.newpage()
-#'   try(grid.pattern("stripe", x_hex, y_hex))
+#'   try(grid.pattern("fill", x_hex, y_hex))
 #' }
 #'
 #' if (run_example) {
-#'   # prefer the user's "stripe" pattern over the builtin "stripe" pattern
-#'   prefer_pattern("R_GlobalEnv::stripe")
+#'   # prefer the user's "fill" pattern over the builtin "fill" pattern
+#'   prefer_pattern("R_GlobalEnv::fill")
 #'   grid::grid.newpage()
-#'   grid.pattern("stripe", x_hex, y_hex, fill = "blue")
+#'   grid.pattern("fill", x_hex, y_hex, fill = "blue")
 #' }
 #'
 #' if (run_example) {
@@ -378,14 +469,17 @@ restore_pattern <- function(key, old) {
 #'
 #' if (run_example) {
 #'   # remove the preference
-#'   unprefer_pattern("stripe")
-#'   # remove "R_GlobalEnv::stripe" (not "gridpattern::stripe")
-#'   unregister_pattern("stripe")
+#'   unprefer_pattern("fill")
+#'   # remove "R_GlobalEnv::fill" (not "gridpattern::fill")
+#'   unregister_pattern("fill")
 #'   # restore any pre-existing preference
 #'   prefer_pattern(old)
 #' }
 #' @export
-prefer_pattern <- function(pattern) {
+prefer_pattern <- function(pattern, must_exist = NA) {
+	if (!(isTRUE(must_exist) || isFALSE(must_exist) || identical(must_exist, NA))) {
+		abort("`must_exist` must be `TRUE`, `FALSE`, or `NA`.")
+	}
 	if (length(pattern) == 0L) {
 		return(invisible(character(0L)))
 	}
@@ -397,17 +491,43 @@ prefer_pattern <- function(pattern) {
 			i = "Use `unprefer_pattern()` to remove a preference."
 		)
 	)
-	entries <- lapply(unique(pattern), resolve_qualified_pattern) # errors if no such pattern
-	names <- vapply(entries, `[[`, character(1L), "name")
+	pattern <- unique(pattern)
+	names <- bare_name(pattern)
 	if (anyDuplicated(names)) {
 		name <- names[anyDuplicated(names)]
 		abort(glue('Can\'t prefer more than one pattern named "{name}".'))
 	}
+	if (!isFALSE(must_exist)) {
+		for (key in pattern) {
+			# errors if the user has more than one pattern with that name
+			if (is.null(lookup_qualified_pattern(key))) {
+				if (isTRUE(must_exist)) {
+					abort_unknown_pattern(key)
+				} else {
+					warn_unknown_preference(key)
+				}
+			}
+		}
+	}
 	old <- preferred_patterns(names)
-	for (entry in entries) {
-		assign(entry$name, entry$owner, envir = pattern_preferences)
+	for (i in seq_along(pattern)) {
+		assign(names[i], sub("::.*$", "", pattern[i]), envir = pattern_preferences)
 	}
 	invisible(old)
+}
+
+warn_unknown_preference <- function(key) {
+	owner <- sub("::.*$", "", key)
+	hint <- if (owner != USER_OWNER && !rlang::is_installed(owner)) {
+		glue("{{{owner}}} isn't installed.")
+	} else {
+		"See `registered_patterns()` for available patterns."
+	}
+	warn(c(
+		glue('Preferring pattern "{key}" which isn\'t registered (yet).'),
+		i = hint,
+		i = "Use `must_exist = FALSE` to silence this warning."
+	))
 }
 
 #' @rdname prefer_pattern
@@ -813,7 +933,7 @@ abort_unknown_pattern <- function(pattern) {
 abort_missing_preference <- function(name, key) {
 	abort(
 		c(
-			glue('Preferred pattern "{key}" for "{name}" is no longer registered.'),
+			glue('Preferred pattern "{key}" for "{name}" isn\'t registered.'),
 			i = glue('Use `unprefer_pattern("{key}")` to remove this preference.')
 		),
 		call = NULL

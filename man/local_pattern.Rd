@@ -2,7 +2,8 @@
 % Please edit documentation in R/registry.R
 \name{local_pattern}
 \alias{local_pattern}
-\title{Temporarily register a pattern}
+\alias{local_prefer_pattern}
+\title{Temporarily register a pattern or set a preference}
 \usage{
 local_pattern(
   name,
@@ -11,8 +12,11 @@ local_pattern(
   defaults = list(),
   unprefixed = character(),
   env = caller_env(),
+  prefer = FALSE,
   .local_envir = parent.frame()
 )
+
+local_prefer_pattern(pattern, must_exist = NA, .local_envir = parent.frame())
 }
 \arguments{
 \item{name}{Pattern name.  Must not contain \code{":"}.}
@@ -69,17 +73,53 @@ is an error of class \code{"gridpattern_error_unprefixed_defaults"}.}
 If writing a function that registers patterns on behalf of its caller
 add an \code{env = rlang::caller_env()} argument to that function and pass it on.}
 
-\item{.local_envir}{The environment whose exit should undo \code{local_pattern()}'s registration.}
+\item{prefer}{If \code{TRUE} also prefer the registered pattern (see \code{\link[=prefer_pattern]{prefer_pattern()}})
+until \code{.local_envir} exits.}
+
+\item{.local_envir}{The environment whose exit should undo the registration (or preferences).}
+
+\item{pattern}{The qualified names \code{"owner::name"} of the preferred patterns
+(see \code{\link[=prefer_pattern]{prefer_pattern()}}).}
+
+\item{must_exist}{What to do if a preferred pattern isn't (yet) registered.
+If \code{TRUE} throw an error, if \code{NA} throw a warning, and if \code{FALSE} do nothing.
+In all cases the preference is set (unless there is an error) and
+takes effect once the pattern is registered e.g. once its package is loaded.
+If \code{FALSE} the existence of the patterns isn't checked at all
+(in particular their packages aren't loaded),
+which is useful in an \code{.Rprofile}
+or to prefer a user pattern before it is registered.
+Otherwise the packages of the preferred patterns are loaded (if installed).
+Regardless of \code{must_exist} it is an error if the user has more than one
+pattern with that name (see \code{\link[=register_pattern]{register_pattern()}}) since
+a preference can't choose between them.}
 }
 \value{
 \code{local_pattern()} invisibly returns the
 previous registration (a list) or \code{NULL} if there wasn't one.
+\code{local_prefer_pattern()} invisibly returns a character vector of the
+qualified names of the previous preferences (\code{character(0)} if there weren't any).
 }
 \description{
 \code{local_pattern()} registers a pattern (see \code{\link[=register_pattern]{register_pattern()}})
 until the current function (or test, see \code{.local_envir}) exits
 and then restores the previous registration (if any).
-Requires the suggested \code{{withr}} package.
+\code{local_prefer_pattern()} sets pattern preferences (see \code{\link[=prefer_pattern]{prefer_pattern()}})
+until the current function (or test) exits
+and then restores the previous preferences (if any) for those bare pattern names.
+Both require the suggested \code{{withr}} package.
+}
+\details{
+Like \code{\link[=register_pattern]{register_pattern()}} the owner of the pattern registered by \code{local_pattern()}
+is determined by \code{env}.
+In particular, since \code{{testthat}} evaluates a package's tests in an environment
+that inherits from the package namespace,
+\code{local_pattern("name", fn)} in a package's tests registers \code{"pkg::name"}
+(use \code{env = globalenv()} to register \code{"R_GlobalEnv::name"} instead).
+In package tests prefer referring to the pattern by its qualified name \code{"pkg::name"}
+(which doesn't depend on preferences nor on which other packages are loaded)
+and only use \code{prefer = TRUE} when bare names must resolve to your pattern
+(e.g. to test code that uses bare names or to deliberately shadow a builtin pattern).
 }
 \examples{
 create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
@@ -93,12 +133,25 @@ draw_polygon <- function() {
   grid::grid.newpage()
   grid.pattern("polygon", x_hex, y_hex, fill = "red")
 }
-# don't clobber (or be confused by) any pre-existing "polygon" pattern
+# skip if there is already a "polygon" pattern (which could conflict with ours)
 if (requireNamespace("withr", quietly = TRUE) && !has_pattern("polygon")) {
   draw_polygon()
 }
 print(has_pattern("polygon"))
+
+# temporarily prefer the user's "fill" pattern over the builtin "fill" pattern
+draw_fill <- function() {
+  local_pattern("fill", create_pattern_polygon, env = globalenv(), prefer = TRUE)
+  grid::grid.newpage()
+  grid.pattern("fill", x_hex, y_hex, fill = "blue")
+}
+# skip if the user already has a "fill" pattern
+# (one set by the legacy `ggpattern_geometry_funcs` option would conflict with ours)
+if (requireNamespace("withr", quietly = TRUE) && !has_pattern("R_GlobalEnv::fill")) {
+  draw_fill()
+}
 }
 \seealso{
-\code{\link[=register_pattern]{register_pattern()}} to (permanently) register patterns.
+\code{\link[=register_pattern]{register_pattern()}} to (permanently) register patterns and
+\code{\link[=prefer_pattern]{prefer_pattern()}} to (permanently) set preferences.
 }
