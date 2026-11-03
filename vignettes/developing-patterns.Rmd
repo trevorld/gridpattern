@@ -219,7 +219,9 @@ register_pattern("your_pattern_name", your_array_pattern_function, kind = "array
   (it is probably a forgotten `pattern_` prefix).
   Note `{ggpattern}` supplies its own defaults for most of its pattern aesthetics.
 * `registered_patterns()` lists all the available patterns and `unregister_pattern()` removes a registration.
-* `has_pattern()` checks whether pattern names currently resolve to a pattern.
+* `has_pattern()` checks whether pattern names currently resolve to a pattern
+  and `has_registered_pattern()` checks whether pattern names are taken
+  (use it to avoid clobbering a pre-existing pattern).
 * `local_pattern()` registers a pattern only until the current function (or test) exits.
 
 ### <a name="package-registration"></a> Registering patterns from a package

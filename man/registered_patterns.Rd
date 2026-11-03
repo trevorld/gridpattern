@@ -3,11 +3,14 @@
 \name{registered_patterns}
 \alias{registered_patterns}
 \alias{has_pattern}
+\alias{has_registered_pattern}
 \title{List available patterns}
 \usage{
 registered_patterns()
 
 has_pattern(pattern)
+
+has_registered_pattern(pattern)
 }
 \arguments{
 \item{pattern}{A character vector of bare pattern names \code{"name"} and/or
@@ -22,25 +25,37 @@ qualified pattern names \code{"owner::name"}.}
 \item{source}{One of \code{"builtin"}, \code{"register_pattern"}, or \code{"options"}.}
 \item{active}{Whether the bare \code{name} currently resolves to this pattern.}
 }
-\code{has_pattern()} returns a logical vector the same length as \code{pattern}.
-A bare name with an unresolved conflict (see \code{\link[=conflicting_patterns]{conflicting_patterns()}}) returns \code{FALSE}.
+\code{has_pattern()} and \code{has_registered_pattern()} return a logical vector
+the same length as \code{pattern}.
+For \code{has_pattern()} a bare name with an unresolved conflict (see \code{\link[=conflicting_patterns]{conflicting_patterns()}})
+returns \code{FALSE} as does a user's qualified name \code{"R_GlobalEnv::name"}
+if the user has more than one pattern with that name
+(only possible via the legacy \code{ggpattern_geometry_funcs} / \code{ggpattern_array_funcs} options)
+but for \code{has_registered_pattern()} both return \code{TRUE}.
 }
 \description{
 \code{registered_patterns()} returns a data frame of all available patterns.
 \code{has_pattern()} returns whether pattern names currently resolve to a pattern
 i.e. whether \code{\link[=grid.pattern]{grid.pattern()}} / \code{\link[=patternGrob]{patternGrob()}} could use them.
+\code{has_registered_pattern()} returns whether pattern names are taken
+i.e. whether \code{registered_patterns()} lists a pattern with that name
+(for a bare name owned by anyone and for a qualified name owned by that owner)
+even if the name doesn't resolve (e.g. because of a conflict).
+Use \code{has_registered_pattern()} (not \code{has_pattern()}) to check that registering a pattern
+won't clobber (nor conflict with) a pre-existing pattern.
 See \code{\link[=register_pattern]{register_pattern()}} for how bare pattern names are resolved.
 }
 \examples{
 head(registered_patterns())
 has_pattern(c("stripe", "gridpattern::stripe", "polygon"))
+has_registered_pattern(c("stripe", "gridpattern::stripe", "polygon"))
 
 create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
   grid::polygonGrob(boundary_df$x, boundary_df$y, boundary_df$id,
                     gp = grid::gpar(fill = params$pattern_fill))
 }
-# don't clobber any pre-existing "polygon" pattern
-run_example <- !has_pattern("polygon")
+# don't clobber (nor conflict with) any pre-existing "polygon" pattern
+run_example <- !has_registered_pattern("polygon")
 if (run_example) {
   register_pattern("polygon", create_pattern_polygon)
   print(subset(registered_patterns(), name == "polygon"))
