@@ -92,8 +92,12 @@
 #'                 These replace the generic defaults for parameters that weren't supplied.
 #'                 The remaining generic defaults are filled in first and then these in the order given
 #'                 so a function default may use any generic parameter and any earlier pattern-specific default.
-#'                 Note `{ggpattern}` supplies its own (generic) defaults for most of its pattern aesthetics
-#'                 so these will mainly be used with [grid.pattern()] / [patternGrob()].
+#'                 With `{ggpattern}` (>= 1.4.0) these also apply to any `pattern_` aesthetic
+#'                 the user doesn't map or set (`{ggpattern}` passes unset aesthetics as `NaN`).
+#'                 `{ggpattern}` 1.3.1 and earlier supply their own defaults for most `pattern_` aesthetics
+#'                 so with them these mainly apply with [grid.pattern()] / [patternGrob()].
+#'                 Unprefixed `{ggplot2}` aesthetics (see `unprefixed`) such as `fill`
+#'                 may be set by the geom's own defaults so their defaults may not apply with `{ggpattern}`.
 #' @param unprefixed A character vector of parameter names without the `pattern_` prefix
 #'                   that the pattern reads so that `defaults` may set them.
 #'                   The usual case is a plain `{ggplot2}` aesthetic that `{ggpattern}` passes
