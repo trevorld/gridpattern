@@ -137,18 +137,8 @@ test_that("`grid.pattern_hatch()` warns on unsupported type/subtype combinations
 	x <- c(0, 0, 1, 1)
 	y <- c(1, 0, 0, 1)
 	render <- function(expr) {
-		f <- tempfile(fileext = ".pdf")
-		on.exit(unlink(f), add = TRUE)
-		prev_dev <- dev.cur()
-		pdf(f)
-		on.exit(
-			{
-				suppressWarnings(dev.off())
-				if (prev_dev > 1L) dev.set(prev_dev)
-			},
-			add = TRUE
-		)
-		force(expr)
+		f <- withr::local_tempfile(fileext = ".pdf")
+		with_temp_dev(function() grDevices::pdf(f), expr)
 	}
 	# unknown type errors
 	expect_error(
@@ -166,8 +156,7 @@ test_that("`grid.pattern_hatch()` warns on unsupported type/subtype combinations
 	)
 })
 test_that("`grid.pattern_hatch()` special types pass on `units` and offsets", {
-	grDevices::pdf(NULL)
-	on.exit(grDevices::dev.off(), add = TRUE)
+	local_temp_dev(function() grDevices::pdf(NULL))
 	cases <- list(
 		c("or", "combinatorial", "circle"),
 		c("olive", "combinatorial", "pch"),
@@ -207,6 +196,8 @@ test_that("`assert_suggested()` works as expected", {
 })
 
 test_that("`restore_dev()` only changes the device when needed", {
+	old_dev <- grDevices::dev.cur()
+	withr::defer(restore_dev(old_dev)) # the previously current device
 	n_devices <- function() length(grDevices::dev.list())
 	n <- n_devices()
 	restore_dev(1L) # would open a new device if it called `dev.set(1L)`
@@ -227,6 +218,8 @@ test_that("`restore_dev()` only changes the device when needed", {
 })
 
 test_that("`restore_dev()` skips devices that are no longer open", {
+	old_dev <- grDevices::dev.cur()
+	withr::defer(restore_dev(old_dev)) # the previously current device
 	grDevices::pdf(NULL)
 	dev1 <- grDevices::dev.cur()
 	on.exit(grDevices::dev.off(dev1), add = TRUE)
@@ -242,6 +235,8 @@ test_that("`restore_dev()` skips devices that are no longer open", {
 })
 
 test_that("`with_temp_dev()` closes the temporary device and restores the previous one", {
+	old_dev <- grDevices::dev.cur()
+	withr::defer(restore_dev(old_dev)) # the previously current device
 	# with two devices open and the first one current
 	grDevices::pdf(NULL)
 	dev1 <- grDevices::dev.cur()
@@ -265,6 +260,14 @@ test_that("`with_temp_dev()` closes the temporary device and restores the previo
 
 	# error while drawing
 	expect_error(with_temp_dev(open, stop("drawing failed")), "drawing failed")
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+
+	# an error while drawing a grob locks the device but closing it doesn't warn
+	expect_no_warning(expect_error(
+		with_temp_dev(open, grid.pattern_hatch(type = "notacolor")),
+		"Unknown hatching type"
+	))
 	expect_equal(grDevices::dev.cur(), dev1)
 	expect_equal(grDevices::dev.list(), devs)
 
@@ -317,6 +320,8 @@ test_that("`with_temp_dev()` leaves no device open if none was open before", {
 })
 
 test_that("raster fallbacks restore the previous graphics device", {
+	old_dev <- grDevices::dev.cur()
+	withr::defer(restore_dev(old_dev)) # the previously current device
 	skip_if_not_installed("ragg")
 	skip_if_not(capabilities("png"))
 	grDevices::pdf(NULL)

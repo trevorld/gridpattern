@@ -1,8 +1,7 @@
 # errors thrown by pattern functions while drawing leave the graphics device locked
 # (and open a default device if none is open) so check them with `makeContent()` instead
 expect_pattern_error <- function(grob, ...) {
-	grDevices::pdf(NULL)
-	on.exit(grDevices::dev.off(), add = TRUE)
+	local_temp_dev(function() grDevices::pdf(NULL))
 	expect_error(makeContent(grob), ...)
 }
 
@@ -26,12 +25,11 @@ test_that("`pattern_units` can't be \"npc\", \"native\", nor \"null\"", {
 	}
 })
 test_that("geometry patterns work as expected", {
-	png_file <- tempfile(fileext = ".png")
-	png(png_file)
-	expect_error(grid.pattern_crosshatch(x, y, density = 1.1))
-	expect_error(grid.pattern_stripe(x, y, density = 1.1))
-	dev.off()
-	unlink(png_file)
+	png_file <- withr::local_tempfile(fileext = ".png")
+	with_temp_dev(function() grDevices::png(png_file), {
+		expect_error(grid.pattern_crosshatch(x, y, density = 1.1))
+		expect_error(grid.pattern_stripe(x, y, density = 1.1))
+	})
 
 	skip_if_not_installed("vdiffr")
 	skip_on_ci()
