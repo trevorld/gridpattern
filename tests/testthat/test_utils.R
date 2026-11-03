@@ -225,3 +225,118 @@ test_that("`restore_dev()` only changes the device when needed", {
 	expect_equal(grDevices::dev.cur(), dev1)
 	expect_equal(n_devices(), n + 2L)
 })
+
+test_that("`restore_dev()` skips devices that are no longer open", {
+	grDevices::pdf(NULL)
+	dev1 <- grDevices::dev.cur()
+	on.exit(grDevices::dev.off(dev1), add = TRUE)
+	grDevices::pdf(NULL)
+	dev2 <- grDevices::dev.cur()
+	grDevices::dev.off(dev2)
+	grDevices::dev.set(dev1)
+
+	n <- length(grDevices::dev.list())
+	restore_dev(dev2) # `dev.set(dev2)` would switch to some other device
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(length(grDevices::dev.list()), n)
+})
+
+test_that("`with_temp_dev()` closes the temporary device and restores the previous one", {
+	# with two devices open and the first one current
+	grDevices::pdf(NULL)
+	dev1 <- grDevices::dev.cur()
+	on.exit(grDevices::dev.off(dev1), add = TRUE)
+	grDevices::pdf(NULL)
+	dev2 <- grDevices::dev.cur()
+	on.exit(grDevices::dev.off(dev2), add = TRUE)
+	grDevices::dev.set(dev1)
+	devs <- grDevices::dev.list()
+	open <- function() grDevices::pdf(NULL)
+
+	temp <- NULL
+	value <- with_temp_dev(open, {
+		temp <- grDevices::dev.cur()
+		"value"
+	})
+	expect_equal(value, "value")
+	expect_false(temp %in% c(devs, 1L))
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+
+	# error while drawing
+	expect_error(with_temp_dev(open, stop("drawing failed")), "drawing failed")
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+
+	# `open()` opens a device and then errors
+	open_then_fail <- function() {
+		grDevices::pdf(NULL)
+		stop("open failed")
+	}
+	expect_error(with_temp_dev(open_then_fail, NULL), "open failed")
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+
+	# `open()` doesn't open a device
+	expect_error(with_temp_dev(function() NULL, NULL), "did not open")
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+
+	# `close_temp_dev()` can be called more than once
+	grDevices::pdf(NULL)
+	temp <- grDevices::dev.cur()
+	close_temp_dev(temp, dev1)
+	close_temp_dev(temp, dev1)
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+})
+
+test_that("`with_temp_dev()` leaves no device open if none was open before", {
+	skip_if_not(grDevices::dev.cur() == 1L, "a graphics device is already open")
+	expect_equal(with_temp_dev(function() grDevices::pdf(NULL), 1), 1)
+	expect_null(grDevices::dev.list())
+	expect_error(with_temp_dev(function() grDevices::pdf(NULL), stop("drawing failed")))
+	expect_null(grDevices::dev.list())
+})
+
+test_that("raster fallbacks restore the previous graphics device", {
+	skip_if_not_installed("ragg")
+	skip_if_not(capabilities("png"))
+	grDevices::pdf(NULL)
+	dev1 <- grDevices::dev.cur()
+	on.exit(grDevices::dev.off(dev1), add = TRUE)
+	grDevices::pdf(NULL)
+	dev2 <- grDevices::dev.cur()
+	on.exit(grDevices::dev.off(dev2), add = TRUE)
+	grDevices::dev.set(dev1)
+	devs <- grDevices::dev.list()
+
+	clippee <- grid::rectGrob(gp = grid::gpar(fill = "blue"))
+	clipper <- grid::circleGrob(r = 0.4)
+	for (png_device in list(NULL, ragg::agg_png, grDevices::png)) {
+		grob <- clippingPathGrob(
+			clippee,
+			clipper,
+			use_R4.1_clipping = FALSE,
+			png_device = png_device
+		)
+		grid::grid.draw(grob)
+		expect_equal(grDevices::dev.cur(), dev1)
+		expect_equal(grDevices::dev.list(), devs)
+		grob <- alphaMaskGrob(clippee, clipper, use_R4.1_masks = FALSE, png_device = png_device)
+		grid::grid.draw(grob)
+		expect_equal(grDevices::dev.cur(), dev1)
+		expect_equal(grDevices::dev.list(), devs)
+	}
+	# these open two temporary devices
+	gridpattern_clip_raster_manual(clippee, clipper, 72, ragg::agg_png)
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+	gridpattern_mask_raster_manual(clippee, clipper, 72, ragg::agg_png)
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+
+	convert_polygon_df_to_alpha_channel(create_polygon_df(c(0, 0.5, 1), c(0, 1, 0)), 20, 20)
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+})

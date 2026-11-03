@@ -89,6 +89,9 @@ Bug fixes and minor improvements
   to restore the graphics device when the current device never changed
   (which needlessly triggered the device's (de)activate callbacks e.g. window title updates for `quartz()`)
   and never call `grDevices::dev.set(1L)` (which would open a new device) (#120).
+  The raster fallbacks of `alphaMaskGrob()` and `clippingPathGrob()` now restore the previous graphics device
+  *before* closing their temporary devices (so no unrelated device briefly becomes the current device)
+  and now also close their temporary devices if there is an error while drawing.
 * The "hatch" pattern types drawn by other patterns
   (e.g. "or" circles, "olive", "proper" waves, Goodman "steel" and "copper", and Unicode "cendree" checkers)
   now pass on `pattern_units`, `pattern_xoffset`, and `pattern_yoffset`.

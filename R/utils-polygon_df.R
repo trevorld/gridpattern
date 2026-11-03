@@ -162,9 +162,6 @@ get_poly_lengths <- function(sf_object) {
 #'
 #' @noRd
 convert_polygon_df_to_alpha_channel <- function(polygon_df, width, height) {
-	current_dev <- grDevices::dev.cur()
-	on.exit(restore_dev(current_dev), add = TRUE)
-
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	# Convert the polygon to an actual grob, coloured 'black'
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -178,9 +175,10 @@ convert_polygon_df_to_alpha_channel <- function(polygon_df, width, height) {
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	png_file <- tempfile(fileext = ".png")
 	on.exit(unlink(png_file), add = TRUE)
-	png(png_file, width = width, height = height)
-	grid.draw(boundary_grob)
-	dev.off()
+	with_temp_dev(
+		function() png(png_file, width = width, height = height),
+		grid.draw(boundary_grob)
+	)
 
 	#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	# Load the file and convert o a numeric matrix with values 0/1 depending
