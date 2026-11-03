@@ -97,21 +97,19 @@ killing_locked_device_messages <- function() {
 
 # Opens a temporary device with `open()` and returns a list with the number of that device `temp`
 # and the number of the previously current device `old` (to pass to `close_temp_dev()`).
-# If `open()` errors after opening a device returns to `old` and then closes that device.
+# If `open()` errors (or is interrupted) after opening a device returns to `old` and then closes that device.
 open_temp_dev <- function(open) {
 	old <- grDevices::dev.cur()
 	# Only ever close a device that `open()` opened:
 	# `open()` may leave some other pre-existing device current
 	# e.g. if it closes the device it opened (making the next device current) or calls `dev.set()`.
 	before <- grDevices::dev.list()
-	# A calling handler doesn't catch the error so it reaches the caller unchanged.
-	withCallingHandlers(
-		open(),
-		error = function(e) {
-			dev <- grDevices::dev.cur()
-			if (dev %in% before) restore_dev(old) else close_temp_dev(dev, old)
-		}
-	)
+	# A calling handler doesn't catch the error (or interrupt) so it reaches the caller unchanged.
+	cleanup <- function(cnd) {
+		dev <- grDevices::dev.cur()
+		if (dev %in% before) restore_dev(old) else close_temp_dev(dev, old)
+	}
+	withCallingHandlers(open(), error = cleanup, interrupt = cleanup)
 	temp <- grDevices::dev.cur()
 	if (temp %in% c(before, 1L)) {
 		restore_dev(old)

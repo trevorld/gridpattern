@@ -280,6 +280,19 @@ test_that("`with_temp_dev()` closes the temporary device and restores the previo
 	expect_equal(grDevices::dev.cur(), dev1)
 	expect_equal(grDevices::dev.list(), devs)
 
+	# `open()` opens a device and then is interrupted
+	open_then_interrupt <- function() {
+		grDevices::pdf(NULL)
+		rlang::interrupt()
+	}
+	interrupted <- tryCatch(
+		with_temp_dev(open_then_interrupt, NULL),
+		interrupt = function(cnd) "interrupted"
+	)
+	expect_equal(interrupted, "interrupted")
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+
 	# `open()` doesn't open a device
 	expect_error(with_temp_dev(function() NULL, NULL), "did not open")
 	expect_equal(grDevices::dev.cur(), dev1)

@@ -173,7 +173,7 @@ unregister_pattern <- function(name, env = caller_env()) {
 #'
 #' `registered_patterns()` returns a data frame of all available patterns
 #' i.e. those of `{gridpattern}`, the user, and loaded packages
-#' (it never loads any packages).
+#' (it never loads any packages and neither does `has_registered_pattern()`).
 #' `has_pattern()` returns whether pattern names currently resolve to a pattern
 #' i.e. whether [grid.pattern()] / [patternGrob()] could use them.
 #' `has_registered_pattern()` returns whether pattern names are taken
@@ -186,10 +186,10 @@ unregister_pattern <- function(name, env = caller_env()) {
 #'
 #' @param pattern A character vector of bare pattern names `"name"` and/or
 #'                qualified pattern names `"owner::name"`.
-#'                A qualified name `"pkg::name"` loads `{pkg}`'s namespace (if installed and not yet loaded)
+#'                For `has_pattern()` a qualified name `"pkg::name"`
+#'                (or a bare name preferred to a pattern of `{pkg}`, see [prefer_pattern()])
+#'                loads `{pkg}`'s namespace (if installed and not yet loaded)
 #'                so it may register its patterns (like `pkg::fn` does).
-#'                For `has_pattern()` so does a bare name preferred to a pattern of `{pkg}`
-#'                (see [prefer_pattern()]).
 #' @return `registered_patterns()` returns `r r2i_registered_patterns_df`
 #'         `has_pattern()` and `has_registered_pattern()` return a logical vector
 #'         the same length as `pattern`.
@@ -269,7 +269,7 @@ has_registered_pattern <- function(pattern) {
 }
 
 is_registered_pattern <- function(pattern) {
-	if (is.na(pattern) || !grepl("^([^:]+::)?[^:]+$", pattern)) {
+	if (is.na(pattern) || !grepl(PATTERN_NAME_REGEX, pattern)) {
 		return(FALSE)
 	}
 	name <- bare_name(pattern)
@@ -279,8 +279,8 @@ is_registered_pattern <- function(pattern) {
 	if (owner_name(pattern) == USER_OWNER) {
 		length(user_entries(name)) > 0L
 	} else {
-		# like `has_pattern()` loads the owner's namespace (if installed)
-		!is.null(lookup_qualified_pattern(pattern))
+		# like `registered_patterns()` doesn't load the owner's namespace
+		!is.null(lookup_qualified_pattern(pattern, load = FALSE))
 	}
 }
 
@@ -613,7 +613,7 @@ unprefer_pattern <- function(pattern) {
 	}
 	assert_pattern_names(
 		pattern,
-		"^([^:]+::)?[^:]+$",
+		PATTERN_NAME_REGEX,
 		'`pattern` must be bare names `"name"` or qualified names `"owner::name"`.'
 	)
 	names <- bare_name(pattern)
@@ -638,6 +638,8 @@ conflicting_patterns <- function() {
 }
 
 QUALIFIED_REGEX <- "^[^:]+::[^:]+$"
+# a bare name `"name"` or a qualified name `"owner::name"`
+PATTERN_NAME_REGEX <- "^([^:]+::)?[^:]+$"
 
 assert_pattern_names <- function(pattern, regex, msg, call = caller_env()) {
 	if (!is.character(pattern)) {

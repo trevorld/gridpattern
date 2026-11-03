@@ -1089,7 +1089,7 @@ test_that("`prefer_pattern(must_exist)` allows preferring patterns before they a
 	unprefer_pattern("stripe")
 })
 
-test_that("`registered_patterns()` and `conflicting_patterns()` don't load namespaces", {
+test_that("`registered_patterns()`, `conflicting_patterns()`, and `has_registered_pattern()` don't load namespaces", {
 	# an installed but not yet loaded package
 	candidates <- c("stats4", "tcltk", "splines", "compiler", "parallel")
 	# NB. `rlang::is_installed()` would load the package
@@ -1108,6 +1108,8 @@ test_that("`registered_patterns()` and `conflicting_patterns()` don't load names
 	conflicting_patterns()
 	expect_false(isNamespaceLoaded(pkg))
 	expect_true(has_registered_pattern("stripe")) # bare names never load
+	expect_false(isNamespaceLoaded(pkg))
+	expect_false(has_registered_pattern(paste0(pkg, "::stripe"))) # nor do qualified names
 	expect_false(isNamespaceLoaded(pkg))
 
 	# while `has_pattern()` (like drawing the pattern) does load it
