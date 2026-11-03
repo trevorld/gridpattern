@@ -70,10 +70,25 @@ New features
   A logical `legend` (as passed by `{ggpattern}` 1.3.1 and earlier, which zoom their keys themselves)
   is not zoomed by `pattern_key_scale_factor`.
   Previously only the "magick" pattern used `pattern_key_scale_factor` (which it still does for any legend key).
+* `prefer_pattern()`'s new `must_exist` argument controls what happens if a preferred pattern isn't (yet) registered:
+  `NA` (the default) warns, `TRUE` errors, and `FALSE` neither warns nor loads the pattern's package (useful in an `.Rprofile`).
+  It likewise controls what happens if the user has more than one pattern with that name
+  (via the legacy `ggpattern_geometry_funcs` / `ggpattern_array_funcs` options).
+  Previously preferring a pattern that wasn't registered was always an error.
+* `local_prefer_pattern()` sets pattern preferences until the current function (or test) exits
+  and then restores any previous preferences (#113).
+* `local_pattern()`'s new `prefer` argument also prefers the registered pattern
+  until the current function (or test) exits if `TRUE`.
+* `has_registered_pattern()` returns whether a pattern name is taken
+  (even if it doesn't resolve e.g. because of a conflict)
+  i.e. whether registering a pattern with that name would clobber or conflict with a pre-existing pattern.
 
 Bug fixes and minor improvements
 --------------------------------
 
+* `registered_patterns()` and `conflicting_patterns()` no longer load the package of a preferred pattern
+  (previously the first call omitted that package's patterns
+  and listed no pattern with that name as active).
 * The raster fallbacks of `alphaMaskGrob()` and `clippingPathGrob()`
   (used by the "hatch", "line", "rose", and "text" patterns when masks / clipping paths aren't supported by the graphics device)
   now only rasterise the (pixel-snapped) bounding box of the masker / clipper within the viewport
@@ -157,18 +172,9 @@ New Features
   (both are vectorized and return the previous preferences so they can be restored).
   Bare pattern names resolve to the pattern preferred by `prefer_pattern()` (if any) and otherwise to the pattern of the only owner (the user, `{gridpattern}`, or a package) with that name.
   If more than one owner has a pattern with that name there is a conflict and an error asks for either a qualified name or a `prefer_pattern()` preference (similar to the `{conflicted}` package).
-  `prefer_pattern()`'s `must_exist` argument controls what happens if a preferred pattern isn't (yet) registered:
-  `NA` (the default) warns, `TRUE` errors, and `FALSE` neither warns nor loads the pattern's package (useful in an `.Rprofile`).
-  It likewise controls what happens if the user has more than one pattern with that name
-  (via the legacy `ggpattern_geometry_funcs` / `ggpattern_array_funcs` options).
 * `conflicting_patterns()` lists patterns whose bare names are shared by more than one pattern
 * `has_pattern()` returns whether a pattern name resolves to a pattern.
-* `has_registered_pattern()` returns whether a pattern name is taken
-  (even if it doesn't resolve e.g. because of a conflict)
-  i.e. whether registering a pattern with that name would clobber or conflict with a pre-existing pattern.
 * `local_pattern()` registers a pattern until the current function (or test) exits and then restores any previous registration (useful in tests and examples).
-  If `prefer = TRUE` it also prefers that pattern until the current function (or test) exits.
-* `local_prefer_pattern()` sets pattern preferences until the current function (or test) exits and then restores any previous preferences (#113).
 
 Bug fixes and minor improvements
 --------------------------------
