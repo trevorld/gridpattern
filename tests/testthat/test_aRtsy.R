@@ -1,4 +1,5 @@
 test_that("aRtsy patterns works as expected", {
+	withr::local_preserve_seed() # {aRtsy} patterns use the RNG
 	skip_on_ci()
 	skip_on_cran()
 	skip_if_not_installed("aRtsy")

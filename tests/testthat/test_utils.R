@@ -138,7 +138,7 @@ test_that("`grid.pattern_hatch()` warns on unsupported type/subtype combinations
 	y <- c(1, 0, 0, 1)
 	render <- function(expr) {
 		f <- tempfile(fileext = ".pdf")
-		on.exit(unlink(f))
+		on.exit(unlink(f), add = TRUE)
 		prev_dev <- dev.cur()
 		pdf(f)
 		on.exit(

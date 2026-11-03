@@ -16,7 +16,7 @@ create_pattern_capture <- function(params, boundary_df, aspect_ratio, legend = F
 
 draw <- function(grob) {
 	grDevices::pdf(NULL)
-	on.exit(grDevices::dev.off())
+	on.exit(grDevices::dev.off(), add = TRUE)
 	grid::grid.draw(grob)
 	invisible(NULL)
 }
@@ -26,19 +26,23 @@ key <- function(pattern) {
 	pattern_key(entry$owner, entry$name)
 }
 
-# these tests (un)register and (un)prefer patterns with these names so
-# skip them if there are pre-existing custom patterns or preferences
+# these tests (un)register and (un)prefer patterns with these names
+# fmt: skip
+test_names <- c("brick", "capture", "custom", "later", "local",
+                "nope", "polygon", "stripe", "unknown", "wave")
+# so skip them if there are pre-existing custom patterns
 # (e.g. registered by another loaded package) that they could clobber or be affected by
 local({
-	# fmt: skip
-	names <- c("brick", "capture", "custom", "later", "local",
-	           "nope", "polygon", "stripe", "unknown", "wave")
 	df <- registered_patterns()
-	preexisting <- intersect(names, c(df$name[df$source != "builtin"], ls(pattern_preferences)))
+	preexisting <- intersect(test_names, df$name[df$source != "builtin"])
 	if (length(preexisting)) {
-		skip(paste("Pre-existing custom patterns or preferences:", toString(preexisting)))
+		skip(paste("Pre-existing custom patterns:", toString(preexisting)))
 	}
 })
+# and remove any pre-existing preferences (e.g. from an `.Rprofile`) until this file's tests finish
+# (a top-level `withr::defer()` in a test file runs once the file finishes)
+old_preferences <- unprefer_pattern(test_names)
+withr::defer(prefer_pattern(old_preferences, must_exist = FALSE))
 
 test_that("`register_pattern()` works for user patterns", {
 	on.exit(unregister_pattern("capture", env = globalenv()), add = TRUE)
