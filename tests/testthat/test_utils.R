@@ -282,6 +282,23 @@ test_that("`with_temp_dev()` closes the temporary device and restores the previo
 	expect_equal(grDevices::dev.cur(), dev1)
 	expect_equal(grDevices::dev.list(), devs)
 
+	# `open()` only switches to another pre-existing device
+	expect_error(with_temp_dev(function() grDevices::dev.set(dev2), NULL), "did not open")
+	expect_equal(grDevices::dev.cur(), dev1)
+	expect_equal(grDevices::dev.list(), devs)
+
+	# `open()` opens a device, closes it (making another pre-existing device current), and errors
+	open_close_fail <- function() {
+		grDevices::pdf(NULL)
+		grDevices::dev.off()
+		stop("open failed")
+	}
+	grDevices::dev.set(dev2)
+	expect_error(with_temp_dev(open_close_fail, NULL), "open failed")
+	expect_equal(grDevices::dev.cur(), dev2)
+	expect_equal(grDevices::dev.list(), devs)
+	grDevices::dev.set(dev1)
+
 	# `close_temp_dev()` can be called more than once
 	grDevices::pdf(NULL)
 	temp <- grDevices::dev.cur()

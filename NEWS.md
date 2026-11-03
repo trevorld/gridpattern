@@ -89,9 +89,10 @@ Bug fixes and minor improvements
   to restore the graphics device when the current device never changed
   (which needlessly triggered the device's (de)activate callbacks e.g. window title updates for `quartz()`)
   and never call `grDevices::dev.set(1L)` (which would open a new device) (#120).
-  The raster fallbacks of `alphaMaskGrob()` and `clippingPathGrob()` now restore the previous graphics device
+  Drawing array patterns (e.g. "image", "magick", "placeholder") and the raster fallbacks of
+  `alphaMaskGrob()` and `clippingPathGrob()` now restore the previous graphics device
   *before* closing their temporary devices (so no unrelated device briefly becomes the current device)
-  and now also close their temporary devices if there is an error while drawing.
+  and the raster fallbacks now also close their temporary devices if there is an error while drawing.
 * The "hatch" pattern types drawn by other patterns
   (e.g. "or" circles, "olive", "proper" waves, Goodman "steel" and "copper", and Unicode "cendree" checkers)
   now pass on `pattern_units`, `pattern_xoffset`, and `pattern_yoffset`.
@@ -158,6 +159,8 @@ New Features
   If more than one owner has a pattern with that name there is a conflict and an error asks for either a qualified name or a `prefer_pattern()` preference (similar to the `{conflicted}` package).
   `prefer_pattern()`'s `must_exist` argument controls what happens if a preferred pattern isn't (yet) registered:
   `NA` (the default) warns, `TRUE` errors, and `FALSE` neither warns nor loads the pattern's package (useful in an `.Rprofile`).
+  It likewise controls what happens if the user has more than one pattern with that name
+  (via the legacy `ggpattern_geometry_funcs` / `ggpattern_array_funcs` options).
 * `conflicting_patterns()` lists patterns whose bare names are shared by more than one pattern
 * `has_pattern()` returns whether a pattern name resolves to a pattern.
 * `local_pattern()` registers a pattern until the current function (or test) exits and then restores any previous registration (useful in tests and examples).
