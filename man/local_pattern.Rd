@@ -55,8 +55,12 @@ or \code{list(pattern_size = function(params, gp) gp$fontsize \%||\% 12)}.
 These replace the generic defaults for parameters that weren't supplied.
 The remaining generic defaults are filled in first and then these in the order given
 so a function default may use any generic parameter and any earlier pattern-specific default.
-Note \code{{ggpattern}} supplies its own (generic) defaults for most of its pattern aesthetics
-so these will mainly be used with \code{\link[=grid.pattern]{grid.pattern()}} / \code{\link[=patternGrob]{patternGrob()}}.}
+With \code{{ggpattern}} (>= 1.4.0) these also apply to any \code{pattern_} aesthetic
+the user doesn't map or set (\code{{ggpattern}} passes unset aesthetics as \code{NaN}).
+\code{{ggpattern}} 1.3.1 and earlier supply their own defaults for most \code{pattern_} aesthetics
+so with them these mainly apply with \code{\link[=grid.pattern]{grid.pattern()}} / \code{\link[=patternGrob]{patternGrob()}}.
+Unprefixed \code{{ggplot2}} aesthetics (see \code{unprefixed}) such as \code{fill}
+may be set by the geom's own defaults so their defaults may not apply with \code{{ggpattern}}.}
 
 \item{unprefixed}{A character vector of parameter names without the \code{pattern_} prefix
 that the pattern reads so that \code{defaults} may set them.
