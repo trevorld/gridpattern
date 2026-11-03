@@ -15,7 +15,7 @@ img_read_memoised <- img_read
 
 #' @import grid
 #' @importFrom glue glue
-#' @importFrom grDevices col2rgb dev.capture dev.capabilities dev.off png rgb
+#' @importFrom grDevices col2rgb dev.capture dev.capabilities png rgb
 #' @importFrom rlang %||% abort caller_env inform warn
 #' @importFrom utils hasName head packageVersion tail
 NULL

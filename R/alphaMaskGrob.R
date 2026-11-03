@@ -117,28 +117,23 @@ makeContent.alpha_mask <- function(x) {
 }
 
 device_supports_masks <- function(png_device) {
-	current_dev <- grDevices::dev.cur()
-	on.exit(restore_dev(current_dev), add = TRUE)
 	png_file <- tempfile(fileext = ".png")
 	on.exit(unlink(png_file), add = TRUE)
-	png_device(png_file)
-	value <- guess_has_R4.1_features("masks")
-	dev.off()
-	value
+	with_temp_dev(function() png_device(png_file), guess_has_R4.1_features("masks"))
 }
 
 gridpattern_mask_agg_capture <- function(maskee, masker, res, region = full_region()) {
-	current_dev <- grDevices::dev.cur()
-	on.exit(restore_dev(current_dev), add = TRUE)
 	px <- region_pixels(region, res)
 	maskee <- in_region(maskee, region)
 	masker <- in_region(masker, region)
 
-	ragg::agg_capture(height = px$height, width = px$width, res = res, bg = "transparent")
-	grob <- alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE)
-	grid.draw(grob)
-	raster_masked <- dev.capture(native = FALSE)
-	dev.off()
+	open <- function() {
+		ragg::agg_capture(height = px$height, width = px$width, res = res, bg = "transparent")
+	}
+	raster_masked <- with_temp_dev(open, {
+		grid.draw(alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE))
+		dev.capture(native = FALSE)
+	})
 	region_raster(raster_masked, region)
 }
 
@@ -290,18 +285,16 @@ gridpattern_mask_raster_straight <- function(
 	png_device,
 	region = full_region()
 ) {
-	current_dev <- grDevices::dev.cur()
-	on.exit(restore_dev(current_dev), add = TRUE)
 	px <- region_pixels(region, res)
 	maskee <- in_region(maskee, region)
 	masker <- in_region(masker, region)
 
 	png_masked <- tempfile(fileext = ".png")
 	on.exit(unlink(png_masked), add = TRUE)
-	png_device(png_masked, height = px$height, width = px$width, res = res, bg = "transparent")
-	grob <- alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE)
-	grid.draw(grob)
-	dev.off()
+	open <- function() {
+		png_device(png_masked, height = px$height, width = px$width, res = res, bg = "transparent")
+	}
+	with_temp_dev(open, grid.draw(alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE)))
 
 	raster_masked <- png::readPNG(png_masked, native = FALSE)
 	region_raster(raster_masked, region)
@@ -314,23 +307,22 @@ gridpattern_mask_raster_manual <- function(
 	png_device,
 	region = full_region()
 ) {
-	current_dev <- grDevices::dev.cur()
-	on.exit(restore_dev(current_dev), add = TRUE)
 	px <- region_pixels(region, res)
 	maskee <- in_region(maskee, region)
 	masker <- in_region(masker, region)
+	opener <- function(f) {
+		function() {
+			png_device(f, height = px$height, width = px$width, res = res, bg = "transparent")
+		}
+	}
 
 	png_maskee <- tempfile(fileext = ".png")
 	on.exit(unlink(png_maskee), add = TRUE)
-	png_device(png_maskee, height = px$height, width = px$width, res = res, bg = "transparent")
-	grid.draw(maskee)
-	dev.off()
+	with_temp_dev(opener(png_maskee), grid.draw(maskee))
 
 	png_masker <- tempfile(fileext = ".png")
 	on.exit(unlink(png_masker), add = TRUE)
-	png_device(png_masker, height = px$height, width = px$width, res = res, bg = "transparent")
-	grid.draw(masker)
-	dev.off()
+	with_temp_dev(opener(png_masker), grid.draw(masker))
 
 	raster_maskee <- png::readPNG(png_maskee, native = FALSE)
 	raster_masker <- png::readPNG(png_masker, native = FALSE)
