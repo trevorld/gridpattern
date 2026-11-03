@@ -858,6 +858,24 @@ test_that("`has_registered_pattern()`", {
 	expect_equal(has_registered_pattern(c("polygon", "R_GlobalEnv::polygon")), c(TRUE, TRUE))
 })
 
+test_that("stale entries of packages that can't be loaded are ignored", {
+	# e.g. left by a package that was unloaded and then removed
+	owner <- "gridpatternNotAPackage"
+	key <- paste0(owner, "::stale")
+	assign(
+		key,
+		pattern_entry("stale", owner, "geometry", create_pattern_polygon),
+		envir = pattern_registry
+	)
+	on.exit(rlang::env_unbind(pattern_registry, key), add = TRUE)
+	expect_false("stale" %in% registered_patterns()$name)
+	expect_equal(has_registered_pattern(c("stale", key)), c(FALSE, FALSE))
+	expect_false(has_pattern(key))
+	expect_error(resolve_pattern(key), "stale")
+	local_prefer_pattern(key, must_exist = FALSE)
+	expect_error(prefer_pattern(key, must_exist = TRUE), "stale")
+})
+
 test_that("`conflicting_patterns()`, `prefer_pattern()`, and `unprefer_pattern()`", {
 	env_grid <- asNamespace("grid")
 	env_utils <- asNamespace("utils")
