@@ -15,10 +15,10 @@ has_registered_pattern(pattern)
 \arguments{
 \item{pattern}{A character vector of bare pattern names \code{"name"} and/or
 qualified pattern names \code{"owner::name"}.
-A qualified name \code{"pkg::name"} loads \code{{pkg}}'s namespace (if installed and not yet loaded)
-so it may register its patterns (like \code{pkg::fn} does).
-For \code{has_pattern()} so does a bare name preferred to a pattern of \code{{pkg}}
-(see \code{\link[=prefer_pattern]{prefer_pattern()}}).}
+For \code{has_pattern()} a qualified name \code{"pkg::name"}
+(or a bare name preferred to a pattern of \code{{pkg}}, see \code{\link[=prefer_pattern]{prefer_pattern()}})
+loads \code{{pkg}}'s namespace (if installed and not yet loaded)
+so it may register its patterns (like \code{pkg::fn} does).}
 }
 \value{
 \code{registered_patterns()} returns a data frame with columns
@@ -41,7 +41,7 @@ but for \code{has_registered_pattern()} both return \code{TRUE}.
 \description{
 \code{registered_patterns()} returns a data frame of all available patterns
 i.e. those of \code{{gridpattern}}, the user, and loaded packages
-(it never loads any packages).
+(it never loads any packages and neither does \code{has_registered_pattern()}).
 \code{has_pattern()} returns whether pattern names currently resolve to a pattern
 i.e. whether \code{\link[=grid.pattern]{grid.pattern()}} / \code{\link[=patternGrob]{patternGrob()}} could use them.
 \code{has_registered_pattern()} returns whether pattern names are taken
