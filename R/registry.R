@@ -171,7 +171,9 @@ unregister_pattern <- function(name, env = caller_env()) {
 
 #' List available patterns
 #'
-#' `registered_patterns()` returns a data frame of all available patterns.
+#' `registered_patterns()` returns a data frame of all available patterns
+#' i.e. those of `{gridpattern}`, the user, and loaded packages
+#' (it never loads any packages).
 #' `has_pattern()` returns whether pattern names currently resolve to a pattern
 #' i.e. whether [grid.pattern()] / [patternGrob()] could use them.
 #' `has_registered_pattern()` returns whether pattern names are taken
@@ -184,6 +186,10 @@ unregister_pattern <- function(name, env = caller_env()) {
 #'
 #' @param pattern A character vector of bare pattern names `"name"` and/or
 #'                qualified pattern names `"owner::name"`.
+#'                A qualified name `"pkg::name"` loads `{pkg}`'s namespace (if installed and not yet loaded)
+#'                so it may register its patterns (like `pkg::fn` does).
+#'                For `has_pattern()` so does a bare name preferred to a pattern of `{pkg}`
+#'                (see [prefer_pattern()]).
 #' @return `registered_patterns()` returns `r r2i_registered_patterns_df`
 #'         `has_pattern()` and `has_registered_pattern()` return a logical vector
 #'         the same length as `pattern`.
@@ -224,9 +230,10 @@ registered_patterns <- function() {
 		kind = field("kind"),
 		source = field("source")
 	)
-	# resolve each name once
+	# resolve each name once (without loading any namespaces of preferred patterns
+	# which would register patterns missing from `entries`)
 	active <- lapply(rlang::set_names(unique(df$name)), function(name) {
-		tryCatch(resolve_pattern(name), error = function(e) NULL)
+		tryCatch(resolve_pattern(name, load = FALSE), error = function(e) NULL)
 	})
 	df$active <- vapply(
 		seq_along(entries),
@@ -423,6 +430,7 @@ restore_preferences <- function(names, old) {
 #' `conflicting_patterns()` returns the available patterns whose bare name is shared
 #' by more than one pattern (see [register_pattern()] for how bare names are resolved).
 #' Using such a bare name throws an error unless a preference has been set.
+#' Like [registered_patterns()] it never loads any packages.
 #'
 #' `prefer_pattern()` and `unprefer_pattern()` are vectorized and return the previous preferences (if any)
 #' so they may be used to temporarily change preferences:
@@ -961,17 +969,20 @@ pattern_candidates <- function(name) {
 }
 
 # returns registry entry for pattern `pattern`
-resolve_pattern <- function(pattern) {
+# if `load` a qualified name (or a bare name preferred to a package) loads that package's namespace
+resolve_pattern <- function(pattern, load = TRUE) {
 	if (!rlang::is_string(pattern) || !nzchar(pattern)) {
 		abort("`pattern` must be a non-empty string.")
 	}
 	if (grepl("::", pattern, fixed = TRUE)) {
-		return(resolve_qualified_pattern(pattern))
+		return(resolve_qualified_pattern(pattern, load = load))
 	}
 	preferred <- pattern_preferences[[pattern]]
 	if (!is.null(preferred)) {
 		key <- pattern_key(preferred, pattern)
-		return(lookup_qualified_pattern(key) %||% abort_missing_preference(pattern, key))
+		return(
+			lookup_qualified_pattern(key, load = load) %||% abort_missing_preference(pattern, key)
+		)
 	}
 	candidates <- pattern_candidates(pattern)
 	if (length(candidates) == 1L) {
@@ -1018,22 +1029,24 @@ abort_missing_preference <- function(name, key) {
 	)
 }
 
-resolve_qualified_pattern <- function(pattern) {
-	lookup_qualified_pattern(pattern) %||% abort_unknown_pattern(pattern)
+resolve_qualified_pattern <- function(pattern, load = TRUE) {
+	lookup_qualified_pattern(pattern, load = load) %||% abort_unknown_pattern(pattern)
 }
 
 # returns registry entry for qualified pattern `pattern` or `NULL`
-lookup_qualified_pattern <- function(pattern) {
+# if `load` loads the owner's namespace (if installed) so it may register its patterns
+lookup_qualified_pattern <- function(pattern, load = TRUE) {
 	owner <- owner_name(pattern)
 	if (owner == USER_OWNER) {
-		entry <- user_entry(bare_name(pattern))
-	} else {
-		if (!isNamespaceLoaded(owner)) {
-			requireNamespace(owner, quietly = TRUE)
-		}
-		entry <- pattern_registry[[pattern]]
+		return(user_entry(bare_name(pattern)))
 	}
-	entry
+	if (!isNamespaceLoaded(owner)) {
+		if (!load) {
+			return(NULL)
+		}
+		requireNamespace(owner, quietly = TRUE)
+	}
+	pattern_registry[[pattern]]
 }
 
 get_pattern_fn <- function(entry) {

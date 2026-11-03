@@ -55,6 +55,9 @@
 #' @param pattern Name of pattern.  See Details section for a list of supported patterns.
 #'                Builtin patterns may also be referred to by their qualified name e.g. `"gridpattern::stripe"`
 #'                and custom patterns registered by packages by `"pkg::name"`.
+#'                A qualified name `"pkg::name"` (or a bare name preferred to a pattern of `{pkg}`,
+#'                see [prefer_pattern()]) loads `{pkg}`'s namespace (if installed and not yet loaded)
+#'                so it may register its patterns (like `pkg::fn` does).
 #'                See [register_pattern()] for more information.
 #' @param x A numeric vector or unit object specifying x-locations of the pattern boundary.
 #' @param y A numeric vector or unit object specifying y-locations of the pattern boundary.

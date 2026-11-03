@@ -51,7 +51,8 @@ a data frame with columns
 \item{owner}{The package that registered the pattern or \code{"R_GlobalEnv"} for the user.}
 \item{kind}{Either \code{"geometry"} or \code{"array"}.}
 \item{source}{One of \code{"builtin"}, \code{"register_pattern"}, or \code{"options"}.}
-\item{active}{Whether the bare \code{name} currently resolves to this pattern.}
+\item{active}{Whether the bare \code{name} currently resolves to this pattern
+(without loading the package of a preferred pattern, see \code{\link[=prefer_pattern]{prefer_pattern()}}).}
 }
 }
 \description{
@@ -61,6 +62,7 @@ taking priority over all other patterns with that name.
 \code{conflicting_patterns()} returns the available patterns whose bare name is shared
 by more than one pattern (see \code{\link[=register_pattern]{register_pattern()}} for how bare names are resolved).
 Using such a bare name throws an error unless a preference has been set.
+Like \code{\link[=registered_patterns]{registered_patterns()}} it never loads any packages.
 }
 \details{
 \code{prefer_pattern()} and \code{unprefer_pattern()} are vectorized and return the previous preferences (if any)
