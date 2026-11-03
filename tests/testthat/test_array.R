@@ -28,16 +28,11 @@ test_raster <- function(ref_png, fn, update = FALSE) {
 }
 
 my_png <- function(f, fn) {
-	current_dev <- grDevices::dev.cur()
-	if (current_dev > 1) {
-		on.exit(grDevices::dev.set(current_dev))
-	}
-	grDevices::png(f, type = "cairo", width = 240, height = 240)
-	fn()
-	grDevices::dev.off()
+	with_temp_dev(function() grDevices::png(f, type = "cairo", width = 240, height = 240), fn())
 }
 
 test_that("array patterns works as expected", {
+	withr::local_preserve_seed() # loading {magick} and random patterns use the RNG
 	skip_on_ci()
 	skip_on_cran()
 	skip_if_not(capabilities("cairo"))
@@ -302,7 +297,7 @@ test_that("array patterns works as expected", {
 
 test_that("`grobCoords()` of a pattern is its boundary", {
 	grDevices::pdf(NULL, width = 2, height = 2)
-	on.exit(grDevices::dev.off())
+	on.exit(grDevices::dev.off(), add = TRUE)
 	x <- c(0, 1, 1, 0, 0.2, 0.5, 0.8)
 	y <- c(0, 0, 1, 1, 0.2, 0.8, 0.2)
 	id <- c(1, 1, 1, 1, 2, 2, 2)
@@ -329,9 +324,10 @@ test_that("`grobCoords()` of a pattern is its boundary", {
 })
 
 test_that("raster fallbacks only rasterise the bounding box of the masker / clipper", {
+	withr::local_preserve_seed() # building the "plasma" pattern uses the RNG
 	skip_if_not_installed("ragg")
 	grDevices::pdf(NULL, width = 2, height = 2) # 200 x 200 pixels at `res = 100`
-	on.exit(grDevices::dev.off())
+	on.exit(grDevices::dev.off(), add = TRUE)
 	# the left of the bounding box isn't where a ray west from its centre meets the triangle
 	triangle <- polygonGrob(c(0.25, 0.75, 0.4), c(0.25, 0.35, 0.75), gp = gpar(col = NA))
 	# padded by a couple pixels and snapped to whole pixels
@@ -393,7 +389,7 @@ test_that("raster fallbacks only rasterise the bounding box of the masker / clip
 test_that("an unset `res` of the raster fallbacks uses the device resolution", {
 	skip_if_not_installed("ragg")
 	grDevices::pdf(NULL, width = 2, height = 2)
-	on.exit(grDevices::dev.off())
+	on.exit(grDevices::dev.off(), add = TRUE)
 	for (res in list(NULL, NA, NaN)) {
 		masked <- grid.force(alphaMaskGrob(
 			rectGrob(),

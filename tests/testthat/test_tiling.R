@@ -2,7 +2,6 @@ context("tiling")
 test_that("tiling patterns work as expected", {
 	skip_if_not_installed("vdiffr")
 	skip_on_ci()
-	library("vdiffr")
 
 	x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 	y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
@@ -13,112 +12,112 @@ test_that("tiling patterns work as expected", {
 	gp2 <- gpar(fill = c("yellow", "red"), col = "black")
 	gp3 <- gpar(fill = c("yellow", "red", "blue"), col = "black")
 
-	expect_doppelganger("elongated_triangular", function() {
+	vdiffr::expect_doppelganger("elongated_triangular", function() {
 		g.ppt("elongated_triangular", gp = gp2)
 	})
-	expect_doppelganger("herringbone", function() {
+	vdiffr::expect_doppelganger("herringbone", function() {
 		g.ppt("herringbone", gp = gp2)
 	})
-	expect_doppelganger("hexagonal_tiling", function() {
+	vdiffr::expect_doppelganger("hexagonal_tiling", function() {
 		g.ppt("hexagonal", gp = gp2)
 	})
-	expect_doppelganger("pythagorean", function() {
+	vdiffr::expect_doppelganger("pythagorean", function() {
 		g.ppt("pythagorean", gp = gp2)
 	})
-	expect_doppelganger("rhombitrihexagonal_tiling", function() {
+	vdiffr::expect_doppelganger("rhombitrihexagonal_tiling", function() {
 		g.ppt("rhombitrihexagonal", gp = gp3)
 	})
-	expect_doppelganger("rhombille", function() {
+	vdiffr::expect_doppelganger("rhombille", function() {
 		g.ppt("rhombille", gp = gp3)
 	})
-	expect_doppelganger("snub_square_tiling", function() {
+	vdiffr::expect_doppelganger("snub_square_tiling", function() {
 		g.ppt("snub_square", gp = gp3)
 	})
-	expect_doppelganger("snub_trihex_tiling", function() {
+	vdiffr::expect_doppelganger("snub_trihex_tiling", function() {
 		g.ppt("snub_trihexagonal", gp = gp3)
 	})
-	expect_doppelganger("square_tiling", function() {
+	vdiffr::expect_doppelganger("square_tiling", function() {
 		g.ppt("square", gp = gp2)
 	})
-	expect_doppelganger("tetrakis_square", function() {
+	vdiffr::expect_doppelganger("tetrakis_square", function() {
 		g.ppt("tetrakis_square", gp = gp3)
 	})
-	expect_doppelganger("triangular_tiling", function() {
+	vdiffr::expect_doppelganger("triangular_tiling", function() {
 		g.ppt("triangular", gp = gp2)
 	})
-	expect_doppelganger("trihexagonal_tiling", function() {
+	vdiffr::expect_doppelganger("trihexagonal_tiling", function() {
 		g.ppt("trihexagonal", gp = gp2)
 	})
-	expect_doppelganger("trunc_hex_tiling", function() {
+	vdiffr::expect_doppelganger("trunc_hex_tiling", function() {
 		g.ppt("truncated_hexagonal", gp = gp3)
 	})
-	expect_doppelganger("trunc_trihex_tiling", function() {
+	vdiffr::expect_doppelganger("trunc_trihex_tiling", function() {
 		g.ppt("truncated_trihexagonal", gp = gp2)
 	})
-	expect_doppelganger("trunc_square_tiling", function() {
+	vdiffr::expect_doppelganger("trunc_square_tiling", function() {
 		g.ppt("truncated_square", gp = gp3)
 	})
-	expect_doppelganger("2*.2**.2*.2**", function() {
+	vdiffr::expect_doppelganger("2*.2**.2*.2**", function() {
 		g.ppt("2*.2**.2*.2**", gp = gp3)
 	})
-	expect_doppelganger("2**.3**.12*", function() {
+	vdiffr::expect_doppelganger("2**.3**.12*", function() {
 		g.ppt("2**.3**.12*", gp = gp3)
 	})
-	expect_doppelganger("3.3.3.3_alt", function() {
+	vdiffr::expect_doppelganger("3.3.3.3_alt", function() {
 		g.ppt("3.3.3.3**", gp = gp2)
 	})
-	expect_doppelganger("3.3*.3.3**", function() {
+	vdiffr::expect_doppelganger("3.3*.3.3**", function() {
 		g.ppt("3.3*.3.3**", gp = gp2)
 	})
-	expect_doppelganger("3.3.3.12*.3.3.12*", function() {
+	vdiffr::expect_doppelganger("3.3.3.12*.3.3.12*", function() {
 		g.ppt("3.3.3.12*.3.3.12*", gp = gp3)
 	})
-	expect_doppelganger("3.3.8*.3.4.3.8*", function() {
+	vdiffr::expect_doppelganger("3.3.8*.3.4.3.8*", function() {
 		g.ppt("3.3.8*.3.4.3.8*", gp = gp3)
 	})
-	expect_doppelganger("3.3.8*.4**.8*", function() {
+	vdiffr::expect_doppelganger("3.3.8*.4**.8*", function() {
 		g.ppt("3.3.8*.4**.8*", gp = gp3)
 	})
-	expect_doppelganger("3.4.6.3.12*", function() {
+	vdiffr::expect_doppelganger("3.4.6.3.12*", function() {
 		g.ppt("3.4.6.3.12*", gp = gp3)
 	})
-	expect_doppelganger("3.4.8.3.8*", function() {
+	vdiffr::expect_doppelganger("3.4.8.3.8*", function() {
 		g.ppt("3.4.8.3.8*", gp = gp3)
 	})
-	expect_doppelganger("3.6*.6**", function() {
+	vdiffr::expect_doppelganger("3.6*.6**", function() {
 		g.ppt("3.6*.6**", gp = gp3)
 	})
-	expect_doppelganger("4.2*.4.2**", function() {
+	vdiffr::expect_doppelganger("4.2*.4.2**", function() {
 		g.ppt("4.2*.4.2**", gp = gp3)
 	})
-	expect_doppelganger("4.4*.4**", function() {
+	vdiffr::expect_doppelganger("4.4*.4**", function() {
 		g.ppt("4.4*.4**", gp = gp2)
 	})
-	expect_doppelganger("4.6.4*.6", function() {
+	vdiffr::expect_doppelganger("4.6.4*.6", function() {
 		g.ppt("4.6.4*.6", gp = gp3)
 	})
-	expect_doppelganger("4.6*.4.6*.4.6*", function() {
+	vdiffr::expect_doppelganger("4.6*.4.6*.4.6*", function() {
 		g.ppt("4.6*.4.6*.4.6*", gp = gp2)
 	})
-	expect_doppelganger("4.8*.4**.8*", function() {
+	vdiffr::expect_doppelganger("4.8*.4**.8*", function() {
 		g.ppt("4.8*.4**.8*", gp = gp2)
 	})
-	expect_doppelganger("6.6*.6.6*", function() {
+	vdiffr::expect_doppelganger("6.6*.6.6*", function() {
 		g.ppt("6.6*.6.6*", gp = gp2)
 	})
-	expect_doppelganger("8.4*.8.4*", function() {
+	vdiffr::expect_doppelganger("8.4*.8.4*", function() {
 		g.ppt("8.4*.8.4*", gp = gp2)
 	})
-	expect_doppelganger("9.3.9.3*", function() {
+	vdiffr::expect_doppelganger("9.3.9.3*", function() {
 		g.ppt("9.3.9.3*", gp = gp3)
 	})
-	expect_doppelganger("12.3*.12.3*", function() {
+	vdiffr::expect_doppelganger("12.3*.12.3*", function() {
 		g.ppt("12.3*.12.3*", gp = gp2)
 	})
-	expect_doppelganger("12.12.4*", function() {
+	vdiffr::expect_doppelganger("12.12.4*", function() {
 		g.ppt("12.12.4*", gp = gp2)
 	})
-	expect_doppelganger("18.18.3*", function() {
+	vdiffr::expect_doppelganger("18.18.3*", function() {
 		g.ppt("18.18.3*", gp = gp2)
 	})
 })

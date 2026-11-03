@@ -15,7 +15,7 @@ create_pattern_legend_capture <- function(params, boundary_df, aspect_ratio, leg
 
 draw_legend_capture <- function(legend, ...) {
 	grDevices::pdf(NULL, width = 2, height = 2)
-	on.exit(grDevices::dev.off())
+	on.exit(grDevices::dev.off(), add = TRUE)
 	grid.pattern("legend_capture", ..., legend = legend, res = 100)
 	as.list(legend_captured)
 }
@@ -62,7 +62,7 @@ test_that("`legend` may be logical or a non-negative number", {
 
 test_that("a scaled legend draws the pattern inside the boundary", {
 	grDevices::pdf(NULL, width = 2, height = 2)
-	on.exit(grDevices::dev.off())
+	on.exit(grDevices::dev.off(), add = TRUE)
 	grob <- grid.pattern(
 		"stripe",
 		x = c(0.2, 0.2, 0.8, 0.8),
@@ -81,8 +81,7 @@ test_that("a scaled legend draws the pattern inside the boundary", {
 })
 
 test_that("`pattern_key_scale_factor` zooms a legend key", {
-	on.exit(unregister_pattern("legend_capture", env = globalenv()), add = TRUE)
-	register_pattern(
+	local_pattern(
 		"legend_capture",
 		create_pattern_legend_capture,
 		defaults = list(pattern_amplitude = function(params, gp) params$pattern_spacing / 2),
@@ -141,8 +140,7 @@ test_that("`pattern_key_scale_factor` zooms a legend key", {
 
 test_that("the default `pattern_res` is computed from the graphics device when drawn", {
 	skip_if_not_installed("withr")
-	on.exit(unregister_pattern("legend_capture", env = globalenv()), add = TRUE)
-	register_pattern("legend_capture", create_pattern_legend_capture, env = globalenv())
+	local_pattern("legend_capture", create_pattern_legend_capture, env = globalenv())
 	draw_res <- function(...) {
 		grid.newpage()
 		grid.pattern("legend_capture", ...)
@@ -163,12 +161,12 @@ test_that("the default `pattern_res` is computed from the graphics device when d
 		})
 	})
 	skip_if_not(capabilities("png"))
-	withr::with_png(tempfile(fileext = ".png"), res = 150, {
+	withr::with_png(withr::local_tempfile(fileext = ".png"), res = 150, {
 		expect_equal(draw_res(), 1.14 * 150)
 	})
 	# a grob created on one device uses the resolution of the device it is drawn on
 	grob <- patternGrob("legend_capture")
-	withr::with_png(tempfile(fileext = ".png"), res = 300, {
+	withr::with_png(withr::local_tempfile(fileext = ".png"), res = 300, {
 		grid.draw(grob)
 		expect_equal(legend_captured$params$pattern_res, 1.14 * 300)
 	})

@@ -35,17 +35,16 @@ test_that("geometry patterns work as expected", {
 
 	skip_if_not_installed("vdiffr")
 	skip_on_ci()
-	library("vdiffr")
 
-	expect_doppelganger("default", grid.pattern)
+	vdiffr::expect_doppelganger("default", grid.pattern)
 
 	x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 	y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-	expect_doppelganger("circle", function() {
+	vdiffr::expect_doppelganger("circle", function() {
 		grid.pattern_circle(x, y, color = "blue", fill = "yellow", size = 2, density = 0.5)
 	})
 
-	expect_doppelganger("crosshatch", function() {
+	vdiffr::expect_doppelganger("crosshatch", function() {
 		grid.pattern_crosshatch(
 			x,
 			y,
@@ -56,18 +55,18 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("fill", function() {
+	vdiffr::expect_doppelganger("fill", function() {
 		grid.pattern_fill(x, y, fill = "blue", alpha = 0.5)
 	})
 
-	expect_doppelganger("none", function() {
+	vdiffr::expect_doppelganger("none", function() {
 		grid.pattern_none(x, y)
 	})
 
 	expect_error(assert_rp_shape(1), "Unknown shape 1")
 	expect_null(assert_rp_shape(c("square", "convex4")))
 	expect_null(assert_rp_shape(c("star5", "circle", "null")))
-	expect_doppelganger("regular_polygon", function() {
+	vdiffr::expect_doppelganger("regular_polygon", function() {
 		grid.pattern_regular_polygon(
 			x,
 			y,
@@ -78,7 +77,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("hexagon", function() {
+	vdiffr::expect_doppelganger("hexagon", function() {
 		grid.pattern_regular_polygon(
 			x,
 			y,
@@ -90,7 +89,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("square", function() {
+	vdiffr::expect_doppelganger("square", function() {
 		grid.pattern_regular_polygon(
 			x,
 			y,
@@ -101,7 +100,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("eight_sided_star", function() {
+	vdiffr::expect_doppelganger("eight_sided_star", function() {
 		grid.pattern_regular_polygon(
 			x,
 			y,
@@ -112,17 +111,17 @@ test_that("geometry patterns work as expected", {
 			shape = "star8"
 		)
 	})
-	expect_doppelganger("stripe", function() {
+	vdiffr::expect_doppelganger("stripe", function() {
 		grid.pattern_stripe(x, y, color = "black", fill = c("yellow", "blue"), density = 0.5)
 	})
 
-	expect_doppelganger("stripe_gpar", function() {
+	vdiffr::expect_doppelganger("stripe_gpar", function() {
 		x <- c(0.1, 0.6, 0.8, 0.3)
 		y <- c(0.2, 0.3, 0.8, 0.5)
 		grid.pattern("stripe", x, y, gp = gpar(col = "blue", fill = "red", lwd = 2))
 	})
 
-	expect_doppelganger("wave_wavy", function() {
+	vdiffr::expect_doppelganger("wave_wavy", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -137,7 +136,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("wave_indented", function() {
+	vdiffr::expect_doppelganger("wave_indented", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -149,7 +148,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("wave_sawtooth", function() {
+	vdiffr::expect_doppelganger("wave_sawtooth", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -164,7 +163,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("wave_sawtooth_reverse", function() {
+	vdiffr::expect_doppelganger("wave_sawtooth_reverse", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -196,7 +195,7 @@ test_that("geometry patterns work as expected", {
 		"overlap"
 	)
 
-	expect_doppelganger("wave_embattled", function() {
+	vdiffr::expect_doppelganger("wave_embattled", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -211,7 +210,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("wave_wavy_stagger", function() {
+	vdiffr::expect_doppelganger("wave_wavy_stagger", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -241,7 +240,7 @@ test_that("geometry patterns work as expected", {
 		"overlap"
 	)
 
-	expect_doppelganger("wave_indented_stagger", function() {
+	vdiffr::expect_doppelganger("wave_indented_stagger", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -271,7 +270,7 @@ test_that("geometry patterns work as expected", {
 		"overlap"
 	)
 
-	expect_doppelganger("wave_urdy", function() {
+	vdiffr::expect_doppelganger("wave_urdy", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -302,7 +301,7 @@ test_that("geometry patterns work as expected", {
 		"overlap"
 	)
 
-	expect_doppelganger("wave_dovetailed", function() {
+	vdiffr::expect_doppelganger("wave_dovetailed", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -317,7 +316,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("wave_engrailed", function() {
+	vdiffr::expect_doppelganger("wave_engrailed", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -332,7 +331,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("wave_invected", function() {
+	vdiffr::expect_doppelganger("wave_invected", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -363,7 +362,7 @@ test_that("geometry patterns work as expected", {
 		"overlap"
 	)
 
-	expect_doppelganger("wave_nebuly", function() {
+	vdiffr::expect_doppelganger("wave_nebuly", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -394,7 +393,7 @@ test_that("geometry patterns work as expected", {
 		"overlap"
 	)
 
-	expect_doppelganger("wave_potenty", function() {
+	vdiffr::expect_doppelganger("wave_potenty", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -425,7 +424,7 @@ test_that("geometry patterns work as expected", {
 		"overlap"
 	)
 
-	expect_doppelganger("wave_embattled_grady", function() {
+	vdiffr::expect_doppelganger("wave_embattled_grady", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -456,7 +455,7 @@ test_that("geometry patterns work as expected", {
 		"overlap"
 	)
 
-	expect_doppelganger("wave_raguly", function() {
+	vdiffr::expect_doppelganger("wave_raguly", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -471,7 +470,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("wave_raguly_reverse", function() {
+	vdiffr::expect_doppelganger("wave_raguly_reverse", function() {
 		grid.pattern_wave(
 			x,
 			y,
@@ -487,7 +486,7 @@ test_that("geometry patterns work as expected", {
 		)
 	})
 
-	expect_doppelganger("weave", function() {
+	vdiffr::expect_doppelganger("weave", function() {
 		grid.pattern_weave(
 			x,
 			y,
@@ -514,14 +513,14 @@ test_that("geometry patterns work as expected", {
 	withr::local_options(ggpattern_geometry_funcs = list(centroid = centroid_dot_pattern))
 	x <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 	y <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-	expect_doppelganger("centroid", function() {
+	vdiffr::expect_doppelganger("centroid", function() {
 		grid.pattern("centroid", x, y, fill = "blue", size = 5)
 	})
 
 	x <- c(0, 0, 0.5, 0.5, 0.5, 0.5, 1, 1)
 	y <- c(0, 0.5, 0.5, 0, 0.5, 1, 1, 0.5)
 	id <- rep(1:2, each = 4L)
-	expect_doppelganger("two_id", function() {
+	vdiffr::expect_doppelganger("two_id", function() {
 		grid.pattern(x = x, y = y, id = id)
 	})
 })
