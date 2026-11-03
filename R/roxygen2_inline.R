@@ -7,7 +7,8 @@ r2i_registered_patterns_df <- paste(
 	"  \\item{owner}{The package that registered the pattern or `\"R_GlobalEnv\"` for the user.}",
 	"  \\item{kind}{Either `\"geometry\"` or `\"array\"`.}",
 	"  \\item{source}{One of `\"builtin\"`, `\"register_pattern\"`, or `\"options\"`.}",
-	"  \\item{active}{Whether the bare `name` currently resolves to this pattern.}",
+	"  \\item{active}{Whether the bare `name` currently resolves to this pattern",
+	"    (without loading the package of a preferred pattern, see [prefer_pattern()]).}",
 	"}",
 	sep = "\n"
 )

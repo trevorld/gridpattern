@@ -42,6 +42,9 @@ patternGrob(
 \item{pattern}{Name of pattern.  See Details section for a list of supported patterns.
 Builtin patterns may also be referred to by their qualified name e.g. \code{"gridpattern::stripe"}
 and custom patterns registered by packages by \code{"pkg::name"}.
+A qualified name \code{"pkg::name"} (or a bare name preferred to a pattern of \code{{pkg}},
+see \code{\link[=prefer_pattern]{prefer_pattern()}}) loads \code{{pkg}}'s namespace (if installed and not yet loaded)
+so it may register its patterns (like \code{pkg::fn} does).
 See \code{\link[=register_pattern]{register_pattern()}} for more information.}
 
 \item{x}{A numeric vector or unit object specifying x-locations of the pattern boundary.}

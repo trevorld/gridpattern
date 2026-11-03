@@ -1087,3 +1087,29 @@ test_that("`prefer_pattern(must_exist)` allows preferring patterns before they a
 	)
 	unprefer_pattern("stripe")
 })
+
+test_that("`registered_patterns()` and `conflicting_patterns()` don't load namespaces", {
+	# an installed but not yet loaded package
+	candidates <- c("stats4", "tcltk", "splines", "compiler", "parallel")
+	# NB. `rlang::is_installed()` would load the package
+	unloaded <- Filter(
+		function(p) !isNamespaceLoaded(p) && nzchar(system.file(package = p)),
+		candidates
+	)
+	skip_if(length(unloaded) == 0L, "no installed but unloaded package to test with")
+	pkg <- unloaded[[1L]]
+	# restores any pre-existing "stripe" preference
+	local_prefer_pattern(paste0(pkg, "::stripe"), must_exist = FALSE)
+
+	df <- registered_patterns()
+	expect_false(isNamespaceLoaded(pkg))
+	expect_false(any(df$active[df$name == "stripe"]))
+	conflicting_patterns()
+	expect_false(isNamespaceLoaded(pkg))
+	expect_true(has_registered_pattern("stripe")) # bare names never load
+	expect_false(isNamespaceLoaded(pkg))
+
+	# while `has_pattern()` (like drawing the pattern) does load it
+	expect_false(has_pattern("stripe"))
+	expect_true(isNamespaceLoaded(pkg))
+})

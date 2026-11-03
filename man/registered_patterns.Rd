@@ -14,7 +14,11 @@ has_registered_pattern(pattern)
 }
 \arguments{
 \item{pattern}{A character vector of bare pattern names \code{"name"} and/or
-qualified pattern names \code{"owner::name"}.}
+qualified pattern names \code{"owner::name"}.
+A qualified name \code{"pkg::name"} loads \code{{pkg}}'s namespace (if installed and not yet loaded)
+so it may register its patterns (like \code{pkg::fn} does).
+For \code{has_pattern()} so does a bare name preferred to a pattern of \code{{pkg}}
+(see \code{\link[=prefer_pattern]{prefer_pattern()}}).}
 }
 \value{
 \code{registered_patterns()} returns a data frame with columns
@@ -23,7 +27,8 @@ qualified pattern names \code{"owner::name"}.}
 \item{owner}{The package that registered the pattern or \code{"R_GlobalEnv"} for the user.}
 \item{kind}{Either \code{"geometry"} or \code{"array"}.}
 \item{source}{One of \code{"builtin"}, \code{"register_pattern"}, or \code{"options"}.}
-\item{active}{Whether the bare \code{name} currently resolves to this pattern.}
+\item{active}{Whether the bare \code{name} currently resolves to this pattern
+(without loading the package of a preferred pattern, see \code{\link[=prefer_pattern]{prefer_pattern()}}).}
 }
 \code{has_pattern()} and \code{has_registered_pattern()} return a logical vector
 the same length as \code{pattern}.
@@ -34,7 +39,9 @@ if the user has more than one pattern with that name
 but for \code{has_registered_pattern()} both return \code{TRUE}.
 }
 \description{
-\code{registered_patterns()} returns a data frame of all available patterns.
+\code{registered_patterns()} returns a data frame of all available patterns
+i.e. those of \code{{gridpattern}}, the user, and loaded packages
+(it never loads any packages).
 \code{has_pattern()} returns whether pattern names currently resolve to a pattern
 i.e. whether \code{\link[=grid.pattern]{grid.pattern()}} / \code{\link[=patternGrob]{patternGrob()}} could use them.
 \code{has_registered_pattern()} returns whether pattern names are taken
