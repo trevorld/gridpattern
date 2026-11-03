@@ -67,29 +67,43 @@ restore_dev <- function(dev) {
 	invisible(NULL)
 }
 
-# Closes the temporary device `temp` and returns to device `old`
-# (the result of `dev.cur()` before `temp` was opened).
+# Returns to device `old` (the result of `dev.cur()` before `temp` was opened)
+# and then closes the temporary device `temp`.
 # `old` is selected *first* so that closing `temp` doesn't make some other device current in between.
 # Safe to call more than once.
 close_temp_dev <- function(temp, old) {
 	force(temp) # e.g. `close_temp_dev(dev.cur(), old)` must not see `old`
 	restore_dev(old)
 	if (temp > 1L && temp != old && temp %in% grDevices::dev.list()) {
-		grDevices::dev.off(temp)
+		# an error while drawing leaves the device locked and closing it then warns
+		# "Killing locked device" which is just noise next to that error
+		withCallingHandlers(
+			grDevices::dev.off(temp),
+			warning = function(w) {
+				if (conditionMessage(w) %in% killing_locked_device_messages()) {
+					invokeRestart("muffleWarning")
+				}
+			}
+		)
 	}
 	invisible(NULL)
 }
 
-# Opens a device with `open()`, evaluates `code` on it,
-# then closes it and returns to the previously current device (also on error).
-# Returns the value of `code`.
-with_temp_dev <- function(open, code) {
+killing_locked_device_messages <- function() {
+	msg <- "Killing locked device"
+	domains <- c("R", "R-grDevices", "R-grid")
+	unique(c(msg, vapply(domains, function(d) gettext(msg, domain = d), character(1L))))
+}
+
+# Opens a temporary device with `open()` and returns a list with the number of that device `temp`
+# and the number of the previously current device `old` (to pass to `close_temp_dev()`).
+# If `open()` errors after opening a device returns to `old` and then closes that device.
+open_temp_dev <- function(open) {
 	old <- grDevices::dev.cur()
 	# Only ever close a device that `open()` opened:
 	# `open()` may leave some other pre-existing device current
 	# e.g. if it closes the device it opened (making the next device current) or calls `dev.set()`.
 	before <- grDevices::dev.list()
-	# If `open()` opens a device and then errors close that device and return to `old`.
 	# A calling handler doesn't catch the error so it reaches the caller unchanged.
 	withCallingHandlers(
 		open(),
@@ -103,7 +117,15 @@ with_temp_dev <- function(open, code) {
 		restore_dev(old)
 		abort("`open()` did not open a new graphics device.")
 	}
-	on.exit(close_temp_dev(temp, old), add = TRUE)
+	list(temp = temp, old = old)
+}
+
+# Opens a device with `open()`, evaluates `code` on it,
+# then returns to the previously current device and closes it (also on error).
+# Returns the value of `code`.
+with_temp_dev <- function(open, code) {
+	dev <- open_temp_dev(open)
+	on.exit(close_temp_dev(dev$temp, dev$old), add = TRUE)
 	code
 }
 

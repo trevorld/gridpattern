@@ -15,8 +15,7 @@ create_pattern_capture <- function(params, boundary_df, aspect_ratio, legend = F
 }
 
 draw <- function(grob) {
-	grDevices::pdf(NULL)
-	on.exit(grDevices::dev.off(), add = TRUE)
+	local_temp_dev(function() grDevices::pdf(NULL))
 	grid::grid.draw(grob)
 	invisible(NULL)
 }
@@ -81,8 +80,7 @@ test_that("patterns are resolved at draw time", {
 })
 
 test_that("redraws use the pattern resolved at creation", {
-	grDevices::pdf(NULL)
-	on.exit(grDevices::dev.off(), add = TRUE)
+	local_temp_dev(function() grDevices::pdf(NULL))
 	grDevices::dev.control("enable")
 	draw_local <- function(name, fill) {
 		local_pattern(name, create_pattern_capture, env = globalenv())
@@ -784,8 +782,7 @@ test_that("legacy options", {
 })
 
 test_that("`grid.pattern()` throws resolution errors before drawing", {
-	grDevices::pdf(NULL)
-	on.exit(grDevices::dev.off(), add = TRUE)
+	local_temp_dev(function() grDevices::pdf(NULL))
 	expect_error(grid.pattern("unknown"), 'Unknown pattern "unknown"')
 	expect_s3_class(grid.pattern("unknown", draw = FALSE), "pattern")
 })

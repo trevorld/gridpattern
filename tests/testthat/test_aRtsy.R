@@ -6,19 +6,16 @@ test_that("aRtsy patterns works as expected", {
 	skip_if_not(getRversion() >= "4.3.0")
 	skip_if_not(isTRUE(all(capabilities(c("cairo", "png")))))
 
-	f <- tempfile(fileext = ".png")
-	png(f, type = "cairo")
-	grid.pattern_aRtsy(type = "maze")
-	dev.off()
+	f <- withr::local_tempfile(fileext = ".png")
+	with_temp_dev(function() grDevices::png(f, type = "cairo"), grid.pattern_aRtsy(type = "maze"))
 	expect_true(file.size(f) > 0)
-	unlink(f)
 
-	f <- tempfile(fileext = ".png")
-	png(f, type = "cairo")
-	grid.pattern_aRtsy(type = "strokes")
-	dev.off()
+	f <- withr::local_tempfile(fileext = ".png")
+	with_temp_dev(
+		function() grDevices::png(f, type = "cairo"),
+		grid.pattern_aRtsy(type = "strokes")
+	)
 	expect_true(file.size(f) > 0)
-	unlink(f)
 
 	expect_true(length(names_aRtsy()) >= 34L)
 })
