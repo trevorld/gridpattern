@@ -427,6 +427,18 @@ test_that("`local_pattern(prefer = TRUE)` works", {
 		expect_equal(preferred_patterns("stripe"), "gridpattern::stripe")
 	})
 	unprefer_pattern("stripe")
+
+	# nor does a registration interrupted by a non-error condition (e.g. an interrupt or restart)
+	local({
+		local_mocked_bindings(register_pattern = function(...) {
+			rlang::signal("", "stop_registering")
+		})
+		tryCatch(
+			local_pattern("stripe", create_pattern_capture, env = globalenv(), prefer = TRUE),
+			stop_registering = function(cnd) NULL
+		)
+		expect_equal(preferred_patterns("stripe"), character(0L))
+	})
 })
 
 test_that("pattern-specific defaults", {
@@ -735,7 +747,15 @@ test_that("legacy options", {
 		expect_match(lines[i], expected[i], fixed = TRUE)
 	}
 	# can't be resolved with a preference
-	expect_error(prefer_pattern("R_GlobalEnv::polygon"), "multiple patterns")
+	expect_error(prefer_pattern("R_GlobalEnv::polygon", must_exist = TRUE), "multiple patterns")
+	expect_equal(preferred_patterns("polygon"), character(0L))
+	expect_warning(prefer_pattern("R_GlobalEnv::polygon"), "multiple patterns")
+	expect_equal(preferred_patterns("polygon"), "R_GlobalEnv::polygon")
+	unprefer_pattern("polygon")
+	expect_silent(prefer_pattern("R_GlobalEnv::polygon", must_exist = FALSE))
+	expect_equal(preferred_patterns("polygon"), "R_GlobalEnv::polygon")
+	expect_error(resolve_pattern("polygon"), 'multiple patterns named "polygon"')
+	unprefer_pattern("polygon")
 	unregister_pattern("polygon", env = globalenv())
 	expect_equal(key("polygon"), "R_GlobalEnv::polygon")
 

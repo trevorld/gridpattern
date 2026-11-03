@@ -85,16 +85,48 @@ close_temp_dev <- function(temp, old) {
 # Returns the value of `code`.
 with_temp_dev <- function(open, code) {
 	old <- grDevices::dev.cur()
+	# Only ever close a device that `open()` opened:
+	# `open()` may leave some other pre-existing device current
+	# e.g. if it closes the device it opened (making the next device current) or calls `dev.set()`.
+	before <- grDevices::dev.list()
 	# If `open()` opens a device and then errors close that device and return to `old`.
 	# A calling handler doesn't catch the error so it reaches the caller unchanged.
 	withCallingHandlers(
 		open(),
-		error = function(e) close_temp_dev(grDevices::dev.cur(), old)
+		error = function(e) {
+			dev <- grDevices::dev.cur()
+			if (dev %in% before) restore_dev(old) else close_temp_dev(dev, old)
+		}
 	)
 	temp <- grDevices::dev.cur()
-	if (temp == old) {
+	if (temp %in% c(before, 1L)) {
+		restore_dev(old)
 		abort("`open()` did not open a new graphics device.")
 	}
 	on.exit(close_temp_dev(temp, old), add = TRUE)
 	code
+}
+
+# Draws `code` on a temporary transparent `png_device()` device of `px` pixels at resolution `res`
+# and returns the image as a numeric array (see `png::readPNG()`).
+draw_png_array <- function(png_device, px, res, code) {
+	png_file <- tempfile(fileext = ".png")
+	on.exit(unlink(png_file), add = TRUE)
+	open <- function() {
+		png_device(png_file, height = px$height, width = px$width, res = res, bg = "transparent")
+	}
+	with_temp_dev(open, code)
+	png::readPNG(png_file, native = FALSE)
+}
+
+# Draws `code` on a temporary transparent `ragg::agg_capture()` device of `px` pixels at resolution `res`
+# and returns the captured raster (see `grDevices::dev.capture()`).
+draw_agg_capture <- function(px, res, code) {
+	open <- function() {
+		ragg::agg_capture(height = px$height, width = px$width, res = res, bg = "transparent")
+	}
+	with_temp_dev(open, {
+		code
+		grDevices::dev.capture(native = FALSE)
+	})
 }

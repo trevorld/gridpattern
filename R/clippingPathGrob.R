@@ -119,13 +119,11 @@ gridpattern_clip_agg_capture <- function(clippee, clipper, res, region = full_re
 	clippee <- in_region(clippee, region)
 	clipper <- in_region(clipper, region)
 
-	open <- function() {
-		ragg::agg_capture(height = px$height, width = px$width, res = res, bg = "transparent")
-	}
-	raster_clipped <- with_temp_dev(open, {
+	raster_clipped <- draw_agg_capture(
+		px,
+		res,
 		grid.draw(clippingPathGrob(clippee, clipper, use_R4.1_clipping = TRUE))
-		dev.capture(native = FALSE)
-	})
+	)
 	region_raster(raster_clipped, region)
 }
 
@@ -140,14 +138,12 @@ gridpattern_clip_raster_straight <- function(
 	clippee <- in_region(clippee, region)
 	clipper <- in_region(clipper, region)
 
-	png_clipped <- tempfile(fileext = ".png")
-	on.exit(unlink(png_clipped), add = TRUE)
-	open <- function() {
-		png_device(png_clipped, height = px$height, width = px$width, res = res, bg = "transparent")
-	}
-	with_temp_dev(open, grid.draw(clippingPathGrob(clippee, clipper, use_R4.1_clipping = TRUE)))
-
-	raster_clipped <- png::readPNG(png_clipped, native = FALSE)
+	raster_clipped <- draw_png_array(
+		png_device,
+		px,
+		res,
+		grid.draw(clippingPathGrob(clippee, clipper, use_R4.1_clipping = TRUE))
+	)
 	region_raster(raster_clipped, region)
 }
 
@@ -161,26 +157,13 @@ gridpattern_clip_raster_manual <- function(
 	px <- region_pixels(region, res)
 	clippee <- in_region(clippee, region)
 	clipper <- in_region(clipper, region)
-	opener <- function(f) {
-		function() {
-			png_device(f, height = px$height, width = px$width, res = res, bg = "transparent")
-		}
-	}
 
-	png_clippee <- tempfile(fileext = ".png")
-	on.exit(unlink(png_clippee), add = TRUE)
-	with_temp_dev(opener(png_clippee), grid.draw(clippee))
-
-	png_clipper <- tempfile(fileext = ".png")
-	on.exit(unlink(png_clipper), add = TRUE)
-	with_temp_dev(opener(png_clipper), {
+	raster_clippee <- draw_png_array(png_device, px, res, grid.draw(clippee))
+	raster_clipper <- draw_png_array(png_device, px, res, {
 		pushViewport(viewport(gp = gpar(lwd = 0, col = NA, fill = "black")))
 		grid.draw(clipper)
 		popViewport()
 	})
-
-	raster_clippee <- png::readPNG(png_clippee, native = FALSE)
-	raster_clipper <- png::readPNG(png_clipper, native = FALSE)
 	clip_region <- apply(raster_clipper, c(1, 2), function(x) any(x > 0))
 	if (length(dim(raster_clippee) == 2)) {
 		raster_clippee[!clip_region] <- 0

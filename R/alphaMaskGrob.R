@@ -127,13 +127,11 @@ gridpattern_mask_agg_capture <- function(maskee, masker, res, region = full_regi
 	maskee <- in_region(maskee, region)
 	masker <- in_region(masker, region)
 
-	open <- function() {
-		ragg::agg_capture(height = px$height, width = px$width, res = res, bg = "transparent")
-	}
-	raster_masked <- with_temp_dev(open, {
+	raster_masked <- draw_agg_capture(
+		px,
+		res,
 		grid.draw(alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE))
-		dev.capture(native = FALSE)
-	})
+	)
 	region_raster(raster_masked, region)
 }
 
@@ -289,14 +287,12 @@ gridpattern_mask_raster_straight <- function(
 	maskee <- in_region(maskee, region)
 	masker <- in_region(masker, region)
 
-	png_masked <- tempfile(fileext = ".png")
-	on.exit(unlink(png_masked), add = TRUE)
-	open <- function() {
-		png_device(png_masked, height = px$height, width = px$width, res = res, bg = "transparent")
-	}
-	with_temp_dev(open, grid.draw(alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE)))
-
-	raster_masked <- png::readPNG(png_masked, native = FALSE)
+	raster_masked <- draw_png_array(
+		png_device,
+		px,
+		res,
+		grid.draw(alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE))
+	)
 	region_raster(raster_masked, region)
 }
 
@@ -310,22 +306,9 @@ gridpattern_mask_raster_manual <- function(
 	px <- region_pixels(region, res)
 	maskee <- in_region(maskee, region)
 	masker <- in_region(masker, region)
-	opener <- function(f) {
-		function() {
-			png_device(f, height = px$height, width = px$width, res = res, bg = "transparent")
-		}
-	}
 
-	png_maskee <- tempfile(fileext = ".png")
-	on.exit(unlink(png_maskee), add = TRUE)
-	with_temp_dev(opener(png_maskee), grid.draw(maskee))
-
-	png_masker <- tempfile(fileext = ".png")
-	on.exit(unlink(png_masker), add = TRUE)
-	with_temp_dev(opener(png_masker), grid.draw(masker))
-
-	raster_maskee <- png::readPNG(png_maskee, native = FALSE)
-	raster_masker <- png::readPNG(png_masker, native = FALSE)
+	raster_maskee <- draw_png_array(png_device, px, res, grid.draw(maskee))
+	raster_masker <- draw_png_array(png_device, px, res, grid.draw(masker))
 
 	stopifnot(
 		length(dim(raster_maskee)) == 3L,

@@ -316,22 +316,22 @@ local_pattern <- function(
 	}
 	assert_pattern_name(name)
 	key <- pattern_key(registration_owner(env), name)
+	registered <- FALSE
 	if (prefer) {
 		# prefer before registering so no conflict message
 		old_preference <- prefer_pattern(key, must_exist = FALSE)
+		# don't leave the preference behind if registration fails (or is interrupted)
+		on.exit(if (!registered) restore_preferences(name, old_preference), add = TRUE)
 	}
-	old <- withCallingHandlers(
-		register_pattern(
-			name,
-			fn,
-			kind = kind,
-			defaults = defaults,
-			unprefixed = unprefixed,
-			env = env
-		),
-		# don't leave the preference behind if registration fails
-		error = function(e) if (prefer) restore_preferences(name, old_preference)
+	old <- register_pattern(
+		name,
+		fn,
+		kind = kind,
+		defaults = defaults,
+		unprefixed = unprefixed,
+		env = env
 	)
+	registered <- TRUE
 	if (prefer) {
 		withr::defer(restore_preferences(name, old_preference), envir = .local_envir)
 	}
@@ -366,7 +366,7 @@ local_prefer_pattern <- function(pattern, must_exist = NA, .local_envir = parent
 restore_preferences <- function(names, old) {
 	rlang::env_unbind(pattern_preferences, names)
 	for (key in old) {
-		assign(bare_name(key), sub("::.*$", "", key), envir = pattern_preferences)
+		assign(bare_name(key), owner_name(key), envir = pattern_preferences)
 	}
 	invisible(NULL)
 }
@@ -423,9 +423,11 @@ restore_preferences <- function(names, old) {
 #'                   which is useful in an `.Rprofile`
 #'                   or to prefer a user pattern before it is registered.
 #'                   Otherwise the packages of the preferred patterns are loaded (if installed).
-#'                   Regardless of `must_exist` it is an error if the user has more than one
-#'                   pattern with that name (see [register_pattern()]) since
-#'                   a preference can't choose between them.
+#'                   `must_exist` likewise controls what happens if the user has more than one
+#'                   pattern with that name (only possible via the legacy
+#'                   `ggpattern_geometry_funcs` / `ggpattern_array_funcs` options,
+#'                   see [register_pattern()]) since a preference can't choose between them
+#'                   (an error is thrown once the pattern is used).
 #' @return `prefer_pattern()` and `unprefer_pattern()` invisibly return a character vector of the
 #'         qualified names of the previous preferences (for the bare names in `pattern`)
 #'         that existed (`character(0)` if there weren't any).
@@ -499,25 +501,46 @@ prefer_pattern <- function(pattern, must_exist = NA) {
 	}
 	if (!isFALSE(must_exist)) {
 		for (key in pattern) {
-			# errors if the user has more than one pattern with that name
-			if (is.null(lookup_qualified_pattern(key))) {
-				if (isTRUE(must_exist)) {
-					abort_unknown_pattern(key)
-				} else {
-					warn_unknown_preference(key)
-				}
-			}
+			check_preference(key, must_exist)
 		}
 	}
 	old <- preferred_patterns(names)
 	for (i in seq_along(pattern)) {
-		assign(names[i], sub("::.*$", "", pattern[i]), envir = pattern_preferences)
+		assign(names[i], owner_name(pattern[i]), envir = pattern_preferences)
 	}
 	invisible(old)
 }
 
+# errors (`must_exist = TRUE`) or warns (`must_exist = NA`) if preferred pattern `key`
+# isn't registered or if the user has more than one pattern with that name
+check_preference <- function(key, must_exist) {
+	if (owner_name(key) == USER_OWNER) {
+		name <- bare_name(key)
+		entries <- user_entries(name)
+		if (length(entries) > 1L) {
+			if (isTRUE(must_exist)) {
+				abort_user_conflict(name, entries)
+			} else {
+				warn(user_conflict_message(name, entries))
+			}
+			return(invisible(NULL))
+		}
+		exists <- length(entries) == 1L
+	} else {
+		exists <- !is.null(lookup_qualified_pattern(key))
+	}
+	if (!exists) {
+		if (isTRUE(must_exist)) {
+			abort_unknown_pattern(key)
+		} else {
+			warn_unknown_preference(key)
+		}
+	}
+	invisible(NULL)
+}
+
 warn_unknown_preference <- function(key) {
-	owner <- sub("::.*$", "", key)
+	owner <- owner_name(key)
 	hint <- if (owner != USER_OWNER && !rlang::is_installed(owner)) {
 		glue("{{{owner}}} isn't installed.")
 	} else {
@@ -711,6 +734,11 @@ bare_name <- function(pattern) {
 	sub("^[^:]*::", "", pattern)
 }
 
+# owner of qualified pattern name(s) `pattern`
+owner_name <- function(pattern) {
+	sub("::.*$", "", pattern)
+}
+
 register_builtin_patterns <- function() {
 	geometry <- list(
 		aRtsy = create_pattern_aRtsy,
@@ -836,12 +864,17 @@ option_entries <- function(name = NULL) {
 	entries
 }
 
+# all of the user's patterns named `name` (from `register_pattern()` and/or `options()`)
+user_entries <- function(name) {
+	entries <- c(list(pattern_registry[[pattern_key(USER_OWNER, name)]]), option_entries(name))
+	Filter(Negate(is.null), entries)
+}
+
 # the user's pattern named `name` (or `NULL`)
 # errors if the user has more than one (from `register_pattern()` and/or `options()`)
 # since they share the same qualified name so can't be chosen between
 user_entry <- function(name) {
-	entries <- c(list(pattern_registry[[pattern_key(USER_OWNER, name)]]), option_entries(name))
-	entries <- Filter(Negate(is.null), entries)
+	entries <- user_entries(name)
 	if (length(entries) > 1L) {
 		abort_user_conflict(name, entries)
 	}
@@ -849,6 +882,10 @@ user_entry <- function(name) {
 }
 
 abort_user_conflict <- function(name, entries) {
+	abort(user_conflict_message(name, entries), call = NULL)
+}
+
+user_conflict_message <- function(name, entries) {
 	sources <- vapply(
 		entries,
 		function(e) {
@@ -862,13 +899,10 @@ abort_user_conflict <- function(name, entries) {
 		},
 		character(1L)
 	)
-	abort(
-		c(
-			glue('There are multiple patterns named "{name}" owned by "{USER_OWNER}".'),
-			rlang::set_names(sources, rep_len("*", length(sources))),
-			i = "Remove all but one of them (`prefer_pattern()` can't choose between them)."
-		),
-		call = NULL
+	c(
+		glue('There are multiple patterns named "{name}" owned by "{USER_OWNER}".'),
+		rlang::set_names(sources, rep_len("*", length(sources))),
+		i = "Remove all but one of them (`prefer_pattern()` can't choose between them)."
 	)
 }
 
@@ -946,7 +980,7 @@ resolve_qualified_pattern <- function(pattern) {
 
 # returns registry entry for qualified pattern `pattern` or `NULL`
 lookup_qualified_pattern <- function(pattern) {
-	owner <- sub("::.*$", "", pattern)
+	owner <- owner_name(pattern)
 	if (owner == USER_OWNER) {
 		entry <- user_entry(bare_name(pattern))
 	} else {

@@ -34,9 +34,11 @@ If \code{FALSE} the existence of the patterns isn't checked at all
 which is useful in an \code{.Rprofile}
 or to prefer a user pattern before it is registered.
 Otherwise the packages of the preferred patterns are loaded (if installed).
-Regardless of \code{must_exist} it is an error if the user has more than one
-pattern with that name (see \code{\link[=register_pattern]{register_pattern()}}) since
-a preference can't choose between them.}
+\code{must_exist} likewise controls what happens if the user has more than one
+pattern with that name (only possible via the legacy
+\code{ggpattern_geometry_funcs} / \code{ggpattern_array_funcs} options,
+see \code{\link[=register_pattern]{register_pattern()}}) since a preference can't choose between them
+(an error is thrown once the pattern is used).}
 }
 \value{
 \code{prefer_pattern()} and \code{unprefer_pattern()} invisibly return a character vector of the
