@@ -815,6 +815,48 @@ test_that("`has_pattern()`", {
 	expect_true(has_pattern("stripe"))
 })
 
+test_that("`has_registered_pattern()`", {
+	env_grid <- asNamespace("grid")
+	old_options <- options(ggpattern_geometry_funcs = NULL, ggpattern_array_funcs = NULL)
+	on.exit(
+		{
+			options(old_options)
+			unregister_pattern("brick", env = env_grid)
+			unregister_pattern("stripe", env = globalenv())
+			unregister_pattern("polygon", env = globalenv())
+		},
+		add = TRUE
+	)
+	expect_error(has_registered_pattern(1), "must be a character vector")
+	expect_equal(has_registered_pattern(character(0)), logical(0))
+	expect_equal(
+		has_registered_pattern(
+			c("stripe", "gridpattern::stripe", "brick", "grid::brick", NA, "", "a:b", "a::b::c")
+		),
+		c(TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)
+	)
+	register_pattern("brick", create_pattern_capture, env = env_grid)
+	expect_equal(
+		has_registered_pattern(c("brick", "grid::brick", "utils::brick", "R_GlobalEnv::brick")),
+		c(TRUE, TRUE, FALSE, FALSE)
+	)
+
+	# names with unresolved conflicts are still taken
+	suppressMessages(register_pattern("stripe", create_pattern_polygon, env = globalenv()))
+	expect_equal(has_pattern("stripe"), FALSE)
+	expect_equal(
+		has_registered_pattern(c("stripe", "gridpattern::stripe", "R_GlobalEnv::stripe")),
+		c(TRUE, TRUE, TRUE)
+	)
+
+	# legacy options patterns are taken, even if the user has more than one
+	options(ggpattern_array_funcs = list(polygon = create_pattern_polygon))
+	expect_equal(has_registered_pattern(c("polygon", "R_GlobalEnv::polygon")), c(TRUE, TRUE))
+	suppressMessages(register_pattern("polygon", create_pattern_polygon, env = globalenv()))
+	expect_equal(has_pattern(c("polygon", "R_GlobalEnv::polygon")), c(FALSE, FALSE))
+	expect_equal(has_registered_pattern(c("polygon", "R_GlobalEnv::polygon")), c(TRUE, TRUE))
+})
+
 test_that("`conflicting_patterns()`, `prefer_pattern()`, and `unprefer_pattern()`", {
 	env_grid <- asNamespace("grid")
 	env_utils <- asNamespace("utils")

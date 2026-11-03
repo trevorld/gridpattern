@@ -163,6 +163,9 @@ New Features
   (via the legacy `ggpattern_geometry_funcs` / `ggpattern_array_funcs` options).
 * `conflicting_patterns()` lists patterns whose bare names are shared by more than one pattern
 * `has_pattern()` returns whether a pattern name resolves to a pattern.
+* `has_registered_pattern()` returns whether a pattern name is taken
+  (even if it doesn't resolve e.g. because of a conflict)
+  i.e. whether registering a pattern with that name would clobber or conflict with a pre-existing pattern.
 * `local_pattern()` registers a pattern until the current function (or test) exits and then restores any previous registration (useful in tests and examples).
   If `prefer = TRUE` it also prefers that pattern until the current function (or test) exits.
 * `local_prefer_pattern()` sets pattern preferences until the current function (or test) exits and then restores any previous preferences (#113).

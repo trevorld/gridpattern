@@ -119,8 +119,8 @@
 #' }
 #' x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #' y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-#' # don't clobber any pre-existing "polygon" pattern
-#' if (!has_pattern("polygon")) {
+#' # don't clobber (nor conflict with) any pre-existing "polygon" pattern
+#' if (!has_registered_pattern("polygon")) {
 #'   register_pattern("polygon", create_pattern_polygon)
 #'   grid::grid.newpage()
 #'   grid.pattern("polygon", x_hex, y_hex, fill = "blue")
@@ -170,24 +170,36 @@ unregister_pattern <- function(name, env = caller_env()) {
 #' `registered_patterns()` returns a data frame of all available patterns.
 #' `has_pattern()` returns whether pattern names currently resolve to a pattern
 #' i.e. whether [grid.pattern()] / [patternGrob()] could use them.
+#' `has_registered_pattern()` returns whether pattern names are taken
+#' i.e. whether `registered_patterns()` lists a pattern with that name
+#' (for a bare name owned by anyone and for a qualified name owned by that owner)
+#' even if the name doesn't resolve (e.g. because of a conflict).
+#' Use `has_registered_pattern()` (not `has_pattern()`) to check that registering a pattern
+#' won't clobber (nor conflict with) a pre-existing pattern.
 #' See [register_pattern()] for how bare pattern names are resolved.
 #'
 #' @param pattern A character vector of bare pattern names `"name"` and/or
 #'                qualified pattern names `"owner::name"`.
 #' @return `registered_patterns()` returns `r r2i_registered_patterns_df`
-#'         `has_pattern()` returns a logical vector the same length as `pattern`.
-#'         A bare name with an unresolved conflict (see [conflicting_patterns()]) returns `FALSE`.
+#'         `has_pattern()` and `has_registered_pattern()` return a logical vector
+#'         the same length as `pattern`.
+#'         For `has_pattern()` a bare name with an unresolved conflict (see [conflicting_patterns()])
+#'         returns `FALSE` as does a user's qualified name `"R_GlobalEnv::name"`
+#'         if the user has more than one pattern with that name
+#'         (only possible via the legacy `ggpattern_geometry_funcs` / `ggpattern_array_funcs` options)
+#'         but for `has_registered_pattern()` both return `TRUE`.
 #' @seealso [register_pattern()] to register patterns.
 #' @examples
 #' head(registered_patterns())
 #' has_pattern(c("stripe", "gridpattern::stripe", "polygon"))
+#' has_registered_pattern(c("stripe", "gridpattern::stripe", "polygon"))
 #'
 #' create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
 #'   grid::polygonGrob(boundary_df$x, boundary_df$y, boundary_df$id,
 #'                     gp = grid::gpar(fill = params$pattern_fill))
 #' }
-#' # don't clobber any pre-existing "polygon" pattern
-#' run_example <- !has_pattern("polygon")
+#' # don't clobber (nor conflict with) any pre-existing "polygon" pattern
+#' run_example <- !has_registered_pattern("polygon")
 #' if (run_example) {
 #'   register_pattern("polygon", create_pattern_polygon)
 #'   print(subset(registered_patterns(), name == "polygon"))
@@ -234,6 +246,31 @@ has_pattern <- function(pattern) {
 		logical(1L),
 		USE.NAMES = FALSE
 	)
+}
+
+#' @rdname registered_patterns
+#' @export
+has_registered_pattern <- function(pattern) {
+	if (!is.character(pattern)) {
+		abort("`pattern` must be a character vector.")
+	}
+	vapply(pattern, is_registered_pattern, logical(1L), USE.NAMES = FALSE)
+}
+
+is_registered_pattern <- function(pattern) {
+	if (is.na(pattern) || !grepl("^([^:]+::)?[^:]+$", pattern)) {
+		return(FALSE)
+	}
+	name <- bare_name(pattern)
+	if (name == pattern) {
+		return(length(registry_entries(name)) > 0L || length(option_entries(name)) > 0L)
+	}
+	if (owner_name(pattern) == USER_OWNER) {
+		length(user_entries(name)) > 0L
+	} else {
+		# like `has_pattern()` loads the owner's namespace (if installed)
+		!is.null(lookup_qualified_pattern(pattern))
+	}
 }
 
 #' Temporarily register a pattern or set a preference
@@ -283,7 +320,7 @@ has_pattern <- function(pattern) {
 #'   grid.pattern("polygon", x_hex, y_hex, fill = "red")
 #' }
 #' # skip if there is already a "polygon" pattern (which could conflict with ours)
-#' if (requireNamespace("withr", quietly = TRUE) && !has_pattern("polygon")) {
+#' if (requireNamespace("withr", quietly = TRUE) && !has_registered_pattern("polygon")) {
 #'   draw_polygon()
 #' }
 #' print(has_pattern("polygon"))
@@ -296,7 +333,10 @@ has_pattern <- function(pattern) {
 #' }
 #' # skip if the user already has a "fill" pattern
 #' # (one set by the legacy `ggpattern_geometry_funcs` option would conflict with ours)
-#' if (requireNamespace("withr", quietly = TRUE) && !has_pattern("R_GlobalEnv::fill")) {
+#' if (
+#'   requireNamespace("withr", quietly = TRUE) &&
+#'     !has_registered_pattern("R_GlobalEnv::fill")
+#' ) {
 #'   draw_fill()
 #' }
 #' @export
@@ -441,7 +481,7 @@ restore_preferences <- function(names, old) {
 #' x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #' y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 #' # don't clobber any pre-existing user "fill" pattern
-#' run_example <- !has_pattern("R_GlobalEnv::fill")
+#' run_example <- !has_registered_pattern("R_GlobalEnv::fill")
 #' if (run_example) {
 #'   # temporarily remove any pre-existing "fill" preference
 #'   old <- unprefer_pattern("fill")

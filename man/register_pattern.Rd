@@ -143,8 +143,8 @@ create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = F
 }
 x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
-# don't clobber any pre-existing "polygon" pattern
-if (!has_pattern("polygon")) {
+# don't clobber (nor conflict with) any pre-existing "polygon" pattern
+if (!has_registered_pattern("polygon")) {
   register_pattern("polygon", create_pattern_polygon)
   grid::grid.newpage()
   grid.pattern("polygon", x_hex, y_hex, fill = "blue")

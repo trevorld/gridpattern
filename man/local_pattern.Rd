@@ -136,7 +136,7 @@ draw_polygon <- function() {
   grid.pattern("polygon", x_hex, y_hex, fill = "red")
 }
 # skip if there is already a "polygon" pattern (which could conflict with ours)
-if (requireNamespace("withr", quietly = TRUE) && !has_pattern("polygon")) {
+if (requireNamespace("withr", quietly = TRUE) && !has_registered_pattern("polygon")) {
   draw_polygon()
 }
 print(has_pattern("polygon"))
@@ -149,7 +149,10 @@ draw_fill <- function() {
 }
 # skip if the user already has a "fill" pattern
 # (one set by the legacy `ggpattern_geometry_funcs` option would conflict with ours)
-if (requireNamespace("withr", quietly = TRUE) && !has_pattern("R_GlobalEnv::fill")) {
+if (
+  requireNamespace("withr", quietly = TRUE) &&
+    !has_registered_pattern("R_GlobalEnv::fill")
+) {
   draw_fill()
 }
 }

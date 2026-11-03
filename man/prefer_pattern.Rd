@@ -93,7 +93,7 @@ create_pattern_polygon <- function(params, boundary_df, aspect_ratio, legend = F
 x_hex <- 0.5 + 0.5 * cos(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 y_hex <- 0.5 + 0.5 * sin(seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6))
 # don't clobber any pre-existing user "fill" pattern
-run_example <- !has_pattern("R_GlobalEnv::fill")
+run_example <- !has_registered_pattern("R_GlobalEnv::fill")
 if (run_example) {
   # temporarily remove any pre-existing "fill" preference
   old <- unprefer_pattern("fill")
