@@ -89,6 +89,9 @@ Bug fixes and minor improvements
 * `registered_patterns()` and `conflicting_patterns()` no longer load the package of a preferred pattern
   (previously the first call omitted that package's patterns
   and listed no pattern with that name as active).
+* A qualified pattern name `"pkg::name"` no longer resolves to a stale registration
+  left behind by a `{pkg}` that was unloaded and can no longer be loaded (e.g. because it was removed)
+  so `has_pattern()` now returns `FALSE` and `prefer_pattern(must_exist = TRUE)` now errors for it.
 * The raster fallbacks of `alphaMaskGrob()` and `clippingPathGrob()`
   (used by the "hatch", "line", "rose", and "text" patterns when masks / clipping paths aren't supported by the graphics device)
   now only rasterise the (pixel-snapped) bounding box of the masker / clipper within the viewport

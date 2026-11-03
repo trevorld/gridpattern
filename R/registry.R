@@ -1046,7 +1046,10 @@ lookup_qualified_pattern <- function(pattern, load = TRUE) {
 		if (!load) {
 			return(NULL)
 		}
-		requireNamespace(owner, quietly = TRUE)
+		# ignore any stale entry left by a since unloaded (and now unloadable) package
+		if (!requireNamespace(owner, quietly = TRUE)) {
+			return(NULL)
+		}
 	}
 	pattern_registry[[pattern]]
 }
