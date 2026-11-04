@@ -890,11 +890,13 @@ builtin_defaults <- function() {
 
 # registry entries (optionally only those named `name`) whose owner is the user or a loaded package
 registry_entries <- function(name = NULL) {
-	keys <- ls(pattern_registry, all.names = TRUE)
+	# `ls()`'s (locale-aware) sort dominates the cost of large registries
+	# so only sort the keys that match (keeping the order deterministic)
+	keys <- ls(pattern_registry, all.names = TRUE, sorted = FALSE)
 	if (!is.null(name)) {
 		keys <- keys[endsWith(keys, paste0("::", name))]
 	}
-	entries <- mget(keys, envir = pattern_registry)
+	entries <- mget(sort(keys), envir = pattern_registry)
 	entries <- Filter(function(e) e$owner == USER_OWNER || isNamespaceLoaded(e$owner), entries)
 	unname(entries)
 }
