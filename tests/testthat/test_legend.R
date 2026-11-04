@@ -280,8 +280,37 @@ test_that("`key_scaling` of registered patterns", {
 	}
 	expect_error(
 		register_pattern("key_capture", f, key_scaling = c(spacing = 1), env = globalenv()),
-		"`key_scaling` has names without the `pattern_` prefix"
+		"`key_scaling` has names without the `pattern_` prefix",
+		class = "gridpattern_error_unprefixed_key_scaling"
 	)
+	for (reserved in c("pattern", "pattern_units", "pattern_key_scale_factor")) {
+		expect_error(
+			register_pattern(
+				"key_capture",
+				f,
+				key_scaling = rlang::set_names(1, reserved),
+				env = globalenv()
+			),
+			"`key_scaling` can't include"
+		)
+	}
+	expect_false(has_registered_pattern("key_capture"))
+	# any empty value zooms nothing
+	for (empty in list(NULL, list(), numeric(), character())) {
+		expect_length(validate_key_scaling(empty), 0L)
+	}
+	# the documented default is `DEFAULT_KEY_SCALING`
+	expect_equal(eval(formals(register_pattern)$key_scaling), DEFAULT_KEY_SCALING)
+	expect_equal(eval(formals(local_pattern)$key_scaling), DEFAULT_KEY_SCALING)
+
+	# a non-numeric `key_scaling` parameter is a clear error in an (absolute units) legend key
+	local_pattern(
+		"legend_capture",
+		create_pattern_legend_capture,
+		key_scaling = c(pattern_type = 1),
+		env = globalenv()
+	)
+	expect_error(draw(type = "a"), "`pattern_type` must be numeric to be zoomed in a legend key")
 })
 
 test_that("the default `pattern_res` is computed from the graphics device when drawn", {
