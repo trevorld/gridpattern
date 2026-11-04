@@ -152,6 +152,11 @@ Bug fixes and minor improvements
   instead of possibly exhausting memory when their grid would have more than ten million points
   e.g. the default "snpc" spacing in a viewport over 80 times wider than tall
   or a spacing about 1/1600 of the viewport's longer side (such a pattern would be invisible anyway, #119).
+* The geometry patterns drawn with `{sf}` (e.g. "circle", "crosshatch", "regular_polygon", "stripe", "wave", and "weave")
+  now fill every lobe of a self-intersecting boundary (e.g. a "bow tie" polygon).
+  Previously only one lobe was filled (the zero-width buffer that cleaned up the boundary kept only one).
+  The boundary is now first made valid with `sf::st_make_valid()`
+  (which needs GEOS 3.8 or `{lwgeom}`, otherwise the previous behaviour is kept).
 * The "seagal" and "seagalbw" placeholder types work again
   (their URLs used a nonexistent `www.` subdomain of `stevensegallery.lucidinternets.com`, #118).
 * Placeholder types that return greyscale images (e.g. "murray", "murraybw", "picsumbw", and "seagalbw")

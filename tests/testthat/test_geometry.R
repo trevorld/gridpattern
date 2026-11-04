@@ -737,3 +737,27 @@ test_that("patterns with an absurdly dense grid draw nothing instead of exhausti
 	# but a merely dense grid (200 by 200 points) is drawn
 	expect_false(draws_nothing(pattern_content_grob("circle", spacing = 0.01)))
 })
+test_that("every lobe of a self-intersecting boundary is filled", {
+	# the edges of this "bow tie" cross at (0.5, 0.5)
+	x <- c(0, 1, 0, 1)
+	y <- c(0, 1, 1, 0)
+	bowtie_sf <- convert_polygon_df_to_polygon_sf(create_polygon_df(x, y))
+	expect_true(sf::st_is_valid(bowtie_sf))
+	expect_equal(sf::st_area(bowtie_sf), 0.5) # (previously `0.25`: one lobe)
+	# (a boundary with a degenerate i.e. zero-area polygon still buffers like a line)
+	collinear_sf <- convert_polygon_df_to_polygon_sf(
+		create_polygon_df(c(0, 1, 2), c(0, 0, 0)),
+		buffer_dist = 0.1
+	)
+	expect_equal(sf::st_area(collinear_sf), 0.1 * (2 * 2 + pi * 0.1), tolerance = 0.01)
+
+	vdiffr::expect_doppelganger("bowtie_stripe", function() {
+		grid.pattern_stripe(x, y, fill = "blue", density = 0.4)
+	})
+	vdiffr::expect_doppelganger("bowtie_crosshatch", function() {
+		grid.pattern_crosshatch(x, y, fill = "blue", fill2 = "red", density = 0.4)
+	})
+	vdiffr::expect_doppelganger("bowtie_circle", function() {
+		grid.pattern_circle(x, y, fill = "blue", density = 0.6, spacing = 0.1)
+	})
+})

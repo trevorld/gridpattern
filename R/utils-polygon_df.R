@@ -57,6 +57,11 @@ convert_polygon_df_to_polygon_grob <- function(polygon_df, default.units = 'npc'
 #' @return sf polygon object
 #' @noRd
 convert_polygon_df_to_polygon_sf <- function(polygon_df, buffer_dist = 0) {
+	buffer_polygon_sf(convert_polygon_df_to_valid_sf(polygon_df), buffer_dist)
+}
+
+# the valid `{sf}` multipolygon of a `polygon_df` (to `buffer_polygon_sf()`, perhaps by several distances)
+convert_polygon_df_to_valid_sf <- function(polygon_df) {
 	if (is.null(polygon_df) || nrow(polygon_df) < 3 || anyNA(polygon_df$x) || anyNA(polygon_df$y)) {
 		return(sf::st_polygon())
 	}
@@ -81,13 +86,35 @@ convert_polygon_df_to_polygon_sf <- function(polygon_df, buffer_dist = 0) {
 
 	res <- sf::st_multipolygon(all_coords)
 
-	# perform a zero-buffer operation to remove self-intersection
-	# As suggested here:
-	#  - https://gis.stackexchange.com/questions/163445/getting-topologyexception-input-geom-1-is-invalid-which-is-due-to-self-intersec#163480
-	# https://gis.stackexchange.com/questions/223252/how-to-overcome-invalid-input-geom-and-self-intersection-when-intersecting-shape
-	res <- sf::st_buffer(res, buffer_dist)
+	# A self-intersecting boundary (e.g. a bow tie) must be made valid first:
+	# the (zero) buffer in `buffer_polygon_sf()` alone (the classic fix for invalid geometry)
+	# keeps only one of its lobes (if `sf::st_make_valid()` isn't available that is still what happens)
+	if (!isTRUE(sf::st_is_valid(res)) && can_make_valid()) {
+		res <- sf::st_make_valid(res)
+	}
 	res
 }
+
+# buffer the boundary by `buffer_dist` (a zero buffer also removes any remaining self-intersection)
+# As suggested here:
+#  - https://gis.stackexchange.com/questions/163445/getting-topologyexception-input-geom-1-is-invalid-which-is-due-to-self-intersec#163480
+# https://gis.stackexchange.com/questions/223252/how-to-overcome-invalid-input-geom-and-self-intersection-when-intersecting-shape
+buffer_polygon_sf <- function(polygon_sf, buffer_dist = 0) {
+	sf::st_buffer(polygon_sf, buffer_dist)
+}
+
+# whether `sf::st_make_valid()` is available i.e. GEOS 3.8+ or else `{lwgeom}` (checked once per session)
+can_make_valid <- local({
+	ok <- NULL
+	function() {
+		if (is.null(ok)) {
+			geos <- sf::sf_extSoftVersion()[["GEOS"]]
+			ok <<- utils::compareVersion(geos, "3.8.0") >= 0 ||
+				requireNamespace("lwgeom", quietly = TRUE)
+		}
+		ok
+	}
+})
 
 #' Convert a sf GEOMETRYCOLLECTION/POLYGON/MULTIPOLYGON into a polygon_df
 #'
