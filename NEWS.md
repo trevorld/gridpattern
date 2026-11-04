@@ -86,6 +86,9 @@ New features
 Bug fixes and minor improvements
 --------------------------------
 
+* Resolving pattern names (e.g. by `patternGrob()`) and `registered_patterns()` / `conflicting_patterns()`
+  are faster when many patterns are registered
+  (e.g. both are about 20 times faster with 1000 registered patterns).
 * `registered_patterns()` and `conflicting_patterns()` no longer load the package of a preferred pattern
   (previously the first call omitted that package's patterns
   and listed no pattern with that name as active).
