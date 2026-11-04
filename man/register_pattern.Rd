@@ -11,6 +11,7 @@ register_pattern(
   kind = c("geometry", "array"),
   defaults = list(),
   unprefixed = character(),
+  key_scaling = c(pattern_spacing = 1, pattern_xoffset = 1, pattern_yoffset = 1),
   env = caller_env()
 )
 
@@ -53,6 +54,10 @@ or \code{list(pattern_size = function(params, gp) gp$fontsize \%||\% 12)}.
 These replace the generic defaults for parameters that weren't supplied.
 The remaining generic defaults are filled in first and then these in the order given
 so a function default may use any generic parameter and any earlier pattern-specific default.
+Defaults are always computed from the parameters as drawn in the plot
+(any legend key zoom of \code{key_scaling} is applied afterwards)
+e.g. \code{list(pattern_spacing = 0.025, pattern_key_scale_factor = function(params, gp) min(1, 0.025 / params$pattern_spacing))}
+zooms out a legend key more for larger spacings.
 With \code{{ggpattern}} (>= 1.4.0) these also apply to any \code{pattern_} aesthetic
 the user doesn't map or set (\code{{ggpattern}} passes unset aesthetics as \code{NaN}).
 \code{{ggpattern}} 1.3.1 and earlier supply their own defaults for most \code{pattern_} aesthetics
@@ -70,6 +75,21 @@ also work with \code{\link[=grid.pattern]{grid.pattern()}}.
 Since such patterns are rare any other unprefixed name
 (e.g. \code{fill} or \code{spacing} instead of \code{pattern_fill} or \code{pattern_spacing})
 is an error of class \code{"gridpattern_error_unprefixed_defaults"}.}
+
+\item{key_scaling}{A named numeric vector of the parameters that a numeric \code{legend} key
+(see \code{\link[=patternGrob]{patternGrob()}}) zooms by \code{pattern_key_scale_factor}
+if \code{pattern_units} isn't \dQuote{snpc}
+(\dQuote{snpc} lengths are instead zoomed by the larger legend viewport).
+Each value is the power of \code{pattern_key_scale_factor} the parameter is multiplied by:
+\code{1} for a length in \code{pattern_units} units and \code{-1} for an inverse length
+e.g. the "wave" pattern uses
+\code{c(pattern_spacing = 1, pattern_xoffset = 1, pattern_yoffset = 1, pattern_amplitude = 1, pattern_frequency = -1)}.
+This is the complete set of zoomed parameters (it replaces rather than adds to the default)
+so leave out \code{pattern_spacing}, \code{pattern_xoffset}, or \code{pattern_yoffset}
+if the pattern doesn't use them as lengths.
+Applies to both supplied and default parameter values
+after all the defaults are filled in.
+Names must be \code{pattern_} prefixed unless listed in \code{unprefixed}.}
 
 \item{env}{The environment used to determine the \dQuote{owner} of the pattern.
 If writing a function that registers patterns on behalf of its caller

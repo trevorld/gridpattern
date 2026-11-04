@@ -81,8 +81,10 @@
 #'               }
 #'               A numeric `legend` key is also zoomed by the `pattern_key_scale_factor` parameter (default `1`):
 #'               the viewport is `legend * pattern_key_scale_factor` times larger than the key and
-#'               `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset` are multiplied by
-#'               `pattern_key_scale_factor` if `pattern_units` isn't \dQuote{snpc}.
+#'               if `pattern_units` isn't \dQuote{snpc} the pattern's `key_scaling` parameters
+#'               (by default `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset`)
+#'               are multiplied by (a power of) `pattern_key_scale_factor`
+#'               (see the `key_scaling` argument of [register_pattern()]).
 #'               A logical `legend` isn't zoomed by `pattern_key_scale_factor` (the caller zooms it if desired,
 #'               as `{ggpattern}` 1.3.1 and earlier do) so `TRUE` and `1` differ if it isn't `1`
 #'               (although the "magick" pattern scales its image by it either way).
@@ -274,7 +276,8 @@ makeContent.pattern <- function(x) {
 		pattern = entry$name,
 		gp = x$gp,
 		defaults = entry$defaults,
-		key_zoom = key_zoom
+		key_zoom = key_zoom,
+		key_scaling = entry$key_scaling %||% DEFAULT_KEY_SCALING
 	)
 
 	xp <- convertX(x$x, "npc", valueOnly = TRUE)
@@ -283,7 +286,7 @@ makeContent.pattern <- function(x) {
 	# a numeric legend key draws the pattern in a viewport `legend * pattern_key_scale_factor` times
 	# larger than the key (and centred on it) so all relative lengths (spacing, offsets, amplitudes, ...)
 	# scale together while absolute sizes (linewidth, fontsize, "cm" units) don't
-	# (`complete_params()` instead zooms absolute spacing and offsets by `pattern_key_scale_factor`)
+	# (`complete_params()` instead zooms the pattern's absolute `key_scaling` parameters by `pattern_key_scale_factor`)
 	s <- if (key_zoom) legend * params$pattern_key_scale_factor else legend
 	# a numeric legend key's default resolution is also `s` times larger
 	# so pixel-based patterns (e.g. "ambient", "magick") resemble those in the (`s` times larger) plot panels

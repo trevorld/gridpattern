@@ -73,8 +73,10 @@ This is what \code{{ggpattern}} uses so its legend keys resemble its plot panels
 }
 A numeric \code{legend} key is also zoomed by the \code{pattern_key_scale_factor} parameter (default \code{1}):
 the viewport is \code{legend * pattern_key_scale_factor} times larger than the key and
-\code{pattern_spacing}, \code{pattern_xoffset}, and \code{pattern_yoffset} are multiplied by
-\code{pattern_key_scale_factor} if \code{pattern_units} isn't \dQuote{snpc}.
+if \code{pattern_units} isn't \dQuote{snpc} the pattern's \code{key_scaling} parameters
+(by default \code{pattern_spacing}, \code{pattern_xoffset}, and \code{pattern_yoffset})
+are multiplied by (a power of) \code{pattern_key_scale_factor}
+(see the \code{key_scaling} argument of \code{\link[=register_pattern]{register_pattern()}}).
 A logical \code{legend} isn't zoomed by \code{pattern_key_scale_factor} (the caller zooms it if desired,
 as \code{{ggpattern}} 1.3.1 and earlier do) so \code{TRUE} and \code{1} differ if it isn't \code{1}
 (although the "magick" pattern scales its image by it either way).
