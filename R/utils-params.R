@@ -194,10 +194,8 @@ get_R4.1_params <- function(l) {
 }
 
 # converts the length `x` in `units` to `to` units in the current viewport
-# (`abs()` since relative units like "snpc" convert to negative lengths in a mirrored viewport
-# i.e. one with a negative width / height which `{grid}` draws flipped)
 convert_length <- function(x, units, to = "bigpts") {
-	abs(convertX(unit(x, units), to, valueOnly = TRUE))
+	convertX(unit(x, units), to, valueOnly = TRUE)
 }
 
 convert_params_units <- function(params, units = "bigpts") {

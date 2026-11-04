@@ -542,14 +542,17 @@ create_pattern_hatch <- function(params, boundary_df, aspect_ratio, legend = FAL
 			check_grid_density(grid_xy)
 			# only the dashes that can reach the boundary (the mask hides the others, see issue #119)
 			bbox <- boundary_bbox(boundary_df_pts, margin = half)
-			x_grid <- grid_xy$x[grid_xy$x >= bbox[["xmin"]] & grid_xy$x <= bbox[["xmax"]]]
-			y_grid <- grid_xy$y[grid_xy$y >= bbox[["ymin"]] & grid_xy$y <= bbox[["ymax"]]]
+			x_grid <- grid_xy$x[which(grid_xy$x >= bbox[["xmin"]] & grid_xy$x <= bbox[["xmax"]])]
+			y_grid <- grid_xy$y[which(grid_xy$y >= bbox[["ymin"]] & grid_xy$y <= bbox[["ymax"]])]
+			nx <- length(x_grid)
+			ny <- length(y_grid)
+			if (nx == 0L || ny == 0L) {
+				return(nullGrob())
+			}
 			# At each grid point draw an H dash if the sum of its grid indices is even, else a V dash
 			# (dashes have length exactly S so centers are precisely at grid positions).
 			m_x <- round((x_grid - xo - vpm$x) / S) # ..., -2, -1, 0, 1, 2, ...
 			m_y <- round((y_grid - yo - vpm$y) / S)
-			nx <- length(x_grid)
-			ny <- length(y_grid)
 			x_mat <- matrix(x_grid, nrow = nx, ncol = ny, byrow = FALSE)
 			y_mat <- matrix(y_grid, nrow = nx, ncol = ny, byrow = TRUE)
 			is_H <- (matrix(m_x, nrow = nx, ncol = ny) +

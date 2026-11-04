@@ -63,8 +63,8 @@ sf_points_to_polygon_grob <- function(
 	default.units = "npc",
 	name = NULL
 ) {
-	points_mat <- as.matrix(sf_points)
-	if (nrow(points_mat) == 0L) {
+	points_mat <- as.matrix(sf_points) # (`NULL` for an empty geometry collection)
+	if (is.null(points_mat) || nrow(points_mat) == 0L) {
 		return(nullGrob())
 	}
 	xy <- tile_xy_polygon(points_mat[, 1L], points_mat[, 2L], xy_polygon)
@@ -73,7 +73,10 @@ sf_points_to_polygon_grob <- function(
 
 # `xy_polygon` has `x` and `y` elements which will be added to each point in `sf_points`
 sf_points_to_sf_multipolygon <- function(sf_points, xy_polygon) {
-	points_mat <- as.matrix(sf_points)
+	points_mat <- as.matrix(sf_points) # (`NULL` for an empty geometry collection)
+	if (is.null(points_mat) || nrow(points_mat) == 0L) {
+		return(sf::st_multipolygon())
+	}
 	# `{sf}` wants explicitly closed polygons
 	xy_ring <- list(x = c(xy_polygon$x, xy_polygon$x[1L]), y = c(xy_polygon$y, xy_polygon$y[1L]))
 	sf::st_multipolygon(xy_rings(points_mat[, 1L], points_mat[, 2L], xy_ring))

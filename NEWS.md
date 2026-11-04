@@ -143,18 +143,15 @@ Bug fixes and minor improvements
   For example, a default "circle" pattern in a 3.7 bigpts wide viewport
   (a `{ggpattern}` panel squeezed by a wide legend in a small plot pane) now draws in well under a second instead of 37 (#119).
 * Patterns now draw nothing (a `grid::nullGrob()`) instead of throwing an error (or building a huge pattern grid)
-  in a viewport whose width or height is smaller than a device pixel (including zero)
-  e.g. a `{ggpattern}` panel squeezed to nothing by a wide legend in a small plot pane (#119).
-  Previously the geometry patterns threw `invalid '(to - from)/by'`
-  (their default "snpc" spacing was zero) and the "plasma" pattern threw `the dims contain negative values`.
+  in a viewport whose width or height is smaller than a device pixel (including zero or negative)
+  e.g. a `{ggpattern}` panel squeezed to nothing (or beyond) by a wide legend in a small plot pane (#119).
+  Previously the geometry patterns threw `invalid '(to - from)/by'` or `wrong sign in 'by' argument`
+  (their default "snpc" spacing was zero or negative) and the "plasma" pattern threw `the dims contain negative values`.
 * The patterns with a two-dimensional grid ("circle", "regular_polygon", "rose", "text", "weave",
   and the hatch types they draw e.g. "cendree") now draw nothing (a `grid::nullGrob()`)
   instead of possibly exhausting memory when their grid would have more than ten million points
   e.g. the default "snpc" spacing in a viewport over 80 times wider than tall
   or a spacing about 1/1600 of the viewport's longer side (such a pattern would be invisible anyway, #119).
-* Patterns with relative `units` (e.g. the default "snpc") now draw in a mirrored viewport
-  (one with a negative width or height, which `{grid}` draws flipped).
-  Previously they threw `wrong sign in 'by' argument` since the spacing converted to a negative length.
 * The "seagal" and "seagalbw" placeholder types work again
   (their URLs used a nonexistent `www.` subdomain of `stevensegallery.lucidinternets.com`, #118).
 * Placeholder types that return greyscale images (e.g. "murray", "murraybw", "picsumbw", and "seagalbw")
