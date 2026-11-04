@@ -220,6 +220,13 @@ register_pattern("your_pattern_name", your_array_pattern_function, kind = "array
   With `{ggpattern}` (>= 1.4.0) these defaults also apply to any `pattern_` aesthetic the user doesn't map or set
   (`{ggpattern}` 1.3.1 and earlier supply their own defaults for most `pattern_` aesthetics)
   but an unprefixed `{ggplot2}` aesthetic such as `fill` may be set by the geom's own defaults.
+* `register_pattern()`'s `key_scaling` argument lists the parameters a numeric legend key zooms
+  by (a power of) `pattern_key_scale_factor` when `pattern_units` isn't "snpc"
+  (after all the defaults are filled in).
+  The default `c(pattern_spacing = 1, pattern_xoffset = 1, pattern_yoffset = 1)` suits most patterns;
+  add any other lengths your pattern reads (power `1`) or inverse lengths (power `-1`)
+  e.g. the builtin "wave" pattern also lists `pattern_amplitude = 1` and `pattern_frequency = -1`,
+  and leave out any of the default three your pattern doesn't use as lengths.
 * `registered_patterns()` lists all the available patterns and `unregister_pattern()` removes a registration.
 * `has_pattern()` checks whether pattern names currently resolve to a pattern
   and `has_registered_pattern()` checks whether pattern names are taken

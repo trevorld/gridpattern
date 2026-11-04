@@ -92,6 +92,10 @@
 #'                 These replace the generic defaults for parameters that weren't supplied.
 #'                 The remaining generic defaults are filled in first and then these in the order given
 #'                 so a function default may use any generic parameter and any earlier pattern-specific default.
+#'                 Defaults are always computed from the parameters as drawn in the plot
+#'                 (any legend key zoom of `key_scaling` is applied afterwards)
+#'                 e.g. `list(pattern_spacing = 0.025, pattern_key_scale_factor = function(params, gp) min(1, 0.025 / params$pattern_spacing))`
+#'                 zooms out a legend key more for larger spacings.
 #'                 With `{ggpattern}` (>= 1.4.0) these also apply to any `pattern_` aesthetic
 #'                 the user doesn't map or set (`{ggpattern}` passes unset aesthetics as `NaN`).
 #'                 `{ggpattern}` 1.3.1 and earlier supply their own defaults for most `pattern_` aesthetics
@@ -108,6 +112,20 @@
 #'                   Since such patterns are rare any other unprefixed name
 #'                   (e.g. `fill` or `spacing` instead of `pattern_fill` or `pattern_spacing`)
 #'                   is an error of class `"gridpattern_error_unprefixed_defaults"`.
+#' @param key_scaling A named numeric vector of the parameters that a numeric `legend` key
+#'                    (see [patternGrob()]) zooms by `pattern_key_scale_factor`
+#'                    if `pattern_units` isn't \dQuote{snpc}
+#'                    (\dQuote{snpc} lengths are instead zoomed by the larger legend viewport).
+#'                    Each value is the power of `pattern_key_scale_factor` the parameter is multiplied by:
+#'                    `1` for a length in `pattern_units` units and `-1` for an inverse length
+#'                    e.g. the "wave" pattern uses
+#'                    `c(pattern_spacing = 1, pattern_xoffset = 1, pattern_yoffset = 1, pattern_amplitude = 1, pattern_frequency = -1)`.
+#'                    This is the complete set of zoomed parameters (it replaces rather than adds to the default)
+#'                    so leave out `pattern_spacing`, `pattern_xoffset`, or `pattern_yoffset`
+#'                    if the pattern doesn't use them as lengths.
+#'                    Applies to both supplied and default parameter values
+#'                    after all the defaults are filled in.
+#'                    Names must be `pattern_` prefixed unless listed in `unprefixed`.
 #' @param env The environment used to determine the \dQuote{owner} of the pattern.
 #'            If writing a function that registers patterns on behalf of its caller
 #'            add an `env = rlang::caller_env()` argument to that function and pass it on.
@@ -137,6 +155,7 @@ register_pattern <- function(
 	kind = c("geometry", "array"),
 	defaults = list(),
 	unprefixed = character(),
+	key_scaling = c(pattern_spacing = 1, pattern_xoffset = 1, pattern_yoffset = 1),
 	env = caller_env()
 ) {
 	assert_pattern_name(name)
@@ -145,6 +164,7 @@ register_pattern <- function(
 	}
 	kind <- match.arg(kind)
 	defaults <- validate_defaults(defaults, unprefixed)
+	key_scaling <- validate_key_scaling(key_scaling, unprefixed)
 	owner <- registration_owner(env)
 	key <- pattern_key(owner, name)
 	old <- pattern_registry[[key]]
@@ -153,7 +173,7 @@ register_pattern <- function(
 	}
 	assign(
 		key,
-		pattern_entry(name, owner, kind, fn, defaults = defaults),
+		pattern_entry(name, owner, kind, fn, defaults = defaults, key_scaling = key_scaling),
 		envir = pattern_registry
 	)
 	invisible(old)
@@ -357,6 +377,7 @@ local_pattern <- function(
 	kind = c("geometry", "array"),
 	defaults = list(),
 	unprefixed = character(),
+	key_scaling = c(pattern_spacing = 1, pattern_xoffset = 1, pattern_yoffset = 1),
 	env = caller_env(),
 	prefer = FALSE,
 	.local_envir = parent.frame()
@@ -380,6 +401,7 @@ local_pattern <- function(
 		kind = kind,
 		defaults = defaults,
 		unprefixed = unprefixed,
+		key_scaling = key_scaling,
 		env = env
 	)
 	registered <- TRUE
@@ -673,9 +695,46 @@ pattern_entry <- function(
 	kind,
 	fn,
 	source = "register_pattern",
-	defaults = list()
+	defaults = list(),
+	key_scaling = DEFAULT_KEY_SCALING
 ) {
-	list(name = name, owner = owner, kind = kind, fn = fn, source = source, defaults = defaults)
+	list(
+		name = name,
+		owner = owner,
+		kind = kind,
+		fn = fn,
+		source = source,
+		defaults = defaults,
+		key_scaling = key_scaling
+	)
+}
+
+# validates `key_scaling` (a named numeric vector of powers of `pattern_key_scale_factor`)
+validate_key_scaling <- function(key_scaling, unprefixed = character()) {
+	if (is.null(key_scaling) || (is.atomic(key_scaling) && length(key_scaling) == 0L)) {
+		return(rlang::set_names(numeric(), character()))
+	}
+	nms <- names(key_scaling)
+	if (
+		!is.numeric(key_scaling) ||
+			any(!is.finite(key_scaling)) ||
+			is.null(nms) ||
+			any(is.na(nms) | !nzchar(nms)) ||
+			anyDuplicated(nms)
+	) {
+		abort(
+			"`key_scaling` must be a numeric vector of finite values with unique, non-empty names."
+		)
+	}
+	bare <- nms[!startsWith(nms, "pattern_") & !(nms %in% unprefixed)]
+	if (length(bare) > 0L) {
+		backticked <- function(x) paste0("`", x, "`", collapse = ", ")
+		abort(c(
+			glue("`key_scaling` has names without the `pattern_` prefix: {backticked(bare)}."),
+			i = glue("Did you mean {backticked(paste0('pattern_', bare))}?")
+		))
+	}
+	key_scaling
 }
 
 # validates `defaults` (a named list; names are used as-is e.g. "pattern_fill" or "fill")
@@ -821,6 +880,7 @@ register_builtin_patterns <- function() {
 	)
 	fns <- list(geometry = geometry, array = array)
 	defaults <- builtin_defaults()
+	key_scaling <- builtin_key_scaling()
 	for (kind in names(fns)) {
 		for (name in names(fns[[kind]])) {
 			entry <- pattern_entry(
@@ -829,7 +889,8 @@ register_builtin_patterns <- function() {
 				kind,
 				fns[[kind]][[name]],
 				"builtin",
-				validate_defaults(defaults[[name]] %||% list())
+				validate_defaults(defaults[[name]] %||% list()),
+				validate_key_scaling(key_scaling[[name]] %||% DEFAULT_KEY_SCALING)
 			)
 			assign(pattern_key("gridpattern", name), entry, envir = pattern_registry)
 		}
@@ -838,6 +899,14 @@ register_builtin_patterns <- function() {
 }
 
 # builtin pattern-specific defaults (replacing `GENERIC_DEFAULTS`)
+# builtin patterns whose `key_scaling` isn't `DEFAULT_KEY_SCALING`
+builtin_key_scaling <- function() {
+	list(
+		# NB. "rose" (angular) and "ambient" (noise) `pattern_frequency` aren't inverse lengths
+		wave = c(DEFAULT_KEY_SCALING, pattern_amplitude = 1, pattern_frequency = -1)
+	)
+}
+
 builtin_defaults <- function() {
 	list(
 		ambient = list(

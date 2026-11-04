@@ -83,6 +83,12 @@ test_that("`pattern_key_scale_factor` zooms a legend key", {
 		"legend_capture",
 		create_pattern_legend_capture,
 		defaults = list(pattern_amplitude = function(params, gp) params$pattern_spacing / 2),
+		key_scaling = c(
+			pattern_spacing = 1,
+			pattern_xoffset = 1,
+			pattern_yoffset = 1,
+			pattern_amplitude = 1
+		),
 		env = globalenv()
 	)
 	k <- 2
@@ -102,7 +108,7 @@ test_that("`pattern_key_scale_factor` zooms a legend key", {
 		expect_equal(range(zoomed$boundary_df$x), 0.5 + c(-0.5, 0.5) / (as.numeric(legend) * k))
 	}
 
-	# absolute lengths (whether supplied or defaults) are zoomed by `k` (as are defaults computed from them)
+	# absolute `key_scaling` lengths (whether supplied or defaults) are zoomed by `k`
 	cm <- draw_legend_capture(s, units = "cm", spacing = 1, yoffset = 0.5, key_scale_factor = k)
 	expect_equal(cm$vp_in, s * k * no$vp_in)
 	expect_equal(cm$params$pattern_spacing, k)
@@ -134,6 +140,148 @@ test_that("`pattern_key_scale_factor` zooms a legend key", {
 	}
 	# (which is only checked for a legend key)
 	expect_equal(complete_params(list(pattern_key_scale_factor = 0))$pattern_key_scale_factor, 0)
+})
+
+test_that("defaults see the unzoomed parameters and `key_scaling` zooms them afterwards", {
+	seen <- list()
+	defaults <- list(
+		pattern_spacing = 0.025,
+		pattern_key_scale_factor = function(params, gp) {
+			seen$ksf_spacing <<- params$pattern_spacing
+			min(1, 0.025 / params$pattern_spacing)
+		},
+		pattern_amplitude = function(params, gp) params$pattern_spacing / 2,
+		pattern_frequency = function(params, gp) 1 / params$pattern_spacing
+	)
+	key_scaling <- c(
+		pattern_spacing = 1,
+		pattern_xoffset = 1,
+		pattern_yoffset = 1,
+		pattern_amplitude = 1,
+		pattern_frequency = -1
+	)
+	complete <- function(..., key_zoom = TRUE) {
+		complete_params(
+			list(...),
+			"swatch",
+			defaults = defaults,
+			key_zoom = key_zoom,
+			key_scaling = key_scaling
+		)
+	}
+
+	# the key scale factor default sees the (registered or user) spacing
+	params <- complete()
+	expect_equal(seen$ksf_spacing, 0.025)
+	expect_equal(params$pattern_key_scale_factor, 1)
+	params <- complete(pattern_spacing = 0.1)
+	expect_equal(seen$ksf_spacing, 0.1)
+	expect_equal(params$pattern_key_scale_factor, 0.25)
+	expect_equal(params$pattern_spacing, 0.1) # "snpc" lengths aren't zoomed
+	expect_equal(params$pattern_frequency, 10)
+	expect_equal(complete(pattern_spacing = 0.1, key_zoom = FALSE)$pattern_key_scale_factor, 0.25)
+
+	# absolute `key_scaling` parameters are zoomed after all defaults are filled in
+	# whether supplied or defaults (an inverse length by `1 / k`)
+	params <- complete(pattern_spacing = 0.1, pattern_yoffset = 1, pattern_units = "cm")
+	expect_equal(seen$ksf_spacing, 0.1)
+	expect_equal(params$pattern_spacing, 0.025)
+	expect_equal(params$pattern_yoffset, 0.25)
+	expect_equal(params$pattern_xoffset, 0)
+	expect_equal(params$pattern_amplitude, 0.0125)
+	expect_equal(params$pattern_frequency, 40)
+	params <- complete(
+		pattern_spacing = 0.1,
+		pattern_amplitude = 0.2,
+		pattern_frequency = 2,
+		pattern_units = "cm"
+	)
+	expect_equal(params$pattern_amplitude, 0.05)
+	expect_equal(params$pattern_frequency, 8)
+	params <- complete(pattern_spacing = 0.1, pattern_units = "cm", key_zoom = FALSE)
+	expect_equal(params$pattern_spacing, 0.1)
+	expect_equal(params$pattern_amplitude, 0.05)
+	expect_equal(params$pattern_frequency, 10)
+
+	# only the parameters in `key_scaling` are zoomed
+	params <- complete_params(
+		list(pattern_spacing = 0.1, pattern_xoffset = 1, pattern_units = "cm"),
+		"swatch",
+		defaults = defaults,
+		key_zoom = TRUE,
+		key_scaling = c(pattern_xoffset = 1)
+	)
+	expect_equal(params$pattern_spacing, 0.1)
+	expect_equal(params$pattern_xoffset, 0.25)
+	expect_equal(params$pattern_amplitude, 0.05)
+
+	# a `pattern_units` default may also use earlier parameters
+	defaults <- list(
+		pattern_spacing = 0.3,
+		pattern_units = function(params, gp) if (params$pattern_spacing > 0.2) "cm" else "snpc"
+	)
+	params <- complete(pattern_key_scale_factor = 2)
+	expect_equal(params$pattern_units, "cm")
+	expect_equal(params$pattern_spacing, 0.6)
+	params <- complete(pattern_key_scale_factor = 2, pattern_spacing = 0.1)
+	expect_equal(params$pattern_units, "snpc")
+	expect_equal(params$pattern_spacing, 0.1)
+})
+
+test_that("`key_scaling` of registered patterns", {
+	skip_if_not_installed("withr")
+	draw <- function(...) {
+		draw_legend_capture(1, units = "cm", key_scale_factor = 2, ...)$params
+	}
+	local_pattern("legend_capture", create_pattern_legend_capture, env = globalenv())
+	params <- draw(spacing = 1, amplitude = 1, frequency = 1)
+	expect_equal(params$pattern_spacing, 2)
+	expect_equal(params$pattern_amplitude, 1)
+	expect_equal(params$pattern_frequency, 1)
+
+	local_pattern(
+		"legend_capture",
+		create_pattern_legend_capture,
+		key_scaling = c(pattern_amplitude = 1, pattern_frequency = -1),
+		env = globalenv()
+	)
+	params <- draw(spacing = 1, amplitude = 1, frequency = 1)
+	expect_equal(params$pattern_spacing, 1)
+	expect_equal(params$pattern_amplitude, 2)
+	expect_equal(params$pattern_frequency, 0.5)
+
+	local_pattern(
+		"legend_capture",
+		create_pattern_legend_capture,
+		key_scaling = NULL,
+		env = globalenv()
+	)
+	expect_equal(draw(spacing = 1)$pattern_spacing, 1)
+
+	# the builtin "wave" also zooms its amplitude and frequency, "rose" doesn't zoom its frequency
+	expect_equal(
+		resolve_pattern("gridpattern::wave")$key_scaling,
+		c(
+			pattern_spacing = 1,
+			pattern_xoffset = 1,
+			pattern_yoffset = 1,
+			pattern_amplitude = 1,
+			pattern_frequency = -1
+		)
+	)
+	expect_equal(resolve_pattern("gridpattern::rose")$key_scaling, DEFAULT_KEY_SCALING)
+
+	f <- create_pattern_legend_capture
+	for (bad in list("pattern_spacing", c(1, 2), c(pattern_spacing = NA), c(a = 1, a = 2))) {
+		expect_error(
+			register_pattern("key_capture", f, key_scaling = bad, env = globalenv()),
+			"`key_scaling` must be"
+		)
+	}
+	expect_error(
+		register_pattern("key_capture", f, key_scaling = c(spacing = 1), env = globalenv()),
+		"`key_scaling` has names without the `pattern_` prefix"
+	)
 })
 
 test_that("the default `pattern_res` is computed from the graphics device when drawn", {

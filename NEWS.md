@@ -64,9 +64,16 @@ New features
   `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset` itself.
 * A numeric `legend` key is now zoomed by the `pattern_key_scale_factor` parameter (`key_scale_factor` argument):
   the legend viewport is `legend * pattern_key_scale_factor` times larger than the key
-  and if `pattern_units` isn't "snpc" then `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset`
-  are multiplied by `pattern_key_scale_factor` (before any defaults computed from them e.g. the "wave" amplitude)
+  and if `pattern_units` isn't "snpc" then the pattern's `key_scaling` parameters are multiplied by
+  (a power of) `pattern_key_scale_factor`
   so legend keys of patterns with absolute units (e.g. "cm") can be zoomed too.
+  `register_pattern()`'s new `key_scaling` argument (a named vector of powers) sets these parameters:
+  by default `c(pattern_spacing = 1, pattern_xoffset = 1, pattern_yoffset = 1)`
+  while the "wave" pattern also zooms `pattern_amplitude` (`1`) and `pattern_frequency` (`-1`).
+  This zoom is applied after all the defaults are filled in
+  so (function) defaults always see the parameters as drawn in the plot
+  e.g. a registered default for `pattern_key_scale_factor` may zoom out a legend key more for larger spacings
+  `list(pattern_spacing = 0.025, pattern_key_scale_factor = function(params, gp) min(1, 0.025 / params$pattern_spacing))`.
   A logical `legend` (as passed by `{ggpattern}` 1.3.1 and earlier, which zoom their keys themselves)
   is not zoomed by `pattern_key_scale_factor`.
   Previously only the "magick" pattern used `pattern_key_scale_factor` (which it still does for any legend key).

@@ -9,9 +9,11 @@ prefix_args <- function(l, prefix = "pattern_") {
 # parameters for which a length-one `NA` is treated as "not supplied" (see `complete_params()`)
 NA_IS_UNSET <- c("pattern_type", "pattern_subtype", "pattern_gravity", "pattern_res")
 
-# lengths that `pattern_key_scale_factor` zooms in a (numeric) legend key if `pattern_units` isn't "snpc"
+# the default `key_scaling` of patterns (see `register_pattern()`):
+# the parameters that `pattern_key_scale_factor` zooms in a (numeric) legend key if `pattern_units` isn't "snpc"
+# (each multiplied by `pattern_key_scale_factor` to the given power)
 # ("snpc" lengths are instead zoomed by the larger legend viewport, see `makeContent.pattern()`)
-KEY_SCALED_LENGTHS <- c("pattern_spacing", "pattern_xoffset", "pattern_yoffset")
+DEFAULT_KEY_SCALING <- c(pattern_spacing = 1, pattern_xoffset = 1, pattern_yoffset = 1)
 # `pattern_units` that don't have a well-defined meaning for (the lengths of) patterns:
 # lengths are converted along the viewport's width so "npc" and "native" would ignore its height
 # and "null" (only meaningful in a grid layout) converts to zero
@@ -20,12 +22,14 @@ UNSUPPORTED_UNITS <- c("npc", "native", "null")
 # fills in missing pattern parameters in list `l` (whose names are already prefixed)
 # `defaults` are pattern-specific defaults that replace (or are appended to) `GENERIC_DEFAULTS`
 # `key_zoom` is whether to zoom by `pattern_key_scale_factor` (i.e. drawn in a numeric legend key)
+# `key_scaling` is the pattern's `key_scaling` (see `register_pattern()`)
 complete_params <- function(
 	l,
 	pattern = "none",
 	gp = gpar(),
 	defaults = list(),
-	key_zoom = FALSE
+	key_zoom = FALSE,
+	key_scaling = DEFAULT_KEY_SCALING
 ) {
 	l$pattern <- pattern
 	# The generic defaults not overridden by the pattern are filled first (in `GENERIC_DEFAULTS` order)
@@ -69,29 +73,23 @@ complete_params <- function(
 		}
 		value
 	}
-	# In a (numeric) legend key `pattern_key_scale_factor` zooms the absolute (non-relative unit) lengths
-	# as soon as each is filled in so any later (function) defaults computed from them
-	# (e.g. the "wave" amplitude) are zoomed too.
-	zoom <- 1
-	if (key_zoom) {
-		for (nm in c("pattern_key_scale_factor", "pattern_units")) {
-			l[[nm]] <- l[[nm]] %||% fill_default(l, nm)
-		}
-		k <- check_key_scale_factor(l$pattern_key_scale_factor)
-		zoom <- ifelse(l$pattern_units %in% "snpc", 1, k)
-		for (nm in intersect(KEY_SCALED_LENGTHS, names(l))) {
-			l[[nm]] <- zoom * l[[nm]]
-		}
-	}
+	# Every default is filled in (in order) as if not in a legend key
+	# so (function) defaults always see the parameters as drawn in the plot
 	for (nm in names(all_defaults)) {
 		if (is.null(l[[nm]])) {
 			l[[nm]] <- fill_default(l, nm)
-			if (nm %in% KEY_SCALED_LENGTHS) {
-				l[[nm]] <- zoom * l[[nm]]
-			}
 		}
 	}
 	check_units(l$pattern_units)
+	# then in a (numeric) legend key `pattern_key_scale_factor` zooms the parameters in `key_scaling`
+	# if `pattern_units` isn't "snpc" (whether supplied or defaults)
+	if (key_zoom) {
+		k <- check_key_scale_factor(l$pattern_key_scale_factor)
+		zoom <- ifelse(l$pattern_units %in% "snpc", 1, k)
+		for (nm in intersect(names(key_scaling), names(l))) {
+			l[[nm]] <- l[[nm]] * zoom^key_scaling[[nm]]
+		}
+	}
 	l
 }
 
