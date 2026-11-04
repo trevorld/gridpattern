@@ -184,9 +184,10 @@ create_pattern_regular_polygon_via_sf <- function(
 	radius_max <- radius_mult * spacing * density_max
 
 	#### add fudge factor?
-	boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
-	expanded_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = radius_max)
-	contracted_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = -radius_max)
+	valid_sf <- convert_polygon_df_to_valid_sf(boundary_df)
+	boundary_sf <- buffer_polygon_sf(valid_sf, buffer_dist = 0)
+	expanded_sf <- buffer_polygon_sf(valid_sf, buffer_dist = radius_max)
+	contracted_sf <- buffer_polygon_sf(valid_sf, buffer_dist = -radius_max)
 	bbox <- boundary_bbox(boundary_df, margin = radius_max)
 
 	# compute pattern matrix of graphical elements (e.g. fill colors)
