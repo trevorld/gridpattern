@@ -87,6 +87,14 @@ complete_params <- function(
 		k <- check_key_scale_factor(l$pattern_key_scale_factor)
 		zoom <- ifelse(l$pattern_units %in% "snpc", 1, k)
 		for (nm in intersect(names(key_scaling), names(l))) {
+			if (!is.numeric(l[[nm]])) {
+				abort(c(
+					glue("`{nm}` must be numeric to be zoomed in a legend key."),
+					i = glue(
+						'It is in the `key_scaling` of pattern "{pattern}" (see `?register_pattern`).'
+					)
+				))
+			}
 			l[[nm]] <- l[[nm]] * zoom^key_scaling[[nm]]
 		}
 	}

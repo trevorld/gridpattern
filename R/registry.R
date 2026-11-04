@@ -711,7 +711,7 @@ pattern_entry <- function(
 
 # validates `key_scaling` (a named numeric vector of powers of `pattern_key_scale_factor`)
 validate_key_scaling <- function(key_scaling, unprefixed = character()) {
-	if (is.null(key_scaling) || (is.atomic(key_scaling) && length(key_scaling) == 0L)) {
+	if (length(key_scaling) == 0L) {
 		return(rlang::set_names(numeric(), character()))
 	}
 	nms <- names(key_scaling)
@@ -726,16 +726,33 @@ validate_key_scaling <- function(key_scaling, unprefixed = character()) {
 			"`key_scaling` must be a numeric vector of finite values with unique, non-empty names."
 		)
 	}
-	bare <- nms[!startsWith(nms, "pattern_") & !(nms %in% unprefixed)]
-	if (length(bare) > 0L) {
-		backticked <- function(x) paste0("`", x, "`", collapse = ", ")
-		abort(c(
-			glue("`key_scaling` has names without the `pattern_` prefix: {backticked(bare)}."),
-			i = glue("Did you mean {backticked(paste0('pattern_', bare))}?")
-		))
+	# these are what decide the zoom (or aren't numbers)
+	reserved <- intersect(nms, c("pattern", "pattern_units", "pattern_key_scale_factor"))
+	if (length(reserved) > 0L) {
+		abort(glue("`key_scaling` can't include {backticked(reserved)}."))
 	}
+	check_prefixed_names(nms, unprefixed, "key_scaling")
 	key_scaling
 }
+
+# An unprefixed name is probably a forgotten `pattern_` prefix (e.g. `fill` instead of `pattern_fill`)
+# unless the pattern really reads it e.g. a plain `{ggplot2}` aesthetic (then listed in `unprefixed`)
+check_prefixed_names <- function(nms, unprefixed, arg) {
+	bare <- nms[!startsWith(nms, "pattern_") & !(nms %in% unprefixed)]
+	if (length(bare) > 0L) {
+		abort(
+			c(
+				glue("`{arg}` has names without the `pattern_` prefix: {backticked(bare)}."),
+				i = glue("Did you mean {backticked(paste0('pattern_', bare))}?"),
+				i = "If the pattern really reads such unprefixed parameters list them in `unprefixed`."
+			),
+			class = glue("gridpattern_error_unprefixed_{arg}")
+		)
+	}
+	invisible(NULL)
+}
+
+backticked <- function(x) paste0("`", x, "`", collapse = ", ")
 
 # validates `defaults` (a named list; names are used as-is e.g. "pattern_fill" or "fill")
 validate_defaults <- function(defaults, unprefixed = character()) {
@@ -755,20 +772,7 @@ validate_defaults <- function(defaults, unprefixed = character()) {
 	if ("pattern" %in% nms) {
 		abort("`defaults` must not set `pattern` (it is always the resolved pattern name).")
 	}
-	# An unprefixed name is probably a forgotten `pattern_` prefix (e.g. `fill` instead of `pattern_fill`)
-	# unless the pattern really reads it e.g. a plain `{ggplot2}` aesthetic (then listed in `unprefixed`)
-	bare <- nms[!startsWith(nms, "pattern_") & !(nms %in% unprefixed)]
-	if (length(bare) > 0L) {
-		backticked <- function(x) paste0("`", x, "`", collapse = ", ")
-		abort(
-			c(
-				glue("`defaults` has names without the `pattern_` prefix: {backticked(bare)}."),
-				i = glue("Did you mean {backticked(paste0('pattern_', bare))}?"),
-				i = "If the pattern really reads such unprefixed parameters list them in `unprefixed`."
-			),
-			class = "gridpattern_error_unprefixed_defaults"
-		)
-	}
+	check_prefixed_names(nms, unprefixed, "defaults")
 	for (nm in nms) {
 		value <- defaults[[nm]]
 		if (is.function(value) && length(formals(value)) < 2L) {
@@ -898,7 +902,6 @@ register_builtin_patterns <- function() {
 	invisible(NULL)
 }
 
-# builtin pattern-specific defaults (replacing `GENERIC_DEFAULTS`)
 # builtin patterns whose `key_scaling` isn't `DEFAULT_KEY_SCALING`
 builtin_key_scaling <- function() {
 	list(
@@ -907,6 +910,7 @@ builtin_key_scaling <- function() {
 	)
 }
 
+# builtin pattern-specific defaults (replacing `GENERIC_DEFAULTS`)
 builtin_defaults <- function() {
 	list(
 		ambient = list(

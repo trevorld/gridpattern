@@ -277,6 +277,7 @@ makeContent.pattern <- function(x) {
 		gp = x$gp,
 		defaults = entry$defaults,
 		key_zoom = key_zoom,
+		# (`%||%` for an entry cached in a grob created by an earlier {gridpattern} without `key_scaling`)
 		key_scaling = entry$key_scaling %||% DEFAULT_KEY_SCALING
 	)
 
