@@ -187,6 +187,7 @@ create_pattern_regular_polygon_via_sf <- function(
 	boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
 	expanded_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = radius_max)
 	contracted_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = -radius_max)
+	bbox <- boundary_bbox(boundary_df, margin = radius_max)
 
 	# compute pattern matrix of graphical elements (e.g. fill colors)
 	if (is.null(params$pattern_type) || is.na(params$pattern_type)) {
@@ -201,13 +202,20 @@ create_pattern_regular_polygon_via_sf <- function(
 		}
 		radius_outer <- radius_mult * spacing * density[i_par]
 		xy_polygon <- get_xy_polygon(shape[i_par], params, radius_outer, rot[i_par])
-		xy_par <- get_xy_par(grid_xy, i_par, m_pat, grid, spacing)
+		# the (rotated) grid points whose polygons can reach the boundary
+		xy_par <- get_xy_par_within(
+			grid_xy,
+			i_par,
+			m_pat,
+			grid,
+			spacing,
+			params$pattern_angle,
+			vpm,
+			bbox
+		)
 		if (length(xy_par$x) == 0) {
 			next
 		}
-
-		# rotate by 'angle'
-		xy_par <- rotate_xy(xy_par$x, xy_par$y, params$pattern_angle, vpm$x, vpm$y)
 
 		# test if polygons within/near boundary
 		points_sf <- sf::st_multipoint(as.matrix(as.data.frame(xy_par)))
@@ -249,6 +257,7 @@ create_pattern_regular_polygon_via_sf <- function(
 }
 
 get_pattern_matrix <- function(type, subtype, grid_xy, n_par) {
+	check_grid_density(grid_xy)
 	nrow <- length(grid_xy$y)
 	ncol <- length(grid_xy$x)
 	if (is_pattern_square(type)) {
@@ -275,57 +284,93 @@ get_pattern_matrix <- function(type, subtype, grid_xy, n_par) {
 	m_pat
 }
 
-get_xy_par <- function(grid_xy, i_par, m_pat, grid, spacing) {
-	if (grid == "square") {
-		get_xy_par_square(grid_xy, i_par, m_pat)
-	} else if (grid == "elongated_triangle") {
-		get_xy_par_el_tri(grid_xy, i_par, m_pat, spacing)
-	} else {
-		get_xy_par_hex(grid_xy, i_par, m_pat, spacing)
-	}
+# The grid points (in row-major order) whose `m_pat` entry is `i_par`
+# (`rows` / `cols` restrict the grid rows / columns examined, see `get_xy_par_within()`)
+get_xy_par <- function(
+	grid_xy,
+	i_par,
+	m_pat,
+	grid,
+	spacing,
+	rows = seq_along(grid_xy$y),
+	cols = seq_along(grid_xy$x)
+) {
+	ij <- which_row_major(m_pat[rows, cols, drop = FALSE], i_par)
+	i <- rows[ij$i]
+	j <- cols[ij$j]
+	# every other row of a "hex" grid (every other pair of rows of an "elongated_triangle" grid)
+	# is offset half a spacing to the left
+	is_offset <- switch(grid, square = FALSE, elongated_triangle = i %% 4L %in% 1:2, i %% 2L == 0L)
+	list(x = grid_xy$x[j] - is_offset * 0.5 * spacing, y = grid_xy$y[i])
 }
-get_xy_par_square <- function(grid_xy, i_par, m_pat) {
-	x <- numeric(0)
-	y <- numeric(0)
-	for (i in seq_along(grid_xy$y)) {
-		indices_x <- which(m_pat[i, ] == i_par)
-		x <- c(x, grid_xy$x[indices_x])
-		y <- c(y, rep(grid_xy$y[i], length(indices_x)))
-	}
-	list(x = x, y = y)
+# The grid points (rotated by `angle` degrees about the viewport centre) whose `m_pat` entry is `i_par`
+# and that lie within `bbox` (a `boundary_bbox()`).
+# The grid covers a square around the whole viewport (so it covers it at any angle)
+# but in a thin viewport most of it is nowhere near the boundary (issue #119)
+# so only the grid rows and columns that can reach `bbox` are examined.
+get_xy_par_within <- function(grid_xy, i_par, m_pat, grid, spacing, angle, vpm, bbox) {
+	# `bbox` in the unrotated grid's coordinates (plus a margin for the offset rows and rounding)
+	corners <- rotate_xy(
+		bbox[c("xmin", "xmax", "xmax", "xmin")],
+		bbox[c("ymin", "ymin", "ymax", "ymax")],
+		-angle,
+		vpm$x,
+		vpm$y
+	)
+	margin <- 0.5 * spacing
+	rows <- which(grid_xy$y >= min(corners$y) - margin & grid_xy$y <= max(corners$y) + margin)
+	cols <- which(grid_xy$x >= min(corners$x) - margin & grid_xy$x <= max(corners$x) + margin)
+	xy <- get_xy_par(grid_xy, i_par, m_pat, grid, spacing, rows, cols)
+	xy <- rotate_xy(xy$x, xy$y, angle, vpm$x, vpm$y)
+	filter_xy_bbox(xy, bbox)
 }
-get_xy_par_hex <- function(grid_xy, i_par, m_pat, spacing = 1) {
-	x <- numeric(0)
-	y <- numeric(0)
-	for (i in seq_along(grid_xy$y)) {
-		indices_x <- which(m_pat[i, ] == i_par)
-		if (i %% 2) {
-			x_offset <- 0
-		} else {
-			x_offset <- -0.5 * spacing
-		}
-		x <- c(x, x_offset + grid_xy$x[indices_x])
-		y <- c(y, rep(grid_xy$y[i], length(indices_x)))
-	}
-	list(x = x, y = y)
+# the bounding box of the boundary expanded by `margin` (`NA` if a coordinate is missing)
+boundary_bbox <- function(boundary_df, margin = 0) {
+	x <- range(boundary_df$x)
+	y <- range(boundary_df$y)
+	c(xmin = x[1L] - margin, xmax = x[2L] + margin, ymin = y[1L] - margin, ymax = y[2L] + margin)
 }
-get_xy_par_el_tri <- function(grid_xy, i_par, m_pat, spacing = 1) {
-	x <- numeric(0)
-	y <- numeric(0)
-	for (i in seq_along(grid_xy$y)) {
-		indices_x <- which(m_pat[i, ] == i_par)
-		if (i %% 4 == 3 || i %% 4 == 0) {
-			x_offset <- 0
-		} else {
-			x_offset <- -0.5 * spacing
-		}
-		x <- c(x, x_offset + grid_xy$x[indices_x])
-		y <- c(y, rep(grid_xy$y[i], length(indices_x)))
-	}
-	list(x = x, y = y)
+# the points within `bbox` (none if `bbox` is `NA`)
+filter_xy_bbox <- function(xy, bbox) {
+	keep <- which(
+		xy$x >= bbox[["xmin"]] &
+			xy$x <= bbox[["xmax"]] &
+			xy$y >= bbox[["ymin"]] &
+			xy$y <= bbox[["ymax"]]
+	)
+	list(x = xy$x[keep], y = xy$y[keep])
+}
+# row (`i`) and column (`j`) indices of the entries of matrix `m` equal to `value`
+# in row-major order i.e. the order `for (i in rows) for (j in cols)` visits them
+# (vectorized: a loop over rows growing `x` / `y` with `c()` is quadratic in the number of rows, see issue #119)
+which_row_major <- function(m, value) {
+	ij <- which(m == value, arr.ind = TRUE, useNames = FALSE)
+	o <- order(ij[, 1L], ij[, 2L])
+	list(i = ij[o, 1L], j = ij[o, 2L])
 }
 
-# create grid of points large enough to cover viewport no matter the angle
+# A two-dimensional pattern grid (of points covering a square around the viewport) denser than this isn't drawn at all:
+# the pattern would be invisible anyway while its matrices could exhaust memory (issue #119).
+# With the default "snpc" spacing the grid has about `(40 * aspect ratio)^2` points
+# so this is only reached by a viewport over 80 times wider than tall (or a spacing about 1/1600 of the longer side).
+MAX_GRID_POINTS <- 1e7
+# signals a classed condition that `pattern_content()` catches to draw nothing instead
+check_grid_density <- function(grid_xy) {
+	n_points <- as.double(length(grid_xy$x)) * as.double(length(grid_xy$y))
+	if (n_points > MAX_GRID_POINTS) {
+		abort(
+			glue(
+				"The pattern grid of {format(n_points, big.mark = ',', scientific = FALSE)} points is too dense to draw"
+			),
+			class = "gridpattern_grid_too_dense"
+		)
+	}
+	invisible(grid_xy)
+}
+
+# Create a grid of points large enough to cover the viewport no matter the angle:
+# a square around the viewport centre whose side is the viewport's longer side
+# (so a thin viewport has far more rows than its boundary needs, see `get_xy_par_within()`).
 get_xy_grid <- function(params, vpm, wavelength = FALSE) {
 	xoffset <- params$pattern_xoffset
 	yoffset <- params$pattern_yoffset

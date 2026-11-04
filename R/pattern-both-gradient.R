@@ -128,8 +128,9 @@ create_gradient_as_geometry <- function(params, boundary_df, aspect_ratio, legen
 	x_max <- max(boundary_df$x)
 	y_min <- min(boundary_df$y)
 	y_max <- max(boundary_df$y)
-	x_range <- convertX(unit(x_max - x_min, "npc"), "in", valueOnly = TRUE)
-	y_range <- convertY(unit(y_max - y_min, "npc"), "in", valueOnly = TRUE)
+	# (`abs()` since a viewport with a negative width / height is drawn mirrored)
+	x_range <- abs(convertX(unit(x_max - x_min, "npc"), "in", valueOnly = TRUE))
+	y_range <- abs(convertY(unit(y_max - y_min, "npc"), "in", valueOnly = TRUE))
 	if (x_range == 0 || y_range == 0) {
 		return(nullGrob())
 	}

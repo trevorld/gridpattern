@@ -144,17 +144,27 @@ create_pattern_rose <- function(params, boundary_df, aspect_ratio, legend = FALS
 	}
 	m_pat <- get_pattern_matrix(params$pattern_type, params$pattern_subtype, grid_xy, n_par)
 
+	# a rose curve lies within `radius_outer` (<= `radius_max`) of its grid point
+	bbox <- boundary_bbox(boundary_df, margin = radius_max)
+
 	gl <- gList()
 	for (i_par in seq(n_par)) {
 		radius_outer <- radius_mult * spacing * density[i_par]
 		xy_rose <- get_xy_rose(frequency[i_par], params, radius_outer, rot[i_par])
-		xy_par <- get_xy_par(grid_xy, i_par, m_pat, grid, spacing)
+		# the (rotated) grid points whose roses can reach the boundary (the mask hides the others)
+		xy_par <- get_xy_par_within(
+			grid_xy,
+			i_par,
+			m_pat,
+			grid,
+			spacing,
+			params$pattern_angle,
+			vpm,
+			bbox
+		)
 		if (length(xy_par$x) == 0) {
 			next
 		}
-
-		# rotate by 'angle'
-		xy_par <- rotate_xy(xy_par$x, xy_par$y, params$pattern_angle, vpm$x, vpm$y)
 
 		gp <- gpar(fill = fill[[i_par]], col = col[i_par], lwd = lwd[i_par], lty = lty[i_par])
 
@@ -186,29 +196,8 @@ get_xy_rose <- function(frequency, params, radius_outer, rot) {
 	rotate_xy(x, y, rose_angle, 0, 0)
 }
 
+# a rose curve `xy_rose` (relative to its centre) centred on each of the points `xy_par`
 points_to_rose_grob <- function(xy_par, xy_rose, gp, default.units, name) {
-	points_mat <- as.data.frame(xy_par)
-	df_polygon <- as.data.frame(xy_rose)
-	l_xy <- lapply(seq(nrow(points_mat)), function(i_r) {
-		x0 <- points_mat[i_r, 1]
-		y0 <- points_mat[i_r, 2]
-		df <- df_polygon
-		df$x <- df$x + x0
-		df$y <- df$y + y0
-		df
-	})
-	df <- do.call(rbind, l_xy)
-	if (is.null(df)) {
-		nullGrob()
-	} else {
-		df$id <- rep(seq(nrow(points_mat)), each = nrow(df_polygon))
-		pathGrob(
-			x = df$x,
-			y = df$y,
-			id = df$id,
-			default.units = default.units,
-			gp = gp,
-			name = name
-		)
-	}
+	xy <- tile_xy_polygon(xy_par$x, xy_par$y, xy_rose)
+	pathGrob(x = xy$x, y = xy$y, id = xy$id, default.units = default.units, gp = gp, name = name)
 }

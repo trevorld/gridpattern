@@ -91,6 +91,16 @@ grid.pattern_text <- function(
 	)
 }
 
+# A glyph (rotated about its centre) lies within this distance (in "bigpts") of its grid point:
+# the full diagonal of its unrotated bounding box (generous since the box is centred horizontally
+# but hangs below its centre by the descent and may contain several lines)
+glyph_radius <- function(label, gp) {
+	grob <- textGrob(label, gp = gp)
+	w <- abs(convertWidth(grobWidth(grob), "bigpts", valueOnly = TRUE))
+	h <- abs(convertHeight(grobAscent(grob) + grobDescent(grob), "bigpts", valueOnly = TRUE))
+	sqrt(w^2 + h^2)
+}
+
 create_pattern_text <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
 	# work in 'bigpts' instead 'npc' / 'snpc' units so we don't worry about the aspect ratio
 	default.units <- "bigpts"
@@ -133,20 +143,28 @@ create_pattern_text <- function(params, boundary_df, aspect_ratio, legend = FALS
 		if (shape[i_par] == "null") {
 			next
 		}
-		xy_par <- get_xy_par(grid_xy, i_par, m_pat, grid, spacing)
-		if (length(xy_par$x) == 0) {
-			next
-		}
-
-		# rotate by 'angle'
-		xy_par <- rotate_xy(xy_par$x, xy_par$y, params$pattern_angle, vpm$x, vpm$y)
-
 		gp <- gpar(
 			col = col[i_par],
 			fontsize = fontsize[i_par],
 			fontfamily = fontfamily[i_par],
 			fontface = fontface[i_par]
 		)
+
+		# the (rotated) grid points whose glyphs can reach the boundary (the mask hides the others)
+		bbox <- boundary_bbox(boundary_df, margin = glyph_radius(shape[i_par], gp))
+		xy_par <- get_xy_par_within(
+			grid_xy,
+			i_par,
+			m_pat,
+			grid,
+			spacing,
+			params$pattern_angle,
+			vpm,
+			bbox
+		)
+		if (length(xy_par$x) == 0) {
+			next
+		}
 
 		# create grob for interior polygons
 		name <- paste0("text.", i_par)

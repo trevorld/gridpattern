@@ -42,6 +42,19 @@ sf_points_to_circle_grob <- function(
 	}
 }
 
+# The polygon `xy_polygon` (`x` and `y` relative to its centre) centred on each of the points (`x0`, `y0`):
+# the `x`, `y`, and polygon `id` of all the vertices (in order, polygon by polygon).
+# (vectorized: a loop over points growing a list / data frame is quadratic in the number of points, see issue #119)
+tile_xy_polygon <- function(x0, y0, xy_polygon) {
+	n_points <- length(x0)
+	n_vertices <- length(xy_polygon$x)
+	list(
+		x = rep(xy_polygon$x, times = n_points) + rep(x0, each = n_vertices),
+		y = rep(xy_polygon$y, times = n_points) + rep(y0, each = n_vertices),
+		id = rep(seq_len(n_points), each = n_vertices)
+	)
+}
+
 # `xy_polygon` has `x` and `y` elements which will be added to each point in `sf_points`
 sf_points_to_polygon_grob <- function(
 	sf_points,
@@ -51,43 +64,27 @@ sf_points_to_polygon_grob <- function(
 	name = NULL
 ) {
 	points_mat <- as.matrix(sf_points)
-	df_polygon <- as.data.frame(xy_polygon)
-	l_xy <- lapply(seq(nrow(points_mat)), function(i_r) {
-		x0 <- points_mat[i_r, 1]
-		y0 <- points_mat[i_r, 2]
-		df <- df_polygon
-		df$x <- df$x + x0
-		df$y <- df$y + y0
-		df
-	})
-	df <- do.call(rbind, l_xy)
-	if (is.null(df)) {
-		nullGrob()
-	} else {
-		df$id <- rep(seq(nrow(points_mat)), each = nrow(df_polygon))
-		polygonGrob(
-			x = df$x,
-			y = df$y,
-			id = df$id,
-			default.units = default.units,
-			gp = gp,
-			name = name
-		)
+	if (nrow(points_mat) == 0L) {
+		return(nullGrob())
 	}
+	xy <- tile_xy_polygon(points_mat[, 1L], points_mat[, 2L], xy_polygon)
+	polygonGrob(x = xy$x, y = xy$y, id = xy$id, default.units = default.units, gp = gp, name = name)
 }
 
 # `xy_polygon` has `x` and `y` elements which will be added to each point in `sf_points`
 sf_points_to_sf_multipolygon <- function(sf_points, xy_polygon) {
 	points_mat <- as.matrix(sf_points)
-	df_polygon <- as.data.frame(xy_polygon)
-	df_polygon <- rbind(df_polygon, df_polygon[1L, ])
-	l_xy <- lapply(seq(nrow(points_mat)), function(i_r) {
-		x0 <- points_mat[i_r, 1]
-		y0 <- points_mat[i_r, 2]
-		df <- df_polygon
-		df$x <- df$x + x0
-		df$y <- df$y + y0
-		list(as.matrix(df))
+	# `{sf}` wants explicitly closed polygons
+	xy_ring <- list(x = c(xy_polygon$x, xy_polygon$x[1L]), y = c(xy_polygon$y, xy_polygon$y[1L]))
+	sf::st_multipolygon(xy_rings(points_mat[, 1L], points_mat[, 2L], xy_ring))
+}
+
+# the closed ring `xy_ring` centred on each point as a list of (lists of) vertex matrices for `sf::st_multipolygon()`
+xy_rings <- function(x0, y0, xy_ring) {
+	xy <- tile_xy_polygon(x0, y0, xy_ring)
+	m <- cbind(xy$x, xy$y)
+	n_vertices <- length(xy_ring$x)
+	lapply(seq_along(x0), function(k) {
+		list(m[(k - 1L) * n_vertices + seq_len(n_vertices), , drop = FALSE])
 	})
-	sf::st_multipolygon(l_xy)
 }

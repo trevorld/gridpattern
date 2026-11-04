@@ -420,11 +420,7 @@ create_pattern_hatch <- function(params, boundary_df, aspect_ratio, legend = FAL
 		}
 		if (spec$special == "circle") {
 			col <- update_alpha(params$pattern_colour, params$pattern_alpha)
-			spacing_bigpts <- convertX(
-				unit(params$pattern_spacing, params$pattern_units),
-				"bigpts",
-				valueOnly = TRUE
-			)
+			spacing_bigpts <- convert_length(params$pattern_spacing, params$pattern_units)
 			density <- params$pattern_linewidth * .pt / spacing_bigpts
 			return(patternGrob(
 				"gridpattern::circle",
@@ -443,11 +439,7 @@ create_pattern_hatch <- function(params, boundary_df, aspect_ratio, legend = FAL
 		}
 		if (spec$special == "olive") {
 			col <- update_alpha(params$pattern_colour, params$pattern_alpha)
-			spacing_bigpts <- convertX(
-				unit(params$pattern_spacing, params$pattern_units),
-				"bigpts",
-				valueOnly = TRUE
-			)
+			spacing_bigpts <- convert_length(params$pattern_spacing, params$pattern_units)
 			lwd_bigpts <- params$pattern_linewidth * .pt
 			density_dot <- lwd_bigpts / spacing_bigpts * 0.6
 			density_plus <- min(lwd_bigpts / spacing_bigpts * 2, 0.9)
@@ -472,11 +464,7 @@ create_pattern_hatch <- function(params, boundary_df, aspect_ratio, legend = FAL
 		}
 		if (spec$special == "steel") {
 			col <- update_alpha(params$pattern_colour, params$pattern_alpha)
-			spacing_bigpts <- convertX(
-				unit(params$pattern_spacing, params$pattern_units),
-				"bigpts",
-				valueOnly = TRUE
-			)
+			spacing_bigpts <- convert_length(params$pattern_spacing, params$pattern_units)
 			lwd_bigpts <- params$pattern_linewidth * .pt
 			density <- min(lwd_bigpts / spacing_bigpts * 2.5, 0.9)
 			return(patternGrob(
@@ -532,8 +520,6 @@ create_pattern_hatch <- function(params, boundary_df, aspect_ratio, legend = FAL
 		}
 		if (spec$special == "cendree") {
 			# Build segments directly at exact grid intersections (no lty approximation).
-			# At each (m, j) grid point, draw an H dash if (m+j) is even, V dash if odd.
-			# Dashes have length exactly S so centers are precisely at grid positions.
 			default.units <- "bigpts"
 			boundary_df_pts <- convert_polygon_df_units(boundary_df, default.units)
 			params_pts <- convert_params_units(params, default.units)
@@ -550,38 +536,40 @@ create_pattern_hatch <- function(params, boundary_df, aspect_ratio, legend = FAL
 			xo <- params_pts$pattern_xoffset
 			yo <- params_pts$pattern_yoffset
 			half <- S / 2
-			# Grid indices covering viewport + margin (same extent as get_xy_grid)
-			idx_seq <- seq_robust(from = 0, to = vpm$length, by = S)
-			idx <- round(c(rev(-idx_seq[-1L]), idx_seq) / S) # ..., -2, -1, 0, 1, 2, ...
-			x_grid <- xo + vpm$x + idx * S
-			y_grid <- yo + vpm$y + idx * S
-			ng <- length(idx)
-			m_mat <- matrix(idx, nrow = ng, ncol = ng, byrow = FALSE)
-			j_mat <- matrix(idx, nrow = ng, ncol = ng, byrow = TRUE)
-			x_mat <- matrix(x_grid, nrow = ng, ncol = ng, byrow = FALSE)
-			y_mat <- matrix(y_grid, nrow = ng, ncol = ng, byrow = TRUE)
-			is_H <- (m_mat + j_mat) %% 2L == 0L
-			x_H <- as.vector(x_mat[is_H])
-			y_H <- as.vector(y_mat[is_H])
-			x_V <- as.vector(x_mat[!is_H])
-			y_V <- as.vector(y_mat[!is_H])
+			# the square grid (`get_xy_grid()` of a "square" grid is the `S` spaced grid through the offsets)
+			params_pts$pattern_grid <- "square"
+			grid_xy <- get_xy_grid(params_pts, vpm)
+			check_grid_density(grid_xy)
+			# only the dashes that can reach the boundary (the mask hides the others, see issue #119)
+			bbox <- boundary_bbox(boundary_df_pts, margin = half)
+			x_grid <- grid_xy$x[grid_xy$x >= bbox[["xmin"]] & grid_xy$x <= bbox[["xmax"]]]
+			y_grid <- grid_xy$y[grid_xy$y >= bbox[["ymin"]] & grid_xy$y <= bbox[["ymax"]]]
+			# At each grid point draw an H dash if the sum of its grid indices is even, else a V dash
+			# (dashes have length exactly S so centers are precisely at grid positions).
+			m_x <- round((x_grid - xo - vpm$x) / S) # ..., -2, -1, 0, 1, 2, ...
+			m_y <- round((y_grid - yo - vpm$y) / S)
+			nx <- length(x_grid)
+			ny <- length(y_grid)
+			x_mat <- matrix(x_grid, nrow = nx, ncol = ny, byrow = FALSE)
+			y_mat <- matrix(y_grid, nrow = nx, ncol = ny, byrow = TRUE)
+			is_H <- (matrix(m_x, nrow = nx, ncol = ny) +
+				matrix(m_y, nrow = nx, ncol = ny, byrow = TRUE)) %%
+				2L ==
+				0L
+			x_H <- x_mat[is_H]
+			y_H <- y_mat[is_H]
+			x_V <- x_mat[!is_H]
+			y_V <- y_mat[!is_H]
+			# (`NULL` i.e. no grob if there are no such dashes)
+			dashes <- function(x0, y0, x1, y1) {
+				if (length(x0) == 0L) {
+					return(NULL)
+				}
+				segmentsGrob(x0, y0, x1, y1, default.units = default.units, gp = gp_seg)
+			}
 			maskee <- grid::grobTree(
-				segmentsGrob(
-					x_H - half,
-					y_H,
-					x_H + half,
-					y_H,
-					default.units = default.units,
-					gp = gp_seg
-				),
-				segmentsGrob(
-					x_V,
-					y_V - half,
-					x_V,
-					y_V + half,
-					default.units = default.units,
-					gp = gp_seg
-				)
+				dashes(x_H - half, y_H, x_H + half, y_H),
+				dashes(x_V, y_V - half, x_V, y_V + half)
 			)
 			masker <- convert_polygon_df_to_polygon_grob(
 				boundary_df_pts,
@@ -598,11 +586,7 @@ create_pattern_hatch <- function(params, boundary_df, aspect_ratio, legend = FAL
 		}
 		if (spec$special == "proper") {
 			col <- update_alpha(params$pattern_colour, params$pattern_alpha)
-			spacing_bigpts <- convertX(
-				unit(params$pattern_spacing, params$pattern_units),
-				"bigpts",
-				valueOnly = TRUE
-			)
+			spacing_bigpts <- convert_length(params$pattern_spacing, params$pattern_units)
 			density <- params$pattern_linewidth * .pt / spacing_bigpts
 			return(patternGrob(
 				"gridpattern::wave",

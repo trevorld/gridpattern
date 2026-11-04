@@ -120,6 +120,7 @@ create_warp_via_sf <- function(params, boundary_df) {
 
 	# create grid of points large enough to cover viewport no matter the angle
 	grid_xy <- get_xy_grid(params, vpm)
+	check_grid_density(grid_xy)
 
 	fill <- update_alpha(params$pattern_fill2, params$pattern_alpha)
 	col <- update_alpha(params$pattern_colour, params$pattern_alpha)
@@ -140,7 +141,7 @@ create_warp_via_sf <- function(params, boundary_df) {
 	clipped_stripes_sf <- sf::st_intersection(stripes_sf, boundary_sf)
 
 	# compute warp squares covered by weft lines
-	warp_covered_sf <- create_warp_covered_sf(params, grid_xy, vpm, m_weave)
+	warp_covered_sf <- create_warp_covered_sf(params, grid_xy, vpm, m_weave, boundary_df)
 	warp_covered_sf <- sf::st_buffer(warp_covered_sf, dist = 0)
 	clipped_covered_sf <- sf::st_intersection(clipped_stripes_sf, warp_covered_sf)
 
@@ -165,20 +166,20 @@ create_warp_via_sf <- function(params, boundary_df) {
 	list(warp_uncovered = grob_uncovered, warp_covered = grob_covered)
 }
 
-create_warp_covered_sf <- function(params, grid_xy, vpm, m_weave) {
+# the (rotated) squares around the grid points covered by weft yarns
+create_warp_covered_sf <- function(params, grid_xy, vpm, m_weave, boundary_df) {
 	halfwidth <- 0.5 * grid_xy$h_spacing * params$pattern_density
-	# need list of lists each containing a five row matrix of rectangle vertices
-	l_rects <- list()
-	for (i in seq_len(nrow(m_weave))) {
-		for (j in seq_len(ncol(m_weave))) {
-			if (!m_weave[i, j]) {
-				x0 <- grid_xy$x[j]
-				y0 <- grid_xy$y[i]
-				x <- x0 + c(-1, -1, 1, 1) * halfwidth
-				y <- y0 + c(-1, 1, 1, -1) * halfwidth
-				l_rects <- append(l_rects, list(polygon_ring(x, y, params$pattern_angle, vpm)))
-			}
-		}
-	}
-	sf::st_multipolygon(l_rects)
+	angle <- params$pattern_angle
+	# only the squares that can reach the boundary matter (the warp is clipped to it)
+	bbox <- boundary_bbox(boundary_df, margin = sqrt(2) * halfwidth)
+	xy <- get_xy_par_within(grid_xy, FALSE, m_weave, "square", grid_xy$h_spacing, angle, vpm, bbox)
+	# the closed ring of a square (rotated about its centre) around each point
+	square <- rotate_xy(
+		c(-1, -1, 1, 1, -1) * halfwidth,
+		c(-1, 1, 1, -1, -1) * halfwidth,
+		angle,
+		0,
+		0
+	)
+	sf::st_multipolygon(xy_rings(xy$x, xy$y, square))
 }
