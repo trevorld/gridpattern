@@ -679,39 +679,45 @@ test_that("patterns draw nothing instead of erroring in a viewport thinner than 
 			expect_s3_class(pattern_content_grob(pattern, ...), "null")
 		}
 	}
-	# (a negative width / height is drawn mirrored so `-0.5` is also half a pixel thin)
-	for (thin in c(0.5, 0, -0.5)) {
+	# (nor is anything drawn in a mirrored viewport i.e. a negative width / height)
+	for (thin in c(0.5, 0, -0.5, -5)) {
 		expect_null_patterns(unit(thin, "bigpts"), unit(2, "in"))
 		expect_null_patterns(unit(2, "in"), unit(thin, "bigpts"))
 	}
+	expect_null_patterns(unit(-2, "in"), unit(1, "in"))
 	# a numeric legend key is drawn in a viewport zoomed `legend` times (which is also degenerate)
 	expect_null_patterns(unit(0, "bigpts"), unit(2, "in"), legend = 2)
 	expect_null_patterns(unit(-2, "in"), unit(0.25, "bigpts"), legend = 2)
 })
-test_that("patterns with relative units draw in a mirrored viewport (negative width or height)", {
-	# grid draws a viewport with a negative width / height mirrored and relative units
-	# like the default "snpc" spacing then convert to negative lengths
+test_that("regular polygons draw in a boundary too narrow for any interior polygon", {
+	# (no interior points: `sf::st_intersection()` returns an empty geometry collection)
 	local_temp_dev()
-	pushViewport(viewport(width = unit(-2, "in"), height = unit(2, "in")))
-	for (pattern in c(
-		"circle",
-		"crosshatch",
-		"plasma",
-		"rose",
-		"stripe",
-		"text",
-		"wave",
-		"weave"
-	)) {
-		expect_false(inherits(pattern_content_grob(pattern), "null"))
-	}
-	# a pattern of two colours of circles
-	circles <- pattern_content_grob("circle", spacing = 0.2, units = "in", fill = c("red", "blue"))
-	expect_length(circles$children, 4L) # interior and boundary circles of each colour
-	popViewport()
-	pushViewport(viewport(width = unit(2, "in"), height = unit(-2, "in")))
-	expect_false(inherits(pattern_content_grob("circle"), "null"))
-	popViewport()
+	x <- c(0.46, 0.49, 0.49, 0.46)
+	expect_false(draws_nothing(pattern_content_grob(
+		"regular_polygon",
+		shape = "convex4",
+		spacing = 0.05
+	)))
+	grob <- grid.pattern_regular_polygon(
+		x,
+		c(0.46, 0.46, 0.49, 0.49),
+		shape = "convex4",
+		spacing = 0.05,
+		draw = FALSE
+	)
+	expect_no_error(makeContent(grob))
+	grob <- grid.pattern_polygon_tiling(x, c(0, 0, 1, 1), spacing = 0.05, draw = FALSE)
+	expect_no_error(makeContent(grob))
+})
+test_that("the \"cendree\" hatch draws nothing (quietly) for a boundary outside the viewport", {
+	local_temp_dev()
+	grob <- grid.pattern_hatch(c(3, 4, 4, 3), c(0, 0, 1, 1), type = "cendree", draw = FALSE)
+	expect_no_warning(content <- makeContent(grob)$children[[1L]])
+	expect_s3_class(content, "null")
+	# or with a missing coordinate
+	grob <- grid.pattern_hatch(c(0, NA, 1, 0), c(0, 0, 1, 1), type = "cendree", draw = FALSE)
+	expect_no_warning(content <- makeContent(grob)$children[[1L]])
+	expect_s3_class(content, "null")
 })
 test_that("patterns with an absurdly dense grid draw nothing instead of exhausting memory (issue #119)", {
 	expect_silent(check_grid_density(list(x = seq_len(3000), y = seq_len(3000))))

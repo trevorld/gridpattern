@@ -334,10 +334,12 @@ pattern_content <- function(entry, params, xp, yp, id, legend) {
 	current_dev <- grDevices::dev.cur()
 	on.exit(restore_dev(current_dev), add = TRUE)
 
-	# nothing is visible in a viewport thinner than a device pixel
+	# Nothing is visible in a viewport thinner than a device pixel
 	# (e.g. a ggplot2 panel squeezed to nothing by a wide legend on a small device)
 	# while the grids of patterns with the default "snpc" spacing would be huge
-	# (and `seq()` errors follow once the width or height is zero, see issue #119)
+	# (and `seq()` errors follow once the width or height is zero, see issue #119).
+	# Nor do we draw in a mirrored viewport (a negative width or height, almost always a layout overflow)
+	# where relative units like "snpc" convert to negative lengths.
 	vpm <- get_vp_measurements("in")
 	if (!isTRUE(min(vpm$width, vpm$height) >= 1 / device_res())) {
 		return(nullGrob(name = "pattern_degenerate_viewport"))
