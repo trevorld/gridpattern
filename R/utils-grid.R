@@ -14,8 +14,9 @@ rep_len_fill <- function(x, length.out) {
 
 # get width, height, length, and center cooordinates of the viewport in `units` units
 get_vp_measurements <- function(units = "bigpts") {
-	width <- convertWidth(unit(1, "npc"), units, valueOnly = TRUE)
-	height <- convertHeight(unit(1, "npc"), units, valueOnly = TRUE)
+	# a viewport with a negative width / height is drawn mirrored so measure its (positive) size
+	width <- abs(convertWidth(unit(1, "npc"), units, valueOnly = TRUE))
+	height <- abs(convertHeight(unit(1, "npc"), units, valueOnly = TRUE))
 	length <- max(width, height)
 	x <- convertX(unit(0.5, "npc"), units, valueOnly = TRUE)
 	y <- convertY(unit(0.5, "npc"), units, valueOnly = TRUE)

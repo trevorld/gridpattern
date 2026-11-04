@@ -5,6 +5,25 @@ expect_pattern_error <- function(grob, ...) {
 	expect_error(makeContent(grob), ...)
 }
 
+# the grob a `pattern` draws (within the unit square) in the current viewport
+# (a numeric `legend` key computes its pattern within its own zoomed viewport)
+pattern_content_grob <- function(pattern, ...) {
+	grob <- grid.pattern(c(0, 1, 1, 0), c(0, 0, 1, 1), pattern = pattern, draw = FALSE, ...)
+	content <- makeContent(grob)$children[[1L]]
+	if (inherits(content, "pattern_legend")) {
+		pushViewport(content$vp)
+		content <- makeContent(content)$children[[1L]]
+		popViewport()
+	}
+	expect_no_error(grid.draw(grob))
+	content
+}
+# whether a grob draws nothing i.e. it is a null grob or a `gTree()` of such grobs
+draws_nothing <- function(grob) {
+	inherits(grob, "null") ||
+		(inherits(grob, "gTree") && all(vapply(grob$children, draws_nothing, logical(1L))))
+}
+
 context("geometry")
 test_that("geometry helpers work as expected", {
 	xy <- rotate_xy(c(0, 1), c(0, 1), 90)
@@ -534,4 +553,181 @@ test_that("get_xy_grid() bounding box is non-degenerate when spacing exceeds vie
 
 	expect_gt(grid_xy$x_max - grid_xy$x_min, 0)
 	expect_gt(grid_xy$y_max - grid_xy$y_min, 0)
+})
+test_that("get_xy_par() selects the grid points of a pattern matrix entry in row-major order (issue #119)", {
+	grid_xy <- list(x = c(10, 20, 30), y = c(1, 2, 3, 4))
+	m_pat <- matrix(c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2), nrow = 4L, byrow = TRUE) # checkerboard
+
+	expect_equal(
+		get_xy_par(grid_xy, 1L, m_pat, "square", 10),
+		list(x = c(10, 30, 20, 10, 30, 20), y = c(1, 1, 2, 3, 3, 4))
+	)
+	expect_equal(
+		get_xy_par(grid_xy, 2L, m_pat, "square", 10),
+		list(x = c(20, 10, 30, 20, 10, 30), y = c(1, 2, 2, 3, 4, 4))
+	)
+	# even rows are offset half a spacing to the left
+	expect_equal(
+		get_xy_par(grid_xy, 1L, m_pat, "hex", 10),
+		list(x = c(10, 30, 15, 10, 30, 15), y = c(1, 1, 2, 3, 3, 4))
+	)
+	# rows 1, 2 (mod 4) are offset half a spacing to the left
+	expect_equal(
+		get_xy_par(grid_xy, 1L, m_pat, "elongated_triangle", 10),
+		list(x = c(5, 25, 15, 10, 30, 20), y = c(1, 1, 2, 3, 3, 4))
+	)
+	# restricted to some rows and columns (the offsets still depend on the original row)
+	expect_equal(
+		get_xy_par(grid_xy, 1L, m_pat, "hex", 10, rows = 2:3, cols = 2:3),
+		list(x = c(15, 30), y = c(2, 3))
+	)
+	# an entry that never occurs
+	expect_equal(get_xy_par(grid_xy, 3L, m_pat, "square", 10), list(x = numeric(0), y = numeric(0)))
+	expect_equal(get_xy_par(grid_xy, 3L, m_pat, "hex", 10), list(x = numeric(0), y = numeric(0)))
+})
+test_that("get_xy_par_within() keeps the rotated grid points within a bounding box (issue #119)", {
+	vpm <- list(x = 50, y = 50, length = 100)
+	grid_xy <- list(x = seq(-50, 150, by = 10), y = seq(-50, 150, by = 10))
+	m_pat <- matrix(1L, nrow = length(grid_xy$y), ncol = length(grid_xy$x))
+	# the brute force equivalent: select, rotate, and filter all the grid points
+	within_all <- function(grid, angle, bbox) {
+		xy <- get_xy_par(grid_xy, 1L, m_pat, grid, 10)
+		filter_xy_bbox(rotate_xy(xy$x, xy$y, angle, vpm$x, vpm$y), bbox)
+	}
+	bbox <- boundary_bbox(create_polygon_df(c(40, 60, 60, 40), c(0, 0, 100, 100)), margin = 5)
+	for (grid in c("square", "hex", "elongated_triangle")) {
+		for (angle in c(0, 30, 90, 135)) {
+			expect_equal(
+				get_xy_par_within(grid_xy, 1L, m_pat, grid, 10, angle, vpm, bbox),
+				within_all(grid, angle, bbox)
+			)
+		}
+	}
+	# (`rotate_xy()` goes through polar coordinates so even a zero rotation isn't exact)
+	xy <- get_xy_par_within(grid_xy, 1L, m_pat, "square", 10, 0, vpm, bbox)
+	expect_equal(sort(unique(round(xy$x, 6))), c(40, 50, 60))
+	expect_length(xy$y, 3L * 11L)
+	# nothing within an `NA` bounding box
+	bbox_na <- boundary_bbox(create_polygon_df(c(0, NA, 1), c(0, 0, 1)))
+	expect_equal(
+		get_xy_par_within(grid_xy, 1L, m_pat, "square", 10, 0, vpm, bbox_na),
+		list(x = numeric(0), y = numeric(0))
+	)
+})
+test_that("filter_xy_bbox() keeps the points within the (expanded) boundary bounding box", {
+	boundary_df <- create_polygon_df(c(0, 1, 1, 0), c(0, 0, 1, 1))
+	expect_equal(boundary_bbox(boundary_df), c(xmin = 0, xmax = 1, ymin = 0, ymax = 1))
+	expect_equal(
+		boundary_bbox(boundary_df, margin = 0.5),
+		c(xmin = -0.5, xmax = 1.5, ymin = -0.5, ymax = 1.5)
+	)
+
+	xy <- list(x = c(0.5, 2, -1, 0), y = c(0.5, 0.5, 0.5, 1))
+	expect_equal(filter_xy_bbox(xy, boundary_bbox(boundary_df)), list(x = c(0.5, 0), y = c(0.5, 1)))
+	expect_equal(filter_xy_bbox(xy, boundary_bbox(boundary_df, margin = 1)), xy)
+	# a boundary with a missing coordinate has an `NA` bounding box (on that axis): keep nothing
+	bbox_na <- boundary_bbox(create_polygon_df(c(0, NA, 1), c(0, 0, 1)))
+	expect_equal(bbox_na, c(xmin = NA_real_, xmax = NA_real_, ymin = 0, ymax = 1))
+	expect_equal(filter_xy_bbox(xy, bbox_na), list(x = numeric(0), y = numeric(0)))
+})
+test_that("tile_xy_polygon() centres a polygon on each point", {
+	triangle <- list(x = c(0, 1, 0), y = c(0, 0, 1))
+	expect_equal(
+		tile_xy_polygon(c(10, 20), c(1, 2), triangle),
+		list(x = c(10, 11, 10, 20, 21, 20), y = c(1, 1, 2, 2, 2, 3), id = c(1L, 1L, 1L, 2L, 2L, 2L))
+	)
+	expect_equal(
+		tile_xy_polygon(numeric(0), numeric(0), triangle),
+		list(x = numeric(0), y = numeric(0), id = integer(0))
+	)
+	rings <- xy_rings(c(10, 20), c(1, 2), list(x = c(0, 1, 0, 0), y = c(0, 0, 1, 0)))
+	expect_length(rings, 2L)
+	expect_equal(rings[[2L]][[1L]], cbind(c(20, 21, 20, 20), c(2, 2, 3, 2)))
+})
+test_that("glyph_radius() bounds the extent of a text glyph from its centre", {
+	local_temp_dev()
+	gp <- gpar(fontsize = 12)
+	r <- glyph_radius("X", gp)
+	w <- convertWidth(grobWidth(textGrob("X", gp = gp)), "bigpts", valueOnly = TRUE)
+	expect_gt(r, w / 2)
+	expect_gt(glyph_radius("XX", gp), r)
+	expect_gt(glyph_radius("X", gpar(fontsize = 24)), r)
+})
+test_that("patterns draw nothing instead of erroring in a viewport thinner than a device pixel (issue #119)", {
+	# e.g. a ggplot2 panel squeezed to nothing by a wide legend on a small device:
+	# the default "snpc" spacing is then tiny (a huge grid) or non-positive (a `seq()` error)
+	local_temp_dev() # `pdf(NULL)` so a device pixel is one bigpt
+	patterns <- c(
+		"circle",
+		"crosshatch",
+		"hatch",
+		"line",
+		"pch",
+		"plasma",
+		"polygon_tiling",
+		"regular_polygon",
+		"rose",
+		"stripe",
+		"text",
+		"wave",
+		"weave"
+	)
+	expect_null_patterns <- function(width, height, ...) {
+		pushViewport(viewport(width = width, height = height))
+		on.exit(popViewport())
+		for (pattern in patterns) {
+			expect_s3_class(pattern_content_grob(pattern, ...), "null")
+		}
+	}
+	# (a negative width / height is drawn mirrored so `-0.5` is also half a pixel thin)
+	for (thin in c(0.5, 0, -0.5)) {
+		expect_null_patterns(unit(thin, "bigpts"), unit(2, "in"))
+		expect_null_patterns(unit(2, "in"), unit(thin, "bigpts"))
+	}
+	# a numeric legend key is drawn in a viewport zoomed `legend` times (which is also degenerate)
+	expect_null_patterns(unit(0, "bigpts"), unit(2, "in"), legend = 2)
+	expect_null_patterns(unit(-2, "in"), unit(0.25, "bigpts"), legend = 2)
+})
+test_that("patterns with relative units draw in a mirrored viewport (negative width or height)", {
+	# grid draws a viewport with a negative width / height mirrored and relative units
+	# like the default "snpc" spacing then convert to negative lengths
+	local_temp_dev()
+	pushViewport(viewport(width = unit(-2, "in"), height = unit(2, "in")))
+	for (pattern in c(
+		"circle",
+		"crosshatch",
+		"plasma",
+		"rose",
+		"stripe",
+		"text",
+		"wave",
+		"weave"
+	)) {
+		expect_false(inherits(pattern_content_grob(pattern), "null"))
+	}
+	# a pattern of two colours of circles
+	circles <- pattern_content_grob("circle", spacing = 0.2, units = "in", fill = c("red", "blue"))
+	expect_length(circles$children, 4L) # interior and boundary circles of each colour
+	popViewport()
+	pushViewport(viewport(width = unit(2, "in"), height = unit(-2, "in")))
+	expect_false(inherits(pattern_content_grob("circle"), "null"))
+	popViewport()
+})
+test_that("patterns with an absurdly dense grid draw nothing instead of exhausting memory (issue #119)", {
+	expect_silent(check_grid_density(list(x = seq_len(3000), y = seq_len(3000))))
+	expect_error(
+		check_grid_density(list(x = seq_len(4000), y = seq_len(4000))),
+		class = "gridpattern_grid_too_dense"
+	)
+
+	local_temp_dev() # a 7in by 7in `pdf(NULL)` device
+	# ("pch" and "polygon_tiling" wrap the null grobs of their "regular_polygon" patterns in a `gTree()`)
+	patterns <- c("circle", "pch", "polygon_tiling", "regular_polygon", "rose", "text", "weave")
+	for (pattern in patterns) {
+		# 20000 by 20000 grid points
+		expect_true(draws_nothing(pattern_content_grob(pattern, spacing = 1e-4)))
+	}
+	expect_true(draws_nothing(pattern_content_grob("hatch", type = "cendree", spacing = 1e-4)))
+	# but a merely dense grid (200 by 200 points) is drawn
+	expect_false(draws_nothing(pattern_content_grob("circle", spacing = 0.01)))
 })

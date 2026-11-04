@@ -334,12 +334,20 @@ pattern_content <- function(entry, params, xp, yp, id, legend) {
 	current_dev <- grDevices::dev.cur()
 	on.exit(restore_dev(current_dev), add = TRUE)
 
+	# nothing is visible in a viewport thinner than a device pixel
+	# (e.g. a ggplot2 panel squeezed to nothing by a wide legend on a small device)
+	# while the grids of patterns with the default "snpc" spacing would be huge
+	# (and `seq()` errors follow once the width or height is zero, see issue #119)
+	vpm <- get_vp_measurements("in")
+	if (!isTRUE(min(vpm$width, vpm$height) >= 1 / device_res())) {
+		return(nullGrob(name = "pattern_degenerate_viewport"))
+	}
+
 	boundary_df <- create_polygon_df(xp, yp, id)
 
 	if (!is.na(params$pattern_aspect_ratio)) {
 		aspect_ratio <- params$pattern_aspect_ratio
 	} else {
-		vpm <- get_vp_measurements("in")
 		aspect_ratio <- vpm$width / vpm$height
 	}
 
@@ -347,7 +355,11 @@ pattern_content <- function(entry, params, xp, yp, id, legend) {
 	params <- get_R4.1_params(params)
 
 	fn <- get_pattern_fn(entry)
-	fn(params, boundary_df, aspect_ratio, legend)
+	# (a pattern whose grid would be absurdly dense draws nothing instead, see `check_grid_density()`)
+	tryCatch(
+		fn(params, boundary_df, aspect_ratio, legend),
+		gridpattern_grid_too_dense = function(cnd) nullGrob(name = "pattern_grid_too_dense")
+	)
 }
 
 # `legend` as a (non-negative) scale with `FALSE` -> 0 and `TRUE` -> 1

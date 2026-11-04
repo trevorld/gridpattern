@@ -112,8 +112,13 @@ check_units <- function(units) {
 	units
 }
 
+# whether `x` is a single finite positive number
+is_positive_number <- function(x) {
+	isTRUE(is.numeric(x) && length(x) == 1L && is.finite(x) && x > 0)
+}
+
 check_key_scale_factor <- function(k) {
-	if (!isTRUE(is.numeric(k) && length(k) == 1L && is.finite(k) && k > 0)) {
+	if (!is_positive_number(k)) {
 		abort("`pattern_key_scale_factor` must be a single positive number")
 	}
 	k
@@ -188,13 +193,16 @@ get_R4.1_params <- function(l) {
 	l
 }
 
+# converts the length `x` in `units` to `to` units in the current viewport
+# (`abs()` since relative units like "snpc" convert to negative lengths in a mirrored viewport
+# i.e. one with a negative width / height which `{grid}` draws flipped)
+convert_length <- function(x, units, to = "bigpts") {
+	abs(convertX(unit(x, units), to, valueOnly = TRUE))
+}
+
 convert_params_units <- function(params, units = "bigpts") {
 	p_units <- params$pattern_units
-	params$pattern_spacing <- convertX(
-		unit(params$pattern_spacing, p_units),
-		units,
-		valueOnly = TRUE
-	)
+	params$pattern_spacing <- convert_length(params$pattern_spacing, p_units, units)
 	params$pattern_xoffset <- convertX(
 		unit(params$pattern_xoffset, p_units),
 		units,
@@ -226,7 +234,7 @@ device_res <- function() {
 		grDevices::dev.size("px")[1L] / grDevices::dev.size("in")[1L],
 		error = function(e) NA_real_
 	)
-	if (isTRUE(is.finite(res) && res > 0)) res else 72
+	if (is_positive_number(res)) res else 72
 }
 
 # whether a user-supplied `pattern_res` is unset (see `complete_params()`)
