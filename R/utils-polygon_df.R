@@ -103,14 +103,12 @@ buffer_polygon_sf <- function(polygon_sf, buffer_dist = 0) {
 	sf::st_buffer(polygon_sf, buffer_dist)
 }
 
-# whether `sf::st_make_valid()` is available i.e. GEOS 3.8+ or else `{lwgeom}` (checked once per session)
+# whether `sf::st_make_valid()` is available without `{lwgeom}` i.e. GEOS 3.8+ (checked once per session)
 can_make_valid <- local({
 	ok <- NULL
 	function() {
 		if (is.null(ok)) {
-			geos <- sf::sf_extSoftVersion()[["GEOS"]]
-			ok <<- utils::compareVersion(geos, "3.8.0") >= 0 ||
-				requireNamespace("lwgeom", quietly = TRUE)
+			ok <<- utils::compareVersion(sf::sf_extSoftVersion()[["GEOS"]], "3.8.0") >= 0
 		}
 		ok
 	}
