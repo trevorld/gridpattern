@@ -132,7 +132,7 @@ gridpattern_mask_agg_capture <- function(maskee, masker, res, region = full_regi
 		res,
 		grid.draw(alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE))
 	)
-	region_raster(raster_masked, region)
+	region_raster(raster_masked, region, name = "alpha_mask")
 }
 
 # The raster fallbacks only rasterise the `region` of the current viewport that can be seen:
@@ -293,7 +293,7 @@ gridpattern_mask_raster_straight <- function(
 		res,
 		grid.draw(alphaMaskGrob(maskee, masker, use_R4.1_masks = TRUE))
 	)
-	region_raster(raster_masked, region)
+	region_raster(raster_masked, region, name = "alpha_mask")
 }
 
 gridpattern_mask_raster_manual <- function(
@@ -310,28 +310,8 @@ gridpattern_mask_raster_manual <- function(
 	raster_maskee <- draw_png_array(png_device, px, res, grid.draw(maskee))
 	raster_masker <- draw_png_array(png_device, px, res, grid.draw(masker))
 
-	stopifnot(
-		length(dim(raster_maskee)) == 3L,
-		length(dim(raster_masker)) == 3L,
-		dim(raster_maskee)[3L] >= 3L,
-		dim(raster_masker)[3L] >= 3L
-	)
-	if (dim(raster_maskee)[3L] < 4L) {
-		raster_maskee <- add_alpha_channel(raster_maskee)
-	}
-	if (dim(raster_masker)[3L] < 4L) {
-		raster_masker <- add_alpha_channel(raster_masker)
-	}
+	# multiplying alphas (instead of keeping or dropping whole pixels) keeps anti-aliased edges
+	raster_maskee[,, 4L] <- raster_maskee[,, 4L] * raster_masker[,, 4L]
 
-	raster_masked <- raster_maskee
-	raster_masked[,, 4L] <- raster_maskee[,, 4L] * raster_masker[,, 4L]
-
-	region_raster(raster_masked, region, name = "alpha_mask")
-}
-
-add_alpha_channel <- function(a) {
-	a_ <- array(NA, dim = c(dim(a)[1], dim(a)[2], 4L))
-	a_[,, -4L] <- a
-	a_[,, 4L] <- 1.
-	a_
+	region_raster(raster_maskee, region, name = "alpha_mask")
 }

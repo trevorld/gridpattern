@@ -255,7 +255,7 @@ test_that("array patterns works as expected", {
 
 	png_device <- default_png_device()
 	test_raster("clipGrob_manual.png", function() {
-		clipped <- gridpattern_clip_raster_manual(clippee, clipper, 72, png_device)
+		clipped <- gridpattern_mask_raster_manual(clippee, clipper_masker(clipper), 72, png_device)
 		grid.draw(clipped)
 	})
 
@@ -382,6 +382,92 @@ test_that("raster fallbacks only rasterise the bounding box of the masker / clip
 	outside <- polygonGrob(c(2, 3, 3), c(2, 2, 3))
 	masked <- grid.force(alphaMaskGrob(rectGrob(), outside, use_R4.1_masks = FALSE))
 	expect_s3_class(masked$children[[1]], "null")
+})
+
+test_that("the manual raster fallback of `clippingPathGrob()` matches native clipping paths", {
+	skip_if_not_installed("ragg", "1.2.0")
+	skip_if_not(getRversion() >= "4.1.0") # native clipping paths
+	alpha <- function(grob) {
+		draw_png_array(ragg::agg_png, list(width = 100, height = 100), 72, grid.draw(grob))[,, 4L]
+	}
+	clippee <- rectGrob(gp = gpar(fill = "blue", col = NA))
+	native <- function(clipper) {
+		alpha(clippingPathGrob(clippee, clipper, use_R4.1_clipping = TRUE))
+	}
+	local_mocked_bindings(device_supports_clipping = function(png_device) FALSE)
+	manual <- function(clipper) {
+		alpha(clippingPathGrob(
+			clippee,
+			clipper,
+			use_R4.1_clipping = FALSE,
+			png_device = ragg::agg_png,
+			res = 72 # the resolution of `alpha()`
+		))
+	}
+
+	# anti-aliased edges (#117)
+	circle <- circleGrob(r = 0.4)
+	expect_true(any(native(circle) > 0 & native(circle) < 1))
+	expect_equal(manual(circle), native(circle), tolerance = 0.01)
+
+	# ignores the graphical parameters of the clipper and its children (#117)
+	stroked <- rectGrob(width = 0.5, height = 0.5, gp = gpar(fill = NA, col = "black", lwd = 40))
+	semi <- editGrob(circle, gp = gpar(fill = grDevices::rgb(0, 0, 0, 0.5)))
+	nested <- grobTree(
+		circleGrob(r = 0.3, gp = gpar(fill = NA, col = "red", lwd = 20)),
+		rectGrob(x = 0.8, width = 0.2, gp = gpar(fill = "white")),
+		gp = gpar(alpha = 0.3)
+	)
+	for (clipper in list(stroked, semi, nested)) {
+		expect_equal(manual(clipper), native(clipper), tolerance = 0.01)
+	}
+})
+
+test_that("`as_rgba()` works as expected", {
+	grey <- matrix(c(0, 0.5, 1, 0.25), 2L)
+	expect_equal(as_rgba(grey)[,, 1L], grey)
+	expect_equal(as_rgba(grey)[,, 3L], grey)
+	expect_equal(as_rgba(grey)[,, 4L], matrix(1, 2L, 2L))
+	grey_alpha <- array(c(grey, 1 - grey), c(2L, 2L, 2L))
+	expect_equal(as_rgba(grey_alpha)[,, 2L], grey)
+	expect_equal(as_rgba(grey_alpha)[,, 4L], 1 - grey)
+	rgb <- array(runif(12), c(2L, 2L, 3L))
+	expect_equal(as_rgba(rgb)[,, 1:3], rgb)
+	expect_equal(as_rgba(rgb)[,, 4L], matrix(1, 2L, 2L))
+	rgba <- array(runif(16), c(2L, 2L, 4L))
+	expect_equal(as_rgba(rgba), rgba)
+})
+
+test_that("the child of `clippingPathGrob()` is always named \"clip\"", {
+	skip_if_not_installed("ragg", "1.2.0")
+	skip_if_not(getRversion() >= "4.1.0") # native clipping paths
+	local_temp_dev(function() grDevices::pdf(NULL, width = 2, height = 2))
+	child_name <- function(clipper = circleGrob(), ...) {
+		names(grid.force(clippingPathGrob(rectGrob(), clipper, ...))$children)
+	}
+	expect_equal(child_name(use_R4.1_clipping = TRUE), "clip") # native
+	outside <- rectGrob(x = 2, width = 0.5)
+	expect_equal(child_name(outside, use_R4.1_clipping = FALSE), "clip") # no overlap
+	expect_equal(child_name(use_R4.1_clipping = FALSE), "clip") # `ragg::agg_capture()`
+	expect_equal(child_name(use_R4.1_clipping = FALSE, png_device = ragg::agg_png), "clip") # straight
+	local_mocked_bindings(device_supports_clipping = function(png_device) FALSE)
+	expect_equal(child_name(use_R4.1_clipping = FALSE, png_device = ragg::agg_png), "clip") # manual
+})
+
+test_that("the child of `alphaMaskGrob()` is always named \"alpha_mask\"", {
+	skip_if_not_installed("ragg", "1.2.0")
+	skip_if_not(getRversion() >= "4.1.0") # native masks
+	local_temp_dev(function() grDevices::pdf(NULL, width = 2, height = 2))
+	child_name <- function(masker = circleGrob(), ...) {
+		names(grid.force(alphaMaskGrob(rectGrob(), masker, ...))$children)
+	}
+	expect_equal(child_name(use_R4.1_masks = TRUE), "alpha_mask") # native
+	outside <- rectGrob(x = 2, width = 0.5)
+	expect_equal(child_name(outside, use_R4.1_masks = FALSE), "alpha_mask") # no overlap
+	expect_equal(child_name(use_R4.1_masks = FALSE), "alpha_mask") # `ragg::agg_capture()`
+	expect_equal(child_name(use_R4.1_masks = FALSE, png_device = ragg::agg_png), "alpha_mask") # straight
+	local_mocked_bindings(device_supports_masks = function(png_device) FALSE)
+	expect_equal(child_name(use_R4.1_masks = FALSE, png_device = ragg::agg_png), "alpha_mask") # manual
 })
 
 test_that("an unset `res` of the raster fallbacks uses the device resolution", {

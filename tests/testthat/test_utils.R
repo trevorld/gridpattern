@@ -364,7 +364,16 @@ test_that("raster fallbacks restore the previous graphics device", {
 		expect_equal(grDevices::dev.list(), devs)
 	}
 	# these open two temporary devices
-	gridpattern_clip_raster_manual(clippee, clipper, 72, ragg::agg_png)
+	local({
+		local_mocked_bindings(device_supports_clipping = function(png_device) FALSE)
+		grob <- clippingPathGrob(
+			clippee,
+			clipper,
+			use_R4.1_clipping = FALSE,
+			png_device = ragg::agg_png
+		)
+		grid::grid.draw(grob)
+	})
 	expect_equal(grDevices::dev.cur(), dev1)
 	expect_equal(grDevices::dev.list(), devs)
 	gridpattern_mask_raster_manual(clippee, clipper, 72, ragg::agg_png)
