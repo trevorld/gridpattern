@@ -19,7 +19,11 @@ clippingPathGrob(
 \arguments{
 \item{clippee}{Grob to be clipped}
 
-\item{clipper}{Grob that defines clipping region}
+\item{clipper}{Grob that defines clipping region.
+Like native clipping paths the raster fallbacks ignore its graphical parameters
+(e.g. a stroke or a semi-transparent fill)
+although if \code{use_R4.1_clipping} is \code{FALSE} and the \code{png_device} doesn't support clipping paths
+only its filled shapes (not e.g. lines or text) clip.}
 
 \item{use_R4.1_clipping}{If \code{TRUE} use the grid clipping path feature introduced in R v4.1.0.
 If \code{FALSE} do a \code{rasterGrob} approximation.

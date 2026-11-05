@@ -108,6 +108,17 @@ Bug fixes and minor improvements
   instead of the whole viewport (if it can be computed with `grobCoords()` in R 4.2+).
   This is much faster and uses much less memory for small boundaries in large viewports,
   in particular for a numeric `legend` (e.g. `{ggpattern}` legend keys).
+* When the `png_device` doesn't support clipping paths the raster fallback of `clippingPathGrob()`
+  now ignores the graphical parameters of the clipper (and its children) like native clipping paths
+  (previously e.g. a clipper with `fill = NA` clipped to the outline drawn by its stroke)
+  and its clip edge is now anti-aliased (if the `png_device` anti-aliases)
+  instead of keeping or dropping whole pixels (#117).
+* The (forced) child of `alphaMaskGrob()` is now always named `"alpha_mask"`
+  and the (forced) child of `clippingPathGrob()` is now always named `"clip"`
+  (previously the raster fallbacks drawn with native masks / clipping paths on a `{ragg}` or `png_device` device
+  used an automatic `grid` name).
+* The raster fallbacks of `alphaMaskGrob()` and `clippingPathGrob()` that use a `png_device`
+  now also accept grey (or grey + alpha) PNG images from it.
 * `grid::grobCoords()` of a `patternGrob()` is now the coordinates of its boundary
   (without building the pattern).
   Previously it was the coordinates of whatever the pattern drew

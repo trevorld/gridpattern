@@ -3,7 +3,11 @@
 #' `clippingPathGrob()` clips a grob using another grob to specify the clipping path
 #'
 #' @param clippee Grob to be clipped
-#' @param clipper Grob that defines clipping region
+#' @param clipper Grob that defines clipping region.
+#'                Like native clipping paths the raster fallbacks ignore its graphical parameters
+#'                (e.g. a stroke or a semi-transparent fill)
+#'                although if `use_R4.1_clipping` is `FALSE` and the `png_device` doesn't support clipping paths
+#'                only its filled shapes (not e.g. lines or text) clip.
 #' @param use_R4.1_clipping If `TRUE` use the grid clipping path feature introduced in R v4.1.0.
 #'                          If `FALSE` do a `rasterGrob` approximation.
 #'                          If `NULL` try to guess an appropriate choice.
@@ -100,7 +104,9 @@ makeContent.clipping_path <- function(x) {
 				region
 			)
 		} else {
-			grob <- gridpattern_clip_raster_manual(x$clippee, x$clipper, res, png_device, region)
+			masker <- clipper_masker(x$clipper)
+			grob <- gridpattern_mask_raster_manual(x$clippee, masker, res, png_device, region)
+			grob <- editGrob(grob, name = "clip")
 		}
 	}
 
@@ -124,7 +130,7 @@ gridpattern_clip_agg_capture <- function(clippee, clipper, res, region = full_re
 		res,
 		grid.draw(clippingPathGrob(clippee, clipper, use_R4.1_clipping = TRUE))
 	)
-	region_raster(raster_clipped, region)
+	region_raster(raster_clipped, region, name = "clip")
 }
 
 gridpattern_clip_raster_straight <- function(
@@ -144,33 +150,20 @@ gridpattern_clip_raster_straight <- function(
 		res,
 		grid.draw(clippingPathGrob(clippee, clipper, use_R4.1_clipping = TRUE))
 	)
-	region_raster(raster_clipped, region)
+	region_raster(raster_clipped, region, name = "clip")
 }
 
-gridpattern_clip_raster_manual <- function(
-	clippee,
-	clipper,
-	res,
-	png_device,
-	region = full_region()
-) {
-	px <- region_pixels(region, res)
-	clippee <- in_region(clippee, region)
-	clipper <- in_region(clipper, region)
+# Without native clipping paths a clipper is an alpha mask of its filled shapes:
+# like native clipping paths ignore its (and its children's) graphical parameters
+# (the fill colour doesn't matter: only its alpha channel is used)
+clipper_masker <- function(clipper) {
+	clipper_gp(forceGrob(clipper))
+}
 
-	raster_clippee <- draw_png_array(png_device, px, res, grid.draw(clippee))
-	raster_clipper <- draw_png_array(png_device, px, res, {
-		pushViewport(viewport(gp = gpar(lwd = 0, col = NA, fill = "black")))
-		grid.draw(clipper)
-		popViewport()
-	})
-	clip_region <- apply(raster_clipper, c(1, 2), function(x) any(x > 0))
-	if (length(dim(raster_clippee) == 2)) {
-		raster_clippee[!clip_region] <- 0
-	} else {
-		for (j in seq_len(dim(raster_clippee)[3])) {
-			raster_clippee[!clip_region, j] <- 0
-		}
+clipper_gp <- function(grob) {
+	grob$gp <- gpar(fill = "black", col = NA, lwd = 0, alpha = 1)
+	if (inherits(grob, "gTree")) {
+		grob$children[] <- lapply(grob$children, clipper_gp)
 	}
-	region_raster(raster_clippee, region, name = "clip")
+	grob
 }

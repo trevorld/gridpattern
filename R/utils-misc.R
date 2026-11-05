@@ -128,7 +128,7 @@ with_temp_dev <- function(open, code) {
 }
 
 # Draws `code` on a temporary transparent `png_device()` device of `px` pixels at resolution `res`
-# and returns the image as a numeric array (see `png::readPNG()`).
+# and returns the image as a numeric RGBA array (see `png::readPNG()`).
 draw_png_array <- function(png_device, px, res, code) {
 	png_file <- tempfile(fileext = ".png")
 	on.exit(unlink(png_file), add = TRUE)
@@ -136,7 +136,24 @@ draw_png_array <- function(png_device, px, res, code) {
 		png_device(png_file, height = px$height, width = px$width, res = res, bg = "transparent")
 	}
 	with_temp_dev(open, code)
-	png::readPNG(png_file, native = FALSE)
+	as_rgba(png::readPNG(png_file, native = FALSE))
+}
+
+# `png::readPNG()` array (grey, grey + alpha, RGB, or RGBA) as an RGBA array
+as_rgba <- function(a) {
+	if (length(dim(a)) == 2L) {
+		dim(a) <- c(dim(a), 1L)
+	}
+	n <- dim(a)[3L]
+	if (n == 4L) {
+		return(a)
+	}
+	rgba <- array(1, dim = c(dim(a)[1:2], 4L))
+	rgba[,, 1:3] <- if (n <= 2L) a[,, 1L] else a
+	if (n == 2L) {
+		rgba[,, 4L] <- a[,, 2L]
+	}
+	rgba
 }
 
 # Draws `code` on a temporary transparent `ragg::agg_capture()` device of `px` pixels at resolution `res`
