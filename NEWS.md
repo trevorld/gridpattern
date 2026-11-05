@@ -156,7 +156,7 @@ Bug fixes and minor improvements
   now fill every lobe of a self-intersecting boundary (e.g. a "bow tie" polygon).
   Previously only one lobe was filled (the zero-width buffer that cleaned up the boundary kept only one).
   The boundary is now first made valid with `sf::st_make_valid()`
-  (which needs GEOS 3.8 or `{lwgeom}`, otherwise the previous behaviour is kept).
+  (which needs GEOS 3.8 (2019) or newer, otherwise the previous behaviour is kept).
 * The "seagal" and "seagalbw" placeholder types work again
   (their URLs used a nonexistent `www.` subdomain of `stevensegallery.lucidinternets.com`, #118).
 * Placeholder types that return greyscale images (e.g. "murray", "murraybw", "picsumbw", and "seagalbw")
