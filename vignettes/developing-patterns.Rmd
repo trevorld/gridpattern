@@ -262,10 +262,17 @@ We recommend packages register their patterns in their `.onLoad()` function usin
 * If writing a helper function that calls `register_pattern()` on behalf of your package
   pass along `register_pattern()`'s `env` argument.
 
-* `register_pattern()` was added in `{gridpattern}` v1.5.0.  The `exists("register_pattern", ...)` check above detects whether `{gridpattern}` is too old and the `else` clause falls back to appending the pattern
+* `register_pattern()` was added in `{gridpattern}` v1.5.1.  The `exists("register_pattern", ...)` check above detects whether `{gridpattern}` is too old and the `else` clause falls back to appending the pattern
   to the legacy global options, preserving any other custom patterns already set there.
   Use the `ggpattern_array_funcs` option instead for array-based patterns.
   Note this modifies the user's global options when your package is loaded.
+* `register_pattern()`'s `key_scaling` argument, a numeric `legend` argument of `patternGrob()`,
+  `has_registered_pattern()`, `local_prefer_pattern()`, and `local_pattern()`'s `prefer` argument
+  were added in `{gridpattern}` v1.6.0.
+  If `{gridpattern}` is only in your `Suggests` you can't enforce a minimum version
+  so check `utils::packageVersion("gridpattern") >= "1.6.0"` before using them
+  (e.g. before passing `key_scaling` in your `.onLoad()`)
+  and guard tests that use them with `testthat::skip_if_not_installed("gridpattern", "1.6.0")`.
 
 <a name="geometry-example-1"></a> Example geometry-based pattern #1 (recreate polygon)
 ---------------------------------------------------------------------------------------

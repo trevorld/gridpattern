@@ -54,12 +54,23 @@ as well as several original patterns.
 
 ## <a name="installation">Installation</a>
 
-To install the development version use the following command in R:
-
-
+You can install the development version from [R-universe](https://trevorld.r-universe.dev/gridpattern)
 
 ``` r
+install.packages('gridpattern', repos = c('https://trevorld.r-universe.dev', 'https://cloud.r-project.org'))
+```
+
+or straight from the source hosted on Github using the `{remotes}` package:
+
+``` r
+# install.packages("remotes")
 remotes::install_github("trevorld/gridpattern")
+```
+
+You can install the CRAN release version using:
+
+``` r
+install.packages("gridpattern")
 ```
 
 ## <a name="examples">Examples</a>
