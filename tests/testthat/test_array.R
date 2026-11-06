@@ -246,14 +246,14 @@ test_that("array patterns works as expected", {
 		clippee,
 		clipper,
 		use_R4.1_clipping = FALSE,
-		png_device = grDevices::png
+		png_device = png_cairo
 	)
 	test_raster("clipGrob_cairo.png", function() grid.draw(clipped))
 
 	clipped <- clippingPathGrob(clippee, clipper, use_R4.1_clipping = NULL)
 	test_raster("clipGrob_feature.png", function() grid.draw(clipped))
 
-	png_device <- default_png_device()
+	png_device <- ragg::agg_png # the device of the reference image
 	test_raster("clipGrob_manual.png", function() {
 		clipped <- gridpattern_mask_raster_manual(clippee, clipper_masker(clipper), 72, png_device)
 		grid.draw(clipped)
@@ -267,7 +267,7 @@ test_that("array patterns works as expected", {
 	clipper2 <- editGrob(clipper, gp = gpar(col = NA, fill = "black"))
 	clipper3 <- editGrob(clipper2, gp = gpar(col = "black", lwd = 20, fill = rgb(0, 0, 0, 0.5)))
 
-	masked <- alphaMaskGrob(clippee2, clipper3, use_R4.1_masks = FALSE, png_device = grDevices::png)
+	masked <- alphaMaskGrob(clippee2, clipper3, use_R4.1_masks = FALSE, png_device = png_cairo)
 	test_raster("alphaMaskGrob_cairo.png", function() {
 		grid.draw(masked)
 	})
@@ -468,6 +468,18 @@ test_that("the child of `alphaMaskGrob()` is always named \"alpha_mask\"", {
 	expect_equal(child_name(use_R4.1_masks = FALSE, png_device = ragg::agg_png), "alpha_mask") # straight
 	local_mocked_bindings(device_supports_masks = function(png_device) FALSE)
 	expect_equal(child_name(use_R4.1_masks = FALSE, png_device = ragg::agg_png), "alpha_mask") # manual
+})
+
+test_that("`png(type = \"cairo\")` supports the raster fallbacks' native features", {
+	skip_if_not(all(capabilities(c("cairo", "png"))))
+	# before R 4.2 we can't tell Windows' Cairo `png()` from its GDI `png()`
+	skip_if(.Platform$OS.type == "windows" && getRversion() < "4.2.0")
+	expect_true(device_supports_clipping(png_cairo))
+	expect_true(device_supports_masks(png_cairo))
+	# with a transparent background
+	circle <- circleGrob(r = 0.3, gp = gpar(fill = "black", col = NA))
+	alpha <- draw_png_array(png_cairo, list(width = 20, height = 20), 72, grid.draw(circle))[,, 4L]
+	expect_equal(alpha[c(1L, 10L), c(1L, 10L)], matrix(c(0, 0, 0, 1), 2L))
 })
 
 test_that("an unset `res` of the raster fallbacks uses the device resolution", {

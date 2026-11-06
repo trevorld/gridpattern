@@ -117,6 +117,15 @@ Bug fixes and minor improvements
   and the (forced) child of `clippingPathGrob()` is now always named `"clip"`
   (previously the raster fallbacks drawn with native masks / clipping paths on a `{ragg}` or `png_device` device
   used an automatic `grid` name).
+* If `{ragg}` (>= 1.2.0) isn't installed the default `png_device` of the raster fallbacks of
+  `alphaMaskGrob()` and `clippingPathGrob()` (and the patterns that use them)
+  is now `grDevices::png(type = "cairo")` if R has Cairo (#128).
+  Previously it was `ragg::agg_png()` (if an older `{ragg}` was installed, which lacks clipping paths and masks)
+  or else `grDevices::png()` which on Windows always uses GDI,
+  on macOS uses Quartz (which only supports clipping paths in R >= 4.3.0 and alpha masks in R >= 4.5.0),
+  and elsewhere doesn't use Cairo if R lacks Pango (`getOption("bitmapType")` is then `"Xlib"`).
+  Neither an older `{ragg}`, GDI, nor Xlib support clipping paths or masks so the (manual) raster fallbacks were less accurate
+  (and Xlib needs an X11 display).
 * The raster fallbacks of `alphaMaskGrob()` and `clippingPathGrob()` that use a `png_device`
   now also accept grey (or grey + alpha) PNG images from it.
 * `grid::grobCoords()` of a `patternGrob()` is now the coordinates of its boundary
