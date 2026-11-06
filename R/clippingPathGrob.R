@@ -17,7 +17,9 @@
 #'                   If `NULL` and suggested package `ragg` is available
 #'                   and versions are high enough we directly capture clipped raster via [ragg::agg_capture()].
 #'                   Otherwise we will use `png_device`
-#'                   (default [ragg::agg_png()] if available else [grDevices::png()]) and [png::readPNG()]
+#'                   (default `grDevices::png(type = "cairo")` if R has Cairo and PNG support
+#'                   else [ragg::agg_png()] if available else [grDevices::png()])
+#'                   and [png::readPNG()]
 #'                   to manually compute a clipped raster.
 #' @param res Resolution of desired `rasterGrob` in pixels per inch if `use_R4.1_clipping` is `FALSE`.
 #'            If `NULL` (the default) or `NA` then `getOption("ggpattern_res")` or else

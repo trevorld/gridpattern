@@ -12,7 +12,9 @@
 #'                   If `NULL` and suggested package `ragg` is available
 #'                   and versions are high enough we directly capture masked raster via [ragg::agg_capture()].
 #'                   Otherwise we will use `png_device`
-#'                   (default [ragg::agg_png()] if available else [grDevices::png()]) and [png::readPNG()]
+#'                   (default `grDevices::png(type = "cairo")` if R has Cairo and PNG support
+#'                   else [ragg::agg_png()] if available else [grDevices::png()])
+#'                   and [png::readPNG()]
 #'                   to manually compute a masked raster.
 #' @param res Resolution of desired `rasterGrob` in pixels per inch if `use_R4.1_masks` is `FALSE`.
 #'            If `NULL` (the default) or `NA` then `getOption("ggpattern_res")` or else
@@ -267,13 +269,25 @@ region_raster <- function(raster, region, name = NULL) {
 	)
 }
 
+# The default `png_device` when `{ragg}` (>= 1.2.0) isn't available (else `ragg::agg_capture()` is used).
+# Prefers Cairo since `grDevices::png()` often isn't Cairo even if R has it (#128):
+# on Windows its default `type` is always GDI and
+# elsewhere `getOption("bitmapType")` is only "cairo" if R also has Pango
 default_png_device <- function() {
-	if (requireNamespace("ragg", quietly = TRUE)) {
+	# `png(type = "cairo")` saves with R's libpng
+	if (all(capabilities(c("cairo", "png")))) {
+		png_cairo
+	} else if (requireNamespace("ragg", quietly = TRUE)) {
+		# an older `{ragg}` lacks clipping paths and masks but (unlike Xlib) doesn't need an X11 display
 		ragg::agg_png
 	} else {
 		stopifnot(capabilities("png"))
 		grDevices::png
 	}
+}
+
+png_cairo <- function(...) {
+	grDevices::png(..., type = "cairo")
 }
 
 gridpattern_mask_raster_straight <- function(

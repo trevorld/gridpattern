@@ -35,7 +35,9 @@ and the grid clipping path feature does not nest.}
 If \code{NULL} and suggested package \code{ragg} is available
 and versions are high enough we directly capture clipped raster via \code{\link[ragg:agg_capture]{ragg::agg_capture()}}.
 Otherwise we will use \code{png_device}
-(default \code{\link[ragg:agg_png]{ragg::agg_png()}} if available else \code{\link[grDevices:png]{grDevices::png()}}) and \code{\link[png:readPNG]{png::readPNG()}}
+(default \code{grDevices::png(type = "cairo")} if R has Cairo and PNG support
+else \code{\link[ragg:agg_png]{ragg::agg_png()}} if available else \code{\link[grDevices:png]{grDevices::png()}})
+and \code{\link[png:readPNG]{png::readPNG()}}
 to manually compute a clipped raster.}
 
 \item{res}{Resolution of desired \code{rasterGrob} in pixels per inch if \code{use_R4.1_clipping} is \code{FALSE}.
