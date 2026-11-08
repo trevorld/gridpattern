@@ -43,6 +43,17 @@ boundary_coords <- function(grob) {
 	UseMethod("boundary_coords")
 }
 
+# (`as.patternGrob()` reuses a polygon's coordinates instead but one may be edited in as the `boundary`)
+#' @export
+boundary_coords.polygon <- function(grob) {
+	list(
+		x = convertX(grob$x, "npc", valueOnly = TRUE),
+		y = convertY(grob$y, "npc", valueOnly = TRUE),
+		id = grob_ids(grob$id, grob$id.lengths, length(grob$x)),
+		masker = NULL
+	)
+}
+
 #' @export
 boundary_coords.rect <- function(grob) {
 	n <- max(length(grob$x), length(grob$y), length(grob$width), length(grob$height))
