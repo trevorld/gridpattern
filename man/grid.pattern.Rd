@@ -208,6 +208,7 @@ See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information
  }
 }
 \seealso{
-\url{https://coolbutuseless.github.io/package/ggpattern/index.html}
+\code{\link[=as.patternGrob]{as.patternGrob()}} for a pattern grob whose boundary is (the area of) a grid grob
+and \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
 for more details on the \code{ggpattern} package.
 }

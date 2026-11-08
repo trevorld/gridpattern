@@ -145,7 +145,8 @@
 #'    grid.pattern("plasma", x_hex, y_hex, fill="green")
 #'  }
 #'  }
-#' @seealso \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
+#' @seealso [as.patternGrob()] for a pattern grob whose boundary is (the area of) a grid grob
+#'          and \url{https://coolbutuseless.github.io/package/ggpattern/index.html}
 #'          for more details on the `ggpattern` package.
 #' @export
 grid.pattern <- function(
@@ -228,6 +229,12 @@ patternGrob <- function(
 	draw = TRUE,
 	vp = NULL
 ) {
+	if (is.grob(x)) {
+		abort(c(
+			"`x` must be a numeric vector or unit object.",
+			i = "Use `as.patternGrob()` for a pattern grob whose boundary is a grob."
+		))
+	}
 	legend_scale(legend) # validate (but keep a logical `legend` logical, see `makeContent.pattern()`)
 	args <- prefix_args(list(...), prefix)
 	# validate early (errors while drawing leave the graphics device locked)
@@ -243,11 +250,14 @@ patternGrob <- function(
 		y <- unit(y, default.units)
 	}
 
+	# the boundary is either the `x` / `y` units and `id` or (if non-`NULL`) a `boundary` grob
+	# which is measured when drawn (see `as.patternGrob()`)
 	gTree(
 		pattern = pattern,
 		x = x,
 		y = y,
 		id = id,
+		boundary = NULL,
 		args = args,
 		entry = entry,
 		entry_pattern = if (!is.null(entry)) pattern,
@@ -257,6 +267,22 @@ patternGrob <- function(
 		vp = vp,
 		cl = "pattern"
 	)
+}
+
+#' @export
+validDetails.pattern <- function(x) {
+	has_boundary <- !is.null(x$boundary)
+	has_coords <- !(is.null(x$x) && is.null(x$y) && is.null(x$id))
+	if (has_boundary == has_coords) {
+		abort(c(
+			"The boundary of a `pattern` grob is either its `boundary` grob or its `x`, `y`, and `id` (not both nor neither).",
+			i = "To edit the boundary of `as.patternGrob()` edit its `boundary` element."
+		))
+	}
+	if (has_boundary && !is.grob(x$boundary)) {
+		abort("The `boundary` of a `pattern` grob must be a grid grob.")
+	}
+	x
 }
 
 #' @export
@@ -280,9 +306,25 @@ makeContent.pattern <- function(x) {
 		# (`%||%` for an entry cached in a grob created by an earlier {gridpattern} without `key_scaling`)
 		key_scaling = entry$key_scaling %||% DEFAULT_KEY_SCALING
 	)
+	# needs to be called within active graphics device to guess R4.1 capabilities
+	params <- get_R4.1_params(params)
 
-	xp <- convertX(x$x, "npc", valueOnly = TRUE)
-	yp <- convertY(x$y, "npc", valueOnly = TRUE)
+	if (is.null(x$boundary)) {
+		xp <- convertX(x$x, "npc", valueOnly = TRUE)
+		yp <- convertY(x$y, "npc", valueOnly = TRUE)
+		id <- x$id
+		masker <- NULL
+	} else {
+		# a boundary grob is measured in the viewport it is drawn in
+		boundary <- boundary_coords(x$boundary)
+		if (length(boundary$x) == 0L) {
+			return(setChildren(x, gList(nullGrob(name = "pattern_empty_boundary"))))
+		}
+		xp <- boundary$x
+		yp <- boundary$y
+		id <- boundary$id
+		masker <- boundary$masker
+	}
 
 	# a numeric legend key draws the pattern in a viewport `legend * pattern_key_scale_factor` times
 	# larger than the key (and centred on it) so all relative lengths (spacing, offsets, amplitudes, ...)
@@ -302,12 +344,23 @@ makeContent.pattern <- function(x) {
 			params = params,
 			xp = 0.5 + (xp - 0.5) / s,
 			yp = 0.5 + (yp - 0.5) / s,
-			id = x$id,
+			id = id,
 			vp = viewport(width = s, height = s, name = "pattern_legend"),
 			cl = "pattern_legend"
 		)
 	} else {
-		grob <- pattern_content(entry, params, xp, yp, x$id, legend = legend > 0)
+		grob <- pattern_content(entry, params, xp, yp, id, legend = legend > 0)
+	}
+	if (!is.null(masker)) {
+		# the masker is drawn in this (e.g. key) viewport i.e. outside any zoomed legend viewport
+		grob <- alphaMaskGrob(
+			grob,
+			masker,
+			use_R4.1_masks = params$pattern_use_R4.1_masks,
+			png_device = params$pattern_png_device,
+			res = params$pattern_res,
+			name = "pattern_mask"
+		)
 	}
 	setChildren(x, gList(grob))
 }
@@ -317,8 +370,14 @@ makeContent.pattern <- function(x) {
 # would give too large or no coordinates)
 #' @export
 grobCoords.pattern <- function(x, closed = TRUE, ...) {
-	id <- rep_len(x$id, length(x$x))
-	boundary <- polygonGrob(x$x, x$y, id = id, name = x$name, vp = x$vp)
+	if (is.null(x$boundary)) {
+		id <- rep_len(x$id, length(x$x))
+		boundary <- polygonGrob(x$x, x$y, id = id, name = x$name, vp = x$vp)
+	} else {
+		boundary <- measured_boundary(x$boundary)
+		boundary$name <- x$name
+		boundary$vp <- x$vp
+	}
 	grobCoords(boundary, closed, ...)
 }
 
@@ -352,9 +411,6 @@ pattern_content <- function(entry, params, xp, yp, id, legend) {
 	} else {
 		aspect_ratio <- vpm$width / vpm$height
 	}
-
-	# needs to be called within active graphics device to guess R4.1 capabilities
-	params <- get_R4.1_params(params)
 
 	fn <- get_pattern_fn(entry)
 	# (a pattern whose grid would be absurdly dense draws nothing instead, see `check_grid_density()`)

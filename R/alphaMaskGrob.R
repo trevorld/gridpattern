@@ -150,7 +150,9 @@ raster_region <- function(grob, res, stroke = FALSE) {
 	# `forceGrob()` runs any `makeContent()` (once) so its children's line widths (and points) are also seen
 	bbox <- tryCatch(
 		{
-			grob <- forceGrob(grob)
+			if (!inherits(grob, "forcedgrob")) {
+				grob <- forceGrob(grob)
+			}
 			grob_bbox(grob)
 		},
 		error = function(e) NULL

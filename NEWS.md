@@ -89,6 +89,12 @@ New features
 * `has_registered_pattern()` returns whether a pattern name is taken
   (even if it doesn't resolve e.g. because of a conflict)
   i.e. whether registering a pattern with that name would clobber or conflict with a pre-existing pattern.
+* `as.patternGrob()` creates a pattern grob whose boundary is (the area filled by) an existing grid grob (#131).
+  A `polygon` grob's coordinates are used directly while a `pathgrob` is filled by its `rule`
+  (any holes are cut out by an alpha mask), a `rect` by its rectangles,
+  and (on R 4.2+) any other grob by its `grid::grobCoords()`
+  (e.g. a `circle` or `roundrect` is approximated by a polygon while a `gTree` or `text` grob
+  is also masked by itself).  An existing `pattern` grob is returned unchanged.
 
 Bug fixes and minor improvements
 --------------------------------
