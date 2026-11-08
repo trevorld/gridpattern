@@ -92,29 +92,21 @@ boundary_coords.default <- function(grob) {
 }
 
 # the boundary grob as measured when drawn: forced (so the children of a `makeContent()` grob are seen)
-# and without any `points` (which have no area and whose `grobCoords()` are their symbols)
+# and with only the filled symbols of any `points` (see `filled_points()`)
 measured_boundary <- function(grob) {
-	drop_points(forceGrob(grob))
+	filled_points(forceGrob(grob))
 }
 
 # whether the polygons of `grob` (see `coords_rings()`) don't describe its region exactly
 # (e.g. the glyphs of a text grob or the holes of a nested path) so the pattern must also be masked by it.
-# Area-less primitives (lines, points, ...) have no polygons so they never need one.
+# Area-less primitives (lines, ...) have no polygons so they never need one
+# (nor do `points` since only their filled symbols are left, see `filled_points()`).
 needs_mask <- function(grob) {
 	if (inherits(grob, "gTree")) {
 		any(vapply(grob$children, needs_mask, logical(1L)))
 	} else {
-		exact <- c("circle", "roundrect", "polygon", "rect", "xspline")
-		arealess <- c(
-			"lines",
-			"polyline",
-			"segments",
-			"move.to",
-			"line.to",
-			"points",
-			"rastergrob",
-			"null"
-		)
+		exact <- c("circle", "roundrect", "polygon", "rect", "xspline", "points")
+		arealess <- c("lines", "polyline", "segments", "move.to", "line.to", "rastergrob", "null")
 		!inherits(grob, c(exact, arealess))
 	}
 }
@@ -202,14 +194,27 @@ coords_rings <- function(coords) {
 	}
 }
 
-# `grob` without any `points` (which have no area and whose `grobCoords()` are their symbols)
-drop_points <- function(grob) {
+# the symbols whose interior is painted with `fill` (so, like a circle, they are filled areas)
+# e.g. the `{ggplot2}` point shapes with a `fill` aesthetic
+FILLED_PCH <- 21:25
+
+# `grob` with only the filled symbols of its `points` (whose `grobCoords()` are their outlines):
+# the other symbols' outlines don't describe a filled area (e.g. the open square pch 0 is also
+# the solid pch 15's, which is painted with `col`) so they are blanked (a `NA` symbol neither draws
+# nor has coordinates) or, if a `points` grob has no filled symbols, it is dropped.
+filled_points <- function(grob) {
 	if (inherits(grob, "points")) {
-		nullGrob()
+		pch <- rep_len(grob$pch, length(grob$x))
+		filled <- is.numeric(pch) & pch %in% FILLED_PCH
+		if (!any(filled)) {
+			return(nullGrob(name = grob$name))
+		}
+		pch[!filled] <- NA
+		grob$pch <- pch
+		grob
 	} else if (inherits(grob, "gTree") && has_points(grob)) {
-		children <- Filter(function(child) !inherits(child, "points"), grob$children)
-		children <- lapply(children, drop_points)
-		setChildren(grob, do.call(gList, unname(children)))
+		grob$children[] <- lapply(grob$children, filled_points)
+		grob
 	} else {
 		grob
 	}

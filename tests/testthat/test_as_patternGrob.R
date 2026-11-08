@@ -204,15 +204,61 @@ test_that("`as.patternGrob()` of other grobs uses `grobCoords()`", {
 	expect_null(
 		pattern_boundary(as.patternGrob(gTree(children = gList(rectGrob(), linesGrob()))))$masker
 	)
-	# points have no area and are ignored within a gTree (when measured and when masking)
-	tree <- gTree(children = gList(pointsGrob(0.5, 0.5, size = unit(2, "in")), rectGrob(), text))
+	# the filled symbols (pch 21 to 25) of points are their outlines (exact, like a circle)
+	points <- pointsGrob(
+		c(0.25, 0.75),
+		c(0.5, 0.5),
+		pch = 21,
+		default.units = "npc",
+		gp = gpar(fontsize = c(20, 40))
+	)
+	b <- pattern_boundary(as.patternGrob(points))
+	expect_null(b$masker)
+	expect_equal(as.vector(table(b$id)), c(100L, 100L))
+	widths <- tapply(b$x, b$id, function(x) diff(range(x)))
+	expect_equal(widths[[2L]] / widths[[1L]], 2, tolerance = 1e-6)
+	# the other symbols have no area: e.g. the open pch 1 and the solid pch 19 (painted with `col`)
+	points <- pointsGrob(
+		c(0.2, 0.5, 0.8),
+		c(0.5, 0.5, 0.5),
+		pch = c(1, 21, 19),
+		size = unit(1, "in"),
+		default.units = "npc"
+	)
+	b <- pattern_boundary(as.patternGrob(points))
+	expect_equal(unique(b$id), 1L)
+	expect_equal(mean(range(b$x)), 0.5, tolerance = 1e-6)
+	expect_no_warning(b <- pattern_boundary(as.patternGrob(pointsGrob(0.5, 0.5, pch = "A"))))
+	expect_length(b$x, 0L)
+	# within a gTree the filled symbols count (exactly) while the other symbols are blanked
+	points <- pointsGrob(
+		c(0.25, 0.75),
+		c(0.5, 0.5),
+		pch = c(21, 19),
+		size = unit(2, "in"),
+		default.units = "npc"
+	)
+	tree <- gTree(children = gList(points, rectGrob(width = 0.5, height = 0.5)))
+	b <- pattern_boundary(as.patternGrob(tree))
+	expect_null(b$masker)
+	expect_equal(as.vector(table(b$id)), c(100L, 4L))
+	tree <- gTree(children = gList(points, rectGrob(), text))
 	grob <- as.patternGrob(tree)
 	b <- pattern_boundary(grob)
-	expect_equal(b$id, rep(1:2, each = 4L))
-	expect_length(b$masker$children, 2L)
-	expect_length(grobCoords(grob, closed = TRUE), 2L)
+	expect_equal(as.vector(table(b$id)), c(100L, 4L, 4L))
+	expect_length(b$masker$children, 3L)
+	expect_equal(b$masker$children[[1L]]$pch, c(21L, NA))
+	expect_equal(b$masker$children[[1L]]$gp$fill, "black")
+	expect_length(grobCoords(grob, closed = TRUE), 3L)
 	# a boundary without a filled area draws nothing
-	for (grob in list(nullGrob(), pointsGrob(), linesGrob(), rasterGrob(matrix(1)))) {
+	arealess <- list(
+		nullGrob(),
+		pointsGrob(),
+		pointsGrob(pch = 19),
+		linesGrob(),
+		rasterGrob(matrix(1))
+	)
+	for (grob in arealess) {
 		grob <- as.patternGrob(grob, "stripe")
 		expect_s3_class(makeContent(grob)$children[[1L]], "null")
 	}
@@ -326,5 +372,17 @@ test_that("`as.patternGrob()` visual tests", {
 	text <- textGrob("Ab", gp = gpar(fontsize = 150, fontface = "bold"))
 	vdiffr::expect_doppelganger("text", function() {
 		grid.draw(as.patternGrob(text, "stripe", fill = c("red", "blue"), density = 0.5))
+	})
+	points <- pointsGrob(
+		c(0.3, 0.7),
+		c(0.5, 0.5),
+		pch = c(21, 24),
+		size = unit(2, "in"),
+		default.units = "npc",
+		gp = gpar(fill = NA, lwd = 4)
+	)
+	vdiffr::expect_doppelganger("points", function() {
+		grid.draw(as.patternGrob(points, "stripe", fill = c("red", "blue"), density = 0.5))
+		grid.draw(points)
 	})
 })

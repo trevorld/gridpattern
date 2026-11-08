@@ -93,8 +93,9 @@ New features
   A `polygon` grob's coordinates are used directly while a `pathgrob` is filled by its `rule`
   (any holes are cut out by an alpha mask), a `rect` by its rectangles,
   and (on R 4.2+) any other grob by its `grid::grobCoords()`
-  (e.g. a `circle` or `roundrect` is approximated by a polygon while a `gTree` or `text` grob
-  is also masked by itself).  An existing `pattern` grob is returned unchanged.
+  (e.g. a `circle`, `roundrect`, or the filled symbols (`pch` 21 to 25) of `points` are approximated
+  by polygons while a `gTree` or `text` grob is also masked by itself).
+  An existing `pattern` grob is returned unchanged.
 
 Bug fixes and minor improvements
 --------------------------------
