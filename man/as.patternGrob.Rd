@@ -34,11 +34,11 @@ else a \code{rasterGrob} approximation at the resolution \code{pattern_res}).}
 \item{\code{pattern}}{An existing pattern grob is returned unchanged
 (use \code{\link[grid:editGrob]{grid::editGrob()}} to change its pattern or parameters).}
 \item{Any other grob}{Its boundary is computed by \code{\link[grid:grobCoords]{grid::grobCoords()}} (which requires R 4.2):
-a \code{circle}, \code{roundrect}, or (closed) \code{xspline} is approximated by a polygon while a \code{gTree}
-or any other grob (e.g. \code{text}) is the union of its shapes' coordinates masked by the grob itself
-(so e.g. the glyphs of a text grob get the pattern).
-A grob without a filled area (e.g. \code{points}, lines, or a \code{rastergrob}) draws nothing
-(and \code{points} are ignored within a \code{gTree}).}
+a \code{circle}, \code{roundrect}, (closed) \code{xspline}, or the filled symbols of \code{points}
+(\code{pch} 21 to 25, whose interior is painted with \code{fill}) are approximated by polygons
+while a \code{gTree} or any other grob (e.g. \code{text}) is the union of its shapes' coordinates
+masked by the grob itself (so e.g. the glyphs of a text grob get the pattern).
+A grob without a filled area (e.g. lines, a \code{rastergrob}, or \code{points} of other symbols) draws nothing.}
 }
 A pattern grob with a boundary grob stores it as \code{boundary} (instead of \code{x}, \code{y}, and \code{id})
 so \code{\link[grid:editGrob]{grid::editGrob()}} that element to change its boundary.
@@ -46,16 +46,26 @@ If both \code{vp} and the \code{vp} of \code{boundary} are non-\code{NULL} they 
 (the boundary's viewport is pushed within \code{vp}).
 }
 \examples{
-if (require("grid", quietly = TRUE) && getRversion() >= "4.2.0") {
+run_examples <- require("grid", quietly = TRUE) &&
+  getRversion() >= "4.2.0"
+if (run_examples) {
   # a circle is approximated by a polygon
   grid.newpage()
   circle <- circleGrob(r = 0.4, gp = gpar(fill = NA, lwd = 4))
   grid.draw(as.patternGrob(circle, "weave", fill = "yellow", fill2 = "blue"))
   grid.draw(circle)
+  # as are the filled symbols (pch 21 to 25) of points
+}
+if (run_examples) {
+  grid.newpage()
+  points <- pointsGrob(seq(0.1, 0.9, by = 0.2), rep(0.5, 5),
+                       pch = 21:25, size = unit(0.18, "npc"),
+                       default.units = "npc", gp = gpar(fill = NA, lwd = 4))
+  grid.draw(as.patternGrob(points, "stripe", fill = c("red", "blue"), density = 0.5))
+  grid.draw(points)
 }
 # the holes of a path are cut out by a mask
-# (only drawn here on a graphics device that supports masks natively)
-if (require("grid", quietly = TRUE) && "alpha" \%in\% grDevices::dev.capabilities()$masks) {
+if (run_examples && "alpha" \%in\% grDevices::dev.capabilities()$masks) {
   angle <- seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6)
   x_hex <- 0.5 + 0.5 * cos(angle)
   y_hex <- 0.5 + 0.5 * sin(angle)
