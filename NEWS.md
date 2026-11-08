@@ -192,6 +192,18 @@ Bug fixes and minor improvements
   (as its warning claims) instead of a "dummy" placeholder image.
   A placeholder `type` that isn't length one now also falls back to "bear"
   (the default `type`) instead of "kitten".
+* The "stripe", "crosshatch", and "weave" patterns now cycle multiple `fill` (and `fill2`), `colour`,
+  `linewidth`, `linetype`, and (except for "weave") `density` values by stripe
+  like the "wave" and "regular_polygon" patterns do:
+  the stripes of each set of values are clipped to the boundary separately
+  (so these patterns' grobs are now `gTree`s with a polygon grob child per set of values).
+  Previously multiple `fill`, `colour`, `linewidth`, and `linetype` values were recycled over
+  the pieces of the stripes clipped to the boundary (in the order of the `sf::st_intersection()` output)
+  so when the boundary was several polygons a stripe could change colour from polygon to polygon
+  and multiple `density` values were an error
+  ("weave" still needs a single `density` but now says so clearly).
+  The stripes are counted from the stripe through the centre of the viewport
+  so for a single polygon they may now start with a different colour than before.
 
 gridpattern v1.5.1
 ==================
