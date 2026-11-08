@@ -201,7 +201,8 @@ See \code{\link[=grid.pattern_weave]{grid.pattern_weave()}} for more information
    grid.pattern("image", x_hex, y_hex, filename=logo_filename, type="fit")
  }
  if (suppressPackageStartupMessages(requireNamespace("magick", quietly = TRUE))) {
-   # 'plasma' pattern
+   # 'plasma' pattern (pseudorandom: seed it for a reproducible image)
+   magick::magick_set_seed(42)
    grid::grid.newpage()
    grid.pattern("plasma", x_hex, y_hex, fill="green")
  }
