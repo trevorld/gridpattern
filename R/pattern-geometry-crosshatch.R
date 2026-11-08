@@ -74,12 +74,13 @@ create_pattern_crosshatch_via_sf <- function(params, boundary_df, aspect_ratio, 
 	create_crosshatch_via_sf_helper(params, boundary_df, add_top_hatch = TRUE)
 }
 
-create_crosshatch_via_sf_helper <- function(params, boundary_df, add_top_hatch = TRUE) {
-	if (abs(params$pattern_density - 1) < .Machine$double.eps^0.5) {
-		params$pattern_density <- 1 - 1e-6
-	}
-	stopifnot(params$pattern_density <= 1)
-
+# A gTree of the stripes (named `name`) clipped to the boundary plus (for a crosshatch) a "top" hatch
+create_crosshatch_via_sf_helper <- function(
+	params,
+	boundary_df,
+	add_top_hatch = TRUE,
+	name = if (add_top_hatch) "bottom" else "stripe"
+) {
 	# work in 'bigpts' instead 'npc' / 'snpc' units so we don't worry about the aspect ratio
 	default.units <- "bigpts"
 	boundary_df <- convert_polygon_df_units(boundary_df, default.units)
@@ -89,34 +90,115 @@ create_crosshatch_via_sf_helper <- function(params, boundary_df, add_top_hatch =
 	# create grid of points large enough to cover viewport no matter the angle
 	grid_xy <- get_xy_grid(params, vpm)
 
+	boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
+
+	grob <- stripes_grob(params, grid_xy, vpm, boundary_sf, default.units, name, horizontal = TRUE)
+
+	if (add_top_hatch) {
+		params$pattern_fill <- params$pattern_fill2
+		grob_top <- stripes_grob(
+			params,
+			grid_xy,
+			vpm,
+			boundary_sf,
+			default.units,
+			"top",
+			horizontal = FALSE
+		)
+		grob <- grobTree(grob, grob_top, name = "crosshatch")
+	}
+	grob
+}
+
+# The stripes (horizontal before the rotation by the pattern angle if `horizontal` else vertical)
+# clipped to `boundary_sf` as a gTree (named `name`) of a polygon grob (`name.1`, `name.2`, ...)
+# per group of stripe parameters (see `stripe_params()`).
+# Like the "wave" and "regular_polygon" patterns the stripes of each group are clipped separately:
+# a stripe clipped into several pieces by several polygons is one colour
+# (whatever the order of the `sf::st_intersection()` output) and each group can have its own `density`.
+stripes_grob <- function(
+	params,
+	grid_xy,
+	vpm,
+	boundary_sf,
+	default.units,
+	name,
+	horizontal = TRUE
+) {
+	sp <- stripe_params(params)
+	gl <- gList()
+	for (i_par in seq_len(sp$n_par)) {
+		params$pattern_density <- sp$density[i_par]
+		grid_xy_par <- stripe_group(grid_xy, i_par, sp$n_par, horizontal)
+		clipped_sf <- clip_stripes_sf(params, grid_xy_par, vpm, boundary_sf, horizontal)
+		name_par <- paste0(name, ".", i_par)
+		grob <- sf_multipolygon_to_polygon_grob(
+			clipped_sf,
+			stripe_gpar(sp, i_par),
+			default.units,
+			name_par
+		)
+		gl <- append_gList(gl, grob)
+	}
+	gTree(children = gl, name = name)
+}
+
+# The parameters of the stripes recycled to one value per group of stripes:
+# like the "wave" and "regular_polygon" patterns multiple `fill`, `colour`, `linewidth`, `linetype`,
+# and `density` values cycle by stripe i.e. `n_par` groups of every `n_par`-th stripe (see `stripe_group()`).
+stripe_params <- function(params) {
 	fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
 	col <- update_alpha(params$pattern_colour, params$pattern_alpha)
 	lwd <- params$pattern_linewidth * .pt
 	lty <- params$pattern_linetype
-	gp <- gpar(col = col, fill = fill, lwd = lwd, lty = lty, lineend = 'square')
+	density <- params$pattern_density
+	# avoid overlap errors when density == 1 due to machine precision issues
+	density[nigh(density, 1)] <- 1 - 1e-6
+	stopifnot(all(density <= 1))
+	# (a `grid::pattern()` fill is one value although its length isn't one)
+	n_fill <- if (is_pattern(fill)) 1L else length(fill)
+	n_par <- max(n_fill, lengths(list(col, lwd, lty, density)))
+	list(
+		n_par = n_par,
+		fill = rep_len_fill(fill, n_par),
+		col = rep_len(col, n_par),
+		lwd = rep_len(lwd, n_par),
+		lty = rep_len(lty, n_par),
+		density = rep_len(density, n_par)
+	)
+}
 
-	boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
+# the graphical parameters of group `i_par` of the stripes
+stripe_gpar <- function(sp, i_par) {
+	gpar(
+		col = sp$col[i_par],
+		fill = sp$fill[[i_par]],
+		lwd = sp$lwd[i_par],
+		lty = sp$lty[i_par],
+		lineend = "square"
+	)
+}
 
-	stripes_sf_bot <- create_h_stripes_sf(params, grid_xy, vpm)
-	clipped_stripes_sf_bot <- sf::st_intersection(stripes_sf_bot, boundary_sf)
-	grob <- sf_multipolygon_to_polygon_grob(clipped_stripes_sf_bot, gp, default.units, "stripe")
+# `grid_xy` with only the stripe centres (`y` if `horizontal` else `x`) of group `i_par` of `n_par`:
+# every `n_par`-th stripe counted from the stripe through the viewport centre (which is in group one)
+# so the colour of a stripe doesn't depend on the boundary.
+stripe_group <- function(grid_xy, i_par, n_par, horizontal = TRUE) {
+	nm <- if (horizontal) "y" else "x"
+	centres <- grid_xy[[nm]]
+	# (`get_xy_grid()` centres an odd number of stripes on the viewport)
+	k <- seq_along(centres) - (length(centres) + 1L) %/% 2L
+	grid_xy[[nm]] <- centres[k %% n_par + 1L == i_par]
+	grid_xy
+}
 
-	if (add_top_hatch) {
-		gp$fill <- update_alpha(params$pattern_fill2, params$pattern_alpha)
-
-		stripes_sf_top <- create_v_stripes_sf(params, grid_xy, vpm)
-		clipped_stripes_sf_top <- sf::st_intersection(stripes_sf_top, boundary_sf)
-		grob_top <- sf_multipolygon_to_polygon_grob(
-			clipped_stripes_sf_top,
-			gp,
-			default.units,
-			"top"
-		)
-
-		grob <- editGrob(grob, name = "bottom")
-		grob <- grobTree(grob, grob_top, name = "crosshatch")
+# the stripes of `create_h_stripes_sf()` (if `horizontal`) / `create_v_stripes_sf()` clipped to `boundary_sf`
+clip_stripes_sf <- function(params, grid_xy, vpm, boundary_sf, horizontal = TRUE) {
+	stripes_sf <- if (horizontal) {
+		create_h_stripes_sf(params, grid_xy, vpm)
+	} else {
+		create_v_stripes_sf(params, grid_xy, vpm)
 	}
-	grob
+	sf::st_intersection(stripes_sf, boundary_sf)
 }
 
 # build sf multipolygon 'rect' for each grid_xy$y value

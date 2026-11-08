@@ -6,7 +6,7 @@ sf_multipolygon_to_polygon_grob <- function(
 ) {
 	df <- convert_polygon_sf_to_polygon_df(multipolygons_sf)
 	if (is.null(df)) {
-		nullGrob()
+		nullGrob(name = name)
 	} else {
 		polygonGrob(
 			x = df$x,

@@ -541,6 +541,133 @@ test_that("geometry patterns work as expected", {
 		grid.pattern(x = x, y = y, id = id)
 	})
 })
+test_that("multiple stripe fills alternate by stripe and not by clipped piece", {
+	local_temp_dev()
+	# five squares in a row: a stripe crossing several of them is several pieces but one colour
+	# (the stripes of each colour are a child polygon grob) so every square has stripes of both colours
+	x0 <- seq(0.1, 0.9, by = 0.2)
+	h <- 0.09
+	x <- c(rbind(x0 - h, x0 + h, x0 + h, x0 - h))
+	y <- rep(c(0.5 - h, 0.5 - h, 0.5 + h, 0.5 + h), 5)
+	id <- rep(1:5, each = 4)
+	children <- function(stripes) lapply(childNames(stripes), function(nm) getGrob(stripes, nm))
+	# which of the five squares each child polygon grob of the stripes has pieces in
+	squares_of <- function(stripes) {
+		lapply(children(stripes), function(child) {
+			x_piece <- tapply(convertX(child$x, "npc", valueOnly = TRUE), child$id, mean)
+			sort(unique(findInterval(x_piece, seq(0, 1, by = 0.2))))
+		})
+	}
+	gp_of <- function(stripes, par) vapply(children(stripes), function(child) child$gp[[par]], "")
+	grob <- patternGrob(
+		"stripe",
+		x,
+		y,
+		id,
+		fill = c("red", "blue"),
+		colour = c("black", "white"),
+		density = 0.5
+	)
+	stripes <- getGrob(grid.force(grob, draw = FALSE), "stripe", strict = FALSE)
+	expect_equal(childNames(stripes), c("stripe.1", "stripe.2"))
+	expect_equal(squares_of(stripes), list(1:5, 1:5))
+	# the stroke colours (and `linetype` / `linewidth`) cycle with the fills
+	expect_equal(gp_of(stripes, "fill"), c("#FF0000FF", "#0000FFFF"))
+	expect_equal(gp_of(stripes, "col"), c("#000000FF", "#FFFFFFFF"))
+
+	# each `density` value sizes the stripes of its group (here three times as wide)
+	grob <- patternGrob("stripe", fill = c("red", "blue"), density = c(0.2, 0.6), angle = 0)
+	stripes <- getGrob(grid.force(grob, draw = FALSE), "stripe", strict = FALSE)
+	height_of <- function(child) {
+		y <- convertY(child$y, "npc", valueOnly = TRUE)
+		median(tapply(y, child$id, function(y) diff(range(y))))
+	}
+	heights <- vapply(children(stripes), height_of, numeric(1))
+	expect_equal(heights[2L] / heights[1L], 3, tolerance = 0.01)
+
+	# a group without a stripe (e.g. in a small legend key) is a null grob
+	grob <- patternGrob("stripe", fill = c("red", "blue"), spacing = 2)
+	stripes <- getGrob(grid.force(grob, draw = FALSE), "stripe", strict = FALSE)
+	expect_s3_class(getGrob(stripes, "stripe.1"), "polygon")
+	expect_s3_class(getGrob(stripes, "stripe.2"), "null")
+
+	# the (`fill2`) top hatch of a crosshatch likewise
+	grob <- patternGrob(
+		"crosshatch",
+		x,
+		y,
+		id,
+		fill = "red",
+		fill2 = c("yellow", "green"),
+		density = 0.3
+	)
+	forced <- grid.force(grob, draw = FALSE)
+	expect_equal(squares_of(getGrob(forced, "top", strict = FALSE)), list(1:5, 1:5))
+	expect_equal(childNames(getGrob(forced, "bottom", strict = FALSE)), "bottom.1")
+
+	# and the (`fill2`) warp of a weave (whose covered and uncovered pieces share a colour)
+	grob <- patternGrob(
+		"weave",
+		x,
+		y,
+		id,
+		fill = "red",
+		fill2 = c("yellow", "green"),
+		density = 0.3
+	)
+	forced <- grid.force(grob, draw = FALSE)
+	expect_equal(squares_of(getGrob(forced, "warp_uncovered", strict = FALSE)), list(1:5, 1:5))
+	expect_equal(squares_of(getGrob(forced, "warp_covered", strict = FALSE)), list(1:5, 1:5))
+	expect_equal(childNames(getGrob(forced, "weft", strict = FALSE)), "weft.1")
+	# (whose covered squares have one size so it needs one `density`)
+	grob <- patternGrob("weave", x, y, id, density = c(0.2, 0.5))
+	expect_error(grid.force(grob, draw = FALSE), "single `density`")
+
+	# a `grid::pattern()` fill is one group
+	grob <- patternGrob("stripe", x, y, id, fill = linearGradient(c("red", "blue")), density = 0.5)
+	stripes <- getGrob(grid.force(grob, draw = FALSE), "stripe", strict = FALSE)
+	expect_equal(childNames(stripes), "stripe.1")
+	expect_s3_class(getGrob(stripes, "stripe.1")$gp$fill, "GridPattern")
+})
+
+test_that("stripe_group() puts every `n_par`-th stripe from the centre stripe in a group", {
+	grid_xy <- list(x = 1:5, y = c(-2, -1, 0, 1, 2))
+	expect_equal(stripe_group(grid_xy, 1L, 1L), grid_xy)
+	expect_equal(stripe_group(grid_xy, 1L, 2L)$y, c(-2, 0, 2))
+	expect_equal(stripe_group(grid_xy, 2L, 2L)$y, c(-1, 1))
+	expect_equal(stripe_group(grid_xy, 1L, 3L)$y, 0)
+	expect_equal(stripe_group(grid_xy, 2L, 3L)$y, c(-2, 1))
+	expect_equal(stripe_group(grid_xy, 3L, 3L)$y, c(-1, 2))
+	# vertical stripes are grouped by `x`
+	expect_equal(stripe_group(grid_xy, 2L, 2L, horizontal = FALSE)$x, c(2L, 4L))
+	expect_equal(stripe_group(grid_xy, 2L, 2L, horizontal = FALSE)$y, grid_xy$y)
+	# a group may have no stripe
+	expect_equal(stripe_group(list(y = 0), 2L, 2L)$y, numeric(0))
+})
+
+test_that("stripe_params() recycles the stripe parameters to one value per group", {
+	params <- list(
+		pattern_fill = "red",
+		pattern_colour = c("black", "white", "grey"),
+		pattern_alpha = NA_real_,
+		pattern_linewidth = 1,
+		pattern_linetype = 1,
+		pattern_density = c(0.2, 1)
+	)
+	sp <- stripe_params(params)
+	expect_equal(sp$n_par, 3L)
+	expect_equal(sp$fill, rep("#FF0000FF", 3L))
+	expect_equal(sp$density, c(0.2, 1 - 1e-6, 0.2))
+	# a `grid::pattern()` fill is one value
+	params$pattern_fill <- linearGradient()
+	params$pattern_colour <- "black"
+	sp <- stripe_params(params)
+	expect_equal(sp$n_par, 2L)
+	expect_s3_class(sp$fill[[2L]], "GridPattern")
+	params$pattern_density <- 1.5
+	expect_error(stripe_params(params))
+})
+
 test_that("get_xy_grid() bounding box is non-degenerate when spacing exceeds viewport (issue #95)", {
 	# In ggpattern legend keys, `pattern_spacing` (after unit conversion) can exceed
 	# `vpm$length`. When that happens `x_seq` collapses to `c(0)`, so `x = c(vpm$x)` and
