@@ -204,6 +204,9 @@ Bug fixes and minor improvements
   ("weave" still needs a single `density` but now says so clearly).
   The stripes are counted from the stripe through the centre of the viewport
   so for a single polygon they may now start with a different colour than before.
+* The "wave" pattern now cycles multiple `density` values by row like its other parameters
+  (previously an error since the `density` of each row was recycled but never used).
+  Its grob is now named "wave" (previously it was misnamed "regular_polygon").
 
 gridpattern v1.5.1
 ==================

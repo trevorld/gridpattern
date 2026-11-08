@@ -630,6 +630,37 @@ test_that("multiple stripe fills alternate by stripe and not by clipped piece", 
 	expect_s3_class(getGrob(stripes, "stripe.1")$gp$fill, "GridPattern")
 })
 
+test_that("multiple wave densities cycle by row", {
+	local_temp_dev()
+	grob <- patternGrob(
+		"wave",
+		fill = c("red", "blue"),
+		density = c(0.2, 0.6),
+		spacing = 0.1,
+		angle = 0,
+		type = "wavy"
+	)
+	forced <- grid.force(grob, draw = FALSE)
+	expect_equal(childNames(getGrob(forced, "wave", strict = FALSE)), c("wave.1", "wave.2"))
+	# the vertical extent of an (unclipped) row is twice the amplitude plus
+	# the thickness (`spacing * density`) of its band (a row clipped by the viewport is smaller pieces)
+	extent <- function(nm) {
+		child <- getGrob(forced, nm, strict = FALSE)
+		max(tapply(convertY(child$y, "npc", valueOnly = TRUE), child$id, function(y) {
+			diff(range(y))
+		}))
+	}
+	expected <- convertHeight(unit(0.1 * (0.6 - 0.2), "snpc"), "npc", valueOnly = TRUE)
+	expect_equal(extent("wave.2") - extent("wave.1"), expected, tolerance = 0.01)
+	expect_equal(getGrob(forced, "wave.1", strict = FALSE)$gp$fill, "#FF0000FF")
+	expect_equal(getGrob(forced, "wave.2", strict = FALSE)$gp$fill, "#0000FFFF")
+	# a density of one is nudged below it while a larger one is an error
+	grob <- patternGrob("wave", density = c(0.5, 1), spacing = 0.1)
+	expect_no_error(grid.force(grob, draw = FALSE))
+	grob <- patternGrob("wave", density = c(0.5, 1.5), spacing = 0.1)
+	expect_error(grid.force(grob, draw = FALSE))
+})
+
 test_that("stripe_group() puts every `n_par`-th stripe from the centre stripe in a group", {
 	grid_xy <- list(x = 1:5, y = c(-2, -1, 0, 1, 2))
 	expect_equal(stripe_group(grid_xy, 1L, 1L), grid_xy)

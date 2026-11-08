@@ -146,10 +146,11 @@ names_wave <- c(
 )
 
 create_pattern_wave_via_sf <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
-	if (abs(params$pattern_density - 1) < .Machine$double.eps^0.5) {
-		params$pattern_density <- 1 - 1e-6
-	}
-	stopifnot(params$pattern_density <= 1)
+	# avoid overlap errors when density == 1 due to machine precision issues
+	density <- params$pattern_density
+	density[nigh(density, 1)] <- 1 - 1e-6
+	stopifnot(all(density <= 1))
+	params$pattern_density <- density
 
 	# work in 'bigpts' instead 'npc' / 'snpc' units so we don't worry about the aspect ratio
 	default.units <- "bigpts"
@@ -179,7 +180,7 @@ create_pattern_wave_via_sf <- function(params, boundary_df, aspect_ratio, legend
 	n_par <- max(lengths(list(fill, col, lwd, lty, density)))
 
 	if (isTRUE(params$pattern_stagger) && n_par %% 2L == 1L) {
-		halfwidth <- 0.5 * grid_xy$v_spacing * params$pattern_density
+		halfwidth <- 0.5 * grid_xy$v_spacing * max(density)
 		if (2 * (params$pattern_amplitude + halfwidth) > n_par * grid_xy$v_spacing) {
 			abort(c(
 				"Wave stagger bands overlap between adjacent rows.",
@@ -206,6 +207,8 @@ create_pattern_wave_via_sf <- function(params, boundary_df, aspect_ratio, legend
 
 		boundary_sf <- convert_polygon_df_to_polygon_sf(boundary_df, buffer_dist = 0)
 
+		# (the wave builders read the density of this group's rows from `params`)
+		params$pattern_density <- density[i_par]
 		waves_sf <- create_waves_sf(params, grid_xy, vpm, i_par, n_par)
 		clipped_waves_sf_bot <- tryCatch(
 			sf::st_intersection(waves_sf, boundary_sf),
@@ -236,7 +239,7 @@ create_pattern_wave_via_sf <- function(params, boundary_df, aspect_ratio, legend
 		grob <- sf_multipolygon_to_polygon_grob(clipped_waves_sf_bot, gp, default.units, name)
 		gl <- append_gList(gl, grob)
 	}
-	gTree(children = gl, name = "regular_polygon")
+	gTree(children = gl, name = "wave")
 }
 
 create_waves_sf <- function(params, grid_xy, vpm, i_par, n_par) {
