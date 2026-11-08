@@ -24,12 +24,14 @@
 #'     A grob without a filled area (e.g. lines, a `rastergrob`, or `points` of other symbols) draws nothing.}
 #' }
 #' A pattern grob with a boundary grob stores it as `boundary` (instead of `x`, `y`, and `id`)
-#' so [grid::editGrob()] that element to change its boundary.
-#' If both `vp` and the `vp` of `boundary` are non-`NULL` they are combined with [grid::vpStack()]
-#' (the boundary's viewport is pushed within `vp`).
+#' so [grid::editGrob()] that element to change its boundary (a `polygon` edited in is also measured when drawn).
+#' The `vp` of `boundary` (if any) is pushed within `vp` when the pattern grob is drawn
+#' (as if `boundary` were drawn within a gTree with `vp`) while a `polygon` boundary's `vp`
+#' is instead combined with `vp` by [grid::vpStack()] (as its coordinates are reused).
 #' @param boundary A grid grob whose (filled) area is the boundary of the pattern.
 #' @param ... Passed to [patternGrob()]: the `pattern` name, its pattern parameters,
-#'            and its `legend`, `prefix`, `name`, `gp`, and `vp` arguments.
+#'            and its `legend`, `prefix`, `name`, `gp`, and `vp` arguments
+#'            (but not `x`, `y`, nor `id` since the boundary is `boundary`).
 #' @return A `pattern` grid grob object (as returned by [patternGrob()]).
 #' @examples
 #' run_examples <- require("grid", quietly = TRUE) &&
@@ -72,6 +74,7 @@ as.patternGrob <- function(boundary, ...) {
 
 #' @export
 as.patternGrob.polygon <- function(boundary, ..., vp = NULL) {
+	check_boundary_dots(...)
 	# the coordinates (already `unit()`s) are the boundary: nothing to measure when drawn
 	id <- grob_ids(boundary$id, boundary$id.lengths, length(boundary$x))
 	patternGrob(x = boundary$x, y = boundary$y, id = id, ..., vp = stack_vp(vp, boundary$vp))
@@ -98,26 +101,27 @@ as.patternGrob.default <- function(boundary, ...) {
 			i = "Use `patternGrob()` for a boundary of numeric `x`, `y`, and `id` coordinates."
 		))
 	}
-	# a grob measured by `grobCoords()` (i.e. without its own `boundary_coords()` method) needs R 4.2
-	if (getRversion() < "4.2.0" && !has_boundary_coords(boundary)) {
-		abort(c(
-			glue("A `{class(boundary)[1L]}` grob boundary requires R 4.2 or later."),
-			i = "Only `polygon`, `pathgrob`, and `rect` boundaries are supported by R 4.1."
-		))
-	}
+	check_boundary_dots(...)
 	pattern_boundary_grob(boundary, ...)
 }
 
-# A pattern grob that stores `boundary` to measure it when drawn (see `boundary_coords()`).
+# `as.patternGrob()`'s `...` are `patternGrob()`'s other arguments: the boundary is `boundary`
+check_boundary_dots <- function(...) {
+	if (any(c("x", "y", "id") %in% ...names())) {
+		abort(c(
+			"`x`, `y`, and `id` can't be given with a `boundary` grob (whose area is the boundary).",
+			i = "Use `patternGrob()` for a boundary of numeric `x`, `y`, and `id` coordinates."
+		))
+	}
+}
+
+# A pattern grob that stores `boundary` to measure it when drawn (see `boundary_coords()`
+# and `makeContext.pattern()` which pushes the boundary's `vp` within the pattern's).
 # NB. A polygon boundary is deliberately stored as `x` / `y` / `id` instead (see `as.patternGrob.polygon()`)
-# so it is the same grob `patternGrob()` makes: it works on R 4.1 (no `grobCoords()` needed)
-# and code reading `$x` / `$y` / `$id` keeps working.
+# so it is the same grob `patternGrob()` makes and code reading `$x` / `$y` / `$id` keeps working.
 pattern_boundary_grob <- function(boundary, ..., vp = NULL) {
-	grob <- patternGrob(..., vp = stack_vp(vp, boundary$vp))
-	# the pattern grob's `vp` (above) is pushed by the time the boundary is measured
-	boundary$vp <- NULL
+	grob <- patternGrob(..., vp = vp)
 	# keep (`NULL`) `x` / `y` / `id` elements so editing them is caught by `validDetails.pattern()`
-	grob[c("x", "y", "id")] <- list(NULL)
-	grob$boundary <- boundary
-	grob
+	# (which validates the `boundary` too e.g. that R 4.1 can measure it)
+	editGrob(grob, boundary = boundary, x = NULL, y = NULL, id = NULL)
 }

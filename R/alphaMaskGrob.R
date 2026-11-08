@@ -147,16 +147,9 @@ full_region <- function() {
 # Returns `NULL` if `grob` doesn't overlap the viewport.
 # A masker's strokes (unlike a clipper's) also count so pad by (half) their widths.
 raster_region <- function(grob, res, stroke = FALSE) {
-	# `forceGrob()` runs any `makeContent()` (once) so its children's line widths (and points) are also seen
-	bbox <- tryCatch(
-		{
-			if (!inherits(grob, "forcedgrob")) {
-				grob <- forceGrob(grob)
-			}
-			grob_bbox(grob)
-		},
-		error = function(e) NULL
-	)
+	# `forceGrob()` runs any `makeContent()` (a no-op for an already forced grob)
+	# so its children's line widths (and points) are also seen
+	bbox <- tryCatch(grob_bbox(forceGrob(grob)), error = function(e) NULL)
 	if (is.null(bbox)) {
 		return(full_region())
 	}

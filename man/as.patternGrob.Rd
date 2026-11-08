@@ -10,7 +10,8 @@ as.patternGrob(boundary, ...)
 \item{boundary}{A grid grob whose (filled) area is the boundary of the pattern.}
 
 \item{...}{Passed to \code{\link[=patternGrob]{patternGrob()}}: the \code{pattern} name, its pattern parameters,
-and its \code{legend}, \code{prefix}, \code{name}, \code{gp}, and \code{vp} arguments.}
+and its \code{legend}, \code{prefix}, \code{name}, \code{gp}, and \code{vp} arguments
+(but not \code{x}, \code{y}, nor \code{id} since the boundary is \code{boundary}).}
 }
 \value{
 A \code{pattern} grid grob object (as returned by \code{\link[=patternGrob]{patternGrob()}}).
@@ -41,9 +42,10 @@ masked by the grob itself (so e.g. the glyphs of a text grob get the pattern).
 A grob without a filled area (e.g. lines, a \code{rastergrob}, or \code{points} of other symbols) draws nothing.}
 }
 A pattern grob with a boundary grob stores it as \code{boundary} (instead of \code{x}, \code{y}, and \code{id})
-so \code{\link[grid:editGrob]{grid::editGrob()}} that element to change its boundary.
-If both \code{vp} and the \code{vp} of \code{boundary} are non-\code{NULL} they are combined with \code{\link[grid:vpStack]{grid::vpStack()}}
-(the boundary's viewport is pushed within \code{vp}).
+so \code{\link[grid:editGrob]{grid::editGrob()}} that element to change its boundary (a \code{polygon} edited in is also measured when drawn).
+The \code{vp} of \code{boundary} (if any) is pushed within \code{vp} when the pattern grob is drawn
+(as if \code{boundary} were drawn within a gTree with \code{vp}) while a \code{polygon} boundary's \code{vp}
+is instead combined with \code{vp} by \code{\link[grid:vpStack]{grid::vpStack()}} (as its coordinates are reused).
 }
 \examples{
 run_examples <- require("grid", quietly = TRUE) &&

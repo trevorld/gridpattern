@@ -282,6 +282,25 @@ validDetails.pattern <- function(x) {
 	if (has_boundary && !is.grob(x$boundary)) {
 		abort("The `boundary` of a `pattern` grob must be a grid grob.")
 	}
+	# a boundary measured by `grobCoords()` (i.e. without its own `boundary_coords()` method) needs R 4.2
+	if (has_boundary && getRversion() < "4.2.0" && !has_boundary_coords(x$boundary)) {
+		abort(c(
+			glue("A `{class(x$boundary)[1L]}` grob boundary requires R 4.2 or later."),
+			i = "Only `polygon`, `pathgrob`, and `rect` boundaries are supported by R 4.1."
+		))
+	}
+	x
+}
+
+# The `vp` of a boundary grob is pushed within the pattern's `vp`
+# (as if the boundary were drawn within a gTree with `vp`) so `makeContent.pattern()` measures
+# the boundary in its own viewport: grid calls `makeContext()` just before pushing a grob's `vp`.
+#' @export
+makeContext.pattern <- function(x) {
+	if (!is.null(x$boundary$vp)) {
+		x$vp <- stack_vp(x$vp, x$boundary$vp)
+		x$boundary$vp <- NULL
+	}
 	x
 }
 
@@ -333,8 +352,11 @@ makeContent.pattern <- function(x) {
 	s <- if (key_zoom) legend * params$pattern_key_scale_factor else legend
 	# a numeric legend key's default resolution is also `s` times larger
 	# so pixel-based patterns (e.g. "ambient", "magick") resemble those in the (`s` times larger) plot panels
+	# (but a `masker` is drawn in this (key) viewport so its raster fallback keeps the unzoomed resolution)
+	res <- params$pattern_res
 	if (key_zoom && is_unset_res(x$args$pattern_res)) {
-		params$pattern_res <- s * default_res(legend = TRUE)
+		res <- default_res(legend = TRUE)
+		params$pattern_res <- s * res
 	}
 	if (s > 0 && s != 1) {
 		# the pattern is computed in the `makeContent()` of a child whose `vp` is the larger viewport
@@ -358,7 +380,7 @@ makeContent.pattern <- function(x) {
 			masker,
 			use_R4.1_masks = params$pattern_use_R4.1_masks,
 			png_device = params$pattern_png_device,
-			res = params$pattern_res,
+			res = res,
 			name = "pattern_mask"
 		)
 	}
@@ -373,12 +395,19 @@ grobCoords.pattern <- function(x, closed = TRUE, ...) {
 	if (is.null(x$boundary)) {
 		id <- rep_len(x$id, length(x$x))
 		boundary <- polygonGrob(x$x, x$y, id = id, name = x$name, vp = x$vp)
+		grobCoords(boundary, closed, ...)
 	} else {
-		boundary <- measured_boundary(x$boundary)
-		boundary$name <- x$name
-		boundary$vp <- x$vp
+		# the boundary is measured (forced) within the pattern's `vp` (pushed by `grobCoords()`) and its own
+		boundary <- gTree(boundary = x$boundary, name = x$name, vp = x$vp, cl = "pattern_boundary")
+		grobCoords(boundary, closed, ...)[[1L]]
 	}
-	grobCoords(boundary, closed, ...)
+}
+
+#' @export
+makeContent.pattern_boundary <- function(x) {
+	boundary <- measured_boundary(x$boundary)
+	boundary$name <- x$name
+	setChildren(x, gList(boundary))
 }
 
 #' @export

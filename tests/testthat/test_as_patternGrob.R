@@ -37,6 +37,15 @@ test_that("`as.patternGrob()` of a polygon reuses its coordinates", {
 	expect_equal(content$gp, expected_content$gp)
 	expect_equal(grobCoords(grob, closed = TRUE)[[1L]], grobCoords(expected, closed = TRUE)[[1L]])
 	expect_no_error(grid.draw(grob))
+	# a polygon edited in as the `boundary` is measured when drawn (on R 4.1 too)
+	expect_true(has_boundary_coords(polygonGrob()))
+	grob <- editGrob(as.patternGrob(rectGrob(), "stripe"), boundary = polygonGrob(x, y, id = id))
+	b <- pattern_boundary(grob)
+	expect_equal(b$x, x)
+	expect_equal(b$y, y)
+	expect_equal(b$id, id)
+	expect_null(b$masker)
+	expect_no_error(grid.draw(grob))
 })
 
 test_that("`as.patternGrob()` of a path fills by its rule and masks its holes", {
@@ -107,6 +116,12 @@ test_that("`as.patternGrob()` of a path fills by its rule and masks its holes", 
 	mask <- makeContent(grob)$children[[1L]]
 	expect_s3_class(mask, "alpha_mask")
 	expect_false(mask$use_R4.1_masks)
+	expect_equal(mask$res, default_res())
+	# a zoomed legend key's mask is drawn in the key viewport so it keeps the unzoomed resolution
+	grob <- as.patternGrob(path("evenodd"), "stripe", legend = 2, use_R4.1_masks = FALSE)
+	mask <- makeContent(grob)$children[[1L]]
+	expect_equal(mask$res, default_res(legend = TRUE))
+	expect_equal(mask$maskee$params$pattern_res, 2 * default_res(legend = TRUE))
 	# `grobCoords()` is the path's
 	grob <- as.patternGrob(path("evenodd"), name = "pattern")
 	coords <- grobCoords(grob, closed = TRUE)
@@ -147,7 +162,8 @@ test_that("`as.patternGrob()` of a rect uses its corners", {
 		vp = vp
 	)
 	grob <- as.patternGrob(rect)
-	expect_identical(grob$vp, vp)
+	expect_null(grob$vp)
+	expect_identical(grob$boundary$vp, vp)
 	pushViewport(vp)
 	b <- pattern_boundary(grob)
 	popViewport()
@@ -313,6 +329,9 @@ test_that("`as.patternGrob()` masks the self-intersecting rings of a path", {
 test_that("`as.patternGrob()` validates its boundary", {
 	expect_error(as.patternGrob(c(0, 1, 1), "stripe"), "must be a grid grob")
 	expect_error(patternGrob("stripe", x = rectGrob()), "as.patternGrob")
+	# the boundary is `boundary` so `x`, `y`, and `id` can't also be given
+	expect_error(as.patternGrob(rectGrob(), x = c(0, 1, 1)), "can't be given")
+	expect_error(as.patternGrob(polygonGrob(), "stripe", id = 1L), "can't be given")
 	if (getRversion() < "4.2.0") {
 		expect_error(as.patternGrob(circleGrob()), "R 4.2")
 	}
@@ -326,6 +345,54 @@ test_that("`as.patternGrob()` validates its boundary", {
 	expect_s3_class(grob2$boundary, "circle")
 	grob3 <- editGrob(patternGrob(), boundary = rectGrob(), x = NULL, y = NULL, id = NULL)
 	expect_s3_class(grob3$boundary, "rect")
+})
+
+test_that("`as.patternGrob()` honours the viewport of its boundary", {
+	local_temp_dev()
+	vp <- viewport(x = 0.25, width = 0.5)
+	rect <- rectGrob(width = 0.5, vp = vp)
+	# the boundary keeps its `vp` which is pushed within the pattern's `vp` when drawn
+	grob <- as.patternGrob(rect, "fill", fill = "black", vp = viewport(y = 0.25, height = 0.5))
+	expect_identical(grob$boundary$vp, vp)
+	expect_identical(grob$vp$y, unit(0.25, "npc"))
+	drawn <- makeContext(grob)
+	expect_s3_class(drawn$vp, "vpStack")
+	expect_null(drawn$boundary$vp)
+	# `grobCoords()` are those of the boundary drawn within both viewports
+	x_range <- function(coords) {
+		x <- unlist(lapply(coords_rings(coords), function(r) r$x))
+		range(x) / convertWidth(unit(1, "npc"), "in", valueOnly = TRUE)
+	}
+	grob <- as.patternGrob(rect, "fill", fill = "black")
+	expect_equal(x_range(grobCoords(grob, closed = TRUE)), c(0.125, 0.375))
+	nested <- as.patternGrob(rect, "fill", fill = "black", vp = viewport(x = 0.75, width = 0.5))
+	expect_equal(x_range(grobCoords(nested, closed = TRUE)), c(0.5625, 0.6875))
+	path <- pathGrob(c(0.25, 0.75, 0.75, 0.25), c(0, 0, 1, 1), vp = vp)
+	edited <- editGrob(as.patternGrob(rectGrob(), "fill", fill = "black"), boundary = path)
+	expect_equal(x_range(grobCoords(edited, closed = TRUE)), c(0.125, 0.375))
+	circle <- editGrob(edited, boundary = circleGrob(r = 0.25, vp = vp))
+	if (getRversion() >= "4.2.0") {
+		expect_equal(x_range(grobCoords(circle, closed = TRUE)), c(0.125, 0.375), tolerance = 1e-3)
+	}
+
+	# and the pattern is drawn there (whether the boundary was given or edited in)
+	skip_if_not(capabilities("cairo"))
+	skip_if_not_installed("magick")
+	painted_x <- function(grob, width = 200L, height = 100L) {
+		f <- withr::local_tempfile(fileext = ".png")
+		grDevices::png(f, width = width, height = height, type = "cairo")
+		tryCatch(grid.draw(grob), finally = grDevices::dev.off())
+		# (`as.integer()` of a `{magick}` bitmap is a rows x columns x channels array)
+		gray <- as.integer(magick::image_data(magick::image_read(f), "gray"))[,, 1L]
+		painted <- which(colSums(gray < 128L) > 0L)
+		(range(painted) - c(1L, 0L)) / width
+	}
+	expect_equal(painted_x(grob), c(0.125, 0.375), tolerance = 0.01)
+	expect_equal(painted_x(nested), c(0.5625, 0.6875), tolerance = 0.01)
+	expect_equal(painted_x(edited), c(0.125, 0.375), tolerance = 0.01)
+	if (getRversion() >= "4.2.0") {
+		expect_equal(painted_x(circle), c(0.125, 0.375), tolerance = 0.01)
+	}
 })
 
 test_that("`as.patternGrob()` visual tests", {
