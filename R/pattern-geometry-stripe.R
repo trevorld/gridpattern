@@ -71,5 +71,5 @@ grid.pattern_stripe <- function(
 }
 
 create_pattern_stripes_via_sf <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
-	create_crosshatch_via_sf_helper(params, boundary_df, add_top_hatch = FALSE)
+	create_crosshatch_via_sf_helper(params, boundary_df, name = "stripe", add_top_hatch = FALSE)
 }

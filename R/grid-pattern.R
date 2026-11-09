@@ -230,12 +230,6 @@ patternGrob <- function(
 	draw = TRUE,
 	vp = NULL
 ) {
-	if (is.grob(x)) {
-		abort(c(
-			"`x` must be a numeric vector or unit object.",
-			i = "Use `as.patternGrob()` for a pattern grob whose boundary is a grob."
-		))
-	}
 	legend_scale(legend) # validate (but keep a logical `legend` logical, see `makeContent.pattern()`)
 	args <- prefix_args(list(...), prefix)
 	# validate early (errors while drawing leave the graphics device locked)
@@ -244,10 +238,11 @@ patternGrob <- function(
 	# cache pattern resolved at creation (if possible) so redraws (e.g. resizing the device)
 	# still work if the pattern is later unregistered or masked
 	entry <- tryCatch(resolve_pattern(pattern), error = function(e) NULL)
-	if (!inherits(x, "unit")) {
+	# (anything else e.g. a grob is rejected by `validDetails.pattern()` with a hint)
+	if (is.numeric(x)) {
 		x <- unit(x, default.units)
 	}
-	if (!inherits(y, "unit")) {
+	if (is.numeric(y)) {
 		y <- unit(y, default.units)
 	}
 
@@ -270,6 +265,7 @@ patternGrob <- function(
 	)
 }
 
+# (grid validates a grob when it is created or edited: errors while drawing leave the graphics device locked)
 #' @export
 validDetails.pattern <- function(x) {
 	has_boundary <- !is.null(x$boundary)
@@ -280,14 +276,24 @@ validDetails.pattern <- function(x) {
 			i = "To edit the boundary of `as.patternGrob()` edit its `boundary` element."
 		))
 	}
+	if (has_coords && !(is.unit(x$x) && is.unit(x$y))) {
+		abort(c(
+			"The `x` and `y` of a `pattern` grob must be unit objects.",
+			i = if (is.grob(x$x) || is.grob(x$y)) {
+				"Use `as.patternGrob()` for a pattern grob whose boundary is a grob."
+			}
+		))
+	}
 	if (has_boundary && !is.grob(x$boundary)) {
 		abort("The `boundary` of a `pattern` grob must be a grid grob.")
 	}
 	# a boundary measured by `grobCoords()` (i.e. without its own `boundary_coords()` method) needs R 4.2
 	if (has_boundary && getRversion() < "4.2.0" && !has_boundary_coords(x$boundary)) {
+		supported <- paste0("`", BOUNDARY_COORDS_CLASSES, "`")
+		supported <- glue::glue_collapse(supported, sep = ", ", last = ", and ")
 		abort(c(
 			glue("A `{class(x$boundary)[1L]}` grob boundary requires R 4.2 or later."),
-			i = "Only `polygon`, `pathgrob`, and `rect` boundaries are supported by R 4.1."
+			i = glue("Only {supported} boundaries are supported by R 4.1.")
 		))
 	}
 	x
@@ -396,19 +402,14 @@ grobCoords.pattern <- function(x, closed = TRUE, ...) {
 	if (is.null(x$boundary)) {
 		id <- rep_len(x$id, length(x$x))
 		boundary <- polygonGrob(x$x, x$y, id = id, name = x$name, vp = x$vp)
-		grobCoords(boundary, closed, ...)
 	} else {
-		# the boundary is measured (forced) within the pattern's `vp` (pushed by `grobCoords()`) and its own
-		boundary <- gTree(boundary = x$boundary, name = x$name, vp = x$vp, cl = "pattern_boundary")
-		grobCoords(boundary, closed, ...)[[1L]]
+		# `grobCoords()` forces the boundary (like `measured_boundary()`) within its `vp`
+		# (the pattern's then its own like `makeContext.pattern()`) before measuring it
+		boundary <- filled_points(x$boundary)
+		boundary$name <- x$name
+		boundary$vp <- stack_vp(x$vp, x$boundary$vp)
 	}
-}
-
-#' @export
-makeContent.pattern_boundary <- function(x) {
-	boundary <- measured_boundary(x$boundary)
-	boundary$name <- x$name
-	setChildren(x, gList(boundary))
+	grobCoords(boundary, closed, ...)
 }
 
 #' @export

@@ -102,7 +102,13 @@ as.patternGrob.default <- function(boundary, ...) {
 		))
 	}
 	check_boundary_dots(...)
-	pattern_boundary_grob(boundary, ...)
+	# The pattern grob stores `boundary` to measure it when drawn (see `boundary_coords()`
+	# and `makeContext.pattern()` which pushes the boundary's `vp` within the pattern's)
+	# and keeps (`NULL`) `x` / `y` / `id` elements so editing them is caught by `validDetails.pattern()`
+	# (which validates the `boundary` too e.g. that R 4.1 can measure it).
+	# NB. A polygon boundary is deliberately stored as `x` / `y` / `id` instead (see `as.patternGrob.polygon()`)
+	# so it is the same grob `patternGrob()` makes and code reading `$x` / `$y` / `$id` keeps working.
+	editGrob(patternGrob(...), boundary = boundary, x = NULL, y = NULL, id = NULL)
 }
 
 # `as.patternGrob()`'s `...` are `patternGrob()`'s other arguments: the boundary is `boundary`
@@ -113,15 +119,4 @@ check_boundary_dots <- function(...) {
 			i = "Use `patternGrob()` for a boundary of numeric `x`, `y`, and `id` coordinates."
 		))
 	}
-}
-
-# A pattern grob that stores `boundary` to measure it when drawn (see `boundary_coords()`
-# and `makeContext.pattern()` which pushes the boundary's `vp` within the pattern's).
-# NB. A polygon boundary is deliberately stored as `x` / `y` / `id` instead (see `as.patternGrob.polygon()`)
-# so it is the same grob `patternGrob()` makes and code reading `$x` / `$y` / `$id` keeps working.
-pattern_boundary_grob <- function(boundary, ..., vp = NULL) {
-	grob <- patternGrob(..., vp = vp)
-	# keep (`NULL`) `x` / `y` / `id` elements so editing them is caught by `validDetails.pattern()`
-	# (which validates the `boundary` too e.g. that R 4.1 can measure it)
-	editGrob(grob, boundary = boundary, x = NULL, y = NULL, id = NULL)
 }
