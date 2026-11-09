@@ -26,13 +26,11 @@ grob_ids <- function(id, id.lengths, n) {
 	}
 }
 
-# whether a grob has its own `boundary_coords()` method (so it needn't `grobCoords()` i.e. R 4.2)
+# the grobs with their own `boundary_coords()` method (so they needn't `grobCoords()` i.e. R 4.2)
+BOUNDARY_COORDS_CLASSES <- c("polygon", "pathgrob", "rect")
+
 has_boundary_coords <- function(grob) {
-	any(vapply(
-		class(grob),
-		function(cl) !is.null(utils::getS3method("boundary_coords", cl, optional = TRUE)),
-		logical(1L)
-	))
+	inherits(grob, BOUNDARY_COORDS_CLASSES)
 }
 
 # The boundary polygons (in "npc" units of the current viewport) of a stored boundary grob:
@@ -95,17 +93,26 @@ boundary_coords.pathgrob <- function(grob) {
 #' @export
 boundary_coords.default <- function(grob) {
 	grob <- measured_boundary(grob)
-	rings <- coords_rings(grobCoords(grob, closed = TRUE))
+	polygons <- rings_polygons(coords_rings(grobCoords(grob, closed = TRUE)))
 	# `grobCoords()` are inches from the bottom left of the current viewport
 	vpm <- get_vp_measurements("in")
-	rings <- lapply(rings, function(r) list(x = r$x / vpm$width, y = r$y / vpm$height))
-	c(rings_polygons(rings), list(masker = if (needs_mask(grob)) masker_grob(grob)))
+	polygons$x <- polygons$x / vpm$width
+	polygons$y <- polygons$y / vpm$height
+	c(polygons, list(masker = if (needs_mask(grob)) masker_grob(grob)))
 }
 
 # the boundary grob as measured when drawn: forced (so the children of a `makeContent()` grob are seen)
 # and with only the filled symbols of any `points` (see `filled_points()`)
 measured_boundary <- function(grob) {
 	filled_points(forceGrob(grob))
+}
+
+# the primitives whose region is painted with `fill` (but an open `xspline` is stroked, see `is_filled()`)
+FILLED_PRIMITIVES <- c("circle", "pathgrob", "points", "polygon", "rect", "roundrect", "xspline")
+
+# whether (the region of) a primitive is painted with `fill` (else it is drawn with `col` e.g. text or lines)
+is_filled <- function(grob) {
+	inherits(grob, FILLED_PRIMITIVES) && !(inherits(grob, "xspline") && isTRUE(grob$open))
 }
 
 # whether the polygons of `grob` (see `coords_rings()`) don't describe its region exactly
@@ -116,7 +123,8 @@ needs_mask <- function(grob) {
 	if (inherits(grob, "gTree")) {
 		any(vapply(grob$children, needs_mask, logical(1L)))
 	} else {
-		exact <- c("circle", "roundrect", "polygon", "rect", "xspline", "points")
+		# (a path's coordinates are its rings whatever its `rule` so e.g. its holes need the mask)
+		exact <- setdiff(FILLED_PRIMITIVES, "pathgrob")
 		arealess <- c("lines", "polyline", "segments", "move.to", "line.to", "rastergrob", "null")
 		!inherits(grob, c(exact, arealess))
 	}
@@ -137,9 +145,6 @@ path_rings <- function(x, y, ring, rule) {
 		# and a lone ring (without a `pathId`) is drawn as a polygon with the device's own fill rule.
 		# So let the mask (i.e. grid's own fill) sort out the region which the rings' union covers.
 		return(list(rings = rings, holes = TRUE))
-	}
-	if (length(rings) == 1L) {
-		return(list(rings = rings, holes = FALSE))
 	}
 	tryCatch(
 		region_rings(polygons, rings, rule),
@@ -223,7 +228,7 @@ filled_points <- function(grob) {
 		pch[!filled] <- NA
 		grob$pch <- pch
 		grob
-	} else if (inherits(grob, "gTree") && has_points(grob)) {
+	} else if (inherits(grob, "gTree")) {
 		grob$children[] <- lapply(grob$children, filled_points)
 		grob
 	} else {
@@ -238,17 +243,16 @@ masker_grob <- function(grob) {
 	gp$alpha <- 1
 	if (inherits(grob, "gTree")) {
 		grob$children[] <- lapply(grob$children, masker_grob)
-	} else if (
-		inherits(grob, c("text", "lines", "polyline", "segments")) ||
-			(inherits(grob, "xspline") && isTRUE(grob$open))
-	) {
-		# drawn with `col` (text may also use `fill` for some fonts)
-		gp$col <- "black"
-		gp$fill <- "black"
-	} else {
+	} else if (is_filled(grob)) {
+		# (a stroke would encroach on e.g. a path's holes)
 		gp$fill <- "black"
 		gp$col <- NA
 		gp$lwd <- 0
+	} else {
+		# anything else (e.g. text, lines, or an unknown primitive) is drawn with `col`
+		# (text may also use `fill` for some fonts)
+		gp$col <- "black"
+		gp$fill <- "black"
 	}
 	grob$gp <- gp
 	grob

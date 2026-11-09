@@ -71,16 +71,11 @@ grid.pattern_crosshatch <- function(
 }
 
 create_pattern_crosshatch_via_sf <- function(params, boundary_df, aspect_ratio, legend = FALSE) {
-	create_crosshatch_via_sf_helper(params, boundary_df, add_top_hatch = TRUE)
+	create_crosshatch_via_sf_helper(params, boundary_df, name = "bottom", add_top_hatch = TRUE)
 }
 
 # A gTree of the stripes (named `name`) clipped to the boundary plus (for a crosshatch) a "top" hatch
-create_crosshatch_via_sf_helper <- function(
-	params,
-	boundary_df,
-	add_top_hatch = TRUE,
-	name = if (add_top_hatch) "bottom" else "stripe"
-) {
+create_crosshatch_via_sf_helper <- function(params, boundary_df, name, add_top_hatch = TRUE) {
 	# work in 'bigpts' instead 'npc' / 'snpc' units so we don't worry about the aspect ratio
 	default.units <- "bigpts"
 	boundary_df <- convert_polygon_df_units(boundary_df, default.units)
@@ -95,7 +90,6 @@ create_crosshatch_via_sf_helper <- function(
 	grob <- stripes_grob(params, grid_xy, vpm, boundary_sf, default.units, name, horizontal = TRUE)
 
 	if (add_top_hatch) {
-		params$pattern_fill <- params$pattern_fill2
 		grob_top <- stripes_grob(
 			params,
 			grid_xy,
@@ -103,7 +97,8 @@ create_crosshatch_via_sf_helper <- function(
 			boundary_sf,
 			default.units,
 			"top",
-			horizontal = FALSE
+			horizontal = FALSE,
+			fill = params$pattern_fill2
 		)
 		grob <- grobTree(grob, grob_top, name = "crosshatch")
 	}
@@ -112,7 +107,7 @@ create_crosshatch_via_sf_helper <- function(
 
 # The stripes (horizontal before the rotation by the pattern angle if `horizontal` else vertical)
 # clipped to `boundary_sf` as a gTree (named `name`) of a polygon grob (`name.1`, `name.2`, ...)
-# per group of stripe parameters (see `stripe_params()`).
+# per group of stripe parameters (see `stripe_params()`) filled with `fill` (e.g. `fill2` for a "top" hatch).
 # Like the "wave" and "regular_polygon" patterns the stripes of each group are clipped separately:
 # a stripe clipped into several pieces by several polygons is one colour
 # (whatever the order of the `sf::st_intersection()` output) and each group can have its own `density`.
@@ -123,20 +118,28 @@ stripes_grob <- function(
 	boundary_sf,
 	default.units,
 	name,
-	horizontal = TRUE
+	horizontal,
+	fill = params$pattern_fill
 ) {
-	sp <- stripe_params(params)
-	gl <- gList()
-	for (i_par in seq_len(sp$n_par)) {
+	sp <- stripe_params(params, fill)
+	clipped_sfs <- lapply(seq_len(sp$n_par), function(i_par) {
 		params$pattern_density <- sp$density[i_par]
 		grid_xy_par <- stripe_group(grid_xy, i_par, sp$n_par, horizontal)
-		clipped_sf <- clip_stripes_sf(params, grid_xy_par, vpm, boundary_sf, horizontal)
-		name_par <- paste0(name, ".", i_par)
+		clip_stripes_sf(params, grid_xy_par, vpm, boundary_sf, horizontal)
+	})
+	stripe_groups_grob(clipped_sfs, sp, default.units, name)
+}
+
+# the gTree (named `name`) of a polygon grob (`name.1`, `name.2`, ...) per group of stripes
+# given the clipped `{sf}` geometry of each group and their parameters `sp` (see `stripe_params()`)
+stripe_groups_grob <- function(clipped_sfs, sp, default.units, name) {
+	gl <- gList()
+	for (i_par in seq_along(clipped_sfs)) {
 		grob <- sf_multipolygon_to_polygon_grob(
-			clipped_sf,
+			clipped_sfs[[i_par]],
 			stripe_gpar(sp, i_par),
 			default.units,
-			name_par
+			paste0(name, ".", i_par)
 		)
 		gl <- append_gList(gl, grob)
 	}
@@ -144,10 +147,11 @@ stripes_grob <- function(
 }
 
 # The parameters of the stripes recycled to one value per group of stripes:
-# like the "wave" and "regular_polygon" patterns multiple `fill`, `colour`, `linewidth`, `linetype`,
+# like the "wave" and "regular_polygon" patterns multiple `fill` (the pattern's `fill` by default
+# e.g. its `fill2` for a crosshatch's "top" hatch), `colour`, `linewidth`, `linetype`,
 # and `density` values cycle by stripe i.e. `n_par` groups of every `n_par`-th stripe (see `stripe_group()`).
-stripe_params <- function(params) {
-	fill <- update_alpha(params$pattern_fill, params$pattern_alpha)
+stripe_params <- function(params, fill = params$pattern_fill) {
+	fill <- update_alpha(fill, params$pattern_alpha)
 	col <- update_alpha(params$pattern_colour, params$pattern_alpha)
 	lwd <- params$pattern_linewidth * .pt
 	lty <- params$pattern_linetype
@@ -192,7 +196,7 @@ stripe_group <- function(grid_xy, i_par, n_par, horizontal = TRUE) {
 }
 
 # the stripes of `create_h_stripes_sf()` (if `horizontal`) / `create_v_stripes_sf()` clipped to `boundary_sf`
-clip_stripes_sf <- function(params, grid_xy, vpm, boundary_sf, horizontal = TRUE) {
+clip_stripes_sf <- function(params, grid_xy, vpm, boundary_sf, horizontal) {
 	stripes_sf <- if (horizontal) {
 		create_h_stripes_sf(params, grid_xy, vpm)
 	} else {

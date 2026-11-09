@@ -126,8 +126,7 @@ create_warp_via_sf <- function(params, boundary_df) {
 	check_grid_density(grid_xy)
 
 	# the warp yarns are vertical stripes with one group of stripes per `fill2` (etc.) value (see `stripes_grob()`)
-	params$pattern_fill <- params$pattern_fill2
-	sp <- stripe_params(params)
+	sp <- stripe_params(params, fill = params$pattern_fill2)
 	params$pattern_density <- sp$density[1L] # (the one `density` of a weave, see `create_pattern_weave_via_sf()`)
 
 	m_weave <- pattern_weave(
@@ -143,8 +142,7 @@ create_warp_via_sf <- function(params, boundary_df) {
 	warp_covered_sf <- create_warp_covered_sf(params, grid_xy, vpm, m_weave, boundary_df)
 	warp_covered_sf <- sf::st_buffer(warp_covered_sf, dist = 0)
 
-	gl_covered <- gList()
-	gl_uncovered <- gList()
+	covered_sfs <- uncovered_sfs <- vector("list", sp$n_par)
 	for (i_par in seq_len(sp$n_par)) {
 		# compute vertical stripes clipped to boundary
 		grid_xy_par <- stripe_group(grid_xy, i_par, sp$n_par, horizontal = FALSE)
@@ -155,33 +153,17 @@ create_warp_via_sf <- function(params, boundary_df) {
 			boundary_sf,
 			horizontal = FALSE
 		)
-		clipped_covered_sf <- sf::st_intersection(clipped_stripes_sf, warp_covered_sf)
+		covered_sfs[[i_par]] <- sf::st_intersection(clipped_stripes_sf, warp_covered_sf)
 
 		# warp rectangles not covered by weft lines is just stripes minus under squares
-		buffered_covered_sf <- sf::st_buffer(clipped_covered_sf, vpm$length / 1e9)
-		clipped_uncovered_sf <- sf::st_difference(clipped_stripes_sf, buffered_covered_sf)
-
-		# (the covered and uncovered pieces of a warp yarn are the same colour)
-		gp <- stripe_gpar(sp, i_par)
-		grob_covered <- sf_multipolygon_to_polygon_grob(
-			clipped_covered_sf,
-			gp,
-			default.units,
-			paste0("warp_covered.", i_par)
-		)
-		grob_uncovered <- sf_multipolygon_to_polygon_grob(
-			clipped_uncovered_sf,
-			gp,
-			default.units,
-			paste0("warp_uncovered.", i_par)
-		)
-		gl_covered <- append_gList(gl_covered, grob_covered)
-		gl_uncovered <- append_gList(gl_uncovered, grob_uncovered)
+		buffered_covered_sf <- sf::st_buffer(covered_sfs[[i_par]], vpm$length / 1e9)
+		uncovered_sfs[[i_par]] <- sf::st_difference(clipped_stripes_sf, buffered_covered_sf)
 	}
 
+	# (the covered and uncovered pieces of a warp yarn are the same colour)
 	list(
-		warp_covered = gTree(children = gl_covered, name = "warp_covered"),
-		warp_uncovered = gTree(children = gl_uncovered, name = "warp_uncovered")
+		warp_covered = stripe_groups_grob(covered_sfs, sp, default.units, "warp_covered"),
+		warp_uncovered = stripe_groups_grob(uncovered_sfs, sp, default.units, "warp_uncovered")
 	)
 }
 
