@@ -3,6 +3,8 @@
 S3method(as.patternGrob,default)
 S3method(as.patternGrob,pattern)
 S3method(as.patternGrob,polygon)
+S3method(boundary_coords,GridFill)
+S3method(boundary_coords,GridFillStroke)
 S3method(boundary_coords,default)
 S3method(boundary_coords,pathgrob)
 S3method(boundary_coords,polygon)
