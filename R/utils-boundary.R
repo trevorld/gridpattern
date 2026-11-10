@@ -94,13 +94,33 @@ boundary_coords.pathgrob <- function(grob) {
 	c(rings_polygons(rings), list(masker = if (holes) masker_grob(grob)))
 }
 
-# Any other grob (R 4.2+) is measured by `grobCoords()`:
+# Any other grob is measured by (R 4.2's) `grobCoords()`:
 # a circle, roundrect, or (closed) xspline is approximated by its polygon
 # while a gTree or any other grob (e.g. text) is the union of its shapes' coordinates masked by itself.
 #' @export
 boundary_coords.default <- function(grob) {
 	grob <- measured_boundary(grob)
-	polygons <- rings_polygons(coords_rings(grobCoords(grob, closed = TRUE)))
+	grobCoords_boundary(grob, coords_rings(grobCoords(grob, closed = TRUE)))
+}
+
+# The path of a `fillStrokeGrob()` / `fillGrob()` also fills its (implicitly closed) open shapes
+# e.g. lines (which only have coordinates if not `closed`: its mask cuts out any excess)
+#' @export
+boundary_coords.GridFillStroke <- function(grob) {
+	grob <- measured_boundary(grob)
+	rings <- c(
+		coords_rings(grobCoords(grob, closed = TRUE)),
+		coords_rings(grobCoords(grob, closed = FALSE))
+	)
+	grobCoords_boundary(grob, rings)
+}
+
+#' @export
+boundary_coords.GridFill <- boundary_coords.GridFillStroke
+
+# the boundary polygons (see `boundary_coords()`) of `grob` given the `rings` of its `grobCoords()`
+grobCoords_boundary <- function(grob, rings) {
+	polygons <- rings_polygons(rings)
 	# `grobCoords()` are inches from the bottom left of the current viewport
 	vpm <- get_vp_measurements("in")
 	polygons$x <- polygons$x / vpm$width
@@ -116,6 +136,21 @@ measured_boundary <- function(grob) {
 
 # the primitives whose region is painted with `fill` (but an open `xspline` is stroked, see `is_filled()`)
 FILLED_PRIMITIVES <- c("circle", "pathgrob", "points", "polygon", "rect", "roundrect", "xspline")
+# the path of a `fillStrokeGrob()` / `fillGrob()` is also painted with `fill`
+# (but its coordinates don't describe its region e.g. its holes, so it always needs a mask, see `needs_mask()`)
+FILLED_PATHS <- c("GridFillStroke", "GridFill")
+
+# a `fillStrokeGrob()` / `fillGrob()` painting only its fill
+# (keeping its `gp` since R before the fix of bug 19094 leaves e.g. the glyphs of text
+# out of its path if their `col` is `NA`)
+fill_only_path <- function(grob, gp = grob$gp) {
+	if (inherits(grob, "GridFill")) {
+		grob$gp <- gp
+		grob
+	} else {
+		fillGrob(grob$path, rule = grob$rule, name = grob$name, gp = gp, vp = grob$vp)
+	}
+}
 
 # whether (the region of) a primitive is painted with `fill` (else it is drawn with `col` e.g. text or lines)
 is_filled <- function(grob) {
@@ -250,6 +285,12 @@ masker_grob <- function(grob) {
 	gp$alpha <- 1
 	if (inherits(grob, "gTree")) {
 		grob$children[] <- lapply(grob$children, masker_grob)
+	} else if (inherits(grob, FILLED_PATHS)) {
+		# (its fill only: a `col` keeps e.g. the glyphs of text in its path even in R before the fix of
+		# bug 19094, see `fill_only_path()`, so like a text grob they're patterned whatever their `col`)
+		gp$fill <- "black"
+		gp$col <- "black"
+		return(fill_only_path(grob, gp))
 	} else if (is_filled(grob)) {
 		# (a stroke would encroach on e.g. a path's holes)
 		gp$fill <- "black"
