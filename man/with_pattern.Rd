@@ -72,8 +72,8 @@ in \code{...} (e.g. \code{prefix = ""} for parameters already named \verb{patter
 which may have areas (passed to \code{\link[=area_boundaries]{area_boundaries()}}).}
 }
 \value{
-A grob of the same class as \code{x} unless \code{x} itself has areas (then a \code{gTree})
-or a \code{gList} if \code{x} is one.
+A \code{\link[grid:gTree]{grid::gTree()}} (or a \code{\link[grid:gList]{grid::gList()}} if \code{x} is one)
+unless \code{x} has no fillable areas in which case \code{x} is returned unchanged.
 }
 \description{
 \code{with_pattern()} returns \code{x} with each area it paints with its \code{fill} (see \code{\link[=area_boundaries]{area_boundaries()}})

@@ -70,8 +70,8 @@
 #' @param legend Passed to [patternGrob()] (e.g. the numeric zoom of a legend key).
 #' @param prefix Passed to [patternGrob()]: the prefix prepended to the names of the pattern parameters
 #'               in `...` (e.g. `prefix = ""` for parameters already named `pattern_*`).
-#' @return A grob of the same class as `x` unless `x` itself has areas (then a `gTree`)
-#'         or a `gList` if `x` is one.
+#' @return A [grid::gTree()] (or a [grid::gList()] if `x` is one)
+#'         unless `x` has no fillable areas in which case `x` is returned unchanged.
 #' @examples
 #' if (require("grid", quietly = TRUE)) {
 #'   tree <- gTree(children = gList(
