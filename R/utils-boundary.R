@@ -26,11 +26,18 @@ grob_ids <- function(id, id.lengths, n) {
 	}
 }
 
-# the grobs with their own `boundary_coords()` method (so they needn't `grobCoords()` i.e. R 4.2)
+# the grobs with their own `boundary_coords()` method (so they needn't R 4.2's `grobCoords()`)
 BOUNDARY_COORDS_CLASSES <- c("polygon", "pathgrob", "rect")
 
 has_boundary_coords <- function(grob) {
 	inherits(grob, BOUNDARY_COORDS_CLASSES)
+}
+
+# whether `grobCoords()` returns the `GridCoords` structure `boundary_coords.default()` needs
+# (R 4.2 changed what it returns and added its `closed` argument)
+# (a function so tests can mock it)
+has_R4.2_grobCoords <- function() {
+	getRversion() >= "4.2.0"
 }
 
 # The boundary polygons (in "npc" units of the current viewport) of a stored boundary grob:

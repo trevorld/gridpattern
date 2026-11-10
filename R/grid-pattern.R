@@ -287,13 +287,14 @@ validDetails.pattern <- function(x) {
 	if (has_boundary && !is.grob(x$boundary)) {
 		abort("The `boundary` of a `pattern` grob must be a grid grob.")
 	}
-	# a boundary measured by `grobCoords()` (i.e. without its own `boundary_coords()` method) needs R 4.2
-	if (has_boundary && getRversion() < "4.2.0" && !has_boundary_coords(x$boundary)) {
+	# a boundary measured by `grobCoords()` (i.e. without its own `boundary_coords()` method)
+	# needs the structure it returns in R 4.2
+	if (has_boundary && !has_R4.2_grobCoords() && !has_boundary_coords(x$boundary)) {
 		supported <- paste0("`", BOUNDARY_COORDS_CLASSES, "`")
 		supported <- glue::glue_collapse(supported, sep = ", ", last = ", and ")
 		abort(c(
-			glue("A `{class(x$boundary)[1L]}` grob boundary requires R 4.2 or later."),
-			i = glue("Only {supported} boundaries are supported by R 4.1.")
+			glue("Filling a `{class(x$boundary)[1L]}` grob with a pattern requires R (>= 4.2.0)."),
+			i = glue("R 4.1 can only fill {supported} grobs with a pattern.")
 		))
 	}
 	x

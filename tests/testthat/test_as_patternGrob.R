@@ -333,7 +333,7 @@ test_that("`as.patternGrob()` validates its boundary", {
 	expect_error(as.patternGrob(rectGrob(), x = c(0, 1, 1)), "can't be given")
 	expect_error(as.patternGrob(polygonGrob(), "stripe", id = 1L), "can't be given")
 	if (getRversion() < "4.2.0") {
-		expect_error(as.patternGrob(circleGrob()), "R 4.2")
+		expect_error(as.patternGrob(circleGrob()), "R (>= 4.2.0)", fixed = TRUE)
 	}
 	# the boundary is exactly one of a stored (grob) `boundary` or `x` / `y` / `id`
 	grob <- as.patternGrob(rectGrob())
