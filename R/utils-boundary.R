@@ -256,6 +256,12 @@ coords_rings <- function(coords) {
 # e.g. the `{ggplot2}` point shapes with a `fill` aesthetic
 FILLED_PCH <- 21:25
 
+# whether each of `n` symbols (`pch` recycled) is a filled symbol (see `FILLED_PCH`)
+is_filled_pch <- function(pch, n) {
+	pch <- rep_len(pch, n)
+	is.numeric(pch) & pch %in% FILLED_PCH
+}
+
 # `grob` with only the filled symbols of its `points` (whose `grobCoords()` are their outlines):
 # the other symbols' outlines don't describe a filled area (e.g. the open square pch 0 is also
 # the solid pch 15's, which is painted with `col`) so they are blanked (a `NA` symbol neither draws
@@ -263,7 +269,7 @@ FILLED_PCH <- 21:25
 filled_points <- function(grob) {
 	if (inherits(grob, "points")) {
 		pch <- rep_len(grob$pch, length(grob$x))
-		filled <- is.numeric(pch) & pch %in% FILLED_PCH
+		filled <- is_filled_pch(pch, length(pch))
 		if (!any(filled)) {
 			return(nullGrob(name = grob$name))
 		}
