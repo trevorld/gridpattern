@@ -66,7 +66,8 @@
 #'   grid.draw(as.patternGrob(path, "stripe", fill = c("red", "blue"), density = 0.5))
 #'   grid.draw(path)
 #' }
-#' @seealso [patternGrob()] for a pattern grob with a numeric boundary
+#' @seealso [patternGrob()] for a pattern grob with a numeric boundary,
+#'          [with_pattern()] which fills each area of a grob (e.g. of a `gTree`) with a pattern,
 #'          and [alphaMaskGrob()] which masks any grob with another.
 #' @export
 as.patternGrob <- function(boundary, ...) {

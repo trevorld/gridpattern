@@ -381,6 +381,11 @@ makeContent.pattern <- function(x) {
 	} else {
 		grob <- pattern_content(entry, params, xp, yp, id, legend = legend > 0)
 	}
+	if (!is.null(x$content_gp)) {
+		# (e.g. `with_pattern()`'s pattern grobs draw their content but not measure their boundary
+		# with grid's default graphical parameters)
+		grob <- gTree(children = gList(grob), gp = x$content_gp, name = "pattern_content")
+	}
 	if (!is.null(masker)) {
 		# the masker is drawn in this (e.g. key) viewport i.e. outside any zoomed legend viewport
 		grob <- alphaMaskGrob(
