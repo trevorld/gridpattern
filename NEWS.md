@@ -96,6 +96,28 @@ New features
   (e.g. a `circle`, `roundrect`, or the filled symbols (`pch` 21 to 25) of `points` are approximated
   by polygons while a `gTree` or `text` grob is also masked by itself).
   An existing `pattern` grob is returned unchanged.
+* `with_pattern()` fills each area of a grid grob with a pattern (#131):
+  each grob with areas painted with its `fill` (a `polygon`, `rect`, `pathgrob`, `circle`, `roundrect`,
+  closed `xspline`, `fillStrokeGrob()`, or `fillGrob()`, a `gTree` is walked recursively)
+  is replaced in place by a `gTree` drawing each area with its fill only,
+  its pattern grob (made by `as.patternGrob()`), and its border only
+  while other grobs (e.g. lines or text) are left alone.
+  By default (`layers = "area"`) these layers are drawn for each area in turn
+  so overlapping shapes are drawn in their original order
+  while `layers = "grob"` draws each layer for all the areas of a grob at once (fewer grobs).
+  A pattern is drawn with its area's `alpha` (like its fill and border)
+  and with grid's default graphical parameters otherwise
+  (so e.g. a `{ggplot2}` legend key's `gp` isn't inherited)
+  while its boundary is measured with the inherited ones (e.g. a `fontsize` for "lines" units).
+  Its `pattern` and pattern parameters may have one value per area,
+  its `prefix` argument is passed to `patternGrob()`, and it also takes a `gList` of grobs.
+  Its `group` argument fills several areas of the same grob with one pattern
+  (e.g. the polygons of each row of a `{sf}` MULTIPOLYGON geometry)
+  and the `leaves` argument of its `gTree` / `gList` methods selects which grob classes
+  within them are patterned (by default `points` are left alone e.g. the outliers of a `{ggplot2}` boxplot
+  while a `points` grob given itself gets a pattern per filled symbol).
+  In R 4.1 it can only pattern the areas of a `polygon`, `pathgrob`, or `rect`
+  (others raise a clear error when the pattern grob is made).
 * `area_boundaries()` splits a grid grob into one boundary grob per such area
   (e.g. one per polygon of a `polygon` grob, per path of a `pathgrob`,
   per closed spline of an `xspline` grob, per filled symbol (`pch` 21 to 25) of a `points` grob,

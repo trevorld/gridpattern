@@ -82,6 +82,7 @@ if (run_examples && "alpha" \%in\% grDevices::dev.capabilities()$masks) {
 }
 }
 \seealso{
-\code{\link[=patternGrob]{patternGrob()}} for a pattern grob with a numeric boundary
+\code{\link[=patternGrob]{patternGrob()}} for a pattern grob with a numeric boundary,
+\code{\link[=with_pattern]{with_pattern()}} which fills each area of a grob (e.g. of a \code{gTree}) with a pattern,
 and \code{\link[=alphaMaskGrob]{alphaMaskGrob()}} which masks any grob with another.
 }

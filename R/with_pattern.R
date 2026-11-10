@@ -1,0 +1,481 @@
+#' Fill the areas of a grob with patterns
+#'
+#' `with_pattern()` returns `x` with each area it paints with its `fill` (see [area_boundaries()])
+#' also filled with a pattern.
+#' Each grob with such areas (by default a `polygon`, `rect`, `pathgrob`, `circle`, `roundrect`,
+#' (closed) `xspline`,
+#' [grid::fillStrokeGrob()], or [grid::fillGrob()], see the `leaves` argument)
+#' is replaced in place by a `gTree` drawing each of its areas with three layers:
+#' the area drawn with its fill only (named `"fill"`),
+#' its pattern grob made by [as.patternGrob()]
+#' (within a `gTree` named `"pattern"`, the pattern grob of the `i`th area or group is named `"area.i"`),
+#' and the area drawn with its border only (named `"border"`).
+#' With `layers = "area"` (the default) the layers of each area are drawn in turn
+#' (within a `gTree` named `"area.i"` for the `i`th area or group)
+#' as are the grob's shapes without areas (e.g. the unfilled symbols of `points`, named `"shape.j"`
+#' for its `j`th shape) so overlapping shapes are drawn in their original order.
+#' The areas of a `group` are drawn together where its first area is.
+#' With `layers = "grob"` (fewer grobs, the same output if its areas neither overlap
+#' nor share borders of differing colours or widths) the replacement instead draws the three layers
+#' (named `"fill"`, `"pattern"`, and `"border"`) each for all its areas.
+#' A grob with a single shape or whose `fill` is a [grid::pattern()] relative to all its shapes
+#' (`group = TRUE`, e.g. a gradient spanning them) is always layered like `layers = "grob"`.
+#' The replacement keeps the grob's `name`, `vp`, and attributes
+#' so e.g. the [grid::gPath()]s of a `gTree`'s other children stay valid.
+#' A `gTree` (or `gList`) is walked recursively while any other grob without areas
+#' (e.g. lines or text) is returned unchanged.
+#'
+#' By default the (filled) `points` children of a `gTree` or `gList` aren't patterned
+#' (e.g. the outliers of a `{ggplot2}` boxplot) unless `"points"` is added to `leaves`
+#' but a `points` grob given as `x` itself is (one pattern per filled symbol, see [area_boundaries()]).
+#' Areas other than those of a `polygon`, `pathgrob`, or `rect` are measured by [grid::grobCoords()]
+#' whose return value R 4.2 changed so patterning them requires R (>= 4.2.0)
+#' (else `with_pattern()` raises an error).
+#'
+#' A `group` of several areas of the same grob is filled by one pattern
+#' whose boundary is the union of the areas (e.g. so a gradient or image spans them all):
+#' e.g. the polygons of each row of a `{sf}` MULTIPOLYGON geometry
+#' (which [sf::st_as_grob()] draws as one path per polygon).
+#' The areas of a `polygon`, `pathgrob` (each area keeping its own holes),
+#' `rect`, `circle`, `xspline`, or `points` can be grouped.
+#'
+#' The pattern grobs are drawn within a `gTree` with grid's default graphical parameters
+#' so they don't inherit the `col`, `fill`, etc. of the ancestors of `x`
+#' (e.g. of a legend key) except `alpha` (which multiplies the alpha of any grob within).
+#' `with_pattern()` splits the shapes a grob has when it is called
+#' so a grob which only builds them when drawn
+#' (with a [grid::makeContext()] or [grid::makeContent()] method, e.g. a `gTree` building its children then)
+#' has no areas until it is forced with [grid::forceGrob()]
+#' (in the viewport it will be drawn in since its shapes may depend on it)
+#' or resolved by the [grid::makeContent()] method of a `gTree` wrapping it which then calls `with_pattern()`.
+#' @param x A grid grob or a [grid::gList()] of grobs (whose areas are those of its grobs in order).
+#' @param pattern Name of the pattern (see [patternGrob()]):
+#'                either one (for every area) or one per area (or `group`) of `x`.
+#' @param ... Pattern parameters (see [patternGrob()]) each either of length one (for every area)
+#'            or with one value per area of `x` (in the order of `area_boundaries(x)`)
+#'            or per `group` (in the order of `unique(group)`).
+#'            A multi-valued parameter of a single area must be wrapped in a list
+#'            (e.g. `fill = list(c("red", "blue"))` for alternating stripes)
+#'            while a [grid::pattern()] fill counts as one value.
+#'            `y`, `id`, `name`, `gp`, `vp`, and `boundary` can't be given
+#'            (the pattern grobs take their boundaries from the areas of `x`).
+#' @param group If not `NULL`, one value per area of `x` (in the order of `area_boundaries(x)`)
+#'              grouping the areas filled by the same pattern:
+#'              the areas of a group must be areas of the same grob.
+#' @param layers Either `"area"` to draw the fill, pattern, and border of each area in turn
+#'               or `"grob"` to draw the fills of all the areas of a grob, then their patterns,
+#'               then their borders.
+#' @param leaves The classes of the (non-`gTree`) grobs within a `gTree` or `gList`
+#'               which may have areas (passed to [area_boundaries()]).
+#' @param legend Passed to [patternGrob()] (e.g. the numeric zoom of a legend key).
+#' @param prefix Passed to [patternGrob()]: the prefix prepended to the names of the pattern parameters
+#'               in `...` (e.g. `prefix = ""` for parameters already named `pattern_*`).
+#' @return A grob of the same class as `x` unless `x` itself has areas (then a `gTree`)
+#'         or a `gList` if `x` is one.
+#' @examples
+#' if (require("grid", quietly = TRUE)) {
+#'   tree <- gTree(children = gList(
+#'     rectGrob(x = c(0.25, 0.75), y = 0.3, width = 0.35, height = 0.4, name = "rects",
+#'              gp = gpar(fill = c("lightblue", "lightyellow"), col = "black", lwd = 3)),
+#'     polygonGrob(x = c(0.3, 0.7, 0.5), y = c(0.6, 0.6, 0.95), name = "triangle",
+#'                 gp = gpar(fill = "pink", col = "red", lwd = 3)),
+#'     textGrob("text is left alone", y = 0.05, name = "label")
+#'   ), name = "tree")
+#'   length(area_boundaries(tree)) # 3: two rects and the triangle
+#'   # one value per area (in that order) or one for all
+#'   patterned <- with_pattern(tree, c("stripe", "stripe", "crosshatch"),
+#'                             fill = c("blue", "orange", "red"), angle = c(45, -45, 0),
+#'                             density = 0.4)
+#'   grid.newpage()
+#'   grid.draw(patterned)
+#'   grid.ls(patterned)
+#' }
+#' @seealso [area_boundaries()] for the areas of a grob
+#'          and [as.patternGrob()] for the pattern grob of a single boundary grob.
+#' @export
+with_pattern <- function(
+	x,
+	pattern = "stripe",
+	...,
+	group = NULL,
+	layers = c("area", "grob"),
+	legend = FALSE,
+	prefix = "pattern_"
+) {
+	UseMethod("with_pattern")
+}
+
+#' @rdname with_pattern
+#' @export
+with_pattern.gTree <- function(
+	x,
+	pattern = "stripe",
+	...,
+	group = NULL,
+	layers = c("area", "grob"),
+	leaves = c(
+		"polygon",
+		"pathgrob",
+		"rect",
+		"circle",
+		"roundrect",
+		"xspline",
+		"GridFillStroke",
+		"GridFill"
+	),
+	legend = FALSE,
+	prefix = "pattern_"
+) {
+	walk <- if (inherits(x, "gTree") && has_area_boundaries_method(x)) {
+		# (a gTree subclass with its own `area_boundaries()` method is itself the only leaf)
+		function(f, rebuild) f(x, list(), list())
+	} else {
+		function(f, rebuild) walk_leaves(x, leaves, f, rebuild)
+	}
+	pattern_leaves(
+		x,
+		walk,
+		leaves,
+		pattern,
+		list(...),
+		group,
+		match.arg(layers),
+		legend,
+		prefix,
+		rlang::current_env()
+	)
+}
+
+#' @rdname with_pattern
+#' @export
+with_pattern.gList <- with_pattern.gTree
+
+#' @export
+with_pattern.grob <- function(
+	x,
+	pattern = "stripe",
+	...,
+	group = NULL,
+	layers = c("area", "grob"),
+	legend = FALSE,
+	prefix = "pattern_"
+) {
+	# (`x` itself is the only leaf whatever its class)
+	pattern_leaves(
+		x,
+		function(f, rebuild) f(x, list(), list()),
+		NULL,
+		pattern,
+		list(...),
+		group,
+		match.arg(layers),
+		legend,
+		prefix,
+		rlang::current_env()
+	)
+}
+
+#' @export
+with_pattern.default <- function(x, ...) {
+	abort("`x` must be a grid grob or gList.")
+}
+
+# `x` with each of its leaves with areas patterned: `walk(f, rebuild)` applies `f()` to each leaf
+# (see `walk_leaves()`), first to split them (see `leaf_split()`) and then to replace them.
+pattern_leaves <- function(x, walk, leaves, pattern, params, group, layers, legend, prefix, call) {
+	splits <- list()
+	walk(
+		function(leaf, ...) {
+			splits[[length(splits) + 1L]] <<- leaf_split(leaf, leaves)
+			leaf
+		},
+		rebuild = FALSE
+	)
+	state <- area_state(pattern, params, group, splits, call)
+	if (is.null(state)) {
+		return(x)
+	}
+	state$layers <- layers
+	state$legend <- legend
+	state$prefix <- prefix
+	walk(function(leaf, ...) pattern_leaf(leaf, state), rebuild = TRUE)
+}
+
+# The state (an environment) of the walk replacing the leaves (split into `splits`) of `x`:
+# the `params` of each pattern
+# (one list per group of areas holding its `pattern` name and the (`...`) pattern parameters),
+# the (integer) `group` of each area numbered by its first area, the `splits` and the index `i`
+# of the next one, the number of areas (`offset`) and groups (`k`) consumed so far,
+# and the `call` errors are reported for (or `NULL` if there are no areas).
+area_state <- function(pattern, params, group, splits, call) {
+	n <- sum(vapply(splits, function(s) length(s$boundaries), integer(1L)))
+	nms <- names(params)
+	if (length(params) > 0L && (is.null(nms) || !all(nzchar(nms)))) {
+		abort("The pattern parameters in `...` must be named.", call = call)
+	}
+	if (!is.character(pattern) || length(pattern) == 0L || anyNA(pattern)) {
+		abort("`pattern` must be a character vector of pattern names.", call = call)
+	}
+	if ("leaves" %in% nms) {
+		abort(
+			"`leaves` can only be given to `with_pattern()` if `x` is a gTree or gList.",
+			call = call
+		)
+	}
+	taken <- intersect(nms, c("y", "id", "name", "gp", "vp", "boundary"))
+	if (length(taken) > 0L) {
+		abort(
+			c(
+				glue("`{taken[1L]}` can't be given to `with_pattern()`."),
+				i = "The pattern grobs take their boundaries, names, and viewports from the areas of `x`."
+			),
+			call = call
+		)
+	}
+	if (is.null(group)) {
+		group <- seq_len(n)
+		unit <- "area"
+	} else {
+		if (!is.atomic(group) || length(group) != n || anyNA(group)) {
+			abort(
+				glue(
+					"`group` must have one (non-missing) value per area ({n}) but has length {length(group)}."
+				),
+				call = call
+			)
+		}
+		group <- match(group, unique(group))
+		unit <- "group"
+	}
+	if (n == 0L) {
+		return(NULL)
+	}
+	m <- max(group)
+	params <- c(list(pattern = pattern), params)
+	params <- Map(
+		function(p, nm) {
+			if (is.null(p) || is_pattern(p)) {
+				# (a `grid::pattern()` fill is one value)
+				p <- list(p)
+			} else if (!is.list(p)) {
+				p <- as.list(p)
+			}
+			if (!(length(p) %in% c(1L, m))) {
+				abort(
+					glue(
+						"`{nm}` must have length one or one value per {unit} ({m}) but has length {length(p)}."
+					),
+					call = call
+				)
+			}
+			rep_len(p, m)
+		},
+		params,
+		names(params)
+	)
+	params <- lapply(seq_len(m), function(i) lapply(params, `[[`, i))
+	state <- new.env(parent = emptyenv())
+	state$params <- params
+	state$group <- group
+	state$splits <- splits
+	state$i <- 1L
+	state$offset <- 0L
+	state$k <- 0L
+	state$call <- call
+	state
+}
+
+# the patterned leaf `grob` (if it has areas) whose areas take the next groups of the `state`
+pattern_leaf <- function(grob, state) {
+	split <- state$splits[[state$i]]
+	state$i <- state$i + 1L
+	n <- length(split$boundaries)
+	if (n == 0L) {
+		return(grob)
+	}
+	boundaries <- split$boundaries
+	group <- state$group[state$offset + seq_len(n)]
+	state$offset <- state$offset + n
+	groups <- unique(group)
+	# (groups are numbered by their first area so an earlier grob's are at most `k`
+	# and this one's are the next ones)
+	if (any(groups <= state$k)) {
+		abort("The areas of a `group` must all be areas of the same grob.", call = state$call)
+	}
+	state$k <- max(groups)
+	if (length(groups) < n) {
+		boundaries <- unclass(boundaries)
+		boundaries <- lapply(groups, function(g) {
+			merge_shapes(boundaries[group == g], call = state$call)
+		})
+	}
+	patterns <- area_patterns(boundaries, state$params[groups], state$legend, state$prefix)
+	if (state$layers == "area") {
+		area_layered_grob(grob, split$shapes, patterns, match(group, groups))
+	} else {
+		grob_layered_grob(grob, patterns)
+	}
+}
+
+# grid's top-level graphical parameters so a pattern's content doesn't inherit those of its ancestors
+# (e.g. a {ggplot2} legend key puts its `gp` on the parent `gTree`)
+# except `alpha` which can't be reset (a grob's alpha multiplies its ancestors').
+# Only its content (see `makeContent.pattern()`): its boundary is measured with the inherited ones
+# (e.g. a `fontsize` for "lines" units).
+NEUTRAL_GP <- gpar(
+	col = "black",
+	fill = "transparent",
+	lty = "solid",
+	lwd = 1,
+	lex = 1,
+	cex = 1,
+	fontsize = 12,
+	fontface = "plain",
+	fontfamily = "",
+	lineheight = 1.2,
+	lineend = "round",
+	linejoin = "round",
+	linemitre = 10
+)
+
+# `grob` painting only its fill
+fill_only <- function(grob) {
+	if (inherits(grob, FILLED_PATHS)) {
+		return(fill_only_path(grob))
+	}
+	gp <- grob$gp %||% gpar()
+	gp$col <- NA
+	gp$lwd <- 0
+	grob$gp <- gp
+	grob
+}
+
+# `grob` painting only its border
+border_only <- function(grob) {
+	gp <- grob$gp %||% gpar()
+	gp$fill <- NA
+	grob$gp <- gp
+	grob
+}
+
+# `grob` as a layer named `name` of its replacement (whose wrapper takes its viewport)
+# (assigned directly: neither change needs `editGrob()`'s validation)
+as_layer <- function(grob, name) {
+	grob$vp <- NULL
+	grob$name <- name
+	grob
+}
+
+# The pattern grob of each of the (merged) `boundaries` of a grob's areas (taking their `params`):
+# its content is drawn with grid's default graphical parameters (see `NEUTRAL_GP`)
+# and the area's own `alpha` (as are its fill and border).
+area_patterns <- function(boundaries, params, legend, prefix) {
+	lapply(seq_along(boundaries), function(i) {
+		# (the wrapper below takes the grob's viewport)
+		boundary <- boundaries[[i]]
+		boundary$vp <- NULL
+		args <- c(
+			list(boundary, legend = legend, prefix = prefix, name = paste0("area.", i)),
+			params[[i]]
+		)
+		pattern <- do.call(as.patternGrob, args)
+		content_gp <- NEUTRAL_GP
+		alpha <- boundary$gp$alpha
+		if (length(alpha) > 0L) {
+			# (a merged group's first shape's)
+			content_gp$alpha <- alpha[1L]
+		}
+		pattern$content_gp <- content_gp
+		pattern
+	})
+}
+
+# the layer of the pattern grobs
+pattern_layer <- function(patterns) {
+	gTree(children = as_gList(patterns), name = "pattern")
+}
+
+# a grob with areas replaced by its fill / `patterns` / border layers (each drawn for all its areas)
+grob_layered_grob <- function(grob, patterns) {
+	children <- gList(
+		as_layer(fill_only(grob), "fill"),
+		pattern_layer(patterns),
+		as_layer(border_only(grob), "border")
+	)
+	layered_wrapper(grob, children)
+}
+
+# A grob with areas (split into its `shapes`, see `grob_shapes()`) replaced by
+# the fill / pattern / border layers of each area (or group of areas)
+# in turn (in a gTree named "area.i" for the area's `i`th pattern) and its other shapes (named
+# "shape.j" for its `j`th shape) so overlapping shapes are drawn in their original order.
+# A group's areas are drawn together where its first area is.
+# A grob that can't be split into its shapes, has only one, or whose fill is a grid pattern relative
+# to all its shapes (e.g. a gradient spanning them) is layered by `grob_layered_grob()` instead.
+area_layered_grob <- function(grob, shapes, patterns, area_group) {
+	if (
+		is.null(shapes) ||
+			has_grouped_pattern_fill(grob) ||
+			length(shapes$grobs) < 2L
+	) {
+		return(grob_layered_grob(grob, patterns))
+	}
+	area_shape <- which(shapes$area)
+	# the group of each shape (`NA` if it isn't an area) and the shapes of each group
+	shape_group <- rep_len(NA_integer_, length(shapes$grobs))
+	shape_group[area_shape] <- area_group
+	group_shapes <- split(area_shape, area_group)
+	layer <- function(f, members, name) {
+		if (length(members) == 1L) {
+			return(as_layer(f(shapes$grobs[[members]]), name))
+		}
+		# (the shapes of a group are named "fill.k" / "border.k": siblings need distinct names)
+		grobs <- lapply(seq_along(members), function(k) {
+			as_layer(f(shapes$grobs[[members[k]]]), paste0(name, ".", k))
+		})
+		gTree(children = as_gList(grobs), name = name)
+	}
+	children <- list()
+	for (j in seq_along(shapes$grobs)) {
+		g <- shape_group[j]
+		if (is.na(g)) {
+			children[[length(children) + 1L]] <- as_layer(shapes$grobs[[j]], paste0("shape.", j))
+			next
+		}
+		members <- group_shapes[[g]]
+		if (j != members[1L]) {
+			next
+		}
+		children[[length(children) + 1L]] <- gTree(
+			children = gList(
+				layer(fill_only, members, "fill"),
+				pattern_layer(patterns[g]),
+				layer(border_only, members, "border")
+			),
+			name = paste0("area.", g)
+		)
+	}
+	layered_wrapper(grob, as_gList(children))
+}
+
+# a gTree of the `children` replacing `grob` (keeping its name, viewport, and attributes)
+layered_wrapper <- function(grob, children) {
+	wrapper <- gTree(children = children, name = grob$name, vp = grob$vp)
+	# keep the grob's attributes (e.g. the `width` / `height` of a {ggplot2} legend key)
+	for (a in setdiff(names(attributes(grob)), c("names", "class"))) {
+		attr(wrapper, a) <- attr(grob, a)
+	}
+	wrapper
+}
+
+# whether the `fill` of `grob` is (or has) a grid pattern relative to all its shapes
+# (`group = TRUE`, the only behaviour in R 4.1) so its shapes can't be filled separately
+has_grouped_pattern_fill <- function(grob) {
+	fill <- grob$gp$fill
+	patterns <- if (is_pattern(fill)) {
+		list(fill)
+	} else if (inherits(fill, "GridPatternList")) {
+		fill
+	}
+	any(vapply(patterns, function(p) !isFALSE(p$group), logical(1L)))
+}
