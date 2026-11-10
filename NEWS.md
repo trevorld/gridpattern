@@ -96,6 +96,11 @@ New features
   (e.g. a `circle`, `roundrect`, or the filled symbols (`pch` 21 to 25) of `points` are approximated
   by polygons while a `gTree` or `text` grob is also masked by itself).
   An existing `pattern` grob is returned unchanged.
+* `area_boundaries()` splits a grid grob into one boundary grob per such area
+  (e.g. one per polygon of a `polygon` grob, per path of a `pathgrob`,
+  per closed spline of an `xspline` grob, per filled symbol (`pch` 21 to 25) of a `points` grob,
+  or the single path of a `fillStrokeGrob()` or `fillGrob()`);
+  the areas of a `gTree` or `gList` are those of its grobs (of the `leaves` classes) in order.
 
 Bug fixes and minor improvements
 --------------------------------
