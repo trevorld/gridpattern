@@ -16,7 +16,8 @@
 #'   \item{`rect`}{Each of its rectangles is a boundary polygon.}
 #'   \item{`pattern`}{An existing pattern grob is returned unchanged
 #'     (use [grid::editGrob()] to change its pattern or parameters).}
-#'   \item{Any other grob}{Its boundary is computed by [grid::grobCoords()] (which requires R 4.2):
+#'   \item{Any other grob}{Its boundary is computed by [grid::grobCoords()]
+#'     (which requires R 4.2 or later, whose `grobCoords()` returns the coordinates of its shapes):
 #'     a `circle`, `roundrect`, (closed) `xspline`, or the filled symbols of `points`
 #'     (`pch` 21 to 25, whose interior is painted with `fill`) are approximated by polygons
 #'     while a `gTree` or any other grob (e.g. `text`) is the union of its shapes' coordinates

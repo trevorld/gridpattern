@@ -34,7 +34,8 @@ else a \code{rasterGrob} approximation at the resolution \code{pattern_res}).}
 \item{\code{rect}}{Each of its rectangles is a boundary polygon.}
 \item{\code{pattern}}{An existing pattern grob is returned unchanged
 (use \code{\link[grid:editGrob]{grid::editGrob()}} to change its pattern or parameters).}
-\item{Any other grob}{Its boundary is computed by \code{\link[grid:grobCoords]{grid::grobCoords()}} (which requires R 4.2):
+\item{Any other grob}{Its boundary is computed by \code{\link[grid:grobCoords]{grid::grobCoords()}}
+(which requires R 4.2 or later, whose \code{grobCoords()} returns the coordinates of its shapes):
 a \code{circle}, \code{roundrect}, (closed) \code{xspline}, or the filled symbols of \code{points}
 (\code{pch} 21 to 25, whose interior is painted with \code{fill}) are approximated by polygons
 while a \code{gTree} or any other grob (e.g. \code{text}) is the union of its shapes' coordinates
