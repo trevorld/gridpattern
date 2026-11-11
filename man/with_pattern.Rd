@@ -50,7 +50,8 @@ with_pattern(x, pattern = "stripe", ...)
 \item{x}{An object with filled areas such as a grid grob or a \code{\link[grid:gList]{grid::gList()}}.}
 
 \item{pattern}{Name of the pattern (see \code{\link[=patternGrob]{patternGrob()}}):
-either one (for every area) or one per area (or \code{group}) of \code{x}.}
+either one (for every area) or one per area (or \code{group}) of \code{x}.
+\code{NA} leaves an area (or group) as it is.}
 
 \item{...}{Pattern parameters (see \code{\link[=patternGrob]{patternGrob()}}) each either of length one (for every area)
 or with one value per area of \code{x} (in the order of \code{area_boundaries(x)})
