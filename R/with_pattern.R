@@ -43,6 +43,7 @@
 #' @param x An object with filled areas such as a grid grob or a [grid::gList()].
 #' @param pattern Name of the pattern (see [patternGrob()]):
 #'                either one (for every area) or one per area (or `group`) of `x`.
+#'                `NA` leaves an area (or group) as it is.
 #' @param ... Pattern parameters (see [patternGrob()]) each either of length one (for every area)
 #'            or with one value per area of `x` (in the order of `area_boundaries(x)`)
 #'            or per `group` (in the order of `unique(group)`).
@@ -302,8 +303,17 @@ area_state <- function(pattern, params, group, splits, call) {
 	if (length(params) > 0L && (is.null(nms) || !all(nzchar(nms)))) {
 		abort("The pattern parameters in `...` must be named.", call = call)
 	}
-	if (!is.character(pattern) || length(pattern) == 0L || anyNA(pattern)) {
-		abort("`pattern` must be a character vector of pattern names.", call = call)
+	if (is.logical(pattern) && length(pattern) > 0L && all(is.na(pattern))) {
+		pattern <- rep_len(NA_character_, length(pattern))
+	}
+	if (!is.character(pattern) || length(pattern) == 0L) {
+		abort(
+			c(
+				"`pattern` must be a character vector of pattern names.",
+				i = "`NA` leaves an area as it is."
+			),
+			call = call
+		)
 	}
 	if ("leaves" %in% nms) {
 		abort(
@@ -375,6 +385,7 @@ area_state <- function(pattern, params, group, splits, call) {
 }
 
 # the patterned leaf `grob` (if it has areas) whose areas take the next groups of the `state`
+# (an area or group whose `pattern` is `NA` is left as it is)
 pattern_leaf <- function(grob, state) {
 	split <- state$splits[[state$i]]
 	state$i <- state$i + 1L
@@ -382,7 +393,7 @@ pattern_leaf <- function(grob, state) {
 	if (n == 0L) {
 		return(grob)
 	}
-	boundaries <- split$boundaries
+	boundaries <- unclass(split$boundaries)
 	group <- state$group[state$offset + seq_len(n)]
 	state$offset <- state$offset + n
 	groups <- unique(group)
@@ -392,15 +403,21 @@ pattern_leaf <- function(grob, state) {
 		abort("The areas of a `group` must all be areas of the same grob.", call = state$call)
 	}
 	state$k <- max(groups)
-	if (length(groups) < n) {
-		boundaries <- unclass(boundaries)
-		boundaries <- lapply(groups, function(g) {
-			merge_shapes(boundaries[group == g], call = state$call)
-		})
+	params <- state$params[groups]
+	kept <- which(!vapply(params, function(p) is.na(p$pattern), logical(1L)))
+	if (length(kept) == 0L) {
+		return(grob)
 	}
-	patterns <- area_patterns(boundaries, state$params[groups], state$legend, state$prefix)
+	merged <- lapply(kept, function(j) {
+		merge_shapes(boundaries[group == groups[j]], call = state$call)
+	})
+	# (`NULL` for a group left as it is)
+	patterns <- vector("list", length(groups))
+	patterns[kept] <- area_patterns(merged, params[kept], state$legend, state$prefix, kept)
 	if (state$layers == "area") {
-		area_layered_grob(grob, split$shapes, patterns, match(group, groups))
+		area_group <- match(group, groups)
+		area_group[!(area_group %in% kept)] <- NA_integer_
+		area_layered_grob(grob, split$shapes, patterns, area_group)
 	} else {
 		grob_layered_grob(grob, patterns)
 	}
@@ -455,16 +472,17 @@ as_layer <- function(grob, name) {
 	grob
 }
 
-# The pattern grob of each of the (merged) `boundaries` of a grob's areas (taking their `params`):
+# The pattern grob (named "area.k" for the `k`th group, `index`) of each of the (merged)
+# `boundaries` of a grob's areas (taking their `params`):
 # its content is drawn with grid's default graphical parameters (see `NEUTRAL_GP`)
 # and the area's own `alpha` (as are its fill and border).
-area_patterns <- function(boundaries, params, legend, prefix) {
+area_patterns <- function(boundaries, params, legend, prefix, index = seq_along(boundaries)) {
 	lapply(seq_along(boundaries), function(i) {
 		# (the wrapper below takes the grob's viewport)
 		boundary <- boundaries[[i]]
 		boundary$vp <- NULL
 		args <- c(
-			list(boundary, legend = legend, prefix = prefix, name = paste0("area.", i)),
+			list(boundary, legend = legend, prefix = prefix, name = paste0("area.", index[i])),
 			params[[i]]
 		)
 		pattern <- do.call(as.patternGrob, args)
@@ -479,9 +497,9 @@ area_patterns <- function(boundaries, params, legend, prefix) {
 	})
 }
 
-# the layer of the pattern grobs
+# the layer of the pattern grobs (`NULL` for a group left as it is)
 pattern_layer <- function(patterns) {
-	gTree(children = as_gList(patterns), name = "pattern")
+	gTree(children = as_gList(Filter(Negate(is.null), patterns)), name = "pattern")
 }
 
 # a grob with areas replaced by its fill / `patterns` / border layers (each drawn for all its areas)
@@ -498,7 +516,8 @@ grob_layered_grob <- function(grob, patterns) {
 # the fill / pattern / border layers of each area (or group of areas)
 # in turn (in a gTree named "area.i" for the area's `i`th pattern) and its other shapes (named
 # "shape.j" for its `j`th shape) so overlapping shapes are drawn in their original order.
-# A group's areas are drawn together where its first area is.
+# A group's areas are drawn together where its first area is
+# while an area left as it is (an `NA` `area_group`) is drawn like a shape without an area.
 # A grob that can't be split into its shapes, has only one, or whose fill is a grid pattern relative
 # to all its shapes (e.g. a gradient spanning them) is layered by `grob_layered_grob()` instead.
 area_layered_grob <- function(grob, shapes, patterns, area_group) {
@@ -513,7 +532,8 @@ area_layered_grob <- function(grob, shapes, patterns, area_group) {
 	# the group of each shape (`NA` if it isn't an area) and the shapes of each group
 	shape_group <- rep_len(NA_integer_, length(shapes$grobs))
 	shape_group[area_shape] <- area_group
-	group_shapes <- split(area_shape, area_group)
+	# (an empty element for a group left as it is)
+	group_shapes <- split(area_shape, factor(area_group, levels = seq_along(patterns)))
 	layer <- function(f, members, name) {
 		if (length(members) == 1L) {
 			return(as_layer(f(shapes$grobs[[members]]), name))
