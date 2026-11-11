@@ -1001,3 +1001,91 @@ test_that("`with_pattern()` visual tests", {
 		))
 	})
 })
+
+# a grob which only builds its shapes when it is drawn:
+# a pattern grob whose "fill" pattern draws its two boundary polygons
+lazy_rects <- function(name = "lazy") {
+	patternGrob(
+		"fill",
+		x = c(0.05, 0.45, 0.45, 0.05, 0.55, 0.95, 0.95, 0.55),
+		y = rep(c(0.1, 0.1, 0.9, 0.9), 2L),
+		id = rep(1:2, each = 4L),
+		fill = c("red", "blue"),
+		name = name
+	)
+}
+
+test_that("`delay = TRUE` fills the areas a grob has when it is drawn", {
+	lazy <- lazy_rects()
+	expect_length(area_boundaries(lazy), 0L)
+	expect_identical(with_pattern(lazy, "stripe"), lazy)
+	delayed <- with_pattern(lazy, "stripe", fill = c("red", "blue"), delay = TRUE)
+	expect_s3_class(delayed, "delayed_pattern")
+	expect_identical(delayed$name, "lazy")
+	expect_length(area_boundaries(delayed), 0L)
+	# (keeping its attributes e.g. the `width` of a {ggplot2} legend key)
+	key <- lazy_rects()
+	attr(key, "width") <- 1.2
+	expect_identical(attr(with_pattern(key, "stripe", delay = TRUE), "width"), 1.2)
+	local_temp_dev()
+	pushViewport(viewport())
+	out <- makeContent(delayed)
+	expect_null(getGrob(out, "lazy")$.ORIGINAL)
+	# (the forced pattern grob's (auto-named) polygon child is replaced by its layers)
+	layered <- getGrob(out, "lazy")$children[[1L]]
+	expect_equal(childNames(layered), c("area.1", "area.2"))
+	expect_equal(
+		getGrob(layered, gPath("area.2", "pattern", "area.2"))$args$pattern_fill,
+		"blue"
+	)
+	expect_no_error(grid.draw(delayed))
+	# a gList can be delayed too (then also a gTree)
+	expect_s3_class(with_pattern(gList(lazy), "stripe", delay = TRUE), "delayed_pattern")
+	# as can a grob with its shapes already (to the same effect)
+	rect <- rectGrob(x = c(0.25, 0.75), width = 0.4, name = "rects")
+	delayed <- with_pattern(rect, "stripe", fill = "red", delay = TRUE)
+	expect_equal(makeContent(delayed)$children[[1L]], with_pattern(rect, "stripe", fill = "red"))
+	# the checks which don't need the number of areas are still made now
+	expect_error(with_pattern(lazy, "stripe", "red", delay = TRUE), "must be named")
+	expect_error(with_pattern(lazy, "stripe", gp = gpar(), delay = TRUE), "`gp` can't be given")
+	expect_error(with_pattern(lazy, "stripe", delay = NA), "`delay` must be")
+	expect_error(with_pattern(lazy, "stripe", layers = "bogus", delay = TRUE), "must be one of")
+	expect_error(with_pattern(lazy, "stripe", legend = "foo", delay = TRUE), "`legend` must be")
+	expect_error(with_pattern(lazy, "stripe", group = c(1, NA), delay = TRUE), "`group` must be")
+	# while those which do are made when it is drawn
+	delayed <- with_pattern(lazy, "stripe", fill = c("red", "blue", "green"), delay = TRUE)
+	cnd <- tryCatch(grid.draw(delayed), error = identity)
+	expect_match(conditionMessage(cnd), "delay = TRUE", fixed = TRUE)
+	expect_identical(conditionCall(cnd)[[1L]], quote(with_pattern))
+	expect_match(conditionMessage(cnd$parent), "one value per area (2)", fixed = TRUE)
+})
+
+test_that("`delay = TRUE` fills each dot of a `{ggplot2}` dot stack", {
+	skip_if_not_installed("ggplot2", "3.5.0")
+	skip_if(getRversion() < "4.2.0")
+	dotstackGrob <- get0("dotstackGrob", asNamespace("ggplot2"), mode = "function")
+	skip_if(is.null(dotstackGrob))
+	dots <- dotstackGrob(
+		x = unit(0.5, "npc"),
+		y = unit(0.2, "npc"),
+		stackaxis = "y",
+		dotdia = 0.15,
+		stackposition = 0:2,
+		stackdir = "up",
+		stackratio = 1,
+		gp = gpar(fill = c("red", "blue", "green"), col = "black")
+	)
+	expect_length(area_boundaries(dots), 0L)
+	delayed <- with_pattern(
+		dots,
+		c("stripe", "circle", "crosshatch"),
+		fill = c("red", "blue", "green"),
+		delay = TRUE
+	)
+	local_temp_dev()
+	pushViewport(viewport())
+	out <- makeContent(delayed)$children[[1L]]
+	expect_equal(childNames(out), c("area.1", "area.2", "area.3"))
+	expect_equal(getGrob(out, gPath("area.2", "pattern", "area.2"))$args$pattern_fill, "blue")
+	expect_no_error(grid.draw(delayed))
+})

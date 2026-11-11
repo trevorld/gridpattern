@@ -91,6 +91,8 @@ New features
   i.e. whether registering a pattern with that name would clobber or conflict with a pre-existing pattern.
 * `as.patternGrob()` creates a pattern grob whose boundary is (the area filled by) an existing grid grob (#131).
 * `with_pattern()` fills each area of an object with a pattern (#131).
+  `delay = TRUE` fills the areas a grob has when it is drawn
+  (for a grob which only builds its shapes then, e.g. the dot stack of a `{ggplot2}` dotplot).
 * `area_boundaries()` splits a grid grob into one boundary grob per such area.
 
 Bug fixes and minor improvements
