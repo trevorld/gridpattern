@@ -229,7 +229,7 @@ test_that("`with_pattern()` replaces a grob with areas by fill / pattern / borde
 	)
 	tree <- gTree(children = gList(linesGrob(name = "l")), name = "g")
 	expect_identical(with_pattern(layers = "grob", tree, fill = c("red", "blue")), tree)
-	expect_error(with_pattern(layers = "grob", "a"), "must be a grid grob")
+	expect_error(with_pattern(layers = "grob", "a"), "method for an object of class `character`")
 })
 
 test_that("`with_pattern()` walks a gTree replacing its grobs with areas in place", {
