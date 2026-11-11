@@ -166,7 +166,10 @@ with_pattern.grob <- function(
 
 #' @export
 with_pattern.default <- function(x, ...) {
-	abort("`x` must be a grid grob or gList.")
+	abort(c(
+		glue("No `with_pattern()` method for an object of class `{class(x)[1L]}`."),
+		i = "This package provides methods for grid grobs and gLists."
+	))
 }
 
 # `x` with each of its leaves with areas patterned: `walk(f, rebuild)` applies `f()` to each leaf
