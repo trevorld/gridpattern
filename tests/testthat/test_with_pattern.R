@@ -764,12 +764,10 @@ test_that("each boundary keeps its own graphical parameters", {
 })
 
 test_that("a grob class with its own `area_boundaries()` method is supported", {
-	# (e.g. registered by another package for its own class)
-	registerS3method(
+	local_s3_method(
 		"area_boundaries",
 		"myrects",
-		function(grob, ...) gList(rectGrob(0.25, width = 0.4), rectGrob(0.75, width = 0.4)),
-		envir = asNamespace("gridpattern")
+		function(grob, ...) gList(rectGrob(0.25, width = 0.4), rectGrob(0.75, width = 0.4))
 	)
 	mine <- grob(name = "mine", cl = "myrects")
 	expect_length(area_boundaries(gTree(children = gList(mine)), leaves = "myrects"), 2L)
@@ -870,14 +868,12 @@ test_that("`with_pattern()` reports its errors as its own", {
 })
 
 test_that("a gTree subclass with its own `area_boundaries()` method is patterned as a whole", {
-	# (e.g. registered by another package for its own class)
-	registerS3method(
+	local_s3_method(
 		"area_boundaries",
 		"mytree",
 		function(grob, ..., leaves) {
 			gList(rectGrob(0.5, width = 0.8, height = 0.8))
-		},
-		envir = asNamespace("gridpattern")
+		}
 	)
 	mine <- gTree(
 		children = gList(rectGrob(0.25, width = 0.4), rectGrob(0.75, width = 0.4)),
