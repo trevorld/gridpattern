@@ -1,54 +1,44 @@
-#' Fill the areas of a grob with patterns
+#' Fill the areas of an object with patterns
 #'
-#' `with_pattern()` returns `x` with each area it paints with its `fill` (see [area_boundaries()])
-#' also filled with a pattern.
-#' Each grob with such areas (by default a `polygon`, `rect`, `pathgrob`, `circle`, `roundrect`,
-#' (closed) `xspline`,
+#' `with_pattern()` returns a modified version of its input with each area it paints with a `fill` also filled with a pattern.
+#'
+#' `with_pattern()` returns a modified version of the object `x` with each area it paints with its `fill` (see [area_boundaries()]) also filled with a pattern.
+#' This package provides its methods for grid grobs
+#' (another package may add a method for its own class of object).
+#' Each grob with such areas (by default a [grid::polygonGrob()], [grid::rectGrob()], [grid::pathGrob()],
+#' [grid::circleGrob()], [grid::roundrectGrob()], (closed) [grid::xsplineGrob()],
 #' [grid::fillStrokeGrob()], or [grid::fillGrob()], see the `leaves` argument)
-#' is replaced in place by a `gTree` drawing each of its areas with three layers:
-#' the area drawn with its fill only (named `"fill"`),
-#' its pattern grob made by [as.patternGrob()]
-#' (within a `gTree` named `"pattern"`, the pattern grob of the `i`th area or group is named `"area.i"`),
-#' and the area drawn with its border only (named `"border"`).
-#' With `layers = "area"` (the default) the layers of each area are drawn in turn
-#' (within a `gTree` named `"area.i"` for the `i`th area or group)
-#' as are the grob's shapes without areas (e.g. the unfilled symbols of `points`, named `"shape.j"`
-#' for its `j`th shape) so overlapping shapes are drawn in their original order.
-#' The areas of a `group` are drawn together where its first area is.
-#' With `layers = "grob"` (fewer grobs, the same output if its areas neither overlap
-#' nor share borders of differing colours or widths) the replacement instead draws the three layers
-#' (named `"fill"`, `"pattern"`, and `"border"`) each for all its areas.
-#' A grob with a single shape or whose `fill` is a [grid::pattern()] relative to all its shapes
-#' (`group = TRUE`, e.g. a gradient spanning them) is always layered like `layers = "grob"`.
-#' The replacement keeps the grob's `name`, `vp`, and attributes
-#' so e.g. the [grid::gPath()]s of a `gTree`'s other children stay valid.
-#' A `gTree` (or `gList`) is walked recursively while any other grob without areas
-#' (e.g. lines or text) is returned unchanged.
+#' is replaced in place by a `gTree` (keeping its `name` and `vp`)
+#' drawing each area's fill, its pattern (made by [as.patternGrob()]), and its border.
 #'
-#' By default the (filled) `points` children of a `gTree` or `gList` aren't patterned
+#' `layers = "area"` (the default) keeps overlapping shapes in their original order
+#' while `layers = "grob"` uses fewer grobs and gives the same output
+#' unless the areas overlap or have borders of differing colours or widths
+#' (a grob with a single shape or whose `fill` is a [grid::pattern()] relative to all its shapes
+#' is always layered this way).
+#' A `gTree` (or `gList`) is walked recursively
+#' while a grob without areas (e.g. lines or text) is returned unchanged.
+#'
+#' By default the filled symbols of a [grid::pointsGrob()] within a `gTree` or `gList` aren't patterned
 #' (e.g. the outliers of a `{ggplot2}` boxplot) unless `"points"` is added to `leaves`
-#' but a `points` grob given as `x` itself is (one pattern per filled symbol, see [area_boundaries()]).
-#' Areas other than those of a `polygon`, `pathgrob`, or `rect` are measured by [grid::grobCoords()]
-#' whose return value R 4.2 changed so patterning them requires R (>= 4.2.0)
-#' (else `with_pattern()` raises an error).
+#' but a [grid::pointsGrob()] given as `x` itself is (one pattern per filled symbol).
+#' Areas other than those of a [grid::polygonGrob()], [grid::pathGrob()], or [grid::rectGrob()]
+#' are measured by [grid::grobCoords()]
+#' so patterning them requires R (>= 4.2.0).
 #'
 #' A `group` of several areas of the same grob is filled by one pattern
-#' whose boundary is the union of the areas (e.g. so a gradient or image spans them all):
-#' e.g. the polygons of each row of a `{sf}` MULTIPOLYGON geometry
+#' whose boundary is their union (each path keeping its holes)
+#' e.g. so a gradient or image spans the polygons of each row of a `{sf}` MULTIPOLYGON geometry
 #' (which [sf::st_as_grob()] draws as one path per polygon).
-#' The areas of a `polygon`, `pathgrob` (each area keeping its own holes),
-#' `rect`, `circle`, `xspline`, or `points` can be grouped.
 #'
-#' The pattern grobs are drawn within a `gTree` with grid's default graphical parameters
-#' so they don't inherit the `col`, `fill`, etc. of the ancestors of `x`
-#' (e.g. of a legend key) except `alpha` (which multiplies the alpha of any grob within).
+#' The pattern grobs don't inherit the `col`, `fill`, etc. of the ancestors of `x`
+#' (e.g. of a legend key), only their `alpha`.
 #' `with_pattern()` splits the shapes a grob has when it is called
 #' so a grob which only builds them when drawn
-#' (with a [grid::makeContext()] or [grid::makeContent()] method, e.g. a `gTree` building its children then)
-#' has no areas until it is forced with [grid::forceGrob()]
-#' (in the viewport it will be drawn in since its shapes may depend on it)
-#' or resolved by the [grid::makeContent()] method of a `gTree` wrapping it which then calls `with_pattern()`.
-#' @param x A grid grob or a [grid::gList()] of grobs (whose areas are those of its grobs in order).
+#' (with a [grid::makeContext()] or [grid::makeContent()] method)
+#' has no areas until it is forced with [grid::forceGrob()] (in the viewport it will be drawn in)
+#' or wrapped in a `gTree` whose [grid::makeContent()] method calls `with_pattern()`.
+#' @param x An object with filled areas such as a grid grob or a [grid::gList()].
 #' @param pattern Name of the pattern (see [patternGrob()]):
 #'                either one (for every area) or one per area (or `group`) of `x`.
 #' @param ... Pattern parameters (see [patternGrob()]) each either of length one (for every area)
@@ -57,8 +47,9 @@
 #'            A multi-valued parameter of a single area must be wrapped in a list
 #'            (e.g. `fill = list(c("red", "blue"))` for alternating stripes)
 #'            while a [grid::pattern()] fill counts as one value.
-#'            `y`, `id`, `name`, `gp`, `vp`, and `boundary` can't be given
-#'            (the pattern grobs take their boundaries from the areas of `x`).
+#'            [patternGrob()]'s `y`, `id`, `name`, `gp`, `vp`, and `boundary` can't be given:
+#'            each area's pattern grob takes its boundary, name, graphical parameters,
+#'            and viewport from its area.
 #' @param group If not `NULL`, one value per area of `x` (in the order of `area_boundaries(x)`)
 #'              grouping the areas filled by the same pattern:
 #'              the areas of a group must be areas of the same grob.
@@ -70,7 +61,7 @@
 #' @param legend Passed to [patternGrob()] (e.g. the numeric zoom of a legend key).
 #' @param prefix Passed to [patternGrob()]: the prefix prepended to the names of the pattern parameters
 #'               in `...` (e.g. `prefix = ""` for parameters already named `pattern_*`).
-#' @return A [grid::gTree()] (or a [grid::gList()] if `x` is one)
+#' @return For a grid grob a [grid::gTree()] (or a [grid::gList()] if `x` is one)
 #'         unless `x` has no fillable areas in which case `x` is returned unchanged.
 #' @examples
 #' if (require("grid", quietly = TRUE)) {
@@ -81,14 +72,12 @@
 #'                 gp = gpar(fill = "pink", col = "red", lwd = 3)),
 #'     textGrob("text is left alone", y = 0.05, name = "label")
 #'   ), name = "tree")
-#'   length(area_boundaries(tree)) # 3: two rects and the triangle
 #'   # one value per area (in that order) or one for all
 #'   patterned <- with_pattern(tree, c("stripe", "stripe", "crosshatch"),
 #'                             fill = c("blue", "orange", "red"), angle = c(45, -45, 0),
 #'                             density = 0.4)
 #'   grid.newpage()
 #'   grid.draw(patterned)
-#'   grid.ls(patterned)
 #' }
 #' @seealso [area_boundaries()] for the areas of a grob
 #'          and [as.patternGrob()] for the pattern grob of a single boundary grob.

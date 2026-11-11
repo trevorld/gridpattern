@@ -6,28 +6,30 @@
 #' The boundary grob is measured when the pattern grob is drawn (in the viewport it is drawn in).
 #' How depends on the class of `boundary`:
 #' \describe{
-#'   \item{`polygon`}{Its `x`, `y`, and `id` (or `id.lengths`) are used directly
+#'   \item{[grid::polygonGrob()]}{Its `x`, `y`, and `id` (or `id.lengths`) are used directly
 #'     so the result is the same as a [patternGrob()] call: its polygons are filled as one region.}
-#'   \item{`pathgrob`}{Its rings (grouped by `pathId`) are filled according to its `rule`.
+#'   \item{[grid::pathGrob()]}{Its rings (grouped by `pathId`) are filled according to its `rule`.
 #'     Where a path has holes the pattern is also masked by the path with [alphaMaskGrob()]
 #'     (whose `use_R4.1_masks`, `png_device`, and `res` are the pattern parameters of the same names
 #'     e.g. using the R 4.1 mask feature if the graphics device supports it
-#'     else a `rasterGrob` approximation at the resolution `pattern_res`).}
-#'   \item{`rect`}{Each of its rectangles is a boundary polygon.}
-#'   \item{`pattern`}{An existing pattern grob is returned unchanged
+#'     else a [grid::rasterGrob()] approximation at the resolution `pattern_res`).}
+#'   \item{[grid::rectGrob()]}{Each of its rectangles is a boundary polygon.}
+#'   \item{[patternGrob()]}{An existing pattern grob is returned unchanged
 #'     (use [grid::editGrob()] to change its pattern or parameters).}
 #'   \item{Any other grob}{Its boundary is computed by [grid::grobCoords()]
 #'     (which requires R 4.2 or later, whose `grobCoords()` returns the coordinates of its shapes):
-#'     a `circle`, `roundrect`, (closed) `xspline`, or the filled symbols of `points`
+#'     a [grid::circleGrob()], [grid::roundrectGrob()], (closed) [grid::xsplineGrob()],
+#'     or the filled symbols of a [grid::pointsGrob()]
 #'     (`pch` 21 to 25, whose interior is painted with `fill`) are approximated by polygons
-#'     while a `gTree` or any other grob (e.g. `text`) is the union of its shapes' coordinates
+#'     while a `gTree` or any other grob (e.g. a [grid::textGrob()]) is the union of its shapes' coordinates
 #'     masked by the grob itself (so e.g. the glyphs of a text grob get the pattern).
-#'     A grob without a filled area (e.g. lines, a `rastergrob`, or `points` of other symbols) draws nothing.}
+#'     A grob without a filled area (e.g. a [grid::linesGrob()], [grid::rasterGrob()],
+#'     or [grid::pointsGrob()] of other symbols) draws nothing.}
 #' }
 #' A pattern grob with a boundary grob stores it as `boundary` (instead of `x`, `y`, and `id`)
-#' so [grid::editGrob()] that element to change its boundary (a `polygon` edited in is also measured when drawn).
+#' so [grid::editGrob()] that element to change its boundary (a [grid::polygonGrob()] edited in is also measured when drawn).
 #' The `vp` of `boundary` (if any) is pushed within `vp` when the pattern grob is drawn
-#' (as if `boundary` were drawn within a gTree with `vp`) while a `polygon` boundary's `vp`
+#' (as if `boundary` were drawn within a gTree with `vp`) while a [grid::polygonGrob()] boundary's `vp`
 #' is instead combined with `vp` by [grid::vpStack()] (as its coordinates are reused).
 #' @param boundary A grid grob whose (filled) area is the boundary of the pattern.
 #' @param ... Passed to [patternGrob()]: the `pattern` name, its pattern parameters,

@@ -33,32 +33,38 @@ area_boundaries(grob, ...)
 A \code{\link[grid:gList]{grid::gList()}} of grobs (one per area, empty if \code{grob} has none).
 }
 \description{
-\code{area_boundaries()} splits a grid grob into one grob per area it paints with its \code{fill}:
-one per polygon of a \code{polygon}, rectangle of a \code{rect}, path (its rings grouped by \code{pathId})
-of a \code{pathgrob}, circle of a \code{circle}, (closed) spline of an \code{xspline},
-the (single) rounded rectangle of a \code{roundrect},
-filled symbol (\code{pch} 21 to 25) of \code{points} (in point order),
-and the (single) path of a \code{\link[grid:fillStrokeGrob]{grid::fillStrokeGrob()}} or \code{\link[grid:fillGrob]{grid::fillGrob()}}
-(the shapes of its \code{path} grob, e.g. the glyphs of text, filled according to its \code{rule}).
-Grobs without such an area (e.g. lines or text) have none
-nor does a grob which only builds its shapes when drawn
-(with a \code{\link[grid:makeContext]{grid::makeContext()}} or \code{\link[grid:makeContent]{grid::makeContent()}} method) until it is forced with \code{\link[grid:forceGrob]{grid::forceGrob()}}.
+\code{area_boundaries()} splits a grid grob into one grob per area it paints with its \code{fill}.
 }
 \details{
+\code{area_boundaries()} splits a grid grob into one grob per area it paints with its \code{fill}:
+\itemize{
+\item one per polygon of a \code{\link[grid:polygonGrob]{grid::polygonGrob()}}
+\item rectangle of a \code{\link[grid:rectGrob]{grid::rectGrob()}}
+\item path (its rings grouped by \code{pathId}) of a \code{\link[grid:pathGrob]{grid::pathGrob()}}
+\item circle of a \code{\link[grid:circleGrob]{grid::circleGrob()}}
+\item (closed) spline of a \code{\link[grid:xsplineGrob]{grid::xsplineGrob()}}
+\item the (single) rounded rectangle of a \code{\link[grid:roundrectGrob]{grid::roundrectGrob()}}
+\item filled symbol (\code{pch} 21 to 25) of a \code{\link[grid:pointsGrob]{grid::pointsGrob()}} (in point order)
+\item the (single) path of a \code{\link[grid:fillStrokeGrob]{grid::fillStrokeGrob()}} or \code{\link[grid:fillGrob]{grid::fillGrob()}}
+\item Grobs without such an area (e.g. lines or text) have none nor does a grob which only builds its shapes when drawn
+(with a \code{\link[grid:makeContext]{grid::makeContext()}} or \code{\link[grid:makeContent]{grid::makeContent()}} method) until it is forced with \code{\link[grid:forceGrob]{grid::forceGrob()}}.
+}
+
 The areas are in a fixed order
 (which the per-area pattern parameters and \code{group} of \code{\link[=with_pattern]{with_pattern()}} follow):
-the polygons of a \code{polygon} or \code{xspline} by increasing \code{id}
-and the paths of a \code{pathgrob} by increasing \code{pathId}
+the polygons of a \code{\link[grid:polygonGrob]{grid::polygonGrob()}} or \code{\link[grid:xsplineGrob]{grid::xsplineGrob()}} by increasing \code{id}
+and the paths of a \code{\link[grid:pathGrob]{grid::pathGrob()}} by increasing \code{pathId}
 (grid stores these as integers; those given by \code{id.lengths} / \code{pathId.lengths} are
 \verb{1, 2, ...} in drawing order so sorting keeps that order
 while an \code{id} such as \code{c(2, 2, 2, 1, 1, 1)} puts its second polygon first),
-the rectangles of a \code{rect}, circles of a \code{circle}, and filled symbols of \code{points} in element order,
+the rectangles of a \code{\link[grid:rectGrob]{grid::rectGrob()}}, circles of a \code{\link[grid:circleGrob]{grid::circleGrob()}},
+and filled symbols of a \code{\link[grid:pointsGrob]{grid::pointsGrob()}} in element order,
 and all the areas of a child of a \code{gTree} (or \code{gList}) before those of its next child.
 
 The areas of a \code{gTree} (or \code{gList}) are those of its children in drawing order:
 a child \code{gTree} is walked recursively
 while any other child only has areas if it inherits from one of the \code{leaves} classes.
-By default \code{leaves} leaves out \code{points}
+By default \code{leaves} leaves out a \code{\link[grid:pointsGrob]{grid::pointsGrob()}}
 so e.g. the (filled) outliers of a \code{{ggplot2}} boxplot have no areas
 unless \code{"points"} is added to \code{leaves}.
 A grob given as \code{grob} itself always has its areas
@@ -72,7 +78,7 @@ and \code{\link[=with_pattern]{with_pattern()}} fills each area of a grob this w
 
 Each boundary is drawn like its shape of \code{grob}:
 it keeps its own elements of the graphical parameters (\code{gp}) of \code{grob}
-(e.g. the second boundary of a \code{rect} with \code{gp = gpar(fill = c("red", "blue"))} is filled blue)
+(e.g. the second boundary of a \code{\link[grid:rectGrob]{grid::rectGrob()}} with \code{gp = gpar(fill = c("red", "blue"))} is filled blue)
 combined with those of the \code{gTree}s it is within
 (e.g. a \code{fontsize} its "lines" units depend on, while \code{cex}, \code{alpha}, and \code{lex} multiply)
 and the viewport (\code{vp}) its coordinates are relative to
@@ -81,10 +87,11 @@ so a boundary drawn by itself is drawn where its area is.
 The \code{childrenvp} of a \code{gTree} (viewports a child's \code{vp} may refer to by a \code{\link[grid:vpPath]{grid::vpPath()}})
 isn't handled.
 The rings of a path (grouped by \code{pathId}) stay together so an area may have holes
-while each polygon of a \code{polygon} is an area even where it overlaps another.
+while each polygon of a \code{\link[grid:polygonGrob]{grid::polygonGrob()}} is an area even where it overlaps another.
 }
 \examples{
-if (require("grid", quietly = TRUE)) {
+run_example <- require("grid", quietly = TRUE)
+if (run_example) {
   polygon <- polygonGrob(x = c(0.1, 0.4, 0.4, 0.1, 0.6, 0.9, 0.75),
                          y = c(0.1, 0.1, 0.4, 0.4, 0.6, 0.6, 0.9),
                          id.lengths = c(4, 3))
@@ -93,7 +100,9 @@ if (require("grid", quietly = TRUE)) {
   grid.newpage()
   grid.draw(as.patternGrob(boundaries[[1]], "stripe", fill = "red"))
   grid.draw(as.patternGrob(boundaries[[2]], "circle", fill = "blue"))
+}
 
+if (run_example) {
   # a gTree's areas are its children's (text has none)
   tree <- gTree(children = gList(rectGrob(x = c(0.25, 0.75), width = 0.4, height = 0.4),
                                  textGrob("label")))
