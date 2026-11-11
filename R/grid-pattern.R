@@ -53,6 +53,7 @@
 #'
 #' @inheritParams grid::polygonGrob
 #' @param pattern Name of pattern.  See Details section for a list of supported patterns.
+#'                An `NA` pattern draws nothing (like `"none"`).
 #'                Builtin patterns may also be referred to by their qualified name e.g. `"gridpattern::stripe"`
 #'                and custom patterns registered by packages by `"pkg::name"`.
 #'                A qualified name `"pkg::name"` (or a bare name preferred to a pattern of `{pkg}`,
@@ -181,7 +182,7 @@ grid.pattern <- function(
 		# throw any pattern resolution error before drawing
 		# (errors while drawing leave the graphics device locked)
 		if (is.null(grob$entry)) {
-			resolve_pattern(pattern)
+			resolve_grob_pattern(pattern)
 		}
 		grid.draw(grob)
 	}
@@ -237,7 +238,7 @@ patternGrob <- function(
 	check_units(args$pattern_units)
 	# cache pattern resolved at creation (if possible) so redraws (e.g. resizing the device)
 	# still work if the pattern is later unregistered or masked
-	entry <- tryCatch(resolve_pattern(pattern), error = function(e) NULL)
+	entry <- tryCatch(resolve_grob_pattern(pattern), error = function(e) NULL)
 	# (anything else e.g. a grob is rejected by `validDetails.pattern()` with a hint)
 	if (is.numeric(x)) {
 		x <- unit(x, default.units)
@@ -312,13 +313,22 @@ makeContext.pattern <- function(x) {
 	x
 }
 
+# the registry entry of the `pattern` of a pattern grob (see `resolve_pattern()`):
+# an `NA` pattern draws nothing (like "none")
+resolve_grob_pattern <- function(pattern) {
+	if (rlang::is_scalar_atomic(pattern) && is.na(pattern)) {
+		pattern <- "none"
+	}
+	resolve_pattern(pattern)
+}
+
 #' @export
 makeContent.pattern <- function(x) {
 	# use pattern cached at creation unless `pattern` has since been edited
 	if (!is.null(x$entry) && identical(x$entry_pattern, x$pattern)) {
 		entry <- x$entry
 	} else {
-		entry <- resolve_pattern(x$pattern)
+		entry <- resolve_grob_pattern(x$pattern)
 	}
 	legend <- legend_scale(x$legend) # in case `legend` has since been edited
 	# Only a numeric `legend` zooms by `pattern_key_scale_factor`:
