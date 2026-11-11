@@ -24,28 +24,30 @@ the area filled by an existing grid grob instead of numeric \code{x}, \code{y}, 
 The boundary grob is measured when the pattern grob is drawn (in the viewport it is drawn in).
 How depends on the class of \code{boundary}:
 \describe{
-\item{\code{polygon}}{Its \code{x}, \code{y}, and \code{id} (or \code{id.lengths}) are used directly
+\item{\code{\link[grid:polygonGrob]{grid::polygonGrob()}}}{Its \code{x}, \code{y}, and \code{id} (or \code{id.lengths}) are used directly
 so the result is the same as a \code{\link[=patternGrob]{patternGrob()}} call: its polygons are filled as one region.}
-\item{\code{pathgrob}}{Its rings (grouped by \code{pathId}) are filled according to its \code{rule}.
+\item{\code{\link[grid:pathGrob]{grid::pathGrob()}}}{Its rings (grouped by \code{pathId}) are filled according to its \code{rule}.
 Where a path has holes the pattern is also masked by the path with \code{\link[=alphaMaskGrob]{alphaMaskGrob()}}
 (whose \code{use_R4.1_masks}, \code{png_device}, and \code{res} are the pattern parameters of the same names
 e.g. using the R 4.1 mask feature if the graphics device supports it
-else a \code{rasterGrob} approximation at the resolution \code{pattern_res}).}
-\item{\code{rect}}{Each of its rectangles is a boundary polygon.}
-\item{\code{pattern}}{An existing pattern grob is returned unchanged
+else a \code{\link[grid:rasterGrob]{grid::rasterGrob()}} approximation at the resolution \code{pattern_res}).}
+\item{\code{\link[grid:rectGrob]{grid::rectGrob()}}}{Each of its rectangles is a boundary polygon.}
+\item{\code{\link[=patternGrob]{patternGrob()}}}{An existing pattern grob is returned unchanged
 (use \code{\link[grid:editGrob]{grid::editGrob()}} to change its pattern or parameters).}
 \item{Any other grob}{Its boundary is computed by \code{\link[grid:grobCoords]{grid::grobCoords()}}
 (which requires R 4.2 or later, whose \code{grobCoords()} returns the coordinates of its shapes):
-a \code{circle}, \code{roundrect}, (closed) \code{xspline}, or the filled symbols of \code{points}
+a \code{\link[grid:circleGrob]{grid::circleGrob()}}, \code{\link[grid:roundrectGrob]{grid::roundrectGrob()}}, (closed) \code{\link[grid:xsplineGrob]{grid::xsplineGrob()}},
+or the filled symbols of a \code{\link[grid:pointsGrob]{grid::pointsGrob()}}
 (\code{pch} 21 to 25, whose interior is painted with \code{fill}) are approximated by polygons
-while a \code{gTree} or any other grob (e.g. \code{text}) is the union of its shapes' coordinates
+while a \code{gTree} or any other grob (e.g. a \code{\link[grid:textGrob]{grid::textGrob()}}) is the union of its shapes' coordinates
 masked by the grob itself (so e.g. the glyphs of a text grob get the pattern).
-A grob without a filled area (e.g. lines, a \code{rastergrob}, or \code{points} of other symbols) draws nothing.}
+A grob without a filled area (e.g. a \code{\link[grid:linesGrob]{grid::linesGrob()}}, \code{\link[grid:rasterGrob]{grid::rasterGrob()}},
+or \code{\link[grid:pointsGrob]{grid::pointsGrob()}} of other symbols) draws nothing.}
 }
 A pattern grob with a boundary grob stores it as \code{boundary} (instead of \code{x}, \code{y}, and \code{id})
-so \code{\link[grid:editGrob]{grid::editGrob()}} that element to change its boundary (a \code{polygon} edited in is also measured when drawn).
+so \code{\link[grid:editGrob]{grid::editGrob()}} that element to change its boundary (a \code{\link[grid:polygonGrob]{grid::polygonGrob()}} edited in is also measured when drawn).
 The \code{vp} of \code{boundary} (if any) is pushed within \code{vp} when the pattern grob is drawn
-(as if \code{boundary} were drawn within a gTree with \code{vp}) while a \code{polygon} boundary's \code{vp}
+(as if \code{boundary} were drawn within a gTree with \code{vp}) while a \code{\link[grid:polygonGrob]{grid::polygonGrob()}} boundary's \code{vp}
 is instead combined with \code{vp} by \code{\link[grid:vpStack]{grid::vpStack()}} (as its coordinates are reused).
 }
 \examples{

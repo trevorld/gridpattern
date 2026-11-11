@@ -14,23 +14,24 @@ Breaking Changes
   An `NA` value keeps its meaning (e.g. a transparent colour or a "pch" shape that draws nothing)
   except for `pattern_type`, `pattern_subtype`, `pattern_gravity`, and `pattern_res`
   for which a length-one `NA` is still also treated as unset.
-* The default `shape` of `grid.pattern_regular_polygon()` (and the registered default `pattern_shape`
-  of the "regular_polygon" pattern) is now `"convex6"` (hexagons) instead of `"convex4"`
-  (matching the previous `{ggpattern}` default).
-  Use `shape = "convex4"` to restore the previous appearance.
-* The default `fill` of `grid.pattern_magick()` is now `gp$fill %||% "grey80"` (previously `"grey20"` ignoring `gp$fill`)
-  matching the generic default `pattern_fill` that `patternGrob()` / `{ggpattern}` already used for the "magick" pattern.
-  Use `fill = "grey20"` to restore the previous appearance.
-* The default linewidth (when none of `linewidth`, `size`, nor `gp$lwd` is given) is now `0.5`
-  (matching `{ggpattern}`) instead of `1` for both `patternGrob()` and the `grid.pattern_<name>()` functions
-  so default lines are now half as thick.
-  The generic default of `pattern_size` is likewise now `gp$lwd %||% 0.5`.
-* The spare `{ggpattern}` aesthetics `pattern_phase` and `pattern_option_1` - `pattern_option_5`
-  (which no builtin pattern uses) now have a generic default of `0`
-  (the default `{ggpattern}` already used for them).
-  A custom pattern drawn by `patternGrob()` that used `params$pattern_option_1 %||% my_default`
-  (or checked `is.null(params$pattern_phase)`) to pick its own default when unset now always gets `0`
-  and should instead register its defaults with `register_pattern(defaults = )`.
+  A few pattern defaults were updated to match the previous {ggpattern} defaults (that are now unset) to minimize visual changes downstream:
+
+  * The default `shape` of `grid.pattern_regular_polygon()` (and the registered default `pattern_shape`
+    of the "regular_polygon" pattern) is now `"convex6"` (hexagons) instead of `"convex4"`.
+    Use `shape = "convex4"` to restore the previous appearance.
+  * The default `fill` of `grid.pattern_magick()` is now `gp$fill %||% "grey80"` (previously `"grey20"` ignoring `gp$fill`)
+    matching the generic default `pattern_fill` that `patternGrob()` already used for the "magick" pattern.
+    Use `fill = "grey20"` to restore the previous appearance.
+  * The default linewidth (when none of `linewidth`, `size`, nor `gp$lwd` is given) is now `0.5`
+    instead of `1` for both `patternGrob()` and the `grid.pattern_<name>()` functions
+    so default lines are now half as thick.
+    The generic default of `pattern_size` is likewise now `gp$lwd %||% 0.5`.
+  * The spare `{ggpattern}` aesthetics `pattern_phase` and `pattern_option_1` - `pattern_option_5`
+    (which no builtin pattern uses) now have a generic default of `0`
+    A custom pattern drawn by `patternGrob()` that used `params$pattern_option_1 %||% my_default`
+    (or checked `is.null(params$pattern_phase)`) to pick its own default when unset now always gets `0`
+    and should instead register its defaults with `register_pattern(defaults = )`.
+
 * The default resolution `pattern_res` (`res` argument) of array patterns, the "gradient" pattern,
   and the raster fallbacks of `alphaMaskGrob()` and `clippingPathGrob()`
   (if the package option `ggpattern_res` is unset) is now computed when drawn
@@ -42,7 +43,6 @@ Breaking Changes
   These match the resolutions `{ggpattern}` (<= 1.3.1) computed itself.
   The `res` argument of the `grid.pattern_<name>()` functions, `alphaMaskGrob()`, and `clippingPathGrob()`
   now defaults to `NULL` (unset).
-* Now declares a dependency on R (>= 4.1.0) (previously declared R (>= 3.4.0)).
 * `pattern_units` (`units` argument) may no longer be "npc", "native", nor "null" (now an error, #115).
   Pattern lengths (e.g. `pattern_spacing`, `pattern_xoffset`, and `pattern_yoffset`) were always converted
   along the viewport's width so "npc" and "native" ignored the viewport's height (even for vertical offsets)
@@ -90,39 +90,8 @@ New features
   (even if it doesn't resolve e.g. because of a conflict)
   i.e. whether registering a pattern with that name would clobber or conflict with a pre-existing pattern.
 * `as.patternGrob()` creates a pattern grob whose boundary is (the area filled by) an existing grid grob (#131).
-  A `polygon` grob's coordinates are used directly while a `pathgrob` is filled by its `rule`
-  (any holes are cut out by an alpha mask), a `rect` by its rectangles,
-  and (on R 4.2+) any other grob by its `grid::grobCoords()`
-  (e.g. a `circle`, `roundrect`, or the filled symbols (`pch` 21 to 25) of `points` are approximated
-  by polygons while a `gTree` or `text` grob is also masked by itself).
-  An existing `pattern` grob is returned unchanged.
-* `with_pattern()` fills each area of a grid grob with a pattern (#131):
-  each grob with areas painted with its `fill` (a `polygon`, `rect`, `pathgrob`, `circle`, `roundrect`,
-  closed `xspline`, `fillStrokeGrob()`, or `fillGrob()`, a `gTree` is walked recursively)
-  is replaced in place by a `gTree` drawing each area with its fill only,
-  its pattern grob (made by `as.patternGrob()`), and its border only
-  while other grobs (e.g. lines or text) are left alone.
-  By default (`layers = "area"`) these layers are drawn for each area in turn
-  so overlapping shapes are drawn in their original order
-  while `layers = "grob"` draws each layer for all the areas of a grob at once (fewer grobs).
-  A pattern is drawn with its area's `alpha` (like its fill and border)
-  and with grid's default graphical parameters otherwise
-  (so e.g. a `{ggplot2}` legend key's `gp` isn't inherited)
-  while its boundary is measured with the inherited ones (e.g. a `fontsize` for "lines" units).
-  Its `pattern` and pattern parameters may have one value per area,
-  its `prefix` argument is passed to `patternGrob()`, and it also takes a `gList` of grobs.
-  Its `group` argument fills several areas of the same grob with one pattern
-  (e.g. the polygons of each row of a `{sf}` MULTIPOLYGON geometry)
-  and the `leaves` argument of its `gTree` / `gList` methods selects which grob classes
-  within them are patterned (by default `points` are left alone e.g. the outliers of a `{ggplot2}` boxplot
-  while a `points` grob given itself gets a pattern per filled symbol).
-  In R 4.1 it can only pattern the areas of a `polygon`, `pathgrob`, or `rect`
-  (others raise a clear error when the pattern grob is made).
-* `area_boundaries()` splits a grid grob into one boundary grob per such area
-  (e.g. one per polygon of a `polygon` grob, per path of a `pathgrob`,
-  per closed spline of an `xspline` grob, per filled symbol (`pch` 21 to 25) of a `points` grob,
-  or the single path of a `fillStrokeGrob()` or `fillGrob()`);
-  the areas of a `gTree` or `gList` are those of its grobs (of the `leaves` classes) in order.
+* `with_pattern()` fills each area of an object with a pattern (#131).
+* `area_boundaries()` splits a grid grob into one boundary grob per such area.
 
 Bug fixes and minor improvements
 --------------------------------
@@ -158,23 +127,8 @@ Bug fixes and minor improvements
   or else `grDevices::png()` which on Windows always uses GDI,
   on macOS uses Quartz (which only supports clipping paths in R >= 4.3.0 and alpha masks in R >= 4.5.0),
   and elsewhere doesn't use Cairo if R lacks Pango (`getOption("bitmapType")` is then `"Xlib"`).
-  Neither an older `{ragg}`, GDI, nor Xlib support clipping paths or masks so the (manual) raster fallbacks were less accurate
-  (and Xlib needs an X11 display).
-* The raster fallbacks of `alphaMaskGrob()` and `clippingPathGrob()` that use a `png_device`
-  now also accept grey (or grey + alpha) PNG images from it.
 * `grid::grobCoords()` of a `patternGrob()` is now the coordinates of its boundary
   (without building the pattern).
-  Previously it was the coordinates of whatever the pattern drew
-  which was slow for some patterns, empty for array patterns (and raster fallbacks),
-  and too large for masked patterns like "rose" and "text".
-* Drawing patterns, `alphaMaskGrob()`, and `clippingPathGrob()` no longer call `grDevices::dev.set()`
-  to restore the graphics device when the current device never changed
-  (which needlessly triggered the device's (de)activate callbacks e.g. window title updates for `quartz()`)
-  and never call `grDevices::dev.set(1L)` (which would open a new device) (#120).
-  Drawing array patterns (e.g. "image", "magick", "placeholder") and the raster fallbacks of
-  `alphaMaskGrob()` and `clippingPathGrob()` now restore the previous graphics device
-  *before* closing their temporary devices (so no unrelated device briefly becomes the current device)
-  and the raster fallbacks now also close their temporary devices if there is an error while drawing.
 * The "hatch" pattern types drawn by other patterns
   (e.g. "or" circles, "olive", "proper" waves, Goodman "steel" and "copper", and Unicode "cendree" checkers)
   now pass on `pattern_units`, `pattern_xoffset`, and `pattern_yoffset`.
@@ -192,10 +146,7 @@ Bug fixes and minor improvements
     so their raster approximations are no longer distorted in non-square viewports.
 * The "circle", "regular_polygon", "rose", "text", and "weave" patterns
   (and the patterns drawn with them e.g. "pch", "polygon_tiling", and the "cendree" hatch)
-  are much faster when the pattern grid is dense (many points per viewport)
-  e.g. a small `spacing` or a thin viewport in which the default "snpc" `spacing` is small.
-  For example, a default "circle" pattern in a 3.7 bigpts wide viewport
-  (a `{ggpattern}` panel squeezed by a wide legend in a small plot pane) now draws in well under a second instead of 37 (#119).
+  are much faster when the pattern grid is dense (many points per viewport) (#119).
 * Patterns now draw nothing (a `grid::nullGrob()`) instead of throwing an error (or building a huge pattern grid)
   in a viewport whose width or height is smaller than a device pixel (including zero or negative)
   e.g. a `{ggpattern}` panel squeezed to nothing (or beyond) by a wide legend in a small plot pane (#119).
@@ -203,9 +154,7 @@ Bug fixes and minor improvements
   (their default "snpc" spacing was zero or negative) and the "plasma" pattern threw `the dims contain negative values`.
 * The patterns with a two-dimensional grid ("circle", "regular_polygon", "rose", "text", "weave",
   and the hatch types they draw e.g. "cendree") now draw nothing (a `grid::nullGrob()`)
-  instead of possibly exhausting memory when their grid would have more than ten million points
-  e.g. the default "snpc" spacing in a viewport over 80 times wider than tall
-  or a spacing about 1/1600 of the viewport's longer side (such a pattern would be invisible anyway, #119).
+  instead of possibly exhausting memory when their grid would have more than ten million points (#119).
 * The geometry patterns drawn with `{sf}` (e.g. "circle", "crosshatch", "regular_polygon", "stripe", "wave", and "weave")
   now fill every lobe of a self-intersecting boundary (e.g. a "bow tie" polygon).
   Previously only one lobe was filled (the zero-width buffer that cleaned up the boundary kept only one).

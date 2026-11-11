@@ -4,7 +4,7 @@
 \alias{with_pattern}
 \alias{with_pattern.gTree}
 \alias{with_pattern.gList}
-\title{Fill the areas of a grob with patterns}
+\title{Fill the areas of an object with patterns}
 \usage{
 with_pattern(
   x,
@@ -41,7 +41,7 @@ with_pattern(
 )
 }
 \arguments{
-\item{x}{A grid grob or a \code{\link[grid:gList]{grid::gList()}} of grobs (whose areas are those of its grobs in order).}
+\item{x}{An object with filled areas such as a grid grob or a \code{\link[grid:gList]{grid::gList()}}.}
 
 \item{pattern}{Name of the pattern (see \code{\link[=patternGrob]{patternGrob()}}):
 either one (for every area) or one per area (or \code{group}) of \code{x}.}
@@ -52,8 +52,9 @@ or per \code{group} (in the order of \code{unique(group)}).
 A multi-valued parameter of a single area must be wrapped in a list
 (e.g. \code{fill = list(c("red", "blue"))} for alternating stripes)
 while a \code{\link[grid:pattern]{grid::pattern()}} fill counts as one value.
-\code{y}, \code{id}, \code{name}, \code{gp}, \code{vp}, and \code{boundary} can't be given
-(the pattern grobs take their boundaries from the areas of \code{x}).}
+\code{\link[=patternGrob]{patternGrob()}}'s \code{y}, \code{id}, \code{name}, \code{gp}, \code{vp}, and \code{boundary} can't be given:
+each area's pattern grob takes its boundary, name, graphical parameters,
+and viewport from its area.}
 
 \item{group}{If not \code{NULL}, one value per area of \code{x} (in the order of \code{area_boundaries(x)})
 grouping the areas filled by the same pattern:
@@ -72,59 +73,49 @@ in \code{...} (e.g. \code{prefix = ""} for parameters already named \verb{patter
 which may have areas (passed to \code{\link[=area_boundaries]{area_boundaries()}}).}
 }
 \value{
-A \code{\link[grid:gTree]{grid::gTree()}} (or a \code{\link[grid:gList]{grid::gList()}} if \code{x} is one)
+For a grid grob a \code{\link[grid:gTree]{grid::gTree()}} (or a \code{\link[grid:gList]{grid::gList()}} if \code{x} is one)
 unless \code{x} has no fillable areas in which case \code{x} is returned unchanged.
 }
 \description{
-\code{with_pattern()} returns \code{x} with each area it paints with its \code{fill} (see \code{\link[=area_boundaries]{area_boundaries()}})
-also filled with a pattern.
-Each grob with such areas (by default a \code{polygon}, \code{rect}, \code{pathgrob}, \code{circle}, \code{roundrect},
-(closed) \code{xspline},
-\code{\link[grid:fillStrokeGrob]{grid::fillStrokeGrob()}}, or \code{\link[grid:fillGrob]{grid::fillGrob()}}, see the \code{leaves} argument)
-is replaced in place by a \code{gTree} drawing each of its areas with three layers:
-the area drawn with its fill only (named \code{"fill"}),
-its pattern grob made by \code{\link[=as.patternGrob]{as.patternGrob()}}
-(within a \code{gTree} named \code{"pattern"}, the pattern grob of the \code{i}th area or group is named \code{"area.i"}),
-and the area drawn with its border only (named \code{"border"}).
-With \code{layers = "area"} (the default) the layers of each area are drawn in turn
-(within a \code{gTree} named \code{"area.i"} for the \code{i}th area or group)
-as are the grob's shapes without areas (e.g. the unfilled symbols of \code{points}, named \code{"shape.j"}
-for its \code{j}th shape) so overlapping shapes are drawn in their original order.
-The areas of a \code{group} are drawn together where its first area is.
-With \code{layers = "grob"} (fewer grobs, the same output if its areas neither overlap
-nor share borders of differing colours or widths) the replacement instead draws the three layers
-(named \code{"fill"}, \code{"pattern"}, and \code{"border"}) each for all its areas.
-A grob with a single shape or whose \code{fill} is a \code{\link[grid:pattern]{grid::pattern()}} relative to all its shapes
-(\code{group = TRUE}, e.g. a gradient spanning them) is always layered like \code{layers = "grob"}.
-The replacement keeps the grob's \code{name}, \code{vp}, and attributes
-so e.g. the \code{\link[grid:gPath]{grid::gPath()}}s of a \code{gTree}'s other children stay valid.
-A \code{gTree} (or \code{gList}) is walked recursively while any other grob without areas
-(e.g. lines or text) is returned unchanged.
+\code{with_pattern()} returns a modified version of its input with each area it paints with a \code{fill} also filled with a pattern.
 }
 \details{
-By default the (filled) \code{points} children of a \code{gTree} or \code{gList} aren't patterned
+\code{with_pattern()} returns a modified version of the object \code{x} with each area it paints with its \code{fill} (see \code{\link[=area_boundaries]{area_boundaries()}}) also filled with a pattern.
+This package provides its methods for grid grobs
+(another package may add a method for its own class of object).
+Each grob with such areas (by default a \code{\link[grid:polygonGrob]{grid::polygonGrob()}}, \code{\link[grid:rectGrob]{grid::rectGrob()}}, \code{\link[grid:pathGrob]{grid::pathGrob()}},
+\code{\link[grid:circleGrob]{grid::circleGrob()}}, \code{\link[grid:roundrectGrob]{grid::roundrectGrob()}}, (closed) \code{\link[grid:xsplineGrob]{grid::xsplineGrob()}},
+\code{\link[grid:fillStrokeGrob]{grid::fillStrokeGrob()}}, or \code{\link[grid:fillGrob]{grid::fillGrob()}}, see the \code{leaves} argument)
+is replaced in place by a \code{gTree} (keeping its \code{name} and \code{vp})
+drawing each area's fill, its pattern (made by \code{\link[=as.patternGrob]{as.patternGrob()}}), and its border.
+
+\code{layers = "area"} (the default) keeps overlapping shapes in their original order
+while \code{layers = "grob"} uses fewer grobs and gives the same output
+unless the areas overlap or have borders of differing colours or widths
+(a grob with a single shape or whose \code{fill} is a \code{\link[grid:pattern]{grid::pattern()}} relative to all its shapes
+is always layered this way).
+A \code{gTree} (or \code{gList}) is walked recursively
+while a grob without areas (e.g. lines or text) is returned unchanged.
+
+By default the filled symbols of a \code{\link[grid:pointsGrob]{grid::pointsGrob()}} within a \code{gTree} or \code{gList} aren't patterned
 (e.g. the outliers of a \code{{ggplot2}} boxplot) unless \code{"points"} is added to \code{leaves}
-but a \code{points} grob given as \code{x} itself is (one pattern per filled symbol, see \code{\link[=area_boundaries]{area_boundaries()}}).
-Areas other than those of a \code{polygon}, \code{pathgrob}, or \code{rect} are measured by \code{\link[grid:grobCoords]{grid::grobCoords()}}
-whose return value R 4.2 changed so patterning them requires R (>= 4.2.0)
-(else \code{with_pattern()} raises an error).
+but a \code{\link[grid:pointsGrob]{grid::pointsGrob()}} given as \code{x} itself is (one pattern per filled symbol).
+Areas other than those of a \code{\link[grid:polygonGrob]{grid::polygonGrob()}}, \code{\link[grid:pathGrob]{grid::pathGrob()}}, or \code{\link[grid:rectGrob]{grid::rectGrob()}}
+are measured by \code{\link[grid:grobCoords]{grid::grobCoords()}}
+so patterning them requires R (>= 4.2.0).
 
 A \code{group} of several areas of the same grob is filled by one pattern
-whose boundary is the union of the areas (e.g. so a gradient or image spans them all):
-e.g. the polygons of each row of a \code{{sf}} MULTIPOLYGON geometry
+whose boundary is their union (each path keeping its holes)
+e.g. so a gradient or image spans the polygons of each row of a \code{{sf}} MULTIPOLYGON geometry
 (which \code{\link[sf:st_as_grob]{sf::st_as_grob()}} draws as one path per polygon).
-The areas of a \code{polygon}, \code{pathgrob} (each area keeping its own holes),
-\code{rect}, \code{circle}, \code{xspline}, or \code{points} can be grouped.
 
-The pattern grobs are drawn within a \code{gTree} with grid's default graphical parameters
-so they don't inherit the \code{col}, \code{fill}, etc. of the ancestors of \code{x}
-(e.g. of a legend key) except \code{alpha} (which multiplies the alpha of any grob within).
+The pattern grobs don't inherit the \code{col}, \code{fill}, etc. of the ancestors of \code{x}
+(e.g. of a legend key), only their \code{alpha}.
 \code{with_pattern()} splits the shapes a grob has when it is called
 so a grob which only builds them when drawn
-(with a \code{\link[grid:makeContext]{grid::makeContext()}} or \code{\link[grid:makeContent]{grid::makeContent()}} method, e.g. a \code{gTree} building its children then)
-has no areas until it is forced with \code{\link[grid:forceGrob]{grid::forceGrob()}}
-(in the viewport it will be drawn in since its shapes may depend on it)
-or resolved by the \code{\link[grid:makeContent]{grid::makeContent()}} method of a \code{gTree} wrapping it which then calls \code{with_pattern()}.
+(with a \code{\link[grid:makeContext]{grid::makeContext()}} or \code{\link[grid:makeContent]{grid::makeContent()}} method)
+has no areas until it is forced with \code{\link[grid:forceGrob]{grid::forceGrob()}} (in the viewport it will be drawn in)
+or wrapped in a \code{gTree} whose \code{\link[grid:makeContent]{grid::makeContent()}} method calls \code{with_pattern()}.
 }
 \examples{
 if (require("grid", quietly = TRUE)) {
@@ -135,14 +126,12 @@ if (require("grid", quietly = TRUE)) {
                 gp = gpar(fill = "pink", col = "red", lwd = 3)),
     textGrob("text is left alone", y = 0.05, name = "label")
   ), name = "tree")
-  length(area_boundaries(tree)) # 3: two rects and the triangle
   # one value per area (in that order) or one for all
   patterned <- with_pattern(tree, c("stripe", "stripe", "crosshatch"),
                             fill = c("blue", "orange", "red"), angle = c(45, -45, 0),
                             density = 0.4)
   grid.newpage()
   grid.draw(patterned)
-  grid.ls(patterned)
 }
 }
 \seealso{
