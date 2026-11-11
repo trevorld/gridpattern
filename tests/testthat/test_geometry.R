@@ -919,3 +919,7 @@ test_that("every lobe of a self-intersecting boundary is filled", {
 		grid.pattern_circle(x, y, fill = "blue", density = 0.6, spacing = 0.1)
 	})
 })
+
+test_that("a `pattern` of `NA` draws nothing (like \"none\")", {
+	expect_identical(patternGrob(NA)$entry, patternGrob("none")$entry)
+})

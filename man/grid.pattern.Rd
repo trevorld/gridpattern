@@ -40,6 +40,7 @@ patternGrob(
 }
 \arguments{
 \item{pattern}{Name of pattern.  See Details section for a list of supported patterns.
+An \code{NA} pattern draws nothing (like \code{"none"}).
 Builtin patterns may also be referred to by their qualified name e.g. \code{"gridpattern::stripe"}
 and custom patterns registered by packages by \code{"pkg::name"}.
 A qualified name \code{"pkg::name"} (or a bare name preferred to a pattern of \code{{pkg}},
