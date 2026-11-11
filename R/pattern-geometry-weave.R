@@ -102,6 +102,9 @@ create_pattern_weave_via_sf <- function(params, boundary_df, aspect_ratio, legen
 	if (length(params$pattern_density) != 1L) {
 		abort("The \"weave\" pattern needs a single `density` value.")
 	}
+	# we'll compute 'covered' and 'uncovered' 'warp' rectangles to represent warp 'yarns'
+	# (first: its grid density check should fail before the weft's many stripes are built)
+	l <- create_warp_via_sf(params, boundary_df)
 	# 'weft' 'yarns' will just be normal (horizontal) stripes
 	grob_weft <- create_crosshatch_via_sf_helper(
 		params,
@@ -109,8 +112,6 @@ create_pattern_weave_via_sf <- function(params, boundary_df, aspect_ratio, legen
 		add_top_hatch = FALSE,
 		name = "weft"
 	)
-	# we'll compute 'covered' and 'uncovered' 'warp' rectangles to represent warp 'yarns'
-	l <- create_warp_via_sf(params, boundary_df)
 	grobTree(l$warp_covered, grob_weft, l$warp_uncovered, name = "weave")
 }
 
