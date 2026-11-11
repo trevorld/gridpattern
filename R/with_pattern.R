@@ -35,9 +35,11 @@
 #' (e.g. of a legend key), only their `alpha`.
 #' `with_pattern()` splits the shapes a grob has when it is called
 #' so a grob which only builds them when drawn
-#' (with a [grid::makeContext()] or [grid::makeContent()] method)
-#' has no areas until it is forced with [grid::forceGrob()] (in the viewport it will be drawn in)
-#' or wrapped in a `gTree` whose [grid::makeContent()] method calls `with_pattern()`.
+#' (with a [grid::makeContext()] or [grid::makeContent()] method, e.g. the dot stack of a `{ggplot2}` dotplot)
+#' has no areas unless `delay = TRUE`:
+#' the result is then a `gTree` which forces the grob with [grid::forceGrob()] when it is drawn
+#' (in the viewport it is drawn in) and fills the areas it has then
+#' (so an error about their number is raised then too).
 #' @param x An object with filled areas such as a grid grob or a [grid::gList()].
 #' @param pattern Name of the pattern (see [patternGrob()]):
 #'                either one (for every area) or one per area (or `group`) of `x`.
@@ -56,13 +58,18 @@
 #' @param layers Either `"area"` to draw the fill, pattern, and border of each area in turn
 #'               or `"grob"` to draw the fills of all the areas of a grob, then their patterns,
 #'               then their borders.
+#' @param delay If `TRUE` the areas of `x` are filled when it is drawn
+#'              (after forcing it with [grid::forceGrob()]) rather than now
+#'              and the result is a `gTree` (of class `"delayed_pattern"`) drawing them:
+#'              for a grob which only builds its shapes when drawn.
 #' @param leaves The classes of the (non-`gTree`) grobs within a `gTree` or `gList`
 #'               which may have areas (passed to [area_boundaries()]).
 #' @param legend Passed to [patternGrob()] (e.g. the numeric zoom of a legend key).
 #' @param prefix Passed to [patternGrob()]: the prefix prepended to the names of the pattern parameters
 #'               in `...` (e.g. `prefix = ""` for parameters already named `pattern_*`).
 #' @return For a grid grob a [grid::gTree()] (or a [grid::gList()] if `x` is one)
-#'         unless `x` has no fillable areas in which case `x` is returned unchanged.
+#'         unless `x` has no fillable areas in which case `x` is returned unchanged
+#'         (with `delay = TRUE` always a `gTree`).
 #' @examples
 #' if (require("grid", quietly = TRUE)) {
 #'   tree <- gTree(children = gList(
@@ -94,6 +101,7 @@ with_pattern.gTree <- function(
 	...,
 	group = NULL,
 	layers = c("area", "grob"),
+	delay = FALSE,
 	leaves = c(
 		"polygon",
 		"pathgrob",
@@ -107,6 +115,15 @@ with_pattern.gTree <- function(
 	legend = FALSE,
 	prefix = "pattern_"
 ) {
+	if (check_delay(delay, rlang::current_env())) {
+		return(delayed_pattern(
+			x,
+			pattern,
+			list(...),
+			list(group = group, layers = layers, leaves = leaves, legend = legend, prefix = prefix),
+			rlang::current_env()
+		))
+	}
 	walk <- if (inherits(x, "gTree") && has_area_boundaries_method(x)) {
 		# (a gTree subclass with its own `area_boundaries()` method is itself the only leaf)
 		function(f, rebuild) f(x, list(), list())
@@ -120,7 +137,7 @@ with_pattern.gTree <- function(
 		pattern,
 		list(...),
 		group,
-		match.arg(layers),
+		rlang::arg_match(layers),
 		legend,
 		prefix,
 		rlang::current_env()
@@ -139,9 +156,19 @@ with_pattern.grob <- function(
 	...,
 	group = NULL,
 	layers = c("area", "grob"),
+	delay = FALSE,
 	legend = FALSE,
 	prefix = "pattern_"
 ) {
+	if (check_delay(delay, rlang::current_env())) {
+		return(delayed_pattern(
+			x,
+			pattern,
+			list(...),
+			list(group = group, layers = layers, legend = legend, prefix = prefix),
+			rlang::current_env()
+		))
+	}
 	# (`x` itself is the only leaf whatever its class)
 	pattern_leaves(
 		x,
@@ -150,7 +177,7 @@ with_pattern.grob <- function(
 		pattern,
 		list(...),
 		group,
-		match.arg(layers),
+		rlang::arg_match(layers),
 		legend,
 		prefix,
 		rlang::current_env()
@@ -163,6 +190,83 @@ with_pattern.default <- function(x, ...) {
 		glue("No `with_pattern()` method for an object of class `{class(x)[1L]}`."),
 		i = "This package provides methods for grid grobs and gLists."
 	))
+}
+
+check_delay <- function(delay, call) {
+	if (!rlang::is_bool(delay)) {
+		abort("`delay` must be `TRUE` or `FALSE`.", call = call)
+	}
+	delay
+}
+
+# A gTree (keeping the name and attributes of `x`) filling the areas `x` has when it is drawn
+# (`delay = TRUE`): its `makeContent()` method forces `x` (in the viewport it is drawn in,
+# see `grid::forceGrob()`) and patterns the forced grob with the `pattern`,
+# pattern parameters (`params`), and other arguments (`args`) of `with_pattern()`.
+# The checks which don't depend on the number of areas are made now
+# (errors while drawing leave the graphics device locked).
+delayed_pattern <- function(x, pattern, params, args, call) {
+	area_state(pattern, params, NULL, list(), call)
+	args$layers <- rlang::arg_match0(
+		args$layers,
+		c("area", "grob"),
+		arg_nm = "layers",
+		error_call = call
+	)
+	legend_scale(args$legend)
+	if (!is.null(args$group) && (!is.atomic(args$group) || anyNA(args$group))) {
+		abort("`group` must be an atomic vector without missing values.", call = call)
+	}
+	wrapper <- gTree(
+		grob = x,
+		args = c(list(pattern = pattern), params, args),
+		name = x$name,
+		cl = "delayed_pattern"
+	)
+	keep_attributes(wrapper, x)
+}
+
+#' @export
+makeContent.delayed_pattern <- function(x) {
+	forced <- force_grob(x$grob)
+	patterned <- rlang::try_fetch(
+		# (`quote`: the stored arguments are values, not expressions to evaluate)
+		do.call("with_pattern", c(list(forced), x$args), quote = TRUE),
+		error = function(cnd) {
+			abort(
+				"The areas of `x` couldn't be filled when it was drawn (`delay = TRUE`).",
+				parent = cnd,
+				call = quote(with_pattern())
+			)
+		}
+	)
+	setChildren(x, gList(patterned))
+}
+
+# `x` (a grob or gList) forced in the current viewport (see `grid::forceGrob()`)
+# without the `.ORIGINAL` copies of the unforced grobs `forceGrob()` keeps for `grid::grid.revert()`
+# (the shapes, layers, and boundaries split from the forced grobs would each carry one)
+force_grob <- function(x) {
+	if (inherits(x, "gList")) {
+		return(as_gList(lapply(unclass(x), force_grob)))
+	}
+	forced <- forceGrob(x)
+	if (!inherits(x, "gTree") && inherits(forced, "gTree")) {
+		# (`forceGrob()`'s grob method doesn't force the children of a gTree
+		# which a `makeContent()` method returned: its gTree method does)
+		forced <- forceGrob(forced)
+		class(forced) <- unique(class(forced))
+	}
+	drop_originals(forced)
+}
+
+drop_originals <- function(grob) {
+	grob$.ORIGINAL <- NULL
+	if (inherits(grob, "gTree") && length(grob$children) > 0L) {
+		# (`setChildren()` names the children again)
+		grob <- setChildren(grob, as_gList(lapply(grob$children, drop_originals)))
+	}
+	grob
 }
 
 # `x` with each of its leaves with areas patterned: `walk(f, rebuild)` applies `f()` to each leaf
@@ -445,8 +549,12 @@ area_layered_grob <- function(grob, shapes, patterns, area_group) {
 
 # a gTree of the `children` replacing `grob` (keeping its name, viewport, and attributes)
 layered_wrapper <- function(grob, children) {
-	wrapper <- gTree(children = children, name = grob$name, vp = grob$vp)
-	# keep the grob's attributes (e.g. the `width` / `height` of a {ggplot2} legend key)
+	keep_attributes(gTree(children = children, name = grob$name, vp = grob$vp), grob)
+}
+
+# `wrapper` with the attributes of the `grob` it replaces
+# (e.g. the `width` / `height` of a {ggplot2} legend key)
+keep_attributes <- function(wrapper, grob) {
 	for (a in setdiff(names(attributes(grob)), c("names", "class"))) {
 		attr(wrapper, a) <- attr(grob, a)
 	}

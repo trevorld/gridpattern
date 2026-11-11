@@ -13,7 +13,8 @@
 #' * filled symbol (`pch` 21 to 25) of a [grid::pointsGrob()] (in point order)
 #' * the (single) path of a [grid::fillStrokeGrob()] or [grid::fillGrob()]
 #' * Grobs without such an area (e.g. lines or text) have none nor does a grob which only builds its shapes when drawn
-#'   (with a [grid::makeContext()] or [grid::makeContent()] method) until it is forced with [grid::forceGrob()].
+#'   (with a [grid::makeContext()] or [grid::makeContent()] method) until it is forced with [grid::forceGrob()]
+#'   (as [with_pattern()] does when drawn if `delay = TRUE`).
 #'
 #' The areas are in a fixed order
 #' (which the per-area pattern parameters and `group` of [with_pattern()] follow):

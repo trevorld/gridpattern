@@ -47,7 +47,8 @@ A \code{\link[grid:gList]{grid::gList()}} of grobs (one per area, empty if \code
 \item filled symbol (\code{pch} 21 to 25) of a \code{\link[grid:pointsGrob]{grid::pointsGrob()}} (in point order)
 \item the (single) path of a \code{\link[grid:fillStrokeGrob]{grid::fillStrokeGrob()}} or \code{\link[grid:fillGrob]{grid::fillGrob()}}
 \item Grobs without such an area (e.g. lines or text) have none nor does a grob which only builds its shapes when drawn
-(with a \code{\link[grid:makeContext]{grid::makeContext()}} or \code{\link[grid:makeContent]{grid::makeContent()}} method) until it is forced with \code{\link[grid:forceGrob]{grid::forceGrob()}}.
+(with a \code{\link[grid:makeContext]{grid::makeContext()}} or \code{\link[grid:makeContent]{grid::makeContent()}} method) until it is forced with \code{\link[grid:forceGrob]{grid::forceGrob()}}
+(as \code{\link[=with_pattern]{with_pattern()}} does when drawn if \code{delay = TRUE}).
 }
 
 The areas are in a fixed order

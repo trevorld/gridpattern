@@ -15,6 +15,7 @@ with_pattern(x, pattern = "stripe", ...)
   ...,
   group = NULL,
   layers = c("area", "grob"),
+  delay = FALSE,
   leaves = c("polygon", "pathgrob", "rect", "circle", "roundrect", "xspline",
     "GridFillStroke", "GridFill"),
   legend = FALSE,
@@ -27,6 +28,7 @@ with_pattern(x, pattern = "stripe", ...)
   ...,
   group = NULL,
   layers = c("area", "grob"),
+  delay = FALSE,
   leaves = c("polygon", "pathgrob", "rect", "circle", "roundrect", "xspline",
     "GridFillStroke", "GridFill"),
   legend = FALSE,
@@ -39,6 +41,7 @@ with_pattern(x, pattern = "stripe", ...)
   ...,
   group = NULL,
   layers = c("area", "grob"),
+  delay = FALSE,
   legend = FALSE,
   prefix = "pattern_"
 )
@@ -67,6 +70,11 @@ the areas of a group must be areas of the same grob.}
 or \code{"grob"} to draw the fills of all the areas of a grob, then their patterns,
 then their borders.}
 
+\item{delay}{If \code{TRUE} the areas of \code{x} are filled when it is drawn
+(after forcing it with \code{\link[grid:forceGrob]{grid::forceGrob()}}) rather than now
+and the result is a \code{gTree} (of class \code{"delayed_pattern"}) drawing them:
+for a grob which only builds its shapes when drawn.}
+
 \item{leaves}{The classes of the (non-\code{gTree}) grobs within a \code{gTree} or \code{gList}
 which may have areas (passed to \code{\link[=area_boundaries]{area_boundaries()}}).}
 
@@ -77,7 +85,8 @@ in \code{...} (e.g. \code{prefix = ""} for parameters already named \verb{patter
 }
 \value{
 For a grid grob a \code{\link[grid:gTree]{grid::gTree()}} (or a \code{\link[grid:gList]{grid::gList()}} if \code{x} is one)
-unless \code{x} has no fillable areas in which case \code{x} is returned unchanged.
+unless \code{x} has no fillable areas in which case \code{x} is returned unchanged
+(with \code{delay = TRUE} always a \code{gTree}).
 }
 \description{
 \code{with_pattern()} returns a modified version of its input with each area it paints with a \code{fill} also filled with a pattern.
@@ -116,9 +125,11 @@ The pattern grobs don't inherit the \code{col}, \code{fill}, etc. of the ancesto
 (e.g. of a legend key), only their \code{alpha}.
 \code{with_pattern()} splits the shapes a grob has when it is called
 so a grob which only builds them when drawn
-(with a \code{\link[grid:makeContext]{grid::makeContext()}} or \code{\link[grid:makeContent]{grid::makeContent()}} method)
-has no areas until it is forced with \code{\link[grid:forceGrob]{grid::forceGrob()}} (in the viewport it will be drawn in)
-or wrapped in a \code{gTree} whose \code{\link[grid:makeContent]{grid::makeContent()}} method calls \code{with_pattern()}.
+(with a \code{\link[grid:makeContext]{grid::makeContext()}} or \code{\link[grid:makeContent]{grid::makeContent()}} method, e.g. the dot stack of a \code{{ggplot2}} dotplot)
+has no areas unless \code{delay = TRUE}:
+the result is then a \code{gTree} which forces the grob with \code{\link[grid:forceGrob]{grid::forceGrob()}} when it is drawn
+(in the viewport it is drawn in) and fills the areas it has then
+(so an error about their number is raised then too).
 }
 \examples{
 if (require("grid", quietly = TRUE)) {
