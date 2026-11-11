@@ -4,17 +4,10 @@
 \alias{with_pattern}
 \alias{with_pattern.gTree}
 \alias{with_pattern.gList}
+\alias{with_pattern.grob}
 \title{Fill the areas of an object with patterns}
 \usage{
-with_pattern(
-  x,
-  pattern = "stripe",
-  ...,
-  group = NULL,
-  layers = c("area", "grob"),
-  legend = FALSE,
-  prefix = "pattern_"
-)
+with_pattern(x, pattern = "stripe", ...)
 
 \method{with_pattern}{gTree}(
   x,
@@ -36,6 +29,16 @@ with_pattern(
   layers = c("area", "grob"),
   leaves = c("polygon", "pathgrob", "rect", "circle", "roundrect", "xspline",
     "GridFillStroke", "GridFill"),
+  legend = FALSE,
+  prefix = "pattern_"
+)
+
+\method{with_pattern}{grob}(
+  x,
+  pattern = "stripe",
+  ...,
+  group = NULL,
+  layers = c("area", "grob"),
   legend = FALSE,
   prefix = "pattern_"
 )
@@ -64,13 +67,13 @@ the areas of a group must be areas of the same grob.}
 or \code{"grob"} to draw the fills of all the areas of a grob, then their patterns,
 then their borders.}
 
+\item{leaves}{The classes of the (non-\code{gTree}) grobs within a \code{gTree} or \code{gList}
+which may have areas (passed to \code{\link[=area_boundaries]{area_boundaries()}}).}
+
 \item{legend}{Passed to \code{\link[=patternGrob]{patternGrob()}} (e.g. the numeric zoom of a legend key).}
 
 \item{prefix}{Passed to \code{\link[=patternGrob]{patternGrob()}}: the prefix prepended to the names of the pattern parameters
 in \code{...} (e.g. \code{prefix = ""} for parameters already named \verb{pattern_*}).}
-
-\item{leaves}{The classes of the (non-\code{gTree}) grobs within a \code{gTree} or \code{gList}
-which may have areas (passed to \code{\link[=area_boundaries]{area_boundaries()}}).}
 }
 \value{
 For a grid grob a \code{\link[grid:gTree]{grid::gTree()}} (or a \code{\link[grid:gList]{grid::gList()}} if \code{x} is one)

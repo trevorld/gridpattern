@@ -82,15 +82,7 @@
 #' @seealso [area_boundaries()] for the areas of a grob
 #'          and [as.patternGrob()] for the pattern grob of a single boundary grob.
 #' @export
-with_pattern <- function(
-	x,
-	pattern = "stripe",
-	...,
-	group = NULL,
-	layers = c("area", "grob"),
-	legend = FALSE,
-	prefix = "pattern_"
-) {
+with_pattern <- function(x, pattern = "stripe", ...) {
 	UseMethod("with_pattern")
 }
 
@@ -139,6 +131,7 @@ with_pattern.gTree <- function(
 #' @export
 with_pattern.gList <- with_pattern.gTree
 
+#' @rdname with_pattern
 #' @export
 with_pattern.grob <- function(
 	x,
