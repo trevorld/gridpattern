@@ -41,12 +41,13 @@
 #' (in the viewport it is drawn in) and fills the areas it has then
 #' (so an error about their number is raised then too).
 #' @param x An object with filled areas such as a grid grob or a [grid::gList()].
-#' @param pattern Name of the pattern (see [patternGrob()]):
-#'                either one (for every area) or one per area (or `group`) of `x`.
-#'                `NA` leaves an area (or group) as it is.
-#' @param ... Pattern parameters (see [patternGrob()]) each either of length one (for every area)
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> The `pattern` name (`"stripe"` by default,
+#'            see [patternGrob()]; `NA` leaves an area as it is) and the pattern parameters,
+#'            each either of length one (for every area)
 #'            or with one value per area of `x` (in the order of `area_boundaries(x)`)
 #'            or per `group` (in the order of `unique(group)`).
+#'            A list or data frame of them can be spliced in with `!!!`
+#'            e.g. `with_pattern(x, !!!params)`.
 #'            A multi-valued parameter of a single area must be wrapped in a list
 #'            (e.g. `fill = list(c("red", "blue"))` for alternating stripes)
 #'            while a [grid::pattern()] fill counts as one value.
@@ -81,7 +82,8 @@
 #'     textGrob("text is left alone", y = 0.05, name = "label")
 #'   ), name = "tree")
 #'   # one value per area (in that order) or one for all
-#'   patterned <- with_pattern(tree, c("stripe", "stripe", "crosshatch"),
+#'   patterned <- with_pattern(tree,
+#'                             pattern = c("stripe", "stripe", "crosshatch"),
 #'                             fill = c("blue", "orange", "red"), angle = c(45, -45, 0),
 #'                             density = 0.4)
 #'   grid.newpage()
@@ -90,7 +92,7 @@
 #' @seealso [area_boundaries()] for the areas of a grob
 #'          and [as.patternGrob()] for the pattern grob of a single boundary grob.
 #' @export
-with_pattern <- function(x, pattern = "stripe", ...) {
+with_pattern <- function(x, ...) {
 	UseMethod("with_pattern")
 }
 
@@ -98,7 +100,6 @@ with_pattern <- function(x, pattern = "stripe", ...) {
 #' @export
 with_pattern.gTree <- function(
 	x,
-	pattern = "stripe",
 	...,
 	group = NULL,
 	layers = c("area", "grob"),
@@ -116,13 +117,15 @@ with_pattern.gTree <- function(
 	legend = FALSE,
 	prefix = "pattern_"
 ) {
-	if (check_delay(delay, rlang::current_env())) {
+	call <- rlang::current_env()
+	dots <- dots_pattern(..., formals = names(formals()), call = call)
+	if (check_delay(delay, call)) {
 		return(delayed_pattern(
 			x,
-			pattern,
-			list(...),
+			dots$pattern,
+			dots$params,
 			list(group = group, layers = layers, leaves = leaves, legend = legend, prefix = prefix),
-			rlang::current_env()
+			call
 		))
 	}
 	walk <- if (inherits(x, "gTree") && has_area_boundaries_method(x)) {
@@ -135,13 +138,13 @@ with_pattern.gTree <- function(
 		x,
 		walk,
 		leaves,
-		pattern,
-		list(...),
+		dots$pattern,
+		dots$params,
 		group,
 		rlang::arg_match(layers),
 		legend,
 		prefix,
-		rlang::current_env()
+		call
 	)
 }
 
@@ -153,7 +156,6 @@ with_pattern.gList <- with_pattern.gTree
 #' @export
 with_pattern.grob <- function(
 	x,
-	pattern = "stripe",
 	...,
 	group = NULL,
 	layers = c("area", "grob"),
@@ -161,13 +163,15 @@ with_pattern.grob <- function(
 	legend = FALSE,
 	prefix = "pattern_"
 ) {
-	if (check_delay(delay, rlang::current_env())) {
+	call <- rlang::current_env()
+	dots <- dots_pattern(..., formals = names(formals()), call = call)
+	if (check_delay(delay, call)) {
 		return(delayed_pattern(
 			x,
-			pattern,
-			list(...),
+			dots$pattern,
+			dots$params,
 			list(group = group, layers = layers, legend = legend, prefix = prefix),
-			rlang::current_env()
+			call
 		))
 	}
 	# (`x` itself is the only leaf whatever its class)
@@ -175,13 +179,13 @@ with_pattern.grob <- function(
 		x,
 		function(f, rebuild) f(x, list(), list()),
 		NULL,
-		pattern,
-		list(...),
+		dots$pattern,
+		dots$params,
 		group,
 		rlang::arg_match(layers),
 		legend,
 		prefix,
-		rlang::current_env()
+		call
 	)
 }
 
@@ -198,6 +202,63 @@ check_delay <- function(delay, call) {
 		abort("`delay` must be `TRUE` or `FALSE`.", call = call)
 	}
 	delay
+}
+
+# The `pattern` name ("stripe" by default) and the pattern parameters (`params`) among the `...`
+# of a `with_pattern()` method whose own arguments are `formals`:
+# the pattern is given like a parameter (e.g. as the column of a spliced data frame)
+# but `with_pattern()` needs it before any pattern grob is made (for its default,
+# an `NA` leaving an area as it is, and its checks) so it is split off here.
+# This is the one place the names in `...` are checked:
+# spliced (`!!!`) arguments never reach the method's own arguments
+# and the pattern grobs take their boundaries, names, and viewports from the areas of `x`.
+# A factor (e.g. a data frame column) is taken as its labels.
+dots_pattern <- function(..., formals, call) {
+	params <- rlang::list2(...)
+	nms <- names(params) %||% rep_len("", length(params))
+	if (!all(nzchar(nms))) {
+		abort(
+			c(
+				"The pattern parameters in `...` must be named.",
+				i = "The pattern name is given as `pattern` e.g. `with_pattern(x, pattern = \"stripe\")`."
+			),
+			call = call
+		)
+	}
+	own <- intersect(nms, setdiff(formals, "..."))
+	if (length(own) > 0L) {
+		abort(
+			c(
+				glue("`{own[1L]}` can't be spliced in with `!!!`."),
+				i = glue("Give it as an argument of `with_pattern()` e.g. `{own[1L]} = ...`.")
+			),
+			call = call
+		)
+	}
+	if ("leaves" %in% nms) {
+		abort(
+			"`leaves` can only be given to `with_pattern()` if `x` is a gTree or gList.",
+			call = call
+		)
+	}
+	taken <- intersect(nms, c("y", "id", "name", "gp", "vp", "boundary"))
+	if (length(taken) > 0L) {
+		abort(
+			c(
+				glue("`{taken[1L]}` can't be given to `with_pattern()`."),
+				i = "The pattern grobs take their boundaries, names, and viewports from the areas of `x`."
+			),
+			call = call
+		)
+	}
+	dup <- nms[duplicated(nms)]
+	if (length(dup) > 0L) {
+		abort(glue("`{dup[1L]}` can't be given more than once."), call = call)
+	}
+	params <- lapply(params, function(p) if (is.factor(p)) as.character(p) else p)
+	pattern <- params[["pattern"]] %||% "stripe"
+	params[["pattern"]] <- NULL
+	list(pattern = pattern, params = params)
 }
 
 # A gTree (keeping the name and attributes of `x`) filling the areas `x` has when it is drawn
@@ -299,10 +360,6 @@ pattern_leaves <- function(x, walk, leaves, pattern, params, group, layers, lege
 # and the `call` errors are reported for (or `NULL` if there are no areas).
 area_state <- function(pattern, params, group, splits, call) {
 	n <- sum(vapply(splits, function(s) length(s$boundaries), integer(1L)))
-	nms <- names(params)
-	if (length(params) > 0L && (is.null(nms) || !all(nzchar(nms)))) {
-		abort("The pattern parameters in `...` must be named.", call = call)
-	}
 	if (is.logical(pattern) && length(pattern) > 0L && all(is.na(pattern))) {
 		pattern <- rep_len(NA_character_, length(pattern))
 	}
@@ -311,22 +368,6 @@ area_state <- function(pattern, params, group, splits, call) {
 			c(
 				"`pattern` must be a character vector of pattern names.",
 				i = "`NA` leaves an area as it is."
-			),
-			call = call
-		)
-	}
-	if ("leaves" %in% nms) {
-		abort(
-			"`leaves` can only be given to `with_pattern()` if `x` is a gTree or gList.",
-			call = call
-		)
-	}
-	taken <- intersect(nms, c("y", "id", "name", "gp", "vp", "boundary"))
-	if (length(taken) > 0L) {
-		abort(
-			c(
-				glue("`{taken[1L]}` can't be given to `with_pattern()`."),
-				i = "The pattern grobs take their boundaries, names, and viewports from the areas of `x`."
 			),
 			call = call
 		)

@@ -9,9 +9,10 @@ as.patternGrob(boundary, ...)
 \arguments{
 \item{boundary}{A grid grob whose (filled) area is the boundary of the pattern.}
 
-\item{...}{Passed to \code{\link[=patternGrob]{patternGrob()}}: the \code{pattern} name, its pattern parameters,
-and its \code{legend}, \code{prefix}, \code{name}, \code{gp}, and \code{vp} arguments
-(but not \code{x}, \code{y}, nor \code{id} since the boundary is \code{boundary}).}
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> Passed to \code{\link[=patternGrob]{patternGrob()}}: the \code{pattern} name,
+its pattern parameters, and its \code{legend}, \code{prefix}, \code{name}, \code{gp}, and \code{vp} arguments
+(but not \code{x}, \code{y}, nor \code{id} since the boundary is \code{boundary}).
+A list of them can be spliced in with \verb{!!!}.}
 }
 \value{
 A \code{pattern} grid grob object (as returned by \code{\link[=patternGrob]{patternGrob()}}).

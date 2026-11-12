@@ -7,11 +7,10 @@
 \alias{with_pattern.grob}
 \title{Fill the areas of an object with patterns}
 \usage{
-with_pattern(x, pattern = "stripe", ...)
+with_pattern(x, ...)
 
 \method{with_pattern}{gTree}(
   x,
-  pattern = "stripe",
   ...,
   group = NULL,
   layers = c("area", "grob"),
@@ -24,7 +23,6 @@ with_pattern(x, pattern = "stripe", ...)
 
 \method{with_pattern}{gList}(
   x,
-  pattern = "stripe",
   ...,
   group = NULL,
   layers = c("area", "grob"),
@@ -37,7 +35,6 @@ with_pattern(x, pattern = "stripe", ...)
 
 \method{with_pattern}{grob}(
   x,
-  pattern = "stripe",
   ...,
   group = NULL,
   layers = c("area", "grob"),
@@ -49,13 +46,13 @@ with_pattern(x, pattern = "stripe", ...)
 \arguments{
 \item{x}{An object with filled areas such as a grid grob or a \code{\link[grid:gList]{grid::gList()}}.}
 
-\item{pattern}{Name of the pattern (see \code{\link[=patternGrob]{patternGrob()}}):
-either one (for every area) or one per area (or \code{group}) of \code{x}.
-\code{NA} leaves an area (or group) as it is.}
-
-\item{...}{Pattern parameters (see \code{\link[=patternGrob]{patternGrob()}}) each either of length one (for every area)
+\item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> The \code{pattern} name (\code{"stripe"} by default,
+see \code{\link[=patternGrob]{patternGrob()}}; \code{NA} leaves an area as it is) and the pattern parameters,
+each either of length one (for every area)
 or with one value per area of \code{x} (in the order of \code{area_boundaries(x)})
 or per \code{group} (in the order of \code{unique(group)}).
+A list or data frame of them can be spliced in with \verb{!!!}
+e.g. \code{with_pattern(x, !!!params)}.
 A multi-valued parameter of a single area must be wrapped in a list
 (e.g. \code{fill = list(c("red", "blue"))} for alternating stripes)
 while a \code{\link[grid:pattern]{grid::pattern()}} fill counts as one value.
@@ -142,7 +139,8 @@ if (require("grid", quietly = TRUE)) {
     textGrob("text is left alone", y = 0.05, name = "label")
   ), name = "tree")
   # one value per area (in that order) or one for all
-  patterned <- with_pattern(tree, c("stripe", "stripe", "crosshatch"),
+  patterned <- with_pattern(tree,
+                            pattern = c("stripe", "stripe", "crosshatch"),
                             fill = c("blue", "orange", "red"), angle = c(45, -45, 0),
                             density = 0.4)
   grid.newpage()
