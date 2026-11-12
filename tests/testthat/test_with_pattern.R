@@ -120,7 +120,7 @@ test_that("the areas of a grob are in a fixed (documented) order", {
 	expect_equal(b[[1L]]$x, unit(x[1:4], "npc"))
 	expect_equal(b[[2L]]$x, unit(x[5:7], "npc"))
 	# the per-area pattern parameters of `with_pattern()` follow the same order
-	grob <- with_pattern(polygon, c("stripe", "circle"), fill = c("red", "blue"))
+	grob <- with_pattern(polygon, pattern = c("stripe", "circle"), fill = c("red", "blue"))
 	p1 <- getGrob(grob, gPath("area.1", "pattern", "area.1"))
 	expect_equal(p1$pattern, "stripe")
 	expect_equal(p1$args, list(pattern_fill = "red"))
@@ -172,7 +172,7 @@ test_that("`with_pattern()` replaces a grob with areas by fill / pattern / borde
 		vp = viewport(width = 0.9)
 	)
 	attr(rect, "width") <- unit(1, "cm")
-	grob <- with_pattern(layers = "grob", rect, "stripe", fill = c("yellow", "green"), angle = 45)
+	grob <- with_pattern(layers = "grob", rect, fill = c("yellow", "green"), angle = 45)
 	expect_s3_class(grob, "gTree")
 	expect_equal(grob$name, "rects")
 	expect_identical(grob$vp, rect$vp)
@@ -214,7 +214,7 @@ test_that("`with_pattern()` replaces a grob with areas by fill / pattern / borde
 		c(0, 0, 0.4, 0.4, 0.6, 1, 0.6),
 		id.lengths = c(4L, 3L)
 	)
-	grob <- with_pattern(layers = "grob", polygon, "circle", legend = 2)
+	grob <- with_pattern(layers = "grob", polygon, pattern = "circle", legend = 2)
 	p1 <- getGrob(grob, gPath("pattern", "area.1"))
 	expect_null(p1$boundary)
 	expect_equal(p1$x, unit(c(0, 1, 1, 0), "npc"))
@@ -251,7 +251,6 @@ test_that("`with_pattern()` walks a gTree replacing its grobs with areas in plac
 	out <- with_pattern(
 		layers = "grob",
 		tree,
-		"stripe",
 		fill = c("red", "blue", "green", "yellow", "purple"),
 		angle = 45
 	)
@@ -276,12 +275,12 @@ test_that("`with_pattern()` walks a gTree replacing its grobs with areas in plac
 
 test_that("`with_pattern()` validates its pattern parameters", {
 	rect <- rectGrob(x = c(0.25, 0.75), width = 0.4, name = "rects")
-	expect_error(with_pattern(layers = "grob", rect, "stripe", "red"), "must be named")
-	expect_error(with_pattern(layers = "grob", rect, "stripe", name = "x"), "`name` can't be given")
-	expect_error(with_pattern(layers = "grob", rect, "stripe", y = 1), "`y` can't be given")
-	expect_error(with_pattern(layers = "grob", rect, "stripe", gp = gpar()), "`gp` can't be given")
+	expect_error(with_pattern(layers = "grob", rect, "red"), "must be named")
+	expect_error(with_pattern(layers = "grob", rect, name = "x"), "`name` can't be given")
+	expect_error(with_pattern(layers = "grob", rect, y = 1), "`y` can't be given")
+	expect_error(with_pattern(layers = "grob", rect, gp = gpar()), "`gp` can't be given")
 	expect_error(
-		with_pattern(layers = "grob", rect, "stripe", fill = c("red", "blue", "green")),
+		with_pattern(layers = "grob", rect, fill = c("red", "blue", "green")),
 		"`fill` must have length one or one value per area (2) but has length 3",
 		fixed = TRUE
 	)
@@ -289,45 +288,43 @@ test_that("`with_pattern()` validates its pattern parameters", {
 	grob <- with_pattern(
 		layers = "grob",
 		rect,
-		"stripe",
 		fill = list(c("red", "blue")),
 		density = 0.3
 	)
 	expect_equal(getGrob(grob, gPath("pattern", "area.2"))$args$pattern_fill, c("red", "blue"))
 	expect_equal(getGrob(grob, gPath("pattern", "area.2"))$args$pattern_density, 0.3)
-	grob <- with_pattern(layers = "grob", rect, "stripe", fill = list(c("red", "blue"), "green"))
+	grob <- with_pattern(layers = "grob", rect, fill = list(c("red", "blue"), "green"))
 	expect_equal(getGrob(grob, gPath("pattern", "area.1"))$args$pattern_fill, c("red", "blue"))
 	expect_equal(getGrob(grob, gPath("pattern", "area.2"))$args$pattern_fill, "green")
 	# a `NULL` parameter is unset for every area
-	expect_no_error(with_pattern(layers = "grob", rect, "stripe", fill = NULL))
+	expect_no_error(with_pattern(layers = "grob", rect, fill = NULL))
 	# a `grid::pattern()` fill is one value
 	skip_if(getRversion() < "4.1.0")
 	gradient <- linearGradient(c("red", "blue"))
-	grob <- with_pattern(layers = "grob", rect, "stripe", fill = gradient)
+	grob <- with_pattern(layers = "grob", rect, fill = gradient)
 	expect_identical(getGrob(grob, gPath("pattern", "area.2"))$args$pattern_fill, gradient)
-	grob <- with_pattern(layers = "grob", rect, "stripe", fill = list(gradient, "green"))
+	grob <- with_pattern(layers = "grob", rect, fill = list(gradient, "green"))
 	expect_identical(getGrob(grob, gPath("pattern", "area.1"))$args$pattern_fill, gradient)
 	expect_equal(getGrob(grob, gPath("pattern", "area.2"))$args$pattern_fill, "green")
 })
 
 test_that("`with_pattern()` takes one pattern per area, a `prefix`, and gLists", {
 	rect <- rectGrob(x = c(0.25, 0.75), width = 0.4, name = "rects")
-	grob <- with_pattern(layers = "grob", rect, c("stripe", "circle"), fill = "red")
+	grob <- with_pattern(layers = "grob", rect, pattern = c("stripe", "circle"), fill = "red")
 	expect_equal(getGrob(grob, gPath("pattern", "area.1"))$pattern, "stripe")
 	expect_equal(getGrob(grob, gPath("pattern", "area.2"))$pattern, "circle")
 	expect_equal(getGrob(grob, gPath("pattern", "area.2"))$args, list(pattern_fill = "red"))
 	expect_error(
-		with_pattern(layers = "grob", rect, c("stripe", "circle", "wave")),
+		with_pattern(layers = "grob", rect, pattern = c("stripe", "circle", "wave")),
 		"`pattern` must have length one or one value per area (2) but has length 3",
 		fixed = TRUE
 	)
-	expect_error(with_pattern(layers = "grob", rect, 1), "must be a character vector")
+	expect_error(with_pattern(layers = "grob", rect, pattern = 1), "must be a character vector")
 
 	# parameters already named `pattern_*`
 	grob <- with_pattern(
 		layers = "grob",
 		rect,
-		"stripe",
 		pattern_fill = c("red", "blue"),
 		prefix = ""
 	)
@@ -344,7 +341,12 @@ test_that("`with_pattern()` takes one pattern per area, a `prefix`, and gLists",
 	expect_length(b, 3L)
 	expect_s3_class(b[[3L]], "polygon")
 	expect_length(area_boundaries(gList()), 0L)
-	out <- with_pattern(layers = "grob", glist, c("stripe", "circle", "crosshatch"), fill = "red")
+	out <- with_pattern(
+		layers = "grob",
+		glist,
+		pattern = c("stripe", "circle", "crosshatch"),
+		fill = "red"
+	)
 	expect_s3_class(out, "gList")
 	expect_length(out, 3L)
 	expect_identical(out[[2L]], glist[[2L]])
@@ -395,7 +397,7 @@ test_that("`leaves` selects which children of a gTree or gList have areas", {
 	out <- with_pattern(
 		layers = "grob",
 		tree,
-		c("stripe", "circle", "crosshatch"),
+		pattern = c("stripe", "circle", "crosshatch"),
 		leaves = c("rect", "points")
 	)
 	expect_equal(getGrob(out, gPath("outliers", "pattern", "area.2"))$pattern, "crosshatch")
@@ -404,7 +406,7 @@ test_that("`leaves` selects which children of a gTree or gList have areas", {
 	expect_equal(childNames(getGrob(out[[2L]], "pattern")), c("area.1", "area.2"))
 
 	# a points grob given as `x` itself is patterned
-	out <- with_pattern(layers = "grob", points, "stripe", fill = c("red", "blue"))
+	out <- with_pattern(layers = "grob", points, fill = c("red", "blue"))
 	expect_equal(childNames(out), c("fill", "pattern", "border"))
 	expect_equal(getGrob(out, gPath("pattern", "area.2"))$args$pattern_fill, "blue")
 	expect_error(with_pattern(layers = "grob", rect, leaves = "rect"), "`leaves` can only be given")
@@ -427,7 +429,7 @@ test_that("`with_pattern()` fills a `group` of areas with one pattern", {
 	out <- with_pattern(
 		layers = "grob",
 		path,
-		"gradient",
+		pattern = "gradient",
 		fill = c("red", "blue"),
 		group = c("a", "a", "b")
 	)
@@ -538,7 +540,7 @@ test_that("a `fillStrokeGrob()` or `fillGrob()` is one area", {
 	tree <- gTree(children = gList(fs, fillGrob(path, name = "f"), strokeGrob(path, name = "s")))
 	expect_length(area_boundaries(tree), 2L)
 
-	out <- with_pattern(layers = "grob", fs, "stripe", fill = "red")
+	out <- with_pattern(layers = "grob", fs, fill = "red")
 	expect_equal(out$name, "fs")
 	expect_equal(childNames(out), c("fill", "pattern", "border"))
 	# (its `col` keeps e.g. the glyphs of text in its path in R before the fix of bug 19094)
@@ -548,7 +550,7 @@ test_that("a `fillStrokeGrob()` or `fillGrob()` is one area", {
 	expect_equal(fill$rule, "evenodd")
 	expect_equal(fill$gp, fs$gp)
 	expect_identical(
-		getGrob(with_pattern(layers = "grob", fillGrob(path), "stripe"), "fill")$path,
+		getGrob(with_pattern(layers = "grob", fillGrob(path)), "fill")$path,
 		path
 	)
 	border <- getGrob(out, "border")
@@ -598,7 +600,7 @@ test_that("`area_boundaries()` has one area per closed spline of an `xspline`", 
 	tree <- gTree(children = gList(xs, editGrob(xs, open = TRUE, name = "curve")))
 	expect_length(area_boundaries(tree), 2L)
 
-	out <- with_pattern(layers = "grob", xs, "stripe", fill = c("red", "blue"))
+	out <- with_pattern(layers = "grob", xs, fill = c("red", "blue"))
 	expect_equal(childNames(getGrob(out, "pattern")), c("area.1", "area.2"))
 	merged <- getGrob(
 		with_pattern(layers = "grob", xs, group = c(1, 1)),
@@ -623,7 +625,7 @@ test_that("`layers = \"area\"` draws the layers of each area in turn", {
 		vp = viewport(width = 0.9)
 	)
 	attr(rect, "width") <- unit(1, "cm")
-	out <- with_pattern(rect, "stripe", fill = c("yellow", "orange", "pink"))
+	out <- with_pattern(rect, fill = c("yellow", "orange", "pink"))
 	expect_equal(out$name, "rects")
 	expect_identical(out$vp, rect$vp)
 	expect_equal(attr(out, "width"), unit(1, "cm"))
@@ -657,7 +659,7 @@ test_that("`layers = \"area\"` draws the layers of each area in turn", {
 		pch = c(21, 19, 22),
 		gp = gpar(fill = c("red", "blue", "green"), cex = c(1, 2, 3))
 	)
-	out <- with_pattern(points, "stripe")
+	out <- with_pattern(points)
 	expect_equal(childNames(out), c("area.1", "shape.2", "area.2"))
 	shape <- getGrob(out, "shape.2")
 	expect_equal(shape$pch, 19)
@@ -771,7 +773,7 @@ test_that("a grob class with its own `area_boundaries()` method is supported", {
 	)
 	mine <- grob(name = "mine", cl = "myrects")
 	expect_length(area_boundaries(gTree(children = gList(mine)), leaves = "myrects"), 2L)
-	out <- with_pattern(mine, "stripe", fill = c("red", "blue"))
+	out <- with_pattern(mine, fill = c("red", "blue"))
 	# (it can't be split into its shapes so its layers are drawn for all its areas)
 	expect_equal(childNames(out), c("fill", "pattern", "border"))
 	expect_equal(getGrob(out, gPath("pattern", "area.2"))$args$pattern_fill, "blue")
@@ -782,7 +784,7 @@ test_that("filling a grob measured by (R 4.2's) `grobCoords()` errors clearly in
 	points <- pointsGrob(c(0.2, 0.8), c(0.5, 0.5), pch = 21)
 	# (when the pattern grob is made, not when it is drawn)
 	expect_error(
-		with_pattern(points, "stripe"),
+		with_pattern(points),
 		"Filling a `points` grob with a pattern requires R (>= 4.2.0)",
 		fixed = TRUE
 	)
@@ -795,9 +797,9 @@ test_that("filling a grob measured by (R 4.2's) `grobCoords()` errors clearly in
 		"can only fill `polygon`, `pathgrob`, and `rect` grobs"
 	)
 	# polygons, paths, and rects are measured without `grobCoords()`
-	expect_no_error(with_pattern(gTree(children = gList(rectGrob(), polygonGrob())), "stripe"))
+	expect_no_error(with_pattern(gTree(children = gList(rectGrob(), polygonGrob()))))
 	# a (filled) points child isn't patterned by default
-	expect_no_error(with_pattern(gTree(children = gList(rectGrob(), points)), "stripe"))
+	expect_no_error(with_pattern(gTree(children = gList(rectGrob(), points))))
 })
 
 test_that("a pattern's content (but not its boundary) has grid's default graphical parameters", {
@@ -849,7 +851,7 @@ test_that("`area_boundaries()` combines a boundary's graphical parameters with i
 
 test_that("`with_pattern()` reports its errors as its own", {
 	rect <- rectGrob(x = c(0.25, 0.75), width = 0.4)
-	cnd <- tryCatch(with_pattern(rect, c("stripe", "circle", "none")), error = identity)
+	cnd <- tryCatch(with_pattern(rect, pattern = c("stripe", "circle", "none")), error = identity)
 	expect_match(conditionMessage(cnd), "one value per area (2)", fixed = TRUE)
 	expect_identical(conditionCall(cnd)[[1L]], quote(with_pattern))
 	cnd <- tryCatch(with_pattern(gList(rect), fill = 1:3), error = identity)
@@ -863,7 +865,7 @@ test_that("`with_pattern()` reports its errors as its own", {
 		error = identity
 	)
 	expect_identical(conditionCall(cnd)[[1L]], quote(with_pattern))
-	cnd <- tryCatch(with_pattern(rect, "stripe", "red"), error = identity)
+	cnd <- tryCatch(with_pattern(rect, "red"), error = identity)
 	expect_identical(conditionCall(cnd)[[1L]], quote(with_pattern))
 })
 
@@ -883,10 +885,10 @@ test_that("a gTree subclass with its own `area_boundaries()` method is patterned
 	expect_length(area_boundaries(mine), 1L)
 	tree <- gTree(children = gList(rectGrob(name = "r"), mine), name = "tree")
 	expect_length(area_boundaries(tree), 2L)
-	out <- with_pattern(tree, "stripe", fill = c("red", "blue"))
+	out <- with_pattern(tree, fill = c("red", "blue"))
 	expect_equal(childNames(getGrob(out, "mine")), c("fill", "pattern", "border"))
 	expect_equal(getGrob(out, gPath("mine", "pattern", "area.1"))$args$pattern_fill, "blue")
-	out <- with_pattern(mine, "stripe", fill = "red")
+	out <- with_pattern(mine, fill = "red")
 	expect_equal(childNames(out), c("fill", "pattern", "border"))
 	local_temp_dev()
 	expect_no_error(grid.draw(out))
@@ -929,7 +931,6 @@ test_that("`with_pattern()` visual tests", {
 	vdiffr::expect_doppelganger("tree", function() {
 		grid.draw(with_pattern(
 			tree,
-			"stripe",
 			fill = c("blue", "orange", "red"),
 			angle = c(45, -45, 0),
 			density = 0.4
@@ -942,7 +943,7 @@ test_that("`with_pattern()` visual tests", {
 		vp = viewport(width = 0.5, height = 0.5)
 	)
 	vdiffr::expect_doppelganger("key", function() {
-		grid.draw(with_pattern(key, "stripe", fill = "yellow", legend = 2))
+		grid.draw(with_pattern(key, fill = "yellow", legend = 2))
 	})
 	angle <- seq(2 * pi / 4, by = 2 * pi / 6, length.out = 6)
 	path <- pathGrob(
@@ -953,7 +954,7 @@ test_that("`with_pattern()` visual tests", {
 		gp = gpar(fill = "grey90", col = "black", lwd = 4)
 	)
 	vdiffr::expect_doppelganger("path_hole", function() {
-		grid.draw(with_pattern(path, "crosshatch", fill = "darkgreen", density = 0.3))
+		grid.draw(with_pattern(path, pattern = "crosshatch", fill = "darkgreen", density = 0.3))
 	})
 	skip_if(getRversion() < "4.2.0")
 	circles <- circleGrob(
@@ -964,7 +965,7 @@ test_that("`with_pattern()` visual tests", {
 	vdiffr::expect_doppelganger("circles", function() {
 		grid.draw(with_pattern(
 			circles,
-			"weave",
+			pattern = "weave",
 			fill = "yellow",
 			fill2 = c("blue", "red")
 		))
@@ -982,7 +983,6 @@ test_that("`with_pattern()` visual tests", {
 	vdiffr::expect_doppelganger("overlapping_area_layers", function() {
 		grid.draw(with_pattern(
 			overlapping,
-			"stripe",
 			fill = c("red", "darkgreen", "blue"),
 			density = 0.3
 		))
@@ -990,7 +990,6 @@ test_that("`with_pattern()` visual tests", {
 	vdiffr::expect_doppelganger("overlapping_grob_layers", function() {
 		grid.draw(with_pattern(
 			overlapping,
-			"stripe",
 			fill = c("red", "darkgreen", "blue"),
 			density = 0.3,
 			layers = "grob"
@@ -1014,15 +1013,15 @@ lazy_rects <- function(name = "lazy") {
 test_that("`delay = TRUE` fills the areas a grob has when it is drawn", {
 	lazy <- lazy_rects()
 	expect_length(area_boundaries(lazy), 0L)
-	expect_identical(with_pattern(lazy, "stripe"), lazy)
-	delayed <- with_pattern(lazy, "stripe", fill = c("red", "blue"), delay = TRUE)
+	expect_identical(with_pattern(lazy), lazy)
+	delayed <- with_pattern(lazy, fill = c("red", "blue"), delay = TRUE)
 	expect_s3_class(delayed, "delayed_pattern")
 	expect_identical(delayed$name, "lazy")
 	expect_length(area_boundaries(delayed), 0L)
 	# (keeping its attributes e.g. the `width` of a {ggplot2} legend key)
 	key <- lazy_rects()
 	attr(key, "width") <- 1.2
-	expect_identical(attr(with_pattern(key, "stripe", delay = TRUE), "width"), 1.2)
+	expect_identical(attr(with_pattern(key, delay = TRUE), "width"), 1.2)
 	local_temp_dev()
 	pushViewport(viewport())
 	out <- makeContent(delayed)
@@ -1036,20 +1035,20 @@ test_that("`delay = TRUE` fills the areas a grob has when it is drawn", {
 	)
 	expect_no_error(grid.draw(delayed))
 	# a gList can be delayed too (then also a gTree)
-	expect_s3_class(with_pattern(gList(lazy), "stripe", delay = TRUE), "delayed_pattern")
+	expect_s3_class(with_pattern(gList(lazy), delay = TRUE), "delayed_pattern")
 	# as can a grob with its shapes already (to the same effect)
 	rect <- rectGrob(x = c(0.25, 0.75), width = 0.4, name = "rects")
-	delayed <- with_pattern(rect, "stripe", fill = "red", delay = TRUE)
-	expect_equal(makeContent(delayed)$children[[1L]], with_pattern(rect, "stripe", fill = "red"))
+	delayed <- with_pattern(rect, fill = "red", delay = TRUE)
+	expect_equal(makeContent(delayed)$children[[1L]], with_pattern(rect, fill = "red"))
 	# the checks which don't need the number of areas are still made now
-	expect_error(with_pattern(lazy, "stripe", "red", delay = TRUE), "must be named")
-	expect_error(with_pattern(lazy, "stripe", gp = gpar(), delay = TRUE), "`gp` can't be given")
-	expect_error(with_pattern(lazy, "stripe", delay = NA), "`delay` must be")
-	expect_error(with_pattern(lazy, "stripe", layers = "bogus", delay = TRUE), "must be one of")
-	expect_error(with_pattern(lazy, "stripe", legend = "foo", delay = TRUE), "`legend` must be")
-	expect_error(with_pattern(lazy, "stripe", group = c(1, NA), delay = TRUE), "`group` must be")
+	expect_error(with_pattern(lazy, "red", delay = TRUE), "must be named")
+	expect_error(with_pattern(lazy, gp = gpar(), delay = TRUE), "`gp` can't be given")
+	expect_error(with_pattern(lazy, delay = NA), "`delay` must be")
+	expect_error(with_pattern(lazy, layers = "bogus", delay = TRUE), "must be one of")
+	expect_error(with_pattern(lazy, legend = "foo", delay = TRUE), "`legend` must be")
+	expect_error(with_pattern(lazy, group = c(1, NA), delay = TRUE), "`group` must be")
 	# while those which do are made when it is drawn
-	delayed <- with_pattern(lazy, "stripe", fill = c("red", "blue", "green"), delay = TRUE)
+	delayed <- with_pattern(lazy, fill = c("red", "blue", "green"), delay = TRUE)
 	cnd <- tryCatch(grid.draw(delayed), error = identity)
 	expect_match(conditionMessage(cnd), "delay = TRUE", fixed = TRUE)
 	expect_identical(conditionCall(cnd)[[1L]], quote(with_pattern))
@@ -1074,7 +1073,7 @@ test_that("`delay = TRUE` fills each dot of a `{ggplot2}` dot stack", {
 	expect_length(area_boundaries(dots), 0L)
 	delayed <- with_pattern(
 		dots,
-		c("stripe", "circle", NA),
+		pattern = c("stripe", "circle", NA),
 		fill = c("red", "blue", "green"),
 		delay = TRUE
 	)
@@ -1093,7 +1092,7 @@ test_that("`pattern = NA` leaves an area as it is", {
 		name = "rects",
 		gp = gpar(fill = c("red", "blue", "green"))
 	)
-	out <- with_pattern(rect, c("stripe", NA, "circle"), fill = "black")
+	out <- with_pattern(rect, pattern = c("stripe", NA, "circle"), fill = "black")
 	expect_equal(childNames(out), c("area.1", "shape.2", "area.3"))
 	shape <- getGrob(out, "shape.2")
 	expect_equal(shape$x, unit(0.5, "npc"))
@@ -1101,24 +1100,24 @@ test_that("`pattern = NA` leaves an area as it is", {
 	# (the pattern grobs keep the numbers of their areas)
 	expect_equal(getGrob(out, gPath("area.3", "pattern", "area.3"))$args$pattern_fill, "black")
 	# a grob whose areas are all left as they are is returned unchanged
-	expect_identical(with_pattern(rect, NA), rect)
-	expect_identical(with_pattern(rect, NA_character_), rect)
+	expect_identical(with_pattern(rect, pattern = NA), rect)
+	expect_identical(with_pattern(rect, pattern = NA_character_), rect)
 	tri <- polygonGrob(c(0.1, 0.9, 0.5), c(0.1, 0.1, 0.9), name = "tri")
 	tree <- gTree(children = gList(rect, tri), name = "tree")
-	out <- with_pattern(tree, c(NA, NA, NA, "stripe"))
+	out <- with_pattern(tree, pattern = c(NA, NA, NA, "stripe"))
 	expect_identical(getGrob(out, "rects"), rect)
 	expect_equal(childNames(getGrob(out, "tri")), c("fill", "pattern", "border"))
 	# the pattern parameters still have one value per area
-	out <- with_pattern(rect, c("stripe", NA, "stripe"), fill = c("red", "blue", "green"))
+	out <- with_pattern(rect, pattern = c("stripe", NA, "stripe"), fill = c("red", "blue", "green"))
 	expect_equal(getGrob(out, gPath("area.3", "pattern", "area.3"))$args$pattern_fill, "green")
 	# a `group` can be left as it is
-	out <- with_pattern(rect, c("stripe", NA), group = c(1, 2, 1))
+	out <- with_pattern(rect, pattern = c("stripe", NA), group = c(1, 2, 1))
 	expect_equal(childNames(out), c("area.1", "shape.2"))
 	# with `layers = "grob"` the area is drawn with the fills and borders of the others
-	out <- with_pattern(rect, c("stripe", NA, "circle"), layers = "grob")
+	out <- with_pattern(rect, pattern = c("stripe", NA, "circle"), layers = "grob")
 	expect_equal(childNames(out), c("fill", "pattern", "border"))
 	expect_equal(childNames(getGrob(out, "pattern")), c("area.1", "area.3"))
-	expect_error(with_pattern(rect, TRUE), "must be a character vector")
+	expect_error(with_pattern(rect, pattern = TRUE), "must be a character vector")
 })
 
 test_that("`delay = TRUE` and `pattern = NA` visual tests", {
@@ -1126,6 +1125,63 @@ test_that("`delay = TRUE` and `pattern = NA` visual tests", {
 	skip_on_ci()
 	lazy <- lazy_rects()
 	vdiffr::expect_doppelganger("delay", function() {
-		grid.draw(with_pattern(lazy, c("stripe", NA), fill = "blue", density = 0.4, delay = TRUE))
+		grid.draw(with_pattern(
+			lazy,
+			pattern = c("stripe", NA),
+			fill = "blue",
+			density = 0.4,
+			delay = TRUE
+		))
 	})
+})
+
+test_that("pattern parameters can be spliced in with `!!!`", {
+	# (the spliced calls are made outside `expect_*()`, which would splice `!!!` itself)
+	rect <- rectGrob(x = c(0.25, 0.75), width = 0.4, name = "rects")
+	params <- data.frame(pattern_fill = c("red", "blue"), pattern_angle = c(30, 45))
+	params$pattern_colour <- list(c("red", "blue"), "green")
+	out <- with_pattern(rect, pattern = c("stripe", "circle"), !!!params, prefix = "")
+	p2 <- getGrob(out, gPath("area.2", "pattern", "area.2"))
+	expect_equal(p2$pattern, "circle")
+	expect_equal(p2$args$pattern_angle, 45)
+	expect_equal(p2$args$pattern_colour, "green")
+	p1 <- getGrob(out, gPath("area.1", "pattern", "area.1"))
+	expect_equal(p1$args$pattern_colour, c("red", "blue"))
+	delayed <- with_pattern(rect, !!!params, prefix = "", delay = TRUE)
+	expect_equal(delayed$args$pattern_fill, c("red", "blue"))
+	# a `pattern` among the spliced parameters is the pattern
+	params$pattern <- c("stripe", "circle")
+	out <- with_pattern(rect, !!!params, prefix = "")
+	expect_equal(getGrob(out, gPath("area.2", "pattern", "area.2"))$pattern, "circle")
+	cnd <- tryCatch(with_pattern(rect, "circle"), error = identity)
+	expect_match(conditionMessage(cnd), "must be named")
+	expect_match(conditionMessage(cnd), "pattern = ", fixed = TRUE)
+	# (also as a factor column)
+	out <- with_pattern(rect, !!!data.frame(pattern = factor(c("stripe", "circle"))))
+	expect_equal(getGrob(out, gPath("area.2", "pattern", "area.2"))$pattern, "circle")
+	# its own arguments can't be spliced nor a name given twice
+	own <- function() with_pattern(rect, !!!list(group = c(1, 1), fill = "red"))
+	expect_error(own(), "`group` can't be spliced")
+	tree <- function() with_pattern(gTree(children = gList(rect)), !!!list(leaves = "rect"))
+	expect_error(tree(), "`leaves` can't be spliced")
+	twice <- function() with_pattern(rect, pattern = "stripe", !!!list(pattern = "circle"))
+	expect_error(twice(), "`pattern` can't be given more than once")
+	coords <- function() with_pattern(rect, !!!list(x = 1))
+	expect_error(coords(), "`x` can't be spliced")
+	# (a factor parameter is taken as its labels)
+	out <- with_pattern(rect, fill = factor(c("red", "blue")))
+	expect_equal(getGrob(out, gPath("area.2", "pattern", "area.2"))$args$pattern_fill, "blue")
+	# `as.patternGrob()`'s come right after its `boundary`
+	x <- c(0, 0, 1, 1)
+	y <- c(1, 0, 0, 1)
+	grob <- as.patternGrob(rect, !!!list(pattern = "circle", fill = "blue"))
+	expect_equal(grob$pattern, "circle")
+	grob <- as.patternGrob(polygonGrob(x, y), !!!list(pattern = "circle", fill = "blue"))
+	expect_equal(grob$args$pattern_fill, "blue")
+	grob <- as.patternGrob(polygonGrob(x, y), !!!list(vp = viewport(name = "v")))
+	expect_equal(grob$vp$name, "v")
+	coords <- function() as.patternGrob(rect, !!!list(x = 1))
+	expect_error(coords(), "can't be given with a `boundary` grob")
+	unchanged <- function() as.patternGrob(patternGrob(), !!!list(fill = "blue"))
+	expect_error(unchanged(), "returns a `pattern` grob unchanged")
 })

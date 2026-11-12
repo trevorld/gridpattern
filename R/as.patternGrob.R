@@ -32,9 +32,10 @@
 #' (as if `boundary` were drawn within a gTree with `vp`) while a [grid::polygonGrob()] boundary's `vp`
 #' is instead combined with `vp` by [grid::vpStack()] (as its coordinates are reused).
 #' @param boundary A grid grob whose (filled) area is the boundary of the pattern.
-#' @param ... Passed to [patternGrob()]: the `pattern` name, its pattern parameters,
-#'            and its `legend`, `prefix`, `name`, `gp`, and `vp` arguments
+#' @param ... <[`dynamic-dots`][rlang::dyn-dots]> Passed to [patternGrob()]: the `pattern` name,
+#'            its pattern parameters, and its `legend`, `prefix`, `name`, `gp`, and `vp` arguments
 #'            (but not `x`, `y`, nor `id` since the boundary is `boundary`).
+#'            A list of them can be spliced in with `!!!`.
 #' @return A `pattern` grid grob object (as returned by [patternGrob()]).
 #' @examples
 #' run_examples <- require("grid", quietly = TRUE) &&
@@ -77,11 +78,21 @@ as.patternGrob <- function(boundary, ...) {
 }
 
 #' @export
-as.patternGrob.polygon <- function(boundary, ..., vp = NULL) {
-	check_boundary_dots(...)
+as.patternGrob.polygon <- function(boundary, ...) {
+	args <- rlang::list2(...)
+	check_boundary_dots(args)
+	# (its `vp` is combined with the boundary's below)
+	vp <- args$vp
+	args$vp <- NULL
 	# the coordinates (already `unit()`s) are the boundary: nothing to measure when drawn
 	id <- grob_ids(boundary$id, boundary$id.lengths, length(boundary$x))
-	patternGrob(x = boundary$x, y = boundary$y, id = id, ..., vp = stack_vp(vp, boundary$vp))
+	rlang::inject(patternGrob(
+		x = boundary$x,
+		y = boundary$y,
+		id = id,
+		!!!args,
+		vp = stack_vp(vp, boundary$vp)
+	))
 }
 
 #' @export
@@ -105,22 +116,31 @@ as.patternGrob.default <- function(boundary, ...) {
 			i = "Use `patternGrob()` for a boundary of numeric `x`, `y`, and `id` coordinates."
 		))
 	}
-	check_boundary_dots(...)
+	args <- rlang::list2(...)
+	check_boundary_dots(args)
 	# The pattern grob stores `boundary` to measure it when drawn (see `boundary_coords()`
 	# and `makeContext.pattern()` which pushes the boundary's `vp` within the pattern's)
 	# and keeps (`NULL`) `x` / `y` / `id` elements so editing them is caught by `validDetails.pattern()`
 	# (which validates the `boundary` too e.g. that R 4.1 can measure it).
 	# NB. A polygon boundary is deliberately stored as `x` / `y` / `id` instead (see `as.patternGrob.polygon()`)
 	# so it is the same grob `patternGrob()` makes and code reading `$x` / `$y` / `$id` keeps working.
-	editGrob(patternGrob(...), boundary = boundary, x = NULL, y = NULL, id = NULL)
+	editGrob(
+		rlang::inject(patternGrob(!!!args)),
+		boundary = boundary,
+		x = NULL,
+		y = NULL,
+		id = NULL
+	)
 }
 
-# `as.patternGrob()`'s `...` are `patternGrob()`'s other arguments: the boundary is `boundary`
-check_boundary_dots <- function(...) {
-	if (any(c("x", "y", "id") %in% ...names())) {
+# `as.patternGrob()`'s `...` (collected into `args`) are `patternGrob()`'s other arguments:
+# the boundary is `boundary`
+check_boundary_dots <- function(args) {
+	if (any(c("x", "y", "id") %in% names(args))) {
 		abort(c(
 			"`x`, `y`, and `id` can't be given with a `boundary` grob (whose area is the boundary).",
 			i = "Use `patternGrob()` for a boundary of numeric `x`, `y`, and `id` coordinates."
 		))
 	}
+	invisible(args)
 }
