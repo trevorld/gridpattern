@@ -12,7 +12,7 @@ with_pattern(x, ...)
 \method{with_pattern}{gTree}(
   x,
   ...,
-  group = NULL,
+  pool = FALSE,
   layers = c("area", "grob"),
   delay = FALSE,
   leaves = c("polygon", "pathgrob", "rect", "circle", "roundrect", "xspline",
@@ -24,7 +24,7 @@ with_pattern(x, ...)
 \method{with_pattern}{gList}(
   x,
   ...,
-  group = NULL,
+  pool = FALSE,
   layers = c("area", "grob"),
   delay = FALSE,
   leaves = c("polygon", "pathgrob", "rect", "circle", "roundrect", "xspline",
@@ -36,7 +36,7 @@ with_pattern(x, ...)
 \method{with_pattern}{grob}(
   x,
   ...,
-  group = NULL,
+  pool = FALSE,
   layers = c("area", "grob"),
   delay = FALSE,
   legend = FALSE,
@@ -50,19 +50,22 @@ with_pattern(x, ...)
 see \code{\link[=patternGrob]{patternGrob()}}; \code{NA} leaves an area as it is) and the pattern parameters,
 each either of length one (for every area)
 or with one value per area of \code{x} (in the order of \code{area_boundaries(x)})
-or per \code{group} (in the order of \code{unique(group)}).
+or per \code{pool} (one per grob for \code{pool = TRUE} or in the order of \code{unique(pool)}).
 A list or data frame of them can be spliced in with \verb{!!!}
 e.g. \code{with_pattern(x, !!!params)}.
 A multi-valued parameter of a single area must be wrapped in a list
 (e.g. \code{fill = list(c("red", "blue"))} for alternating stripes)
 while a \code{\link[grid:pattern]{grid::pattern()}} fill counts as one value.
-\code{\link[=patternGrob]{patternGrob()}}'s \code{y}, \code{id}, \code{name}, \code{gp}, \code{vp}, and \code{boundary} can't be given:
+\code{\link[=patternGrob]{patternGrob()}}'s \code{y}, \code{id}, \code{name}, \code{gp}, \code{vp}, \code{boundary}, \code{default.units},
+and \code{draw} can't be given:
 each area's pattern grob takes its boundary, name, graphical parameters,
 and viewport from its area.}
 
-\item{group}{If not \code{NULL}, one value per area of \code{x} (in the order of \code{area_boundaries(x)})
-grouping the areas filled by the same pattern:
-the areas of a group must be areas of the same grob.}
+\item{pool}{Which areas of \code{x} are filled by the same pattern:
+\code{FALSE} (each area by its own), \code{TRUE} (all the areas of each grob together),
+or one (non-logical) label per area (in the order of \code{area_boundaries(x)})
+pooling the areas with the same label,
+which must be areas of the same grob.}
 
 \item{layers}{Either \code{"area"} to draw the fill, pattern, and border of each area in turn
 or \code{"grob"} to draw the fills of all the areas of a grob, then their patterns,
@@ -114,10 +117,12 @@ Areas other than those of a \code{\link[grid:polygonGrob]{grid::polygonGrob()}},
 are measured by \code{\link[grid:grobCoords]{grid::grobCoords()}}
 so patterning them requires R (>= 4.2.0).
 
-A \code{group} of several areas of the same grob is filled by one pattern
+A \code{pool} of several areas of the same grob is filled by one pattern
 whose boundary is their union (each path keeping its holes)
+whether or not the areas touch
 e.g. so a gradient or image spans the polygons of each row of a \code{{sf}} MULTIPOLYGON geometry
-(which \code{\link[sf:st_as_grob]{sf::st_as_grob()}} draws as one path per polygon).
+(which \code{\link[sf:st_as_grob]{sf::st_as_grob()}} draws as one path per polygon)
+or (\code{pool = TRUE}) all the rectangles of a \code{\link[grid:rectGrob]{grid::rectGrob()}}.
 
 The pattern grobs don't inherit the \code{col}, \code{fill}, etc. of the ancestors of \code{x}
 (e.g. of a legend key), only their \code{alpha}.

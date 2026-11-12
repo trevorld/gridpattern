@@ -17,7 +17,7 @@
 #'   (as [with_pattern()] does when drawn if `delay = TRUE`).
 #'
 #' The areas are in a fixed order
-#' (which the per-area pattern parameters and `group` of [with_pattern()] follow):
+#' (which the per-area pattern parameters and `pool` of [with_pattern()] follow):
 #' the polygons of a [grid::polygonGrob()] or [grid::xsplineGrob()] by increasing `id`
 #' and the paths of a [grid::pathGrob()] by increasing `pathId`
 #' (grid stores these as integers; those given by `id.lengths` / `pathId.lengths` are

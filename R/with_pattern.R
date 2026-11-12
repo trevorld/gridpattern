@@ -26,10 +26,12 @@
 #' are measured by [grid::grobCoords()]
 #' so patterning them requires R (>= 4.2.0).
 #'
-#' A `group` of several areas of the same grob is filled by one pattern
+#' A `pool` of several areas of the same grob is filled by one pattern
 #' whose boundary is their union (each path keeping its holes)
+#' whether or not the areas touch
 #' e.g. so a gradient or image spans the polygons of each row of a `{sf}` MULTIPOLYGON geometry
-#' (which [sf::st_as_grob()] draws as one path per polygon).
+#' (which [sf::st_as_grob()] draws as one path per polygon)
+#' or (`pool = TRUE`) all the rectangles of a [grid::rectGrob()].
 #'
 #' The pattern grobs don't inherit the `col`, `fill`, etc. of the ancestors of `x`
 #' (e.g. of a legend key), only their `alpha`.
@@ -45,18 +47,21 @@
 #'            see [patternGrob()]; `NA` leaves an area as it is) and the pattern parameters,
 #'            each either of length one (for every area)
 #'            or with one value per area of `x` (in the order of `area_boundaries(x)`)
-#'            or per `group` (in the order of `unique(group)`).
+#'            or per `pool` (one per grob for `pool = TRUE` or in the order of `unique(pool)`).
 #'            A list or data frame of them can be spliced in with `!!!`
 #'            e.g. `with_pattern(x, !!!params)`.
 #'            A multi-valued parameter of a single area must be wrapped in a list
 #'            (e.g. `fill = list(c("red", "blue"))` for alternating stripes)
 #'            while a [grid::pattern()] fill counts as one value.
-#'            [patternGrob()]'s `y`, `id`, `name`, `gp`, `vp`, and `boundary` can't be given:
+#'            [patternGrob()]'s `y`, `id`, `name`, `gp`, `vp`, `boundary`, `default.units`,
+#'            and `draw` can't be given:
 #'            each area's pattern grob takes its boundary, name, graphical parameters,
 #'            and viewport from its area.
-#' @param group If not `NULL`, one value per area of `x` (in the order of `area_boundaries(x)`)
-#'              grouping the areas filled by the same pattern:
-#'              the areas of a group must be areas of the same grob.
+#' @param pool Which areas of `x` are filled by the same pattern:
+#'             `FALSE` (each area by its own), `TRUE` (all the areas of each grob together),
+#'             or one (non-logical) label per area (in the order of `area_boundaries(x)`)
+#'             pooling the areas with the same label,
+#'             which must be areas of the same grob.
 #' @param layers Either `"area"` to draw the fill, pattern, and border of each area in turn
 #'               or `"grob"` to draw the fills of all the areas of a grob, then their patterns,
 #'               then their borders.
@@ -101,7 +106,7 @@ with_pattern <- function(x, ...) {
 with_pattern.gTree <- function(
 	x,
 	...,
-	group = NULL,
+	pool = FALSE,
 	layers = c("area", "grob"),
 	delay = FALSE,
 	leaves = c(
@@ -124,7 +129,7 @@ with_pattern.gTree <- function(
 			x,
 			dots$pattern,
 			dots$params,
-			list(group = group, layers = layers, leaves = leaves, legend = legend, prefix = prefix),
+			list(pool = pool, layers = layers, leaves = leaves, legend = legend, prefix = prefix),
 			call
 		))
 	}
@@ -140,7 +145,7 @@ with_pattern.gTree <- function(
 		leaves,
 		dots$pattern,
 		dots$params,
-		group,
+		pool,
 		rlang::arg_match(layers),
 		legend,
 		prefix,
@@ -157,7 +162,7 @@ with_pattern.gList <- with_pattern.gTree
 with_pattern.grob <- function(
 	x,
 	...,
-	group = NULL,
+	pool = FALSE,
 	layers = c("area", "grob"),
 	delay = FALSE,
 	legend = FALSE,
@@ -170,7 +175,7 @@ with_pattern.grob <- function(
 			x,
 			dots$pattern,
 			dots$params,
-			list(group = group, layers = layers, legend = legend, prefix = prefix),
+			list(pool = pool, layers = layers, legend = legend, prefix = prefix),
 			call
 		))
 	}
@@ -181,7 +186,7 @@ with_pattern.grob <- function(
 		NULL,
 		dots$pattern,
 		dots$params,
-		group,
+		pool,
 		rlang::arg_match(layers),
 		legend,
 		prefix,
@@ -195,6 +200,15 @@ with_pattern.default <- function(x, ...) {
 		glue("No `with_pattern()` method for an object of class `{class(x)[1L]}`."),
 		i = "This package provides methods for grid grobs and gLists."
 	))
+}
+
+# `pool` is `TRUE`, `FALSE`, or (non-missing, non-logical) labels (their number is checked later)
+check_pool <- function(pool, call) {
+	labels <- is.atomic(pool) && !is.logical(pool) && !anyNA(pool)
+	if (!(rlang::is_bool(pool) || labels)) {
+		abort("`pool` must be `TRUE`, `FALSE`, or one (non-missing) label per area.", call = call)
+	}
+	invisible(pool)
 }
 
 check_delay <- function(delay, call) {
@@ -212,7 +226,6 @@ check_delay <- function(delay, call) {
 # This is the one place the names in `...` are checked:
 # spliced (`!!!`) arguments never reach the method's own arguments
 # and the pattern grobs take their boundaries, names, and viewports from the areas of `x`.
-# A factor (e.g. a data frame column) is taken as its labels.
 dots_pattern <- function(..., formals, call) {
 	params <- rlang::list2(...)
 	nms <- names(params) %||% rep_len("", length(params))
@@ -241,7 +254,7 @@ dots_pattern <- function(..., formals, call) {
 			call = call
 		)
 	}
-	taken <- intersect(nms, c("y", "id", "name", "gp", "vp", "boundary"))
+	taken <- intersect(nms, c("y", "id", "name", "gp", "vp", "boundary", "default.units", "draw"))
 	if (length(taken) > 0L) {
 		abort(
 			c(
@@ -255,7 +268,6 @@ dots_pattern <- function(..., formals, call) {
 	if (length(dup) > 0L) {
 		abort(glue("`{dup[1L]}` can't be given more than once."), call = call)
 	}
-	params <- lapply(params, function(p) if (is.factor(p)) as.character(p) else p)
 	pattern <- params[["pattern"]] %||% "stripe"
 	params[["pattern"]] <- NULL
 	list(pattern = pattern, params = params)
@@ -268,7 +280,7 @@ dots_pattern <- function(..., formals, call) {
 # The checks which don't depend on the number of areas are made now
 # (errors while drawing leave the graphics device locked).
 delayed_pattern <- function(x, pattern, params, args, call) {
-	area_state(pattern, params, NULL, list(), call)
+	area_state(pattern, params, FALSE, list(), call)
 	args$layers <- rlang::arg_match0(
 		args$layers,
 		c("area", "grob"),
@@ -276,9 +288,7 @@ delayed_pattern <- function(x, pattern, params, args, call) {
 		error_call = call
 	)
 	legend_scale(args$legend)
-	if (!is.null(args$group) && (!is.atomic(args$group) || anyNA(args$group))) {
-		abort("`group` must be an atomic vector without missing values.", call = call)
-	}
+	check_pool(args$pool, call)
 	wrapper <- gTree(
 		grob = x,
 		args = c(list(pattern = pattern), params, args),
@@ -333,7 +343,7 @@ drop_originals <- function(grob) {
 
 # `x` with each of its leaves with areas patterned: `walk(f, rebuild)` applies `f()` to each leaf
 # (see `walk_leaves()`), first to split them (see `leaf_split()`) and then to replace them.
-pattern_leaves <- function(x, walk, leaves, pattern, params, group, layers, legend, prefix, call) {
+pattern_leaves <- function(x, walk, leaves, pattern, params, pool, layers, legend, prefix, call) {
 	splits <- list()
 	walk(
 		function(leaf, ...) {
@@ -342,7 +352,7 @@ pattern_leaves <- function(x, walk, leaves, pattern, params, group, layers, lege
 		},
 		rebuild = FALSE
 	)
-	state <- area_state(pattern, params, group, splits, call)
+	state <- area_state(pattern, params, pool, splits, call)
 	if (is.null(state)) {
 		return(x)
 	}
@@ -358,7 +368,7 @@ pattern_leaves <- function(x, walk, leaves, pattern, params, group, layers, lege
 # the (integer) `group` of each area numbered by its first area, the `splits` and the index `i`
 # of the next one, the number of areas (`offset`) and groups (`k`) consumed so far,
 # and the `call` errors are reported for (or `NULL` if there are no areas).
-area_state <- function(pattern, params, group, splits, call) {
+area_state <- function(pattern, params, pool, splits, call) {
 	n <- sum(vapply(splits, function(s) length(s$boundaries), integer(1L)))
 	if (is.logical(pattern) && length(pattern) > 0L && all(is.na(pattern))) {
 		pattern <- rep_len(NA_character_, length(pattern))
@@ -372,20 +382,25 @@ area_state <- function(pattern, params, group, splits, call) {
 			call = call
 		)
 	}
-	if (is.null(group)) {
+	check_pool(pool, call)
+	if (isFALSE(pool)) {
 		group <- seq_len(n)
 		unit <- "area"
+	} else if (isTRUE(pool)) {
+		# (the areas of each grob)
+		counts <- vapply(splits, function(s) length(s$boundaries), integer(1L))
+		group <- rep.int(seq_along(splits), counts)
+		group <- match(group, unique(group))
+		unit <- "grob"
 	} else {
-		if (!is.atomic(group) || length(group) != n || anyNA(group)) {
+		if (length(pool) != n) {
 			abort(
-				glue(
-					"`group` must have one (non-missing) value per area ({n}) but has length {length(group)}."
-				),
+				glue("`pool` must have one label per area ({n}) but has length {length(pool)}."),
 				call = call
 			)
 		}
-		group <- match(group, unique(group))
-		unit <- "group"
+		group <- match(pool, unique(pool))
+		unit <- "pool"
 	}
 	if (n == 0L) {
 		return(NULL)
@@ -441,7 +456,7 @@ pattern_leaf <- function(grob, state) {
 	# (groups are numbered by their first area so an earlier grob's are at most `k`
 	# and this one's are the next ones)
 	if (any(groups <= state$k)) {
-		abort("The areas of a `group` must all be areas of the same grob.", call = state$call)
+		abort("The areas of a `pool` must all be areas of the same grob.", call = state$call)
 	}
 	state$k <- max(groups)
 	params <- state$params[groups]
