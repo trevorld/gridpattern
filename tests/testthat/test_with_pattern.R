@@ -41,7 +41,7 @@ test_that("`area_boundaries()` splits a grob into one boundary per area", {
 	local_temp_dev()
 	expect_equal(range(boundary_coords(b[[2L]])$x), c(0.55, 0.75))
 	merged <- getGrob(
-		with_pattern(layers = "grob", rect, group = c(1, 1)),
+		with_pattern(layers = "grob", rect, pool = c(1, 1)),
 		gPath("pattern", "area.1")
 	)$boundary
 	expect_equal(merged$hjust, c(0, 1))
@@ -415,7 +415,7 @@ test_that("`leaves` selects which children of a gTree or gList have areas", {
 	expect_no_error(grid.draw(out))
 })
 
-test_that("`with_pattern()` fills a `group` of areas with one pattern", {
+test_that("`with_pattern()` fills a `pool` of areas with one pattern", {
 	# e.g. a {sf} MULTIPOLYGON column: one path per polygon
 	path <- pathGrob(
 		x = c(0, 0.2, 0.2, 0, 0.05, 0.15, 0.15, 0.05, 0.4, 0.6, 0.6, 0.8, 1, 0.9),
@@ -431,7 +431,7 @@ test_that("`with_pattern()` fills a `group` of areas with one pattern", {
 		path,
 		pattern = "gradient",
 		fill = c("red", "blue"),
-		group = c("a", "a", "b")
+		pool = c("a", "a", "b")
 	)
 	expect_equal(childNames(getGrob(out, "pattern")), c("area.1", "area.2"))
 	p1 <- getGrob(out, gPath("pattern", "area.1"))
@@ -455,32 +455,45 @@ test_that("`with_pattern()` fills a `group` of areas with one pattern", {
 		c(0, 0, 0.2, 0, 0, 0.2, 0, 0, 0.2),
 		id.lengths = c(3L, 3L, 3L)
 	)
-	out <- with_pattern(layers = "grob", polygon, group = c(1, 2, 1))
+	out <- with_pattern(layers = "grob", polygon, pool = c(1, 2, 1))
 	b <- getGrob(out, gPath("pattern", "area.1"))
 	expect_equal(b$x, unit(c(0, 0.2, 0.1, 0.8, 1, 0.9), "npc"))
 	expect_equal(b$id, rep(1:2, each = 3L))
 	expect_equal(getGrob(out, gPath("pattern", "area.2"))$x, unit(c(0.5, 0.7, 0.6), "npc"))
 	rect <- rectGrob(x = c(0.2, 0.5, 0.8), width = 0.2, height = c(0.1, 0.2, 0.3))
 	b <- getGrob(
-		with_pattern(layers = "grob", rect, group = c(1, 1, 2)),
+		with_pattern(layers = "grob", rect, pool = c(1, 1, 2)),
 		gPath("pattern", "area.1")
 	)$boundary
 	expect_equal(b$x, unit(c(0.2, 0.5), "npc"))
 	expect_equal(b$height, unit(c(0.1, 0.2), "npc"))
 	circle <- circleGrob(x = c(0.2, 0.5, 0.8), r = c(0.1, 0.2, 0.1))
 	b <- getGrob(
-		with_pattern(layers = "grob", circle, group = c(1, 1, 1)),
+		with_pattern(layers = "grob", circle, pool = c(1, 1, 1)),
 		gPath("pattern", "area.1")
 	)$boundary
 	expect_equal(b$r, unit(c(0.1, 0.2, 0.1), "npc"))
 	points <- pointsGrob(c(0.2, 0.5, 0.8), rep(0.5, 3L), pch = c(21, 19, 22))
 	b <- getGrob(
-		with_pattern(layers = "grob", points, group = c(1, 1)),
+		with_pattern(layers = "grob", points, pool = c(1, 1)),
 		gPath("pattern", "area.1")
 	)$boundary
 	expect_equal(b$x, unit(c(0.2, 0.8), "native"))
 	expect_equal(b$pch, c(21, 22))
 
+	# `pool = TRUE` pools all the areas of each grob (`FALSE`, the default, none)
+	rects <- rectGrob(x = c(0.25, 0.75), width = 0.4, name = "rects")
+	tri <- polygonGrob(c(0.1, 0.9, 0.5), c(0.1, 0.1, 0.9), name = "tri")
+	both <- gTree(children = gList(rects, tri), name = "both")
+	out <- with_pattern(layers = "grob", both, fill = c("red", "blue"), pool = TRUE)
+	expect_equal(childNames(getGrob(out, gPath("rects", "pattern"))), "area.1")
+	expect_equal(getGrob(out, gPath("tri", "pattern", "area.1"))$args$pattern_fill, "blue")
+	expect_identical(
+		with_pattern(layers = "grob", rects, pool = FALSE),
+		with_pattern(layers = "grob", rects)
+	)
+	expect_error(with_pattern(rects, pool = c(TRUE, FALSE)), "`pool` must be `TRUE`, `FALSE`")
+	expect_error(with_pattern(rects, pool = NA), "`pool` must be `TRUE`, `FALSE`")
 	# within a gTree the groups follow the areas in drawing order
 	tree <- gTree(
 		children = gList(rectGrob(x = c(0.25, 0.75), width = 0.4, name = "rects"), polygon),
@@ -490,7 +503,7 @@ test_that("`with_pattern()` fills a `group` of areas with one pattern", {
 		layers = "grob",
 		tree,
 		fill = c("red", "blue", "green"),
-		group = c(1, 1, 2, 3, 2)
+		pool = c(1, 1, 2, 3, 2)
 	)
 	expect_equal(childNames(getGrob(out, gPath("rects", "pattern"))), "area.1")
 	fill_of <- function(...) getGrob(out, gPath(...))$args$pattern_fill
@@ -499,25 +512,25 @@ test_that("`with_pattern()` fills a `group` of areas with one pattern", {
 	expect_equal(fill_of(polygon$name, "pattern", "area.2"), "green")
 
 	expect_error(
-		with_pattern(layers = "grob", tree, fill = c("red", "blue"), group = c(1, 1, 2, 3, 2)),
-		"one value per group (3) but has length 2",
+		with_pattern(layers = "grob", tree, fill = c("red", "blue"), pool = c(1, 1, 2, 3, 2)),
+		"one value per pool (3) but has length 2",
 		fixed = TRUE
 	)
 	expect_error(
-		with_pattern(layers = "grob", tree, group = 1:3),
-		"`group` must have one (non-missing) value per area (5)",
+		with_pattern(layers = "grob", tree, pool = 1:3),
+		"`pool` must have one label per area (5)",
 		fixed = TRUE
 	)
-	expect_error(with_pattern(layers = "grob", tree, group = c(1, 1, 2, 2, NA)), "non-missing")
+	expect_error(with_pattern(layers = "grob", tree, pool = c(1, 1, 2, 2, NA)), "non-missing")
 	expect_error(
-		with_pattern(layers = "grob", tree, group = c(1, 2, 2, 3, 3)),
+		with_pattern(layers = "grob", tree, pool = c(1, 2, 2, 3, 3)),
 		"must all be areas of the same grob"
 	)
 	expect_error(
 		with_pattern(
 			layers = "grob",
 			gTree(children = gList(roundrectGrob(), roundrectGrob())),
-			group = c(1, 1)
+			pool = c(1, 1)
 		),
 		"must all be areas of the same grob"
 	)
@@ -558,7 +571,7 @@ test_that("a `fillStrokeGrob()` or `fillGrob()` is one area", {
 	expect_equal(border$gp$col, "blue")
 	expect_s3_class(getGrob(out, gPath("pattern", "area.1"))$boundary, "GridFillStroke")
 	expect_error(
-		with_pattern(layers = "grob", tree, group = c(1, 1)),
+		with_pattern(layers = "grob", tree, pool = c(1, 1)),
 		"must all be areas of the same grob"
 	)
 
@@ -603,7 +616,7 @@ test_that("`area_boundaries()` has one area per closed spline of an `xspline`", 
 	out <- with_pattern(layers = "grob", xs, fill = c("red", "blue"))
 	expect_equal(childNames(getGrob(out, "pattern")), c("area.1", "area.2"))
 	merged <- getGrob(
-		with_pattern(layers = "grob", xs, group = c(1, 1)),
+		with_pattern(layers = "grob", xs, pool = c(1, 1)),
 		gPath("pattern", "area.1")
 	)$boundary
 	expect_equal(merged$x, xs$x)
@@ -692,7 +705,7 @@ test_that("`layers = \"area\"` draws the layers of each area in turn", {
 	expect_equal(getGrob(out, gPath("area.2", "fill"))$gp$fill, "blue")
 
 	# a group's areas are drawn together where its first area is
-	out <- with_pattern(rect, group = c(1, 2, 1))
+	out <- with_pattern(rect, pool = c(1, 2, 1))
 	expect_equal(childNames(out), c("area.1", "area.2"))
 	fills <- getGrob(out, gPath("area.1", "fill"))
 	expect_s3_class(fills, "gTree")
@@ -754,12 +767,12 @@ test_that("each boundary keeps its own graphical parameters", {
 
 	# a group's merged boundary has each of its shapes' parameters
 	merged <- getGrob(
-		with_pattern(polygon, group = c(1, 1), layers = "grob"),
+		with_pattern(polygon, pool = c(1, 1), layers = "grob"),
 		gPath("pattern", "area.1")
 	)
 	expect_equal(merged$id, rep(1:2, each = 3L))
 	merged <- getGrob(
-		with_pattern(rect, group = c(1, 1), layers = "grob"),
+		with_pattern(rect, pool = c(1, 1), layers = "grob"),
 		gPath("pattern", "area.1")
 	)
 	expect_equal(merged$boundary$gp$fill, c("red", "blue"))
@@ -857,11 +870,11 @@ test_that("`with_pattern()` reports its errors as its own", {
 	cnd <- tryCatch(with_pattern(gList(rect), fill = 1:3), error = identity)
 	expect_identical(conditionCall(cnd)[[1L]], quote(with_pattern))
 	tree <- gTree(children = gList(rect, rectGrob()))
-	cnd <- tryCatch(with_pattern(tree, group = c(1, 2, 1)), error = identity)
+	cnd <- tryCatch(with_pattern(tree, pool = c(1, 2, 1)), error = identity)
 	expect_match(conditionMessage(cnd), "same grob")
 	expect_identical(conditionCall(cnd)[[1L]], quote(with_pattern))
 	cnd <- tryCatch(
-		with_pattern(gTree(children = gList(roundrectGrob(), roundrectGrob())), group = c(1, 1)),
+		with_pattern(gTree(children = gList(roundrectGrob(), roundrectGrob())), pool = c(1, 1)),
 		error = identity
 	)
 	expect_identical(conditionCall(cnd)[[1L]], quote(with_pattern))
@@ -1046,7 +1059,7 @@ test_that("`delay = TRUE` fills the areas a grob has when it is drawn", {
 	expect_error(with_pattern(lazy, delay = NA), "`delay` must be")
 	expect_error(with_pattern(lazy, layers = "bogus", delay = TRUE), "must be one of")
 	expect_error(with_pattern(lazy, legend = "foo", delay = TRUE), "`legend` must be")
-	expect_error(with_pattern(lazy, group = c(1, NA), delay = TRUE), "`group` must be")
+	expect_error(with_pattern(lazy, pool = c(1, NA), delay = TRUE), "`pool` must be")
 	# while those which do are made when it is drawn
 	delayed <- with_pattern(lazy, fill = c("red", "blue", "green"), delay = TRUE)
 	cnd <- tryCatch(grid.draw(delayed), error = identity)
@@ -1110,8 +1123,8 @@ test_that("`pattern = NA` leaves an area as it is", {
 	# the pattern parameters still have one value per area
 	out <- with_pattern(rect, pattern = c("stripe", NA, "stripe"), fill = c("red", "blue", "green"))
 	expect_equal(getGrob(out, gPath("area.3", "pattern", "area.3"))$args$pattern_fill, "green")
-	# a `group` can be left as it is
-	out <- with_pattern(rect, pattern = c("stripe", NA), group = c(1, 2, 1))
+	# a `pool` can be left as it is
+	out <- with_pattern(rect, pattern = c("stripe", NA), pool = c(1, 2, 1))
 	expect_equal(childNames(out), c("area.1", "shape.2"))
 	# with `layers = "grob"` the area is drawn with the fills and borders of the others
 	out <- with_pattern(rect, pattern = c("stripe", NA, "circle"), layers = "grob")
@@ -1156,21 +1169,20 @@ test_that("pattern parameters can be spliced in with `!!!`", {
 	cnd <- tryCatch(with_pattern(rect, "circle"), error = identity)
 	expect_match(conditionMessage(cnd), "must be named")
 	expect_match(conditionMessage(cnd), "pattern = ", fixed = TRUE)
-	# (also as a factor column)
-	out <- with_pattern(rect, !!!data.frame(pattern = factor(c("stripe", "circle"))))
-	expect_equal(getGrob(out, gPath("area.2", "pattern", "area.2"))$pattern, "circle")
 	# its own arguments can't be spliced nor a name given twice
-	own <- function() with_pattern(rect, !!!list(group = c(1, 1), fill = "red"))
-	expect_error(own(), "`group` can't be spliced")
+	own <- function() with_pattern(rect, !!!list(pool = c(1, 1), fill = "red"))
+	expect_error(own(), "`pool` can't be spliced")
+	# (while e.g. a {ggplot2} `group` column is a pattern parameter like any other)
+	out <- with_pattern(rect, !!!list(group = 1:2, fill = "red"), prefix = "")
+	expect_equal(getGrob(out, gPath("area.2", "pattern", "area.2"))$args$group, 2L)
+	expect_error(with_pattern(rect, draw = TRUE), "`draw` can't be given")
+	expect_error(with_pattern(rect, default.units = "cm"), "`default.units` can't be given")
 	tree <- function() with_pattern(gTree(children = gList(rect)), !!!list(leaves = "rect"))
 	expect_error(tree(), "`leaves` can't be spliced")
 	twice <- function() with_pattern(rect, pattern = "stripe", !!!list(pattern = "circle"))
 	expect_error(twice(), "`pattern` can't be given more than once")
 	coords <- function() with_pattern(rect, !!!list(x = 1))
 	expect_error(coords(), "`x` can't be spliced")
-	# (a factor parameter is taken as its labels)
-	out <- with_pattern(rect, fill = factor(c("red", "blue")))
-	expect_equal(getGrob(out, gPath("area.2", "pattern", "area.2"))$args$pattern_fill, "blue")
 	# `as.patternGrob()`'s come right after its `boundary`
 	x <- c(0, 0, 1, 1)
 	y <- c(1, 0, 0, 1)

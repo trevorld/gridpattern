@@ -52,7 +52,7 @@ A \code{\link[grid:gList]{grid::gList()}} of grobs (one per area, empty if \code
 }
 
 The areas are in a fixed order
-(which the per-area pattern parameters and \code{group} of \code{\link[=with_pattern]{with_pattern()}} follow):
+(which the per-area pattern parameters and \code{pool} of \code{\link[=with_pattern]{with_pattern()}} follow):
 the polygons of a \code{\link[grid:polygonGrob]{grid::polygonGrob()}} or \code{\link[grid:xsplineGrob]{grid::xsplineGrob()}} by increasing \code{id}
 and the paths of a \code{\link[grid:pathGrob]{grid::pathGrob()}} by increasing \code{pathId}
 (grid stores these as integers; those given by \code{id.lengths} / \code{pathId.lengths} are
