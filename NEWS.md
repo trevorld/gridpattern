@@ -92,6 +92,18 @@ New features
 * `as.patternGrob()` creates a pattern grob whose boundary is (the area filled by) an existing grid grob (#131).
 * `with_pattern()` fills each area of an object with a pattern (#131).
 * `area_boundaries()` splits a grid grob into one boundary grob per such area.
+* Several conditions now have classes so they can be caught or muffled:
+
+  + `"gridpattern_ambiguous_pattern"` (field `pattern`): the error for a pattern name that can't be resolved
+    because it is registered by more than one owner.
+  + `gridpattern_area_mismatch`: `with_pattern()`'s error when a pattern parameter (or `pool`) has the wrong number of values per area
+    (fields `arg`, `n_expected` (the expected number of values),
+    `n_given`, and `unit` (`"area"`, `"grob"`, or `"pool"`)).
+  + `"gridpattern_pattern_conflict"` (field `pattern`): the messages `register_pattern()` gives
+    when a newly registered pattern conflicts with (or is masked by) another pattern.
+  + `"gridpattern_pool_mismatch"`: `with_pattern()`'s error when a `pool` has areas of more than one grob.
+  + `"gridpattern_unknown_pattern"` (field `pattern`, the name that couldn't be resolved):
+    the error for an unknown pattern name (or a preferred `"owner::name"` pattern that isn't registered).
 
 Bug fixes and minor improvements
 --------------------------------

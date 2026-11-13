@@ -527,6 +527,10 @@ test_that("`with_pattern()` fills a `pool` of areas with one pattern", {
 		"must all be areas of the same grob"
 	)
 	expect_error(
+		with_pattern(layers = "grob", tree, pool = c(1, 2, 2, 3, 3)),
+		class = "gridpattern_pool_mismatch"
+	)
+	expect_error(
 		with_pattern(
 			layers = "grob",
 			gTree(children = gList(roundrectGrob(), roundrectGrob())),
@@ -1196,4 +1200,41 @@ test_that("pattern parameters can be spliced in with `!!!`", {
 	expect_error(coords(), "can't be given with a `boundary` grob")
 	unchanged <- function() as.patternGrob(patternGrob(), !!!list(fill = "blue"))
 	expect_error(unchanged(), "returns a `pattern` grob unchanged")
+})
+
+test_that("the wrong number of values per area raises a classed error", {
+	rect <- rectGrob(x = c(0.25, 0.75), width = 0.4)
+	cnd <- rlang::catch_cnd(with_pattern(rect, fill = 1:3), classes = "error")
+	expect_s3_class(cnd, "gridpattern_area_mismatch")
+	expect_identical(cnd$arg, "fill")
+	expect_identical(cnd$n_expected, 2L)
+	expect_identical(cnd$n_given, 3L)
+	expect_identical(cnd$unit, "area")
+	expect_error(
+		with_pattern(rect, pattern = c("stripe", "circle", "none")),
+		class = "gridpattern_area_mismatch"
+	)
+	# per pool
+	cnd <- rlang::catch_cnd(
+		with_pattern(rect, fill = 1:2, pool = c("a", "a")),
+		classes = "error"
+	)
+	expect_s3_class(cnd, "gridpattern_area_mismatch")
+	expect_identical(cnd$n_expected, 1L)
+	expect_identical(cnd$n_given, 2L)
+	expect_identical(cnd$unit, "pool")
+	# the wrong number of `pool` labels
+	cnd <- rlang::catch_cnd(with_pattern(rect, pool = 1:3), classes = "error")
+	expect_s3_class(cnd, "gridpattern_area_mismatch")
+	expect_identical(cnd$arg, "pool")
+	expect_identical(cnd$n_expected, 2L)
+	expect_identical(cnd$n_given, 3L)
+	expect_identical(cnd$unit, "area")
+	# when drawn (`delay = TRUE`) the classed error is the parent of the error drawing it
+	delayed <- with_pattern(rect, fill = 1:3, delay = TRUE)
+	expect_error(grid.draw(delayed), class = "gridpattern_area_mismatch")
+	cnd <- rlang::try_fetch(grid.draw(delayed), gridpattern_area_mismatch = identity)
+	expect_identical(cnd$arg, "fill")
+	expect_identical(cnd$n_expected, 2L)
+	expect_identical(cnd$n_given, 3L)
 })

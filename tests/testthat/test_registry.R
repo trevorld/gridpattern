@@ -61,6 +61,10 @@ test_that("`register_pattern()` works for user patterns", {
 	expect_equal(unregister_pattern("capture", env = globalenv())$name, "capture")
 	expect_null(unregister_pattern("capture", env = globalenv()))
 	expect_error(makeContent(patternGrob("capture")), 'Unknown pattern "capture"')
+	cnd <- rlang::catch_cnd(resolve_pattern("capture"), classes = "error")
+	expect_s3_class(cnd, "gridpattern_unknown_pattern")
+	expect_identical(cnd$pattern, "capture")
+	expect_null(conditionCall(cnd))
 })
 
 test_that("patterns are resolved at draw time", {
@@ -138,6 +142,21 @@ test_that("user patterns conflict with builtin patterns", {
 		'conflicts with "gridpattern::wave"'
 	)
 	expect_error(key("wave"), 'Pattern "wave" registered by 2 owners')
+	cnd <- rlang::catch_cnd(resolve_pattern("wave"), classes = "error")
+	expect_s3_class(cnd, "gridpattern_ambiguous_pattern")
+	expect_identical(cnd$pattern, "wave")
+	unregister_pattern("wave", env = globalenv())
+	cnd <- rlang::catch_cnd(
+		register_pattern("wave", create_pattern_capture, env = globalenv()),
+		classes = "message"
+	)
+	expect_s3_class(cnd, "gridpattern_pattern_conflict")
+	expect_identical(cnd$pattern, "wave")
+	# (only the conflict messages are muffled)
+	expect_silent(suppressMessages(
+		register_pattern("wave", create_pattern_capture, env = globalenv()),
+		classes = "gridpattern_pattern_conflict"
+	))
 	expect_equal(key("R_GlobalEnv::wave"), "R_GlobalEnv::wave")
 	expect_equal(key("gridpattern::wave"), "gridpattern::wave")
 	draw(patternGrob("R_GlobalEnv::wave"))
@@ -732,6 +751,7 @@ test_that("legacy options", {
 	expect_equal(df$active[df$name == "polygon"], c(FALSE, FALSE))
 	expect_equal(conflicting_patterns()$name, c("polygon", "polygon"))
 	expect_error(resolve_pattern("polygon"), 'multiple patterns named "polygon"')
+	expect_error(resolve_pattern("polygon"), class = "gridpattern_ambiguous_pattern")
 	expect_error(
 		resolve_pattern("R_GlobalEnv::polygon"),
 		'multiple patterns named "polygon"'
@@ -1072,6 +1092,9 @@ test_that("`prefer_pattern(must_exist)` allows preferring patterns before they a
 	expect_equal(old, character(0L))
 	expect_equal(preferred_patterns("later"), "R_GlobalEnv::later")
 	expect_error(resolve_pattern("later"), 'Preferred pattern "R_GlobalEnv::later" for "later"')
+	cnd <- rlang::catch_cnd(resolve_pattern("later"), classes = "error")
+	expect_s3_class(cnd, "gridpattern_unknown_pattern")
+	expect_identical(cnd$pattern, "R_GlobalEnv::later")
 	# preferring before registering suppresses the conflict message
 	expect_silent(register_pattern("later", create_pattern_capture, env = globalenv()))
 	expect_equal(key("later"), "R_GlobalEnv::later")

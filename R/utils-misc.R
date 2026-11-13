@@ -1,14 +1,17 @@
-assert_suggested <- function(package, pattern = NULL, fn = NULL) {
-	if (!requireNamespace(package, quietly = TRUE)) {
-		context <- if (!is.null(pattern)) {
-			glue('in order to use the "{pattern}" pattern.')
+# errors (with class "rlib_error_package_not_found") if suggested package `package` isn't installed
+# without `rlang::check_installed()`'s offer to install it in an interactive session
+# (the patterns check while being drawn)
+assert_suggested <- function(package, pattern = NULL, fn = NULL, call = caller_env()) {
+	if (!rlang::is_installed(package)) {
+		reason <- if (!is.null(pattern)) {
+			glue('to use the "{pattern}" pattern.')
 		} else {
-			glue("in order to use `{fn}()`.")
+			glue("to use `{fn}()`.")
 		}
-		abort(c(
-			glue("The suggested package {{{package}}} must be installed {context}"),
-			i = glue('Install with the command `install.packages("{package}")`')
-		))
+		rlang::with_options(
+			rlib_restart_package_not_found = FALSE,
+			rlang::check_installed(package, reason, call = call)
+		)
 	}
 }
 

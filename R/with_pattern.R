@@ -396,6 +396,11 @@ area_state <- function(pattern, params, pool, splits, call) {
 		if (length(pool) != n) {
 			abort(
 				glue("`pool` must have one label per area ({n}) but has length {length(pool)}."),
+				class = "gridpattern_area_mismatch",
+				arg = "pool",
+				n_expected = n,
+				n_given = length(pool),
+				unit = "area",
 				call = call
 			)
 		}
@@ -420,6 +425,11 @@ area_state <- function(pattern, params, pool, splits, call) {
 					glue(
 						"`{nm}` must have length one or one value per {unit} ({m}) but has length {length(p)}."
 					),
+					class = "gridpattern_area_mismatch",
+					arg = nm,
+					n_expected = m,
+					n_given = length(p),
+					unit = unit,
 					call = call
 				)
 			}
@@ -456,7 +466,11 @@ pattern_leaf <- function(grob, state) {
 	# (groups are numbered by their first area so an earlier grob's are at most `k`
 	# and this one's are the next ones)
 	if (any(groups <= state$k)) {
-		abort("The areas of a `pool` must all be areas of the same grob.", call = state$call)
+		abort(
+			"The areas of a `pool` must all be areas of the same grob.",
+			class = "gridpattern_pool_mismatch",
+			call = state$call
+		)
 	}
 	state$k <- max(groups)
 	params <- state$params[groups]

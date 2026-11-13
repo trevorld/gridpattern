@@ -187,11 +187,22 @@ test_that("`grid.pattern_hatch()` special types pass on `units` and offsets", {
 test_that("`assert_suggested()` works as expected", {
 	expect_error(
 		assert_suggested("doesnotexist", pattern = "blueberry"),
-		"The suggested package \\{doesnotexist\\} must be installed in order to use the \"blueberry\" pattern"
+		'The package "doesnotexist" is required to use the "blueberry" pattern.',
+		fixed = TRUE
 	)
 	expect_error(
 		assert_suggested("doesnotexist", fn = "blueberry"),
-		"The suggested package \\{doesnotexist\\} must be installed in order to use `blueberry\\(\\)`"
+		'The package "doesnotexist" is required to use `blueberry()`.',
+		fixed = TRUE
+	)
+	cnd <- rlang::catch_cnd(assert_suggested("doesnotexist", fn = "blueberry"), classes = "error")
+	expect_s3_class(cnd, "rlib_error_package_not_found")
+	expect_identical(cnd$pkg, "doesnotexist")
+	# (no offer to install it even when interactive)
+	rlang::local_interactive()
+	expect_error(
+		assert_suggested("doesnotexist", pattern = "blueberry"),
+		class = "rlib_error_package_not_found"
 	)
 })
 
