@@ -815,15 +815,23 @@ registration_owner <- function(env) {
 
 inform_conflict <- function(name) {
 	if (length(option_entries(name))) {
-		inform(c(
-			glue('Pattern "{name}" conflicts with a pattern set by `options()`.'),
-			i = "Remove one of them (`prefer_pattern()` can't choose between them)."
-		))
+		inform(
+			c(
+				glue('Pattern "{name}" conflicts with a pattern set by `options()`.'),
+				i = "Remove one of them (`prefer_pattern()` can't choose between them)."
+			),
+			class = "gridpattern_pattern_conflict",
+			pattern = name
+		)
 	}
 	preferred <- pattern_preferences[[name]]
 	if (!is.null(preferred)) {
 		if (preferred != USER_OWNER) {
-			inform(glue('Pattern "{name}" is masked by preferred "{preferred}::{name}".'))
+			inform(
+				glue('Pattern "{name}" is masked by preferred "{preferred}::{name}".'),
+				class = "gridpattern_pattern_conflict",
+				pattern = name
+			)
 		}
 		return(invisible(NULL))
 	}
@@ -831,12 +839,16 @@ inform_conflict <- function(name) {
 	if (length(others)) {
 		keys <- vapply(others, function(e) pattern_key(e$owner, e$name), character(1L))
 		conflicts <- paste0('"', keys, '"', collapse = ", ")
-		inform(c(
-			glue('Pattern "{name}" conflicts with {conflicts}.'),
-			i = glue(
-				'Use `prefer_pattern("{USER_OWNER}::{name}")` to use your pattern by default.'
-			)
-		))
+		inform(
+			c(
+				glue('Pattern "{name}" conflicts with {conflicts}.'),
+				i = glue(
+					'Use `prefer_pattern("{USER_OWNER}::{name}")` to use your pattern by default.'
+				)
+			),
+			class = "gridpattern_pattern_conflict",
+			pattern = name
+		)
 	}
 	invisible(NULL)
 }
@@ -1011,7 +1023,12 @@ user_entry <- function(name) {
 }
 
 abort_user_conflict <- function(name, entries) {
-	abort(user_conflict_message(name, entries), call = NULL)
+	abort(
+		user_conflict_message(name, entries),
+		class = "gridpattern_ambiguous_pattern",
+		pattern = name,
+		call = NULL
+	)
 }
 
 user_conflict_message <- function(name, entries) {
@@ -1085,15 +1102,22 @@ abort_pattern_conflict <- function(name, owners) {
 			" " = "Or declare a preference with `prefer_pattern()`:",
 			rlang::set_names(prefer, bullets)
 		),
+		class = "gridpattern_ambiguous_pattern",
+		pattern = name,
 		call = NULL
 	)
 }
 
 abort_unknown_pattern <- function(pattern) {
-	abort(c(
-		glue('Unknown pattern "{pattern}".'),
-		i = "See `registered_patterns()` for available patterns."
-	))
+	abort(
+		c(
+			glue('Unknown pattern "{pattern}".'),
+			i = "See `registered_patterns()` for available patterns."
+		),
+		class = "gridpattern_unknown_pattern",
+		pattern = pattern,
+		call = NULL
+	)
 }
 
 abort_missing_preference <- function(name, key) {
@@ -1102,6 +1126,8 @@ abort_missing_preference <- function(name, key) {
 			glue('Preferred pattern "{key}" for "{name}" isn\'t registered.'),
 			i = glue('Use `unprefer_pattern("{key}")` to remove this preference.')
 		),
+		class = "gridpattern_unknown_pattern",
+		pattern = key,
 		call = NULL
 	)
 }

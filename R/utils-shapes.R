@@ -85,7 +85,7 @@ merge_shapes <- function(shapes, call = caller_env()) {
 	first <- shapes[[1L]]
 	spec <- shape_spec(first)
 	if (is.null(spec) || spec$by == "single") {
-		abort(glue("The areas of a `{class(first)[1L]}` grob can't be grouped."), call = call)
+		abort(glue("The areas of a `{class(first)[1L]}` grob can't be pooled."), call = call)
 	}
 	concat <- function(slot) {
 		v <- lapply(shapes, `[[`, slot)
