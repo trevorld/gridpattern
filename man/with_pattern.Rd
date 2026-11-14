@@ -5,6 +5,7 @@
 \alias{with_pattern.gTree}
 \alias{with_pattern.gList}
 \alias{with_pattern.grob}
+\alias{with_pattern.list}
 \title{Fill the areas of an object with patterns}
 \usage{
 with_pattern(x, ...)
@@ -42,9 +43,12 @@ with_pattern(x, ...)
   legend = FALSE,
   prefix = "pattern_"
 )
+
+\method{with_pattern}{list}(x, ...)
 }
 \arguments{
-\item{x}{An object with filled areas such as a grid grob or a \code{\link[grid:gList]{grid::gList()}}.}
+\item{x}{An object with filled areas such as a grid grob, a \code{\link[grid:gList]{grid::gList()}},
+or a list of such objects.}
 
 \item{...}{<\code{\link[rlang:dyn-dots]{dynamic-dots}}> The \code{pattern} name (\code{"stripe"} by default,
 see \code{\link[=patternGrob]{patternGrob()}}; \code{NA} leaves an area as it is) and the pattern parameters,
@@ -88,14 +92,17 @@ in \code{...} (e.g. \code{prefix = ""} for parameters already named \verb{patter
 For a grid grob a \code{\link[grid:gTree]{grid::gTree()}} (or a \code{\link[grid:gList]{grid::gList()}} if \code{x} is one)
 unless \code{x} has no fillable areas in which case \code{x} is returned unchanged
 (with \code{delay = TRUE} always a \code{gTree}).
+For a list a list of the same length (and names) of the patterned elements.
 }
 \description{
 \code{with_pattern()} returns a modified version of its input with each area it paints with a \code{fill} also filled with a pattern.
 }
 \details{
 \code{with_pattern()} returns a modified version of the object \code{x} with each area it paints with its \code{fill} (see \code{\link[=area_boundaries]{area_boundaries()}}) also filled with a pattern.
-This package provides its methods for grid grobs
+This package provides its methods for grid grobs and (plain) lists of objects
 (another package may add a method for its own class of object).
+A list is returned with each of its elements patterned separately by \code{with_pattern()}
+(with the same arguments) so each must have a \code{with_pattern()} method of its own.
 Each grob with such areas (by default a \code{\link[grid:polygonGrob]{grid::polygonGrob()}}, \code{\link[grid:rectGrob]{grid::rectGrob()}}, \code{\link[grid:pathGrob]{grid::pathGrob()}},
 \code{\link[grid:circleGrob]{grid::circleGrob()}}, \code{\link[grid:roundrectGrob]{grid::roundrectGrob()}}, (closed) \code{\link[grid:xsplineGrob]{grid::xsplineGrob()}},
 \code{\link[grid:fillStrokeGrob]{grid::fillStrokeGrob()}}, or \code{\link[grid:fillGrob]{grid::fillGrob()}}, see the \code{leaves} argument)

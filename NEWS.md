@@ -91,6 +91,7 @@ New features
   i.e. whether registering a pattern with that name would clobber or conflict with a pre-existing pattern.
 * `as.patternGrob()` creates a pattern grob whose boundary is (the area filled by) an existing grid grob (#131).
 * `with_pattern()` fills each area of an object with a pattern (#131).
+  It has methods for grid grobs, gLists, and (plain) lists.
 * `area_boundaries()` splits a grid grob into one boundary grob per such area.
 * Several conditions now have classes so they can be caught or muffled:
 
@@ -99,6 +100,8 @@ New features
   + `gridpattern_area_mismatch`: `with_pattern()`'s error when a pattern parameter (or `pool`) has the wrong number of values per area
     (fields `arg`, `n_expected` (the expected number of values),
     `n_given`, and `unit` (`"area"`, `"grob"`, or `"pool"`)).
+  + `"gridpattern_no_method"` (field `x_class`, the first class of the object):
+    `with_pattern()`'s error for an object (or list element) without a `with_pattern()` method.
   + `"gridpattern_pattern_conflict"` (field `pattern`): the messages `register_pattern()` gives
     when a newly registered pattern conflicts with (or is masked by) another pattern.
   + `"gridpattern_pool_mismatch"`: `with_pattern()`'s error when a `pool` has areas of more than one grob.
