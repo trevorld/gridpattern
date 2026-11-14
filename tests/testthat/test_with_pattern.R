@@ -1238,3 +1238,48 @@ test_that("the wrong number of values per area raises a classed error", {
 	expect_identical(cnd$n_expected, 2L)
 	expect_identical(cnd$n_given, 3L)
 })
+
+test_that("`with_pattern()` patterns each element of a list", {
+	rect <- rectGrob(x = c(0.25, 0.75), width = 0.4, name = "rects")
+	poly <- polygonGrob(c(0, 1, 0.5), c(0, 0, 1), name = "p")
+	lines <- linesGrob(name = "l")
+	x <- list(a = rect, b = list(poly, lines), c = gList(poly))
+	out <- with_pattern(x, pattern = "circle", fill = "red", layers = "grob")
+	expect_type(out, "list")
+	expect_named(out, c("a", "b", "c"))
+	# each element dispatches on its own class (nested lists recursively)
+	expect_identical(out$a, with_pattern(rect, pattern = "circle", fill = "red", layers = "grob"))
+	expect_identical(
+		out$b[[1L]],
+		with_pattern(poly, pattern = "circle", fill = "red", layers = "grob")
+	)
+	expect_identical(out$b[[2L]], lines)
+	# (a gList isn't dispatched as a list)
+	expect_s3_class(out$c, "gList")
+	expect_identical(
+		out$c,
+		with_pattern(gList(poly), pattern = "circle", fill = "red", layers = "grob")
+	)
+	expect_equal(getGrob(out$a, gPath("pattern", "area.2"))$pattern, "circle")
+	# the arguments are forwarded (including spliced ones and `delay`)
+	params <- list(pattern = "crosshatch", fill = "blue")
+	expect_identical(with_pattern(list(rect), !!!params), list(with_pattern(rect, !!!params)))
+	expect_s3_class(with_pattern(list(rect), delay = TRUE)[[1L]], "delayed_pattern")
+	# so a parameter with one value per area has one per area of each element
+	expect_error(with_pattern(list(rect, poly), fill = 1:2), class = "gridpattern_area_mismatch")
+	# an empty list is returned as it is
+	expect_identical(with_pattern(list()), list())
+	expect_identical(with_pattern(setNames(list(), character())), setNames(list(), character()))
+})
+
+test_that("an object without a `with_pattern()` method raises a classed error", {
+	cnd <- rlang::catch_cnd(with_pattern("a"), classes = "error")
+	expect_s3_class(cnd, "gridpattern_no_method")
+	expect_identical(cnd$x_class, "character")
+	expect_match(conditionMessage(cnd), "{gridpattern} provides methods", fixed = TRUE)
+	# including any element of a list (or a data frame, which isn't dispatched as a list)
+	cnd <- rlang::catch_cnd(with_pattern(list(rectGrob(), 1)), classes = "error")
+	expect_s3_class(cnd, "gridpattern_no_method")
+	expect_identical(cnd$x_class, "numeric")
+	expect_error(with_pattern(data.frame(x = 1)), class = "gridpattern_no_method")
+})

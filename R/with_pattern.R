@@ -3,8 +3,10 @@
 #' `with_pattern()` returns a modified version of its input with each area it paints with a `fill` also filled with a pattern.
 #'
 #' `with_pattern()` returns a modified version of the object `x` with each area it paints with its `fill` (see [area_boundaries()]) also filled with a pattern.
-#' This package provides its methods for grid grobs
+#' This package provides its methods for grid grobs and (plain) lists of objects
 #' (another package may add a method for its own class of object).
+#' A list is returned with each of its elements patterned separately by `with_pattern()`
+#' (with the same arguments) so each must have a `with_pattern()` method of its own.
 #' Each grob with such areas (by default a [grid::polygonGrob()], [grid::rectGrob()], [grid::pathGrob()],
 #' [grid::circleGrob()], [grid::roundrectGrob()], (closed) [grid::xsplineGrob()],
 #' [grid::fillStrokeGrob()], or [grid::fillGrob()], see the `leaves` argument)
@@ -42,7 +44,8 @@
 #' the result is then a `gTree` which forces the grob with [grid::forceGrob()] when it is drawn
 #' (in the viewport it is drawn in) and fills the areas it has then
 #' (so an error about their number is raised then too).
-#' @param x An object with filled areas such as a grid grob or a [grid::gList()].
+#' @param x An object with filled areas such as a grid grob, a [grid::gList()],
+#'          or a list of such objects.
 #' @param ... <[`dynamic-dots`][rlang::dyn-dots]> The `pattern` name (`"stripe"` by default,
 #'            see [patternGrob()]; `NA` leaves an area as it is) and the pattern parameters,
 #'            each either of length one (for every area)
@@ -77,6 +80,7 @@
 #' @return For a grid grob a [grid::gTree()] (or a [grid::gList()] if `x` is one)
 #'         unless `x` has no fillable areas in which case `x` is returned unchanged
 #'         (with `delay = TRUE` always a `gTree`).
+#'         For a list a list of the same length (and names) of the patterned elements.
 #' @examples
 #' if (require("grid", quietly = TRUE)) {
 #'   tree <- gTree(children = gList(
@@ -194,12 +198,25 @@ with_pattern.grob <- function(
 	)
 }
 
+#' @rdname with_pattern
+#' @export
+with_pattern.list <- function(x, ...) {
+	# (`[<-` keeps the attributes of `x` e.g. its names)
+	x[] <- lapply(x, function(x) with_pattern(x, ...))
+	x
+}
+
 #' @export
 with_pattern.default <- function(x, ...) {
-	abort(c(
-		glue("No `with_pattern()` method for an object of class `{class(x)[1L]}`."),
-		i = "This package provides methods for grid grobs and gLists."
-	))
+	cls <- class(x)[1L]
+	abort(
+		c(
+			glue("No `with_pattern()` method for an object of class `{cls}`."),
+			i = "{gridpattern} provides methods for grid grobs, gLists, and lists of them."
+		),
+		class = "gridpattern_no_method",
+		x_class = cls
+	)
 }
 
 # `pool` is `TRUE`, `FALSE`, or (non-missing, non-logical) labels (their number is checked later)
