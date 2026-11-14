@@ -6,7 +6,8 @@
 #' This package provides its methods for grid grobs and (plain) lists of objects
 #' (another package may add a method for its own class of object).
 #' A list is returned with each of its elements patterned separately by `with_pattern()`
-#' (with the same arguments) so each must have a `with_pattern()` method of its own.
+#' (with the same arguments) so each must have a `with_pattern()` method of its own
+#' (`NULL`, which e.g. a list of `{ggplot2}` components may contain, is returned as it is).
 #' Each grob with such areas (by default a [grid::polygonGrob()], [grid::rectGrob()], [grid::pathGrob()],
 #' [grid::circleGrob()], [grid::roundrectGrob()], (closed) [grid::xsplineGrob()],
 #' [grid::fillStrokeGrob()], or [grid::fillGrob()], see the `leaves` argument)
@@ -204,6 +205,12 @@ with_pattern.list <- function(x, ...) {
 	# (`[<-` keeps the attributes of `x` e.g. its names)
 	x[] <- lapply(x, function(x) with_pattern(x, ...))
 	x
+}
+
+#' @rdname with_pattern
+#' @export
+with_pattern.NULL <- function(x, ...) {
+	NULL
 }
 
 #' @export
