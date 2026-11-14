@@ -6,6 +6,7 @@
 \alias{with_pattern.gList}
 \alias{with_pattern.grob}
 \alias{with_pattern.list}
+\alias{with_pattern.NULL}
 \title{Fill the areas of an object with patterns}
 \usage{
 with_pattern(x, ...)
@@ -45,6 +46,8 @@ with_pattern(x, ...)
 )
 
 \method{with_pattern}{list}(x, ...)
+
+\method{with_pattern}{`NULL`}(x, ...)
 }
 \arguments{
 \item{x}{An object with filled areas such as a grid grob, a \code{\link[grid:gList]{grid::gList()}},
@@ -102,7 +105,8 @@ For a list a list of the same length (and names) of the patterned elements.
 This package provides its methods for grid grobs and (plain) lists of objects
 (another package may add a method for its own class of object).
 A list is returned with each of its elements patterned separately by \code{with_pattern()}
-(with the same arguments) so each must have a \code{with_pattern()} method of its own.
+(with the same arguments) so each must have a \code{with_pattern()} method of its own
+(\code{NULL}, which e.g. a list of \code{{ggplot2}} components may contain, is returned as it is).
 Each grob with such areas (by default a \code{\link[grid:polygonGrob]{grid::polygonGrob()}}, \code{\link[grid:rectGrob]{grid::rectGrob()}}, \code{\link[grid:pathGrob]{grid::pathGrob()}},
 \code{\link[grid:circleGrob]{grid::circleGrob()}}, \code{\link[grid:roundrectGrob]{grid::roundrectGrob()}}, (closed) \code{\link[grid:xsplineGrob]{grid::xsplineGrob()}},
 \code{\link[grid:fillStrokeGrob]{grid::fillStrokeGrob()}}, or \code{\link[grid:fillGrob]{grid::fillGrob()}}, see the \code{leaves} argument)

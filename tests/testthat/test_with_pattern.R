@@ -1267,6 +1267,12 @@ test_that("`with_pattern()` patterns each element of a list", {
 	expect_s3_class(with_pattern(list(rect), delay = TRUE)[[1L]], "delayed_pattern")
 	# so a parameter with one value per area has one per area of each element
 	expect_error(with_pattern(list(rect, poly), fill = 1:2), class = "gridpattern_area_mismatch")
+	# `NULL` (e.g. in a list of `{ggplot2}` components) is returned as it is
+	expect_null(with_pattern(NULL, pattern = "circle"))
+	expect_identical(
+		with_pattern(list(a = NULL, b = rect), layers = "grob"),
+		list(a = NULL, b = with_pattern(rect, layers = "grob"))
+	)
 	# an empty list is returned as it is
 	expect_identical(with_pattern(list()), list())
 	expect_identical(with_pattern(setNames(list(), character())), setNames(list(), character()))

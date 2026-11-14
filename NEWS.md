@@ -91,7 +91,7 @@ New features
   i.e. whether registering a pattern with that name would clobber or conflict with a pre-existing pattern.
 * `as.patternGrob()` creates a pattern grob whose boundary is (the area filled by) an existing grid grob (#131).
 * `with_pattern()` fills each area of an object with a pattern (#131).
-  It has methods for grid grobs, gLists, and (plain) lists.
+  It has methods for grid grobs, gLists, (plain) lists, and `NULL` (returned as it is).
 * `area_boundaries()` splits a grid grob into one boundary grob per such area.
 * Several conditions now have classes so they can be caught or muffled:
 
