@@ -681,7 +681,7 @@ has_grouped_pattern_fill <- function(grob) {
 	fill <- grob$gp$fill
 	patterns <- if (is_pattern(fill)) {
 		list(fill)
-	} else if (inherits(fill, "GridPatternList")) {
+	} else if (is_pattern_list(fill)) {
 		fill
 	}
 	any(vapply(patterns, function(p) !isFALSE(p$group), logical(1L)))

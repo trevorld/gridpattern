@@ -732,6 +732,33 @@ test_that("`layers = \"area\"` draws the layers of each area in turn", {
 		childNames(with_pattern(editGrob(rect, gp = gpar(fill = list(gradient, gradient))))),
 		c("fill", "pattern", "border")
 	)
+	# (including a plain list of patterns assigned directly i.e. without the "GridPatternList" class)
+	plain <- rect
+	plain$gp$fill <- list(gradient, gradient)
+	expect_false(inherits(plain$gp$fill, "GridPatternList"))
+	expect_equal(childNames(with_pattern(plain)), c("fill", "pattern", "border"))
+	separates <- list(
+		linearGradient(c("red", "blue"), group = FALSE),
+		linearGradient(c("green", "blue"), group = FALSE)
+	)
+	plain$gp$fill <- separates
+	gps <- shape_gps(plain$gp, 3L)
+	expect_identical(gps[[3L]]$fill, separates[[1L]])
+	expect_identical(gps[[2L]]$fill, separates[[2L]])
+	out <- with_pattern(plain)
+	expect_equal(childNames(out), c("area.1", "area.2", "area.3"))
+	expect_identical(getGrob(out, gPath("area.2", "fill"))$gp$fill, separates[[2L]])
+	# (a one-element plain list gives each shape the bare pattern)
+	plain$gp$fill <- separates[1L]
+	gps <- shape_gps(plain$gp, 3L)
+	expect_identical(gps[[2L]]$fill, separates[[1L]])
+	expect_identical(gps[[3L]]$fill, separates[[1L]])
+	# (but other one-element list graphical parameters are left as they are)
+	gps <- shape_gps(gpar(col = list("red"), lty = list(2)), 3L)
+	expect_identical(gps[[3L]]$col, list("red"))
+	expect_identical(gps[[3L]]$lty, list(2))
+	expect_false(is_pattern_list(gradient))
+	expect_false(is_pattern_list(list(rectGrob())))
 	separate <- linearGradient(c("red", "blue"), group = FALSE)
 	out <- with_pattern(editGrob(rect, gp = gpar(fill = separate)))
 	expect_equal(childNames(out), c("area.1", "area.2", "area.3"))

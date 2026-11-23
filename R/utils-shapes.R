@@ -125,9 +125,7 @@ shape_gps <- function(gp, n) {
 	recycled <- list()
 	for (nm in names(gp)) {
 		v <- gp[[nm]]
-		if (inherits(v, "GridPatternList")) {
-			recycled[[nm]] <- rep_len(unclass(v), n)
-		} else if (length(v) > 1L && !is_pattern(v)) {
+		if (is_pattern_list(v) || (length(v) > 1L && !is_pattern(v))) {
 			recycled[[nm]] <- as.list(rep_len(v, n))
 		}
 	}
